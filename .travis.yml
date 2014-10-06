@@ -2,7 +2,7 @@ language: python
 python:
   - "2.7"
 # command to install dependencies
-install: "pip install natsort matplotlib"
+install: "pip install natsort matplotlib scipy numpy"
 script: nosetests
 after_success:
   - coveralls

@@ -3,7 +3,6 @@ python:
   - "2.7"
 # command to install dependencies
 install: "pip install natsort"
-script:
-    - cd tools
+script: nosetests
 after_success:
   - coveralls

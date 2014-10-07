@@ -1,4 +1,5 @@
 [run]
+source = hwrt
 omit =
     */python?.?/*
     */lib-python/?.?/*.py

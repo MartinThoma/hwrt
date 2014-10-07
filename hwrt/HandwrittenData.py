@@ -6,7 +6,8 @@
 import logging
 import json
 import matplotlib.pyplot as plt
-import hwrt.preprocessing as preprocessing
+# mine
+import preprocessing
 
 
 class HandwrittenData(object):

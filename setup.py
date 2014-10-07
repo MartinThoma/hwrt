@@ -4,16 +4,24 @@ except ImportError:
     from distutils.core import setup
 
 config = {
-    'description': 'Handwriting Recognition Tools',
+    'name': 'hwrt',
+    'version': '0.1.12',
     'author': 'Martin Thoma',
-    'url': 'https://github.com/MartinThoma/hwrt',
-    'download_url': 'https://github.com/MartinThoma/hwrt',
     'author_email': 'info@martin-thoma.de',
-    'version': '0.1',
-    'install_requires': ['nose'],
     'packages': ['hwrt'],
-    'scripts': [],
-    'name': 'hwrt'
+    'scripts': ['bin/backup.py'],
+    'url': 'https://github.com/MartinThoma/hwrt',
+    'license': 'MIT',
+    'description': 'Handwriting Recognition Tools',
+    'long_description': """A tookit for handwriting recognition. It was
+    developed as part of the bachelors thesis of Martin Thoma.""",
+    'install_requires': [
+        "argparse",
+        "theano",
+        "nose",
+    ],
+    'keywords': ['HWRT', 'recognition', 'handwriting', 'on-line'],
+    'download_url': 'https://github.com/MartinThoma/hwrt',
 }
 
 setup(**config)

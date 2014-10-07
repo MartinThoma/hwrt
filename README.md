@@ -13,6 +13,13 @@ A toolkit for handwriting recognition. Especially on-line HWR.
 
     sudo pip install hwrt
 
+### Update
+
+Currently, hwrt is under heavy development. That is very unlikely to change
+before december 2014. To update it, simply run
+
+    sudo pip install hwrt --upgrade
+
 
 ### For developers of hwrt
 

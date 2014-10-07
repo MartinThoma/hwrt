@@ -24,7 +24,7 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
 import math
 from copy import deepcopy
 # mine
-import HandwrittenData as HandwrittenData
+import HandwrittenData
 
 
 def get_class(name):
@@ -93,10 +93,10 @@ class Multiply(object):
 
 class Rotate(object):
 
-    def __init__(self, minimum=-30.0, maximum=30.0, step=5.0):
+    def __init__(self, minimum=-30.0, maximum=30.0, num=5.0):
         self.min = minimum
         self.max = maximum
-        self.step = step
+        self.num = num
 
     def __repr__(self):
         return "Rotate (%0.2f, %0.2f, %0.2f)" % (self.min, self.max, self.step)
@@ -111,7 +111,7 @@ class Rotate(object):
         new_trainging_set = []
         xc, yc = handwritten_data.get_center_of_mass()
         pointlist = handwritten_data.get_pointlist()
-        for rotation in numpy.arange(self.min, self.max, self.step):
+        for rotation in numpy.linspace(self.min, self.max, self.num):
             new_poinlist = []
             # Rotate pointlist around center of mass (xc, yc)
             for line in pointlist:

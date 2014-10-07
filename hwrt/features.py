@@ -28,7 +28,7 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
 from shapely.geometry import LineString
 import itertools
 # mine
-import HandwrittenData as HandwrittenData
+import HandwrittenData
 import preprocessing
 
 

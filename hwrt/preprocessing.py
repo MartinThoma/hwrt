@@ -603,8 +603,6 @@ class Dot_reduction(object):
 class Wild_point_filter(object):
     """Find wild points and remove them. The threshold means
        speed in pixels / ms.
-
-       This preprocessing step needs all points to have disjunct times.
     """
     def __init__(self, threshold):
         """The threshold is a speed threshold"""
@@ -622,16 +620,17 @@ class Wild_point_filter(object):
             "handwritten data is not of type HandwrittenData, but of %r" % \
             type(handwritten_data)
         new_pointlist = []
-        pointlist = handwritten_data.get_pointlist()
+        pointlist = handwritten_data.get_sorted_pointlist()
         for stroke in pointlist:
             new_stroke = []
-            last_point = stroke[0]
-            for point in stroke[1:]:
+            for last_point, point in zip(stroke, stroke[1:]):
                 space_dist = math.hypot(last_point['x'] - point['x'],
                                         last_point['y'] - point['y'])
                 time_dist = float(point['time'] - last_point['time'])
+                if time_dist == 0:
+                    continue
                 speed = space_dist/time_dist
-                if not (speed >= self.threshold):
+                if speed < self.threshold:
                     new_stroke.append(point)
 
             new_pointlist.append(new_stroke)

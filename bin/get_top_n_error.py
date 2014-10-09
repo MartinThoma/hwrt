@@ -16,6 +16,7 @@ import csv
 import itertools
 import shutil
 from collections import OrderedDict, Callable
+import pkg_resources
 # mine
 import hwrt.utils as utils
 
@@ -228,7 +229,8 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
     from jinja2 import FileSystemLoader
     from jinja2.environment import Environment
     env = Environment()
-    env.loader = FileSystemLoader('templates/')
+    template_path = pkg_resources.resource_filename('hwrt', 'templates/')
+    env.loader = FileSystemLoader(template_path)
     t = env.get_template('classification-error-report.html')
     rendered = t.render(wrong=wrong, correct=correct,
                         classification_error=classification_error,

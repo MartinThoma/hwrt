@@ -1,0 +1,37 @@
+{% extends "base.twig" %}
+
+{% block content %}
+    <h1>Classification errors</h1>
+    The system has an error rate of {{ '%0.2f' % (classification_error*100) }}%.
+
+<!--     {{ symbols_nr }} symbols were evaluated.
+
+    {{ recordings_nr }} recordings were in the test set. -->
+
+    <ul>
+        <li><a href="#by_correct">by correct classification</a></li>
+        <li><a href="#by_wrong">by wrong classification</a></li>
+    </ul>
+
+    <h2><a name="by_correct"></a>Errors by correct classification</h2>
+
+    {% for correct, wrongs_datasets in errors_by_correct_classification.items() %}
+        <h3>{{ correct }}</h3>
+        <ul>
+        {% for data in wrongs_datasets %}
+            <li>{{ data['confused'] }}: <a href="http://www.martin-thoma.de/write-math/view/?raw_data_id={{ data['raw_data_id'] }}">show</a></li>
+        {% endfor %}
+        </ul>
+    {% endfor %}
+
+    <h2><a name="by_wrong"></a>Errors by wrong classification</h2>
+
+    {% for correct, wrongs_datasets in errors_by_wrong_classification.items() %}
+        <h3>{{ correct }}</h3>
+        <ul>
+        {% for data in wrongs_datasets %}
+            <li>{{ data['latex'] }}: <a href="http://www.martin-thoma.de/write-math/view/?raw_data_id={{ data['raw_data_id'] }}">show</a></li>
+        {% endfor %}
+        </ul>
+    {% endfor %}
+{% endblock %}

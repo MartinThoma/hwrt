@@ -5,13 +5,14 @@ except ImportError:
 
 config = {
     'name': 'hwrt',
-    'version': '0.1.20',
+    'version': '0.1.26',
     'author': 'Martin Thoma',
     'author_email': 'info@martin-thoma.de',
     'packages': ['hwrt'],
     'scripts': ['bin/backup.py', 'bin/get_top_n_error.py', 'bin/view.py',
                 'bin/download.py', 'bin/test.py', 'bin/train.py',
                 'bin/analyze_data.py'],
+    'package_data': {'hwrt': ['templates/*']},
     'url': 'https://github.com/MartinThoma/hwrt',
     'license': 'MIT',
     'description': 'Handwriting Recognition Tools',

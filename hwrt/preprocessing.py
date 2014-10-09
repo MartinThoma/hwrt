@@ -140,10 +140,14 @@ class Scale_and_shift(object):
         unit square. Keep the aspect ratio. Optionally center the points
         inside of the unit square.
     """
-    def __init__(self, center=False, max_width=1., max_height=1.):
+    def __init__(self, center=False, max_width=1., max_height=1.,
+                 width_add=0, height_add=0, center_other=False):
         self.center = center
         self.max_width = max_width
         self.max_height = max_height
+        self.width_add = width_add
+        self.height_add = height_add
+        self.center_other = center_other
 
     def __repr__(self):
         return ("Scale_and_shift\n"
@@ -167,8 +171,8 @@ class Scale_and_shift(object):
         """
         a = handwritten_data.get_bounding_box()
 
-        width = a['maxx'] - a['minx']
-        height = a['maxy'] - a['miny']
+        width = a['maxx'] - a['minx'] + self.width_add
+        height = a['maxy'] - a['miny'] + self.height_add
 
         factorX, factorY = 1, 1
         if width != 0:
@@ -181,12 +185,17 @@ class Scale_and_shift(object):
         addx, addy = 0, 0
 
         if self.center:
-            add = (1 - (max(factorX, factorY) / factor)) / 2
+            # Only one dimension (x or y) has to be centered (the smaller one)
+            add = -(factor/(2*max(factorX, factorY)))
 
             if factor == factorX:
                 addy = add
+                if self.center_other:
+                    addx = -(width*factor/2.0)
             else:
                 addx = add
+                if self.center_other:
+                    addy = -(height*factor/2.0)
 
         return {"factor": factor, "addx": addx, "addy": addy,
                 "minx": a['minx'], "miny": a['miny'], "mint": a['mint']}
@@ -203,9 +212,10 @@ class Scale_and_shift(object):
         pointlist = handwritten_data.get_pointlist()
         for strokenr, stroke in enumerate(pointlist):
             for key, p in enumerate(stroke):
-                pointlist[strokenr][key] = {"x": (p["x"] - minx) * factor + addx,
-                                          "y": (p["y"] - miny) * factor + addy,
-                                          "time": p["time"] - mint}
+                pointlist[strokenr][key] = {
+                    "x": (p["x"] - minx) * factor + addx,
+                    "y": (p["y"] - miny) * factor + addy,
+                    "time": p["time"] - mint}
                 if "pen_down" in p:
                     pointlist[strokenr][key]["pen_down"] = p["pen_down"]
         handwritten_data.set_pointlist(pointlist)

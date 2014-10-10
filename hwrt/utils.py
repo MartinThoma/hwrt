@@ -53,11 +53,21 @@ def get_project_configuration():
     home = os.path.expanduser("~")
     rcfile = os.path.join(home, ".writemathrc")
     if not os.path.isfile(rcfile):
-        logging.error("File '%s' does not exist.", rcfile)
-        return None
+        create_project_configuration(rcfile)
     with open(rcfile, 'r') as ymlfile:
         cfg = yaml.load(ymlfile)
     return cfg
+
+
+def create_project_configuration(filename):
+    home = os.path.expanduser("~")
+    writemath = os.path.join(home, "writemath")
+    config = {'root': writemath,
+              'nntoolkit': None,
+              'dropbox_app_key': None,
+              'dropbox_app_secret': None}
+    with open(filename, 'w'):
+        yaml.dump(config, filename, default_flow_style=False)
 
 
 def get_project_root():

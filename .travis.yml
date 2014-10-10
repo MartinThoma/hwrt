@@ -3,6 +3,7 @@ python:
   - "2.7"
 install: 
   - pip install natsort matplotlib coveralls
+  - pip install shapely
 script:
   - nosetests --with-coverage
 virtualenv:

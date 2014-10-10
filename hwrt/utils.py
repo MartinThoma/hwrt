@@ -52,6 +52,9 @@ def get_project_configuration():
     """Get project configuration as dictionary."""
     home = os.path.expanduser("~")
     rcfile = os.path.join(home, ".writemathrc")
+    if not os.path.isfile(rcfile):
+        logging.error("File '%s' does not exist.", rcfile)
+        return None
     with open(rcfile, 'r') as ymlfile:
         cfg = yaml.load(ymlfile)
     return cfg

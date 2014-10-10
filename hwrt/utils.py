@@ -66,8 +66,8 @@ def create_project_configuration(filename):
               'nntoolkit': None,
               'dropbox_app_key': None,
               'dropbox_app_secret': None}
-    with open(filename, 'w'):
-        yaml.dump(config, filename, default_flow_style=False)
+    with open(filename, 'w') as f:
+        yaml.dump(config, f, default_flow_style=False)
 
 
 def get_project_root():

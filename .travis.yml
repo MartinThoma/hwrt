@@ -13,4 +13,4 @@ before_install:
 script:
   - nosetests --with-cov --cover-package hwrt --logging-level=INFO
 after_success:
-  - coveralls --config_file .coveragerc
+  - coveralls

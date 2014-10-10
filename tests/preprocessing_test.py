@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-import sys
 import os
-sys.path.append("..")
+import nose
+# mine
 from hwrt.HandwrittenData import HandwrittenData
 import hwrt.preprocessing as preprocessing
 
@@ -56,6 +56,19 @@ def compare_pointlists(a, b, epsilon=0.001):
 
 
 # Tests
+def euclidean_distance_test():
+    p1 = {'x': 12, 'y': 15}
+    p2 = {'x':  2, 'y': 50}
+    dist = preprocessing._euclidean_distance(p1, p2)
+    nose.tools.assert_equal(round(dist, 1), 36.4)
+
+
+def flatten_test():
+    l = [[1, 2, 3], [4], [], [5, 6, 7]]
+    flat_list = preprocessing._flatten(l)
+    nose.tools.assert_equal(flat_list, [1, 2, 3, 4, 5, 6, 7])
+
+
 def scale_and_shift_test_all():
     preprocessing_queue = [preprocessing.Scale_and_shift()]
     for a in get_all_symbols_as_handwriting():

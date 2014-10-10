@@ -39,13 +39,13 @@ class HandwrittenData(object):
         """
         try:
             pointlist = json.loads(self.raw_data_json)
-        except Exception as inst:
+        except Exception as inst:  # pragma: no cover
             logging.debug("pointLineList: linelistP")
             logging.debug(self.raw_data_json)
             logging.debug("didn't work")
             raise inst
 
-        if len(pointlist) == 0:
+        if len(pointlist) == 0:  # pragma: no cover
             logging.warning("Pointlist was empty. Search for '" +
                             self.raw_data_json + "' in `wm_raw_draw_data`.")
         return pointlist
@@ -55,7 +55,7 @@ class HandwrittenData(object):
         pointlist = self.get_pointlist()
         for i in range(len(pointlist)):
             pointlist[i] = sorted(pointlist[i], key=lambda p: p['time'])
-        pointlist = sorted(pointlist, key=lambda line: line[0]['time'])
+        pointlist = sorted(pointlist, key=lambda stroke: stroke[0]['time'])
         return pointlist
 
     def set_pointlist(self, pointlist):
@@ -216,7 +216,3 @@ class HandwrittenData(object):
 
     def __str__(self):
         return self.__repr__()
-
-if __name__ == '__main__':
-    pass
-    #EXAMPLE.show()

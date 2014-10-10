@@ -143,11 +143,11 @@ def scale_and_shift_test_a_center():
     a = HandwrittenData(s)
     a.preprocessing(preprocessing_queue)
     s = a.get_pointlist()
-    expectation = [[{u'y': 1.0, u'x': -0.3655913978494624, u'time': 0},
-                    {u'y': 0.0, u'x': -0.1482000935016363, u'time': 332},
-                    {u'y': 0.9565, u'x': 0.21204835370333264, u'time': 667}],
-                   [{u'y': 0.5776, u'x': -0.24136779536499034, u'time': 1692},
-                    {u'y': 0.5528, u'x': 0.08782475121886058, u'time': 2378}]]
+    expectation = [[{u'y': 1.0, u'x': -0.2888198757763975, u'time': 0},
+                    {u'y': 0.0, u'x': -0.07142857142857142, u'time': 332},
+                    {u'y': 0.9565, u'x': 0.2888198757763975, u'time': 667}],
+                   [{u'y': 0.5776, u'x': -0.16459627329192547, u'time': 1692},
+                    {u'y': 0.5528, u'x': 0.16459627329192544, u'time': 2378}]]
     assert compare_pointlists(s, expectation), \
         "Got: %s; expected %s" % (s, expectation)
 

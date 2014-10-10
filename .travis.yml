@@ -2,19 +2,15 @@ language: python
 python:
   - "2.7"
 install: 
-  - pip install natsort
-  - pip install matplotlib
-  - pip install scipy
-  - pip install numpy
-  - pip install coveralls
+  - pip install natsort matplotlib coveralls
 script:
   - nosetests --with-coverage
 virtualenv:
   system_site_packages: true
 before_install:
-  - sudo apt-get install libblas-dev
-  - sudo apt-get install liblapack-dev
-  - sudo apt-get install gfortran
-script: nosetests
+  - sudo apt-get install libblas-dev liblapack-dev gfortran
+  - sudo apt-get install python-scipy python-numpy
+script:
+  - nosetests --with-cov --cov hwrt --cov-config .coveragerc --logging-level=INFO
 after_success:
-  - coveralls
+  - coveralls --config_file .coveragerc

@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/MartinThoma/hwrt.svg?branch=master)](https://travis-ci.org/MartinThoma/hwrt)
-[![Coverage Status](https://coveralls.io/repos/MartinThoma/hwrt/badge.png)](https://coveralls.io/r/MartinThoma/hwrt)
+[![Coverage Status](https://img.shields.io/coveralls/MartinThoma/hwrt.svg)](https://coveralls.io/r/MartinThoma/hwrt?branch=master)
 
 ## Handwriting Recognition Toolkit
 
@@ -26,3 +26,8 @@ before december 2014. To update it, simply run
 Update the project:
 
     python setup.py sdist upload
+
+Coverage:
+
+    nosetests --with-coverage --cover-erase --cover-package hwrt --logging-level=INFO --cover-html
+    coveralls

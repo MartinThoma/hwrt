@@ -11,6 +11,6 @@ before_install:
   - sudo apt-get install libblas-dev liblapack-dev gfortran
   - sudo apt-get install python-scipy python-numpy
 script:
-  - nosetests --with-cov --cov hwrt --cov-config .coveragerc --logging-level=INFO
+  - nosetests --with-cov --cover-package hwrt --logging-level=INFO
 after_success:
   - coveralls --config_file .coveragerc

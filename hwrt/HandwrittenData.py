@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Representation of a recording (handwritten data)."""
+"""Representation of a recording of on-line handwritten data. On-line means
+   that the pen trajectory is given (and not online as in 'Internet').
+"""
 
 import logging
 import json
@@ -14,13 +16,13 @@ class HandwrittenData(object):
     """Represents a handwritten symbol."""
     def __init__(self, raw_data_json, formula_id=None, raw_data_id=None,
                  formula_in_latex=None, wild_point_count=0,
-                 missing_line=0, user_id=0):
+                 missing_stroke=0, user_id=0):
         self.raw_data_json = raw_data_json
         self.formula_id = formula_id
         self.raw_data_id = raw_data_id
         self.formula_in_latex = formula_in_latex
         self.wild_point_count = wild_point_count
-        self.missing_line = missing_line
+        self.missing_stroke = missing_stroke
         self.user_id = user_id
         assert type(json.loads(self.raw_data_json)) is list, \
             "raw_data_json is not JSON: %r" % self.raw_data_json
@@ -28,7 +30,7 @@ class HandwrittenData(object):
             "The pointlist of formula_id %i is %s" % (self.formula_id,
                                                       self.get_pointlist())
         assert wild_point_count >= 0
-        assert missing_line >= 0
+        assert missing_stroke >= 0
 
     def get_pointlist(self):
         """Get a list of lists of tuples from JSON raw data string.

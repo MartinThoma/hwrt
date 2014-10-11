@@ -55,6 +55,7 @@ def main(feature_folder, create_learning_curve=False):
     # Get a list of all used features
     feature_list = features.get_features(feature_description['features'])
 
+    # Get the list of data multiplication algorithms
     mult_queue = data_multiplication.get_data_multiplication_queue(
         feature_description['data-modification'])
 
@@ -68,19 +69,7 @@ def main(feature_folder, create_learning_curve=False):
      preprocessing_queue, index2latex) = get_sets(path_to_data)
 
     # Multiply traing_set
-    new_trainging_set = []
-    logging.info("Multiply data...")
-    for el in training_set:
-        for alg in mult_queue:
-            samples = alg(el['handwriting'])
-            for sample in samples:
-                new_trainging_set.append({'id': el['id'],
-                                          'is_in_testset': 0,
-                                          'formula_id': el['formula_id'],
-                                          'handwriting': sample,
-                                          'formula_in_latex':
-                                          el['formula_in_latex']})
-    training_set = new_trainging_set
+    training_set = training_set_multiplication(training_set, mult_queue)
 
     # Write formula_id2index for later lookup
     index2formula_id = sorted(formula_id2index.items(), key=lambda n: n[1])
@@ -139,6 +128,28 @@ def main(feature_folder, create_learning_curve=False):
                      (dataset_name, t1))
         gc.collect()
     utils.create_run_logfile(feature_folder)
+
+
+def training_set_multiplication(training_set, mult_queue):
+    """ Multiply the training set by all methods listed in mult_queue.
+    @param training_set set of all recordings that will be used for training
+    @param mult_queue list of all algorithms that will take one recording and
+                      generate more than one.
+    @return mutliple recordings
+    """
+    new_trning_set = []
+    logging.info("Multiply data...")
+    for recording in training_set:
+        for algorithm in mult_queue:
+            samples = algorithm(recording['handwriting'])
+            for sample in samples:
+                new_trning_set.append({'id': recording['id'],
+                                       'is_in_testset': 0,
+                                       'formula_id': recording['formula_id'],
+                                       'handwriting': sample,
+                                       'formula_in_latex':
+                                       recording['formula_in_latex']})
+    return new_trning_set
 
 
 def get_sets(path_to_data):

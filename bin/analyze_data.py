@@ -43,25 +43,26 @@ def filter_label(label):
         return label
 
 
-def analyze_feature(raw_datasets, feature, filename="aspect_ratios.csv"):
-    # get folder
-    root = utils.get_project_root()
-    folder = os.path.join(root, "archive/analyzation/")
-    # prepare files
-    # symbol-wise
-    metafile = os.path.join(folder, filename)
-    open(metafile, 'w').close()  # Truncate the file
-    write_file = open(metafile, 'a')
-    write_file.write("label,mean,std\n")  # heading
-    # write raw data
-    rawfilename = os.path.join(folder, filename+'.raw')
-    open(rawfilename, 'w').close()  # Truncate the file
-    raw_file = open(rawfilename, 'a')
-    raw_file.write("latex,raw_data_id,value\n")
-    # write only values
-    datafilename = os.path.join(folder, filename+'.txt')
-    open(datafilename, 'w').close()  # Truncate the file
-    data_file = open(datafilename, 'a')
+def analyze_feature(raw_datasets, feature, basename="aspect_ratios"):
+    """Apply 'feature' to all recordings in 'raw_datasets'. Store the
+       results in two files. One file stores the raw result, the other one
+       groups the results by symbols and stores the mean, standard deviation
+       and the name of the symbol as a csv file.
+    """
+    # Get folder where results should get stored
+    PROJECT_ROOT = utils.get_project_root()
+    folder = os.path.join(PROJECT_ROOT, "archive/analyzation/")
+
+    # Prepare files
+    csv_filename = os.path.join(folder, basename+'.csv')
+    raw_filename = os.path.join(folder, basename+'.raw')
+    open(csv_filename, 'w').close()  # Truncate the file
+    open(raw_filename, 'w').close()  # Truncate the file
+    csv_file = open(csv_filename, 'a')
+    raw_file = open(raw_filename, 'a')
+
+    csv_file.write("label,mean,std\n")  # Write header
+    raw_file.write("latex,raw_data_id,value\n")  # Write header
 
     by_formula_id = sort_by_formula_id(raw_datasets)
     print_data = []
@@ -73,15 +74,15 @@ def analyze_feature(raw_datasets, feature, filename="aspect_ratios.csv"):
             raw_file.write("%s,%i,%0.2f\n" % (datasets[0].formula_in_latex,
                                               data.raw_data_id,
                                               value))
-            data_file.write("%0.2f\n" % value)
         label = filter_label(datasets[0].formula_in_latex)
         print_data.append((label, numpy.mean(values), numpy.std(values)))
+
     # Sort the data by highest mean, descending
     print_data = sorted(print_data, key=lambda n: n[1], reverse=True)
     # Write data to file
     for label, mean, std in print_data:
-        write_file.write("%s,%0.2f,%0.2f\n" % (label, mean, std))
-    write_file.close()
+        csv_file.write("%s,%0.2f,%0.2f\n" % (label, mean, std))
+    csv_file.close()
 
 
 def analyze_creator(raw_datasets, filename="creator.csv"):
@@ -319,7 +320,7 @@ def get_bounding_box_distance(raw_datasets):
                 if raw_dataset['handwriting'].formula_id not in \
                    [635, 636, 936, 992, 260, 941, 934, 184] and \
                    raw_dataset['handwriting'].wild_point_count == 0 and \
-                   raw_dataset['handwriting'].missing_line == 0:
+                   raw_dataset['handwriting'].missing_stroke == 0:
                     # logging.debug("bb_dist: %0.2f" % bb_dist)
                     # logging.debug("dim: %0.2f" % dim)
                     # for bb in bounding_boxes:

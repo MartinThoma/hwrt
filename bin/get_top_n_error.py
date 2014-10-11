@@ -73,7 +73,7 @@ def get_test_results(model_folder, basename, test_file):
                       model_folder)
     else:
         # Copy model file
-        model_use = "tmp.json"  # TODO write elsewhere
+        model_use = "tmp.json"  # TODO write elsewhere in a temporary folder
         shutil.copyfile(model_src, model_use)
         # Adjust model file
         with open(model_src) as f:

@@ -12,6 +12,7 @@ from hwrt.HandwrittenData import HandwrittenData
 import hwrt.utils as utils
 import hwrt.preprocessing as preprocessing
 import hwrt.features as features
+import hwrt.data_multiplication as data_multiplication
 
 
 def fetch_data(raw_data_id):
@@ -71,8 +72,27 @@ def display_data(raw_data_string, raw_data_id, model_folder):
     feature_list = features.get_features(tmp)
     x = a.feature_extraction(feature_list)
     t = [round(el, 3) for el in x]
+    print("Features:")
     print(t)
-    a.show()
+
+    # Get the list of data multiplication algorithms
+    mult_queue = data_multiplication.get_data_multiplication_queue(
+        feature_description['data-multiplication'])
+
+    # Multiply traing_set
+    training_set = [a]
+    for algorithm in mult_queue:
+        new_trning_set = []
+        for recording in training_set:
+            samples = algorithm(recording)
+            for sample in samples:
+                new_trning_set.append(sample)
+        training_set = new_trning_set
+
+    # Display it
+    for recording in training_set:
+        recording.show()
+
 
 if __name__ == '__main__':
     PROJECT_ROOT = utils.get_project_root()

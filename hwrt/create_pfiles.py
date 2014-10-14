@@ -57,7 +57,7 @@ def main(feature_folder, create_learning_curve=False):
 
     # Get the list of data multiplication algorithms
     mult_queue = data_multiplication.get_data_multiplication_queue(
-        feature_description['data-modification'])
+        feature_description['data-multiplication'])
 
     # Set everything up for the creation of the 3 pfiles (test, validation,
     # training).
@@ -137,10 +137,10 @@ def training_set_multiplication(training_set, mult_queue):
                       generate more than one.
     @return mutliple recordings
     """
-    new_trning_set = []
     logging.info("Multiply data...")
-    for recording in training_set:
-        for algorithm in mult_queue:
+    for algorithm in mult_queue:
+        new_trning_set = []
+        for recording in training_set:
             samples = algorithm(recording['handwriting'])
             for sample in samples:
                 new_trning_set.append({'id': recording['id'],
@@ -149,6 +149,7 @@ def training_set_multiplication(training_set, mult_queue):
                                        'handwriting': sample,
                                        'formula_in_latex':
                                        recording['formula_in_latex']})
+        training_set = new_trning_set
     return new_trning_set
 
 

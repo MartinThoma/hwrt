@@ -82,8 +82,9 @@ if __name__ == '__main__':
     latest_model = utils.get_latest_in_folder(models_folder, ".yml")
 
     # Parse command line arguments
-    from argparse import ArgumentParser
-    parser = ArgumentParser(description=__doc__)
+    from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
+    parser = ArgumentParser(description=__doc__,
+                            formatter_class=ArgumentDefaultsHelpFormatter)
     parser.add_argument("-i", "--id", dest="id", default=279062,
                         type=int,
                         help="which RAW_DATA_ID do you want?")

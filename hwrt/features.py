@@ -27,6 +27,7 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     stream=sys.stdout)
 from shapely.geometry import LineString
 import itertools
+import numpy
 # mine
 import HandwrittenData
 import preprocessing
@@ -308,7 +309,7 @@ class Ink(object):
         return [ink]
 
 
-class AspectRatio(object):
+class Aspect_ratio(object):
 
     normalize = True
 
@@ -325,8 +326,8 @@ class AspectRatio(object):
         assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
             "handwritten data is not of type HandwrittenData, but of %r" % \
             type(handwritten_data)
-        width = float(handwritten_data.get_width()+1)
-        height = float(handwritten_data.get_height()+1)
+        width = float(handwritten_data.get_width()+0.01)
+        height = float(handwritten_data.get_height()+0.01)
         return [width/height]
 
 
@@ -414,6 +415,42 @@ class Center_of_mass(object):
                 xs.append(point['x'])
                 ys.append(point['y'])
         return [float(sum(xs))/len(xs), float(sum(ys))/len(ys)]
+
+
+class Stroke_center(object):
+
+    normalize = True
+
+    def __init__(self, strokes=4):
+        self.strokes = strokes
+
+    def __repr__(self):
+        return "Stroke_center"
+
+    def __str__(self):
+        return "Stroke center"
+
+    def get_dimension(self):
+        return self.strokes*2
+
+    def __call__(self, handwritten_data):
+        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
+            "handwritten data is not of type HandwrittenData, but of %r" % \
+            type(handwritten_data)
+        feature_vector = []
+        for i, stroke in enumerate(handwritten_data.get_pointlist()):
+            if i >= self.strokes:
+                break
+            xs = []
+            ys = []
+            for point in stroke:
+                xs.append(point['x'])
+                ys.append(point['y'])
+            feature_vector.append(numpy.mean(xs))
+            feature_vector.append(numpy.mean(ys))
+        while len(feature_vector) < self.get_dimension():
+            feature_vector.append(0)
+        return feature_vector
 
 
 class Stroke_intersections(object):

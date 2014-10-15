@@ -8,6 +8,7 @@ import yaml
 import MySQLdb
 import MySQLdb.cursors
 # mine
+import hwrt
 from hwrt.HandwrittenData import HandwrittenData
 import hwrt.utils as utils
 import hwrt.preprocessing as preprocessing
@@ -123,4 +124,5 @@ if __name__ == '__main__':
     if data is None:
         print("RAW_DATA_ID %i does not exist." % args.id)
     else:
+        print("hwrt version: %s" % hwrt.__version__)
         display_data(data['data'], data['id'], args.model)

@@ -30,7 +30,7 @@ def sort_by_formula_id(raw_datasets):
     return by_formula_id
 
 
-def filter_label(label):
+def filter_label(label, replace_by_similar=True):
     bad_names = ['celsius', 'degree', 'ohm', 'venus', 'mars', 'astrosun',
                  'fullmoon', 'leftmoon', 'female', 'male', 'checked',
                  'diameter', 'sun', 'Bowtie', 'sqrt',
@@ -38,6 +38,10 @@ def filter_label(label):
                  'mathds', 'mathfrak'
                  ]
     if any(label[1:].startswith(bad) for bad in bad_names):
+        if label == '\\dag' and replace_by_similar:
+            return '\\dagger'
+        elif label == '\\diameter' and replace_by_similar:
+            return '\\O'
         return label[1:]
     else:
         return label
@@ -186,22 +190,6 @@ def analyze_distance_betwee_strokes(raw_datasets,
     logging.info("dist_between_strokes mean:\t%0.8fpx" % numpy.mean(print_data))
     logging.info("dist_between_strokes std: \t%0.8fpx" % numpy.std(print_data))
     write_file.close()
-
-
-def get_aspect_ratio(raw_datasets):
-    """For each symbol: sum up the length of all strokes."""
-    filename = "aspect_ratios.txt"
-    open(filename, 'w').close()  # Truncate the file
-    strokefile = open(filename, "a")
-    start_time = time.time()
-    aspect_ratio = features.AspectRatio()
-    for i, raw_dataset in enumerate(raw_datasets):
-        if i % 100 == 0 and i > 0:
-            utils.print_status(len(raw_datasets), i, start_time)
-        ink = aspect_ratio(raw_dataset['handwriting'])[0]
-        strokefile.write("%0.2f\n" % ink)
-    print("\r100%"+"\033[K\n")
-    strokefile.close()
 
 
 def get_bounding_box_distance(raw_datasets):
@@ -407,7 +395,7 @@ def main(handwriting_datasets_file):
     # logging.info("get_bounding_box_distance...")
     # get_bounding_box_distance(raw_datasets)
 
-    f = [(features.AspectRatio(), "aspect_ratio.csv"),
+    f = [(features.Aspect_ratio(), "aspect_ratio.csv"),
          (features.Re_curvature(1), "re_curvature.csv"),
          (features.Height(), "height.csv"),
          (features.Width(), "width.csv"),

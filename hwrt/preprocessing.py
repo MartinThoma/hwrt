@@ -649,6 +649,52 @@ class Wild_point_filter(object):
         # more than 1/5 of the whole size, it is a wild point
 
 
+class Weighted_average_smoothing(object):
+    """Smooth every stroke by a weighted average. """
+    def __init__(self, theta):
+        """Theta is a list of 3 non-negative numbers"""
+        assert len(theta) == 3, \
+            "theta has length %i, but should have length 3" % \
+            len(theta)
+        theta = map(float, theta)
+        # Normalize parameters to a sum of 1
+        self.theta = list(1./sum(theta) * numpy.array(theta))
+
+    def __repr__(self):
+        return "Weighted_average_smoothing"
+
+    def __str__(self):
+        return "Weighted average smoothing (theta: %s)" % \
+            self.theta
+
+    def calculate_average(self, points):
+        assert len(self.theta) == len(points), \
+            "points has length %i, but should have length %i" % \
+            (len(points), len(self.theta))
+        new_point = {'x': 0, 'y': 0, 'time': 0}
+        for key in new_point:
+            new_point[key] = self.theta[0] * points[0][key] + \
+                self.theta[1] * points[1][key] + \
+                self.theta[2] * points[2][key]
+        return new_point
+
+    def __call__(self, handwritten_data):
+        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
+            "handwritten data is not of type HandwrittenData, but of %r" % \
+            type(handwritten_data)
+        new_pointlist = []
+        pointlist = handwritten_data.get_sorted_pointlist()
+        for stroke in pointlist:
+            tmp = [stroke[0]]
+            new_pointlist.append(tmp)
+            if len(stroke) > 1:
+                for i in range(1, len(stroke)-1):
+                    points = [stroke[i-1], stroke[i], stroke[i+1]]
+                    p = self.calculate_average(points)
+                    new_pointlist[-1].append(p)
+                new_pointlist[-1].append(stroke[-1])
+        handwritten_data.set_pointlist(new_pointlist)
+
 if __name__ == '__main__':
     import doctest
     doctest.testmod()

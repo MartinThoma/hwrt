@@ -11,9 +11,14 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     stream=sys.stdout)
 import cPickle as pickle
 import time
-import preprocessing
 import yaml
+# mine
 import utils
+import preprocessing
+import HandwrittenData
+
+sys.modules['hwrt.HandwrittenData'] = HandwrittenData
+sys.modules['HandwrittenData'] = HandwrittenData
 
 
 def main(folder):

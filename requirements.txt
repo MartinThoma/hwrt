@@ -4,9 +4,10 @@ MySQL-python
 PyYAML
 natsort
 coveralls
+Pillow
 nose
 Sphinx
 Pygments
-Shapely
 coverage
 dropbox
+hwrt

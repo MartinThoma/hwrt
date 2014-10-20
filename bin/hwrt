@@ -35,4 +35,4 @@ if __name__ == '__main__':
     # view = subparsers.add_parser('view',
     #                              add_help=False,
     #                              parents=[view_parser])
-    args = get_parser.parse_args()
+    args = get_parser().parse_args()

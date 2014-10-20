@@ -1,11 +1,4 @@
 # -*- coding: utf-8 -*-
-
-import mock
- 
-MOCK_MODULES = ['numpy', 'scipy', 'matplotlib', 'matplotlib.pyplot', 'scipy.interpolate']
-for mod_name in MOCK_MODULES:
-sys.modules[mod_name] = mock.Mock()
-
 #
 # hwrt documentation build configuration file, created by
 # sphinx-quickstart on Mon Oct 20 16:23:32 2014.
@@ -21,6 +14,13 @@ sys.modules[mod_name] = mock.Mock()
 
 import sys
 import os
+
+import mock
+
+
+MOCK_MODULES = ['numpy', 'scipy', 'matplotlib', 'matplotlib.pyplot', 'scipy.interpolate']
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = mock.Mock()
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the

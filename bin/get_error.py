@@ -87,7 +87,7 @@ def get_test_results(model_folder, basename, test_file):
         time_prefix = time.strftime("%Y-%m-%d-%H-%M")
         logging.info("Evaluate '%s' with '%s'...", model_src, test_file)
         logfile = os.path.join(PROJECT_ROOT,
-                               "archive/logs/%s-error-evaluation.log" %
+                               "logs/%s-error-evaluation.log" %
                                time_prefix)
         with open(logfile, "w") as log, open(model_use, "r") as model_src_p:
             p = subprocess.Popen(['nntoolkit', 'run',
@@ -222,7 +222,7 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
     # Find right place for report file
     time_prefix = time.strftime("%Y-%m-%d-%H-%M")
     target = os.path.join(PROJECT_ROOT,
-                          ("archive/reports/"
+                          ("reports/"
                            "%s-classification-error-report.html") %
                           time_prefix)
     # Fill the template
@@ -338,7 +338,7 @@ def get_parser():
     PROJECT_ROOT = utils.get_project_root()
 
     # Get latest model folder
-    models_folder = os.path.join(PROJECT_ROOT, "archive/models")
+    models_folder = os.path.join(PROJECT_ROOT, "models")
     latest_model = utils.get_latest_folder(models_folder)
 
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter

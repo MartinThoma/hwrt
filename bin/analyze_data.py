@@ -55,7 +55,7 @@ def analyze_feature(raw_datasets, feature, basename="aspect_ratios"):
     """
     # Get folder where results should get stored
     PROJECT_ROOT = utils.get_project_root()
-    folder = os.path.join(PROJECT_ROOT, "archive/analyzation/")
+    folder = os.path.join(PROJECT_ROOT, "analyzation/")
 
     # Prepare files
     csv_filename = os.path.join(folder, basename+'.csv')
@@ -95,7 +95,7 @@ def analyze_creator(raw_datasets, filename="creator.csv"):
 
     # prepare file
     root = utils.get_project_root()
-    folder = os.path.join(root, "archive/analyzation/")
+    folder = os.path.join(root, "analyzation/")
     workfilename = os.path.join(folder, filename)
     open(workfilename, 'w').close()  # Truncate the file
     write_file = open(workfilename, "a")
@@ -123,7 +123,7 @@ def analyze_instroke_speed(raw_datasets, filename="instroke_speed.csv"):
     """Analyze how fast the points were in pixel/ms."""
     # prepare file
     root = utils.get_project_root()
-    folder = os.path.join(root, "archive/analyzation/")
+    folder = os.path.join(root, "analyzation/")
     workfilename = os.path.join(folder, filename)
     open(workfilename, 'w').close()  # Truncate the file
     write_file = open(workfilename, "a")
@@ -161,7 +161,7 @@ def analyze_distance_betwee_strokes(raw_datasets,
     """Analyze how much distance in px is between strokes."""
     # prepare file
     root = utils.get_project_root()
-    folder = os.path.join(root, "archive/analyzation/")
+    folder = os.path.join(root, "analyzation/")
     workfilename = os.path.join(folder, filename)
     open(workfilename, 'w').close()  # Truncate the file
     write_file = open(workfilename, "a")
@@ -416,7 +416,7 @@ def get_parser():
     PROJECT_ROOT = utils.get_project_root()
 
     # Get latest (raw) dataset
-    DATASET_FOLDER = os.path.join(PROJECT_ROOT, "archive/raw-datasets")
+    DATASET_FOLDER = os.path.join(PROJECT_ROOT, "raw-datasets")
     LATEST_DATASET = utils.get_latest_in_folder(DATASET_FOLDER, "raw.pickle")
 
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter

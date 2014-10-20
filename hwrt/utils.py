@@ -105,7 +105,8 @@ def get_latest_folder(folder):
 
 def get_database_config_file():
     """Get the absolute path to the database configuration file."""
-    return os.path.join(get_project_root(), "tools/db.config.yml")
+    cfg = get_project_configuration()
+    return cfg['dbconfig']
 
 
 def get_database_configuration():
@@ -262,7 +263,7 @@ def update_if_outdated(folder):
 
 def choose_raw_dataset(currently=""):
     """Let the user choose a raw dataset. Return the absolute path."""
-    folder = os.path.join(get_project_root(), "archive/raw-datasets")
+    folder = os.path.join(get_project_root(), "raw-datasets")
     files = [os.path.join(folder, name) for name in os.listdir(folder)
              if name.endswith(".pickle")]
     default = -1

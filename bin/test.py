@@ -82,7 +82,7 @@ def get_parser():
     PROJECT_ROOT = utils.get_project_root()
 
     # Get latest model folder
-    models_folder = os.path.join(PROJECT_ROOT, "archive/models")
+    models_folder = os.path.join(PROJECT_ROOT, "models")
     latest_model = utils.get_latest_folder(models_folder)
 
     # Get command line arguments

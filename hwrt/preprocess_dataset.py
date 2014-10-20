@@ -59,8 +59,8 @@ def create_preprocessed_dataset(path_to_data, outputpath, preprocessing_queue):
                       "or update the data location."), path_to_data)
         raw_dataset_path = utils.choose_raw_dataset()
         # Get project-relative path
-        raw_dataset_path = "archive/raw-datasets" + \
-                           raw_dataset_path.split("archive/raw-datasets")[1]
+        raw_dataset_path = "raw-datasets" + \
+                           raw_dataset_path.split("raw-datasets")[1]
         print(raw_dataset_path)
         sys.exit()  # TODO: Update model!
     logging.info("Start loading data...")
@@ -87,7 +87,7 @@ if __name__ == '__main__':
     PROJECT_ROOT = utils.get_project_root()
 
     # Get latest model description file
-    preprocessed_folder = os.path.join(PROJECT_ROOT, "archive/preprocessed")
+    preprocessed_folder = os.path.join(PROJECT_ROOT, "preprocessed")
     latest_preprocessed = utils.get_latest_folder(preprocessed_folder)
 
     # Get command line arguments

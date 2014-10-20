@@ -326,7 +326,7 @@ if __name__ == '__main__':
     PROJECT_ROOT = utils.get_project_root()
 
     # Get latest model description file
-    feature_folder = os.path.join(PROJECT_ROOT, "archive/feature-files")
+    feature_folder = os.path.join(PROJECT_ROOT, "feature-files")
     latest_featurefolder = utils.get_latest_folder(feature_folder)
 
     # Get command line arguments

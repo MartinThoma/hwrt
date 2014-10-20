@@ -130,7 +130,7 @@ def sync_directory(directory):
 
 
 def main(destination=os.path.join(utils.get_project_root(),
-                                  "archive/raw-datasets"),
+                                  "raw-datasets"),
          small_dataset=False):
     time_prefix = time.strftime("%Y-%m-%d-%H-%M")
     if small_dataset:
@@ -208,7 +208,7 @@ def main(destination=os.path.join(utils.get_project_root(),
 
 def get_parser():
     PROJECT_ROOT = utils.get_project_root()
-    archive_path = os.path.join(PROJECT_ROOT, "archive/raw-datasets")
+    archive_path = os.path.join(PROJECT_ROOT, "raw-datasets")
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
     parser = ArgumentParser(description=__doc__,
                             formatter_class=ArgumentDefaultsHelpFormatter)
@@ -239,7 +239,7 @@ if __name__ == '__main__':
     else:
         if not args.onlydropbox:
             main(args.destination, args.small)
-        if sync_directory("archive/raw-datasets"):
+        if sync_directory("raw-datasets"):
             logging.info("Successfully uploaded files to Dropbox.")
         else:
             logging.info("Uploading files to Dropbox failed.")

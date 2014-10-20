@@ -9,6 +9,5 @@ nose
 Sphinx
 Pygments
 Shapely
-Theano
 coverage
 dropbox

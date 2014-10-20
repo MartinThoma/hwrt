@@ -3,8 +3,8 @@ Jinja2
 MySQL-python
 PyYAML
 natsort
-matplotlib
 coveralls
+hwrt
 scipy
 numpy
 nose
@@ -14,4 +14,3 @@ Shapely
 Theano
 coverage
 dropbox
-hwrt

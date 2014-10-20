@@ -95,7 +95,7 @@ def display_data(raw_data_string, raw_data_id, model_folder):
         recording.show()
 
 
-if __name__ == '__main__':
+def get_parser():
     PROJECT_ROOT = utils.get_project_root()
 
     # Get latest model description file
@@ -117,7 +117,9 @@ if __name__ == '__main__':
                         metavar="FOLDER",
                         type=lambda x: utils.is_valid_folder(parser, x),
                         default=latest_model)
-    args = parser.parse_args()
+
+if __name__ == '__main__':
+    args = get_parser().parse_args()
 
     # do something
     data = fetch_data(args.id)

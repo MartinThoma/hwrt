@@ -84,7 +84,8 @@ def main(model_folder):
     data['validating'] = os.path.join(model_folder, "validdata.pfile")
     train_model(model_folder, model_description, data)
 
-if __name__ == "__main__":
+
+def get_parser():
     PROJECT_ROOT = utils.get_project_root()
 
     # Get latest model description file
@@ -101,5 +102,8 @@ if __name__ == "__main__":
                         metavar="FOLDER",
                         type=lambda x: utils.is_valid_folder(parser, x),
                         default=latest_model)
-    args = parser.parse_args()
+    return parser
+
+if __name__ == "__main__":
+    args = get_parser().parse_args()
     main(args.model)

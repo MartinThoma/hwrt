@@ -412,7 +412,7 @@ def main(handwriting_datasets_file):
     analyze_distance_betwee_strokes(raw_datasets)
 
 
-if __name__ == '__main__':
+def get_parser():
     PROJECT_ROOT = utils.get_project_root()
 
     # Get latest (raw) dataset
@@ -428,5 +428,9 @@ if __name__ == '__main__':
                         metavar="FILE",
                         type=lambda x: utils.is_valid_file(parser, x),
                         default=LATEST_DATASET)
-    args = parser.parse_args()
+    return parser
+
+
+if __name__ == '__main__':
+    args = get_parser().parse_args()
     main(args.handwriting_datasets)

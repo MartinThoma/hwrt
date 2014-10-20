@@ -7,12 +7,12 @@ Preprocessing algorithms.
 Each algorithm works on the HandwrittenData class. They have to be applied like
 this:
 
- >> a = HandwrittenData(...)
- >> preprocessing_queue = [Scale_and_shift(), \
+ >>> a = HandwrittenData(...)
+ >>> preprocessing_queue = [Scale_and_shift(), \
                            Stroke_connect(), \
                            Douglas_peucker(EPSILON=0.2), \
                            Space_evenly(number=100)]
- >> a.preprocessing(preprocessing_queue)
+ >>> a.preprocessing(preprocessing_queue)
 """
 
 import numpy
@@ -83,7 +83,8 @@ def get_preprocessing_queue(model_description_preprocessing):
 
 
 class Remove_duplicate_time(object):
-    """Make sure that every 'time' value is unique."""
+    """If a recording has two points with the same timestamp, than the second
+       one will be discarded."""
     def __repr__(self):
         return "Remove_duplicate_time"
 
@@ -136,9 +137,11 @@ class Remove_points(object):
 
 
 class Scale_and_shift(object):
-    """ Take a list of points and scale and move it so that it's in the
-        unit square. Keep the aspect ratio. Optionally center the points
-        inside of the unit square.
+    """ Scale a recording so that it fits into a unit square. This keeps the
+        aspect ratio. Then the recording is shifted. The default way is to
+        shift it so that the recording is in [0, 1] × [0,1]. However, it
+        can also be used to be centered within [-1, 1] × [-1, 1] around the
+        origin (0, 0) by setting center=True and center_other=True.
     """
     def __init__(self, center=False, max_width=1., max_height=1.,
                  width_add=0, height_add=0, center_other=False):
@@ -228,7 +231,8 @@ class Scale_and_shift(object):
 
 
 class Space_evenly(object):
-    """Space the points evenly. """
+    """Space the points evenly in time over the complete recording. The
+       parameter 'number' defines how many"""
     def __init__(self, number=100, kind='cubic'):
         self.number = number
         self.kind = kind
@@ -415,8 +419,6 @@ class Douglas_peucker(object):
     """
      Apply the Douglas-Peucker algorithm to each stroke of $pointlist
      seperately.
-     @param  array $pointlist see pointList()
-     @return pointlist
     """
     def __init__(self, EPSILON):
         self.EPSILON = EPSILON
@@ -430,12 +432,13 @@ class Douglas_peucker(object):
     def DouglasPeucker(self, PointList, EPSILON):
         def LotrechterAbstand(p3, p1, p2):
             """
-             * Calculate the distance from p3 to the stroke
-               defined by p1 andp2.
-             * @param list p1 associative array with "x" and "y"
-                      start of stroke
-             * @param list p2 associative array with "x" and "y" end of stroke
-             * @param list p3 associative array with "x" and "y" point
+            Calculate the distance from p3 to the stroke defined by p1 and p2.
+            :param p1: start of stroke
+            :type p1: dictionary with "x" and "y"
+            :param p2: end of stroke
+            :type p2: dictionary with "x" and "y"
+            :param p3: point
+            :type p3: dictionary with "x" and "y"
             """
             x3 = p3['x']
             y3 = p3['y']
@@ -571,8 +574,10 @@ class Dot_reduction(object):
 
         def get_max_distance(L):
             """Find the maximum distance between two points in a list of points
-            @param  list L list of points
-            @return float  maximum distance bewtween two points
+            :param L: list of points
+            :type L: list
+            :returns: maximum distance bewtween two points
+            :rtype: float
             """
             if len(L) <= 1:
                 return -1
@@ -586,8 +591,10 @@ class Dot_reduction(object):
 
         def get_average_point(L):
             """Calculate the average point.
-            @param  list L List of points
-            @return dict   a single point
+            :param L: list of points
+            :type L: list
+            :returns: a single point
+            :rtype: dict
             """
             x, y, t = 0, 0, 0
             for point in L:

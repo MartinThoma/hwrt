@@ -6,14 +6,14 @@
 Each algorithm works on the HandwrittenData class. They have to be applied like
 this:
 
- >> import features
- >> a = HandwrittenData(...)
- >> feature_list = [features.Stroke_Count(), \
-                    features.Constant_Point_Coordinates(lines=4, \
-                                                        points_per_line=20, \
-                                                        fill_empty_with=0)\
+ >>> import features
+ >>> a = HandwrittenData(...)
+ >>> feature_list = [features.Stroke_Count(),
+                    features.Constant_Point_Coordinates(lines=4,
+                                                        points_per_line=20,
+                                                        fill_empty_with=0)
                     ]
- >> x = a.feature_extraction(feature_list)
+ >>> x = a.feature_extraction(feature_list)
 """
 
 import inspect
@@ -89,6 +89,8 @@ def get_features(model_description_features):
 
 
 class Constant_Point_Coordinates(object):
+
+    """Constatn point coordinates as a high dimensional feature."""
 
     normalize = False
 
@@ -171,6 +173,8 @@ class Constant_Point_Coordinates(object):
 
 class First_N_Points(object):
 
+    """First n points a 2*n dimensional feature."""
+
     normalize = False
 
     def __init__(self, n=81):
@@ -214,6 +218,8 @@ class First_N_Points(object):
 
 class Stroke_Count(object):
 
+    """Stroke count as a 1 dimensional recording."""
+
     normalize = True
 
     def __repr__(self):
@@ -233,6 +239,8 @@ class Stroke_Count(object):
 
 
 class Bitmap(object):
+
+    """n x n bitmap or the recording."""
 
     normalize = True
 
@@ -282,6 +290,10 @@ class Bitmap(object):
 
 class Ink(object):
 
+    """Ink as a 1 dimensional feature. It gives a numeric value for the amount
+       of ink this would eventually have consumed.
+    """
+
     normalize = True
 
     def __repr__(self):
@@ -311,6 +323,8 @@ class Ink(object):
 
 class Aspect_ratio(object):
 
+    """Aspect ratio of a recording as a 1 dimensional feature."""
+
     normalize = True
 
     def __repr__(self):
@@ -333,6 +347,12 @@ class Aspect_ratio(object):
 
 class Width(object):
 
+    """Width of a recording as a 1 dimensional feature.
+
+    Note that this is the current Width. so if you scaled the recording, this
+    will not be the original height.
+    """
+
     normalize = True
 
     def __repr__(self):
@@ -352,6 +372,12 @@ class Width(object):
 
 
 class Height(object):
+
+    """Height of a recording as a a 1 dimensional feature.
+
+    Note that this is the current hight. so if you scaled the recording, this
+    will not be the original height.
+    """
 
     normalize = True
 
@@ -373,6 +399,8 @@ class Height(object):
 
 class Time(object):
 
+    """Time it took to create the recording as a 1 dimensional feature."""
+
     normalize = True
 
     def __repr__(self):
@@ -392,6 +420,8 @@ class Time(object):
 
 
 class Center_of_mass(object):
+
+    """Center of mass as a 2 dimensional feature for a recording."""
 
     normalize = True
 
@@ -418,6 +448,8 @@ class Center_of_mass(object):
 
 
 class Stroke_center(object):
+
+    """Get the stroke center of mass coordinates as a 2 dimensional feature."""
 
     normalize = True
 
@@ -456,10 +488,13 @@ class Stroke_center(object):
 class Stroke_intersections(object):
     """ Count the number of intersections the symbol has.
 
+    =======   ======= ======= ======= ===
               stroke1 stroke2 stroke3
-    stroke1     0        1      0  ...
-    stroke2     1        2      0  ...
-    stroke3     0        0      0  ...
+    -------   ------- ------- ------- ---
+    stroke1     0        1      0     ...
+    stroke2     1        2      0     ...
+    stroke3     0        0      0     ...
+    =======   ======= ======= ======= ===
 
     Returns values of upper triangular matrix (including diagonal)
     from left to right, top to bottom.
@@ -560,6 +595,8 @@ class Stroke_intersections(object):
 
 
 class Re_curvature(object):
+
+    """Re-curvature is a 1 dimensional, global feature for a recording."""
 
     normalize = True
 

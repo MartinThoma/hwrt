@@ -6,12 +6,12 @@
 Each algorithm works on the HandwrittenData class. They have to be applied like
 this:
 
- >> import data_multiplication as multiply
- >> a = HandwrittenData(...)
- >> multiplication_queue = [multiply.copy(10),
+ >>> import data_multiplication as multiply
+ >>> a = HandwrittenData(...)
+ >>> multiplication_queue = [multiply.copy(10),
                             mulitply.rotate(-30, 30, 5)
                             ]
- >> x = a.multiply(multiplication_queue)
+ >>> x = a.multiply(multiplication_queue)
 """
 
 import inspect
@@ -71,6 +71,8 @@ def get_data_multiplication_queue(model_description_multiply):
 
 class Multiply(object):
 
+    """Copy the data n times."""
+
     def __init__(self, nr=1):
         self.nr = nr
 
@@ -92,6 +94,8 @@ class Multiply(object):
 
 
 class Rotate(object):
+
+    """Add rotational variants of the recording."""
 
     def __init__(self, minimum=-30.0, maximum=30.0, num=5.0):
         self.min = minimum

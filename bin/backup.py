@@ -206,7 +206,7 @@ def main(destination=os.path.join(utils.get_project_root(),
                 2)
 
 
-if __name__ == '__main__':
+def get_parser():
     PROJECT_ROOT = utils.get_project_root()
     archive_path = os.path.join(PROJECT_ROOT, "archive/raw-datasets")
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
@@ -225,7 +225,11 @@ if __name__ == '__main__':
                         action="store_true", default=False,
                         help=("don't download new files; only upload to "
                               "dropbox"))
-    args = parser.parse_args()
+    return parser
+
+
+if __name__ == '__main__':
+    args = get_parser().parse_args()
 
     logging.info("Don't forget to run 'create_testset_online_once.py'.")
 

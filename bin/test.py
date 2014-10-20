@@ -78,7 +78,7 @@ def main(model_folder, run_native=False):
     return error
 
 
-if __name__ == "__main__":
+def get_parser():
     PROJECT_ROOT = utils.get_project_root()
 
     # Get latest model folder
@@ -95,5 +95,9 @@ if __name__ == "__main__":
                         metavar="FOLDER",
                         type=lambda x: utils.is_valid_folder(parser, x),
                         default=latest_model)
-    args = parser.parse_args()
+    return parser
+
+
+if __name__ == "__main__":
+    args = get_parser().parse_args()
     main(args.model, run_native=True)

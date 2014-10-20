@@ -334,7 +334,7 @@ def is_valid_file(parser, arg):
         return arg
 
 
-if __name__ == "__main__":
+def get_parser():
     PROJECT_ROOT = utils.get_project_root()
 
     # Get latest model folder
@@ -361,5 +361,9 @@ if __name__ == "__main__":
     parser.add_argument("--merge",
                         action="store_true", dest="merge", default=False,
                         help="merge problem classes that are easy to confuse")
-    args = parser.parse_args()
+    return parser
+
+
+if __name__ == "__main__":
+    args = get_parser().parse_args()
     main(args.model, args.aset, args.n, args.merge)

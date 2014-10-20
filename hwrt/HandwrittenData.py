@@ -62,9 +62,10 @@ class HandwrittenData(object):
 
     def set_pointlist(self, pointlist):
         """Overwrite pointlist.
-        @param pointlist - a list of lists. The inner lists represent strokes.
-                           Every stroke consists of points.
-                           Every point is a dictinary with 'x', 'y', 'time'.
+        :param pointlist: The inner lists represent strokes. Every stroke
+            consists of points. Every point is a dictinary with 'x', 'y',
+            'time'.
+        :type pointlist: list of lists
         """
         assert type(pointlist) is list, \
             "pointlist is not of type list, but %r" % type(pointlist)

@@ -132,10 +132,10 @@ def main(feature_folder, create_learning_curve=False):
 
 def training_set_multiplication(training_set, mult_queue):
     """ Multiply the training set by all methods listed in mult_queue.
-    @param training_set set of all recordings that will be used for training
-    @param mult_queue list of all algorithms that will take one recording and
+    :param training_set: set of all recordings that will be used for training
+    :param mult_queue: list of all algorithms that will take one recording and
                       generate more than one.
-    @return mutliple recordings
+    :returns: mutliple recordings
     """
     logging.info("Multiply data...")
     for algorithm in mult_queue:
@@ -157,7 +157,8 @@ def get_sets(path_to_data):
     """Get a training, validation and a testset as well as a dictionary that
     maps each formula_id to an index (0...nr_of_formulas).
 
-    @param path_to_data a pickle file that contains a list of datasets. """
+    :param path_to_data: a pickle file that contains a list of datasets.
+    """
     loaded = pickle.load(open(path_to_data))
     datasets = loaded['handwriting_datasets']
 
@@ -265,10 +266,12 @@ def prepare_dataset(dataset, formula_id2index, feature_list, is_traindata):
 def make_pfile(dataset_name, feature_count, data,
                output_filename, create_learning_curve):
     """ Create the pfile.
-    @param filename name of the file that pfile_create will use to create
-                    the pfile.
-    @param feature_count integer, number of features
-    @param data     list of tuples ('feature_string', 'label')
+    :param filename: name of the file that pfile_create will use to create the
+                     pfile.
+    :param feature_count: integer, number of features
+    :type feature_count: integer
+    :param data: data format ('feature_string', 'label')
+    :type data: list of tuples
     """
     input_filename = os.path.abspath("%s.raw" % dataset_name)
     logging.info("Temporary file: '%s'", input_filename)

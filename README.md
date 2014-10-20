@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/MartinThoma/hwrt.svg?branch=master)](https://travis-ci.org/MartinThoma/hwrt)
 [![Coverage Status](https://img.shields.io/coveralls/MartinThoma/hwrt.svg)](https://coveralls.io/r/MartinThoma/hwrt?branch=master)
+[![Documentation Status](https://readthedocs.org/projects/hwrt/badge/?version=latest)](https://readthedocs.org/projects/hwrt/?badge=latest)
 
 ## Handwriting Recognition Toolkit
 

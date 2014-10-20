@@ -279,9 +279,10 @@ def choose_raw_dataset(currently=""):
 
 def get_readable_time(t):
     """ Format the time to a readable format.
-    @param t: Time in ms
-    @return string that has the time splitted to highest used time
+    :param t: Time in ms
+    :returns: string that has the time splitted to highest used time
             (minutes, hours, ...)
+    :rtype: string
     """
     ms = t % 1000
     t -= ms

@@ -16,12 +16,17 @@ import hwrt
 # from view import parser as view_parser
 
 
-if __name__ == '__main__':
+def get_parser():
     parser = argparse.ArgumentParser(description=__doc__,
                                      prog='hwrt')
     parser.add_argument('--version',
                         action='version',
                         version=('hwrt %s' % str(hwrt.__version__)))
+    return parser
+
+
+if __name__ == '__main__':
+
     # subparsers = parser.add_subparsers(dest='cmd')
     # # or use the parser.setdefault() as described in the documentation
     # backup = subparsers.add_parser('backup',
@@ -30,4 +35,4 @@ if __name__ == '__main__':
     # view = subparsers.add_parser('view',
     #                              add_help=False,
     #                              parents=[view_parser])
-    args = parser.parse_args()
+    args = get_parser.parse_args()

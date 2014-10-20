@@ -1,4 +1,11 @@
 # -*- coding: utf-8 -*-
+
+import mock
+ 
+MOCK_MODULES = ['numpy', 'scipy', 'matplotlib', 'matplotlib.pyplot', 'scipy.interpolate']
+for mod_name in MOCK_MODULES:
+sys.modules[mod_name] = mock.Mock()
+
 #
 # hwrt documentation build configuration file, created by
 # sphinx-quickstart on Mon Oct 20 16:23:32 2014.

@@ -4,8 +4,6 @@ MySQL-python
 PyYAML
 natsort
 coveralls
-scipy
-numpy
 hwrt
 nose
 Sphinx

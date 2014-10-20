@@ -35,7 +35,13 @@ Binaries:
 .. toctree::
    :maxdepth: 2
 
+   download
    analyze_data
+   view
+   train
+   get_error
+   backup
+
 
 Indices and tables
 ==================

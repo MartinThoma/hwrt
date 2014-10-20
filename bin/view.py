@@ -117,6 +117,7 @@ def get_parser():
                         metavar="FOLDER",
                         type=lambda x: utils.is_valid_folder(parser, x),
                         default=latest_model)
+    return parser
 
 if __name__ == '__main__':
     args = get_parser().parse_args()

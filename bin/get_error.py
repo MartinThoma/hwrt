@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-""" Get the TOP-n-error (e.g. n=3 or n=10) of a model."""
+""" Get the error of a model. This tool supports multiple error measures."""
 
 import logging
 import sys

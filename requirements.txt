@@ -4,9 +4,9 @@ MySQL-python
 PyYAML
 natsort
 coveralls
-hwrt
 scipy
 numpy
+hwrt
 nose
 Sphinx
 Pygments

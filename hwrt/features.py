@@ -486,10 +486,10 @@ class Stroke_center(object):
 
 
 class Stroke_intersections(object):
-    """ Count the number of intersections the symbol has.
+    """Count the number of intersections the symbol has.
 
     =======   ======= ======= ======= ===
-              stroke1 stroke2 stroke3
+      -       stroke1 stroke2 stroke3
     -------   ------- ------- ------- ---
     stroke1     0        1      0     ...
     stroke2     1        2      0     ...

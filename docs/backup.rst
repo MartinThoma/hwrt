@@ -1,7 +1,8 @@
 Backup from MySQL server
 ================================
 
-This tool is only usefull if you also have a `write-math<https://github.com/MartinThoma/write-math>`_ MySQL server running.
+This tool is only usefull if you also have a `write-math <https://github.com/MartinThoma/write-math>`_
+MySQL server running.
 
 .. code:: bash
 

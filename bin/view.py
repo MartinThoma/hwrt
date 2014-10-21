@@ -3,7 +3,12 @@
 Display a raw_data_id.
 """
 
+import sys
 import os
+import logging
+logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
+                    level=logging.DEBUG,
+                    stream=sys.stdout)
 import yaml
 import MySQLdb
 import MySQLdb.cursors
@@ -38,18 +43,31 @@ def fetch_data(raw_data_id):
 
 
 def display_data(raw_data_string, raw_data_id, model_folder):
+    print("#### Raw Data (ID: %i)" % raw_data_id)
+    print("```")
+    print(raw_data_string)
+    print("```")
+
     PROJECT_ROOT = utils.get_project_root()
 
     # Get model description
     model_description_file = os.path.join(model_folder, "info.yml")
+    if not os.path.isfile(model_description_file):
+        logging.error("You are probably not in the folder of a model, because "
+                      "%s is not a file. (-m argument)",
+                      model_description_file)
+        sys.exit(-1)
     with open(model_description_file, 'r') as ymlfile:
         model_description = yaml.load(ymlfile)
 
     # Get the feature description
-    feature_description_file = os.path.join(
-        PROJECT_ROOT,
-        model_description['data-source'],
-        "info.yml")
+    feature_description_file = os.path.join(PROJECT_ROOT,
+                                            model_description['data-source'],
+                                            "info.yml")
+    if not os.path.isfile(feature_description_file):
+        logging.error("You are probably not in the folder of a model, because "
+                      "%s is not a file.", feature_description_file)
+        sys.exit(-1)
     with open(feature_description_file, 'r') as ymlfile:
         feature_description = yaml.load(ymlfile)
 
@@ -58,8 +76,29 @@ def display_data(raw_data_string, raw_data_id, model_folder):
         PROJECT_ROOT,
         feature_description['data-source'],
         "info.yml")
+    if not os.path.isfile(preprocessing_description_file):
+        logging.error("You are probably not in the folder of a model, because "
+                      "%s is not a file.", preprocessing_description_file)
+        sys.exit(-1)
     with open(preprocessing_description_file, 'r') as ymlfile:
         preprocessing_description = yaml.load(ymlfile)
+
+    # Print preprocessing queue
+    print("#### Preprocessing")
+    print("```")
+    tmp = preprocessing_description['queue']
+    preprocessing_queue = preprocessing.get_preprocessing_queue(tmp)
+    for algorithm in preprocessing_queue:
+        print("* " + str(algorithm))
+    print("```")
+
+    feature_list = features.get_features(feature_description['features'])
+    INPUT_FEATURES = sum(map(lambda n: n.get_dimension(), feature_list))
+    print("#### Features (%i)" % INPUT_FEATURES)
+    print("```")
+    for algorithm in feature_list:
+        print("* %s" % str(algorithm))
+    print("```")
 
     # Get Handwriting
     a = HandwrittenData(raw_data_string, raw_data_id=raw_data_id)

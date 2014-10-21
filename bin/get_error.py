@@ -214,8 +214,8 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
 
     # Get the tempalte
     PROJECT_ROOT = utils.get_project_root()
-    template = os.path.join(PROJECT_ROOT,
-                            "tools/templates/classification-error-report.html")
+    template_path = pkg_resources.resource_filename('hwrt', 'templates/')
+    template = os.path.join(template_path, "classification-error-report.html")
     with open(template) as f:
         template = f.read()
 
@@ -229,7 +229,6 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
     from jinja2 import FileSystemLoader
     from jinja2.environment import Environment
     env = Environment()
-    template_path = pkg_resources.resource_filename('hwrt', 'templates/')
     env.loader = FileSystemLoader(template_path)
     t = env.get_template('classification-error-report.html')
     rendered = t.render(wrong=wrong, correct=correct,

@@ -3,32 +3,32 @@ Installation
 
 The ``hwrt`` toolkit can be installed via pip:
 
-::
+.. code:: bash
 
     # pip install hwrt
 
 However, you might have to install some packages first for ``scipy``. On
 Debian-based systems you can do this with the following commands:
 
-::
+.. code:: bash
 
     # apt-get install libblas-dev liblapack-dev gfortran
     # apt-get install python-scipy python-numpy
 
 Now you can install the remaining packages:
 
-::
+.. code:: bash
 
     # pip install natsort matplotlib coveralls shapely
     # pip install numpy
     # pip install scipy
 
-Now you can install ```pfile_utils```_. Some explanation of what they
+Now you can install `pfile_utils`_. Some explanation of what they
 are can be found at `my blog`_
 
 As a last step, you can install hwrt:
 
-::
+.. code:: bash
 
     # pip install hwrt
 
@@ -39,9 +39,9 @@ Upgrading hwrt
 
 Upgrading hwrt to the latest version is much easier:
 
-::
+.. code:: bash
 
     # pip install hwrt --upgrade
 
-.. _``pfile_utils``: http://www1.icsi.berkeley.edu/~dpwe/projects/sprach/sprachcore.html
+.. _`pfile_utils`: http://www1.icsi.berkeley.edu/~dpwe/projects/sprach/sprachcore.html
 .. _my blog: http://martin-thoma.com/what-are-pfiles/

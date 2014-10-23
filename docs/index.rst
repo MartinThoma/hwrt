@@ -40,7 +40,7 @@ Binaries:
    analyze_data
    view
    train
-   get_error
+   test
    backup
 
 

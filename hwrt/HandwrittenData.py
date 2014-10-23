@@ -34,7 +34,7 @@ class HandwrittenData(object):
 
     def get_pointlist(self):
         """Get a list of lists of tuples from JSON raw data string.
-           Those lists represent lines with control points.
+           Those lists represent strokes with control points.
 
            Every point is a dictionary:
            {'x': 123, 'y': 42, 'time': 1337}
@@ -42,7 +42,7 @@ class HandwrittenData(object):
         try:
             pointlist = json.loads(self.raw_data_json)
         except Exception as inst:  # pragma: no cover
-            logging.debug("pointLineList: linelistP")
+            logging.debug("pointStrokeList: strokelistP")
             logging.debug(self.raw_data_json)
             logging.debug("didn't work")
             raise inst
@@ -53,7 +53,7 @@ class HandwrittenData(object):
         return pointlist
 
     def get_sorted_pointlist(self):
-        """Make sure that the points and lines are in order."""
+        """Make sure that the points and strokes are in order."""
         pointlist = self.get_pointlist()
         for i in range(len(pointlist)):
             pointlist[i] = sorted(pointlist[i], key=lambda p: p['time'])
@@ -84,8 +84,8 @@ class HandwrittenData(object):
         mint, maxt = pointlist[0][0]["time"], pointlist[0][0]["time"]
 
         # Adjust parameters
-        for line in pointlist:
-            for p in line:
+        for stroke in pointlist:
+            for p in stroke:
                 minx, maxx = min(minx, p["x"]), max(maxx, p["x"])
                 miny, maxy = min(miny, p["y"]), max(maxy, p["y"])
                 mint, maxt = min(mint, p["time"]), max(maxt, p["time"])
@@ -116,7 +116,7 @@ class HandwrittenData(object):
 
         >>> a = HandwrittenData(...)
         >>> preprocessing_queue = [(preprocessing.scale_and_shift, []), \
-                                   (preprocessing.connect_lines, []), \
+                                   (preprocessing.connect_strokes, []), \
                                    (preprocessing.douglas_peucker, \
                                     {'EPSILON': 0.2}), \
                                    (preprocessing.space_evenly, \
@@ -169,12 +169,12 @@ class HandwrittenData(object):
                      "Formula_id: %s" % (str(self.raw_data_id),
                                          str(self.formula_id)))
 
-        for line in pointlist:
+        for stroke in pointlist:
             xs, ys = [], []
-            for p in line:
+            for p in stroke:
                 xs.append(p['x'])
                 ys.append(p['y'])
-            if "pen_down" in line[0] and line[0]["pen_down"] is False:
+            if "pen_down" in stroke[0] and stroke[0]["pen_down"] is False:
                 plt.plot(xs, ys, '-x')
             else:
                 plt.plot(xs, ys, '-o')
@@ -187,8 +187,8 @@ class HandwrittenData(object):
         """
         pointlist = self.get_pointlist()
         single_dots = 0
-        for line in pointlist:
-            if len(line) == 1:
+        for stroke in pointlist:
+            if len(stroke) == 1:
                 single_dots += 1
         return single_dots
 
@@ -198,8 +198,8 @@ class HandwrittenData(object):
            Imagine a black square and a single dot wide outside of the square.
         """
         xsum, ysum, counter = 0., 0., 0
-        for line in self.get_pointlist():
-            for point in line:
+        for stroke in self.get_pointlist():
+            for point in stroke:
                 xsum += point['x']
                 ysum += point['y']
                 counter += 1

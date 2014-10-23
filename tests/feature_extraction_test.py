@@ -42,13 +42,13 @@ def get_all_symbols_as_handwriting():
 
 
 def compare_pointlists(a, b, epsilon=0.001):
-    """Check if two line lists (a and b) are equal."""
+    """Check if two stroke lists (a and b) are equal."""
     if len(a) != len(b):
         return False
-    for line_a, line_b in zip(a, b):
-        if len(line_a) != len(line_b):
+    for stroke_a, stroke_b in zip(a, b):
+        if len(stroke_a) != len(stroke_b):
             return False
-        for point_a, point_b in zip(line_a, line_b):
+        for point_a, point_b in zip(stroke_a, stroke_b):
             keys = ['x', 'y', 'time']
             for key in keys:
                 if abs(point_a[key] - point_b[key]) > epsilon:
@@ -60,15 +60,15 @@ def compare_pointlists(a, b, epsilon=0.001):
 def feature_detection_test():
     l = [{'Stroke_Count': None},
          {'Constant_Point_Coordinates':
-          [{'lines': 4},
-           {'points_per_line': 81},
+          [{'strokes': 4},
+           {'points_per_stroke': 81},
            {'fill_empty_with': 0},
            {'pen_down': False}]
           }
          ]
     correct = [features.Stroke_Count(),
-               features.Constant_Point_Coordinates(lines=4,
-                                                   points_per_line=81,
+               features.Constant_Point_Coordinates(strokes=4,
+                                                   points_per_stroke=81,
                                                    fill_empty_with=0,
                                                    pen_down=False)]
     feature_list = features.get_features(l)

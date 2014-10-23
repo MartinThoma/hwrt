@@ -41,13 +41,13 @@ def get_all_symbols_as_handwriting():
 
 
 def compare_pointlists(a, b, epsilon=0.001):
-    """Check if two line lists (a and b) are equal."""
+    """Check if two stroke lists (a and b) are equal."""
     if len(a) != len(b):
         return False
-    for line_a, line_b in zip(a, b):
-        if len(line_a) != len(line_b):
+    for stroke_a, stroke_b in zip(a, b):
+        if len(stroke_a) != len(stroke_b):
             return False
-        for point_a, point_b in zip(line_a, line_b):
+        for point_a, point_b in zip(stroke_a, stroke_b):
             keys = ['x', 'y', 'time']
             for key in keys:
                 if abs(point_a[key] - point_b[key]) > epsilon:
@@ -165,7 +165,7 @@ def scale_and_shift_test_a_center():
         "Got: %s; expected %s" % (s, expectation)
 
 
-def space_evenly_per_line_test_all():
+def space_evenly_per_stroke_test_all():
     preprocessing_queue = [preprocessing.Space_evenly_per_stroke(number=100,
                                                                  kind='cubic')]
     for a in get_all_symbols_as_handwriting():

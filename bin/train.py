@@ -86,13 +86,6 @@ def main(model_folder):
 
 
 def get_parser():
-    PROJECT_ROOT = utils.get_project_root()
-
-    # Get latest model description file
-    models_folder = os.path.join(PROJECT_ROOT, "models")
-    latest_model = utils.get_latest_folder(models_folder)
-
-    # Get command line arguments
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
     parser = ArgumentParser(description=__doc__,
                             formatter_class=ArgumentDefaultsHelpFormatter)
@@ -101,7 +94,7 @@ def get_parser():
                         help="where is the model folder (with a info.yml)?",
                         metavar="FOLDER",
                         type=lambda x: utils.is_valid_folder(parser, x),
-                        default=latest_model)
+                        default=utils.default_model())
     return parser
 
 if __name__ == "__main__":

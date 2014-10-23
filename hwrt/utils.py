@@ -2,6 +2,7 @@
 
 """Utility functions that can be used in multiple scripts."""
 
+from __future__ import print_function
 import logging
 import sys
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
@@ -12,10 +13,15 @@ import yaml
 import natsort
 import time
 import datetime
+import subprocess
+import shutil
+import csv
 # mine
 import preprocess_dataset
+import features
 import create_pfiles
 import create_model
+from HandwrittenData import HandwrittenData
 
 
 def print_status(total, current, start_time=None):
@@ -305,3 +311,139 @@ def get_readable_time(t):
         return "%is %ims" % (s, ms)
     else:
         return "%ims" % ms
+
+
+def default_model():
+    """Get a path for a default value for the model.
+
+    scriptfile should be __file__ of the calling script
+    """
+    PROJECT_ROOT = get_project_root()
+    models_dir = os.path.join(PROJECT_ROOT, "models")
+    curr_dir = os.getcwd()
+    if os.path.commonprefix([models_dir, curr_dir]) == models_dir and \
+       curr_dir != models_dir:
+        latest_model = curr_dir
+    else:
+        latest_model = get_latest_folder(models_dir)
+    return latest_model
+
+
+def create_adjusted_model_for_percentages(model_src, model_use):
+    """Replace logreg layer by sigmoid to get probabilities."""
+    # Copy model file
+    shutil.copyfile(model_src, model_use)
+    # Adjust model file
+    with open(model_src) as f:
+        content = f.read()
+    content = content.replace("logreg", "sigmoid")
+    with open(model_use, "w") as f:
+        f.write(content)
+
+
+def evaluate_model(recording, model_folder, verbose=False):
+    """Evaluate model for a single recording."""
+
+    folders = []
+    folder = model_folder
+    while os.path.isdir(folder):
+        folders.append(folder)
+        # Get info.yml
+        with open(os.path.join(folder, "info.yml")) as ymlfile:
+            content = yaml.load(ymlfile)
+        folder = os.path.join(get_project_root(), content['data-source'])
+    folders = folders[::-1]  # Reverse order to get the most "basic one first"
+
+    for target_folder in folders:
+        # The source is later than the target. That means we need to
+        # refresh the target
+        if "preprocessed" in target_folder:
+            logging.info("Start applying preprocessing methods...")
+            t = target_folder
+            _, _, preprocessing_queue = preprocess_dataset.get_parameters(t)
+            handwriting = HandwrittenData(recording)
+            if verbose:
+                handwriting.show()
+            handwriting.preprocessing(preprocessing_queue)
+            if verbose:
+                logging.debug("After preprocessing: %s",
+                              handwriting.get_sorted_pointlist())
+                handwriting.show()
+        elif "feature-files" in target_folder:
+            logging.info("Create feature file...")
+            infofile_path = os.path.join(target_folder, "info.yml")
+            with open(infofile_path, 'r') as ymlfile:
+                feature_description = yaml.load(ymlfile)
+            feature_str_list = feature_description['features']
+            feature_list = features.get_features(feature_str_list)
+            feature_count = sum(map(lambda n: n.get_dimension(),
+                                    feature_list))
+            x = handwriting.feature_extraction(feature_list)
+            # Create pfile
+            input_filename = "tmp.txt"
+            output_filename = "evaluate.pfile"
+            with open(input_filename, "w") as f:
+                for symbolnr, instance in enumerate([(x, 0)]):
+                    feature_string, label = instance
+                    assert len(feature_string) == feature_count, \
+                        "Expected %i features, got %i features" % \
+                        (feature_count, len(feature_string))
+                    feature_string = " ".join(map(str, feature_string))
+                    line = "%i 0 %s %i" % (symbolnr, feature_string, label)
+                    print(line, file=f)
+            command = "pfile_create -i %s -f %i -l 1 -o %s" % \
+                      (input_filename, feature_count, output_filename)
+            logging.info(command)
+            os.system(command)
+        elif "model" in target_folder:
+            logging.info("Create running model...")
+            model_src = get_latest_model(target_folder, "model")
+            model_use = "tmp.json"
+            create_adjusted_model_for_percentages(model_src, model_use)
+            # Run evaluation
+            PROJECT_ROOT = get_project_root()
+            time_prefix = time.strftime("%Y-%m-%d-%H-%M")
+            test_file = output_filename
+            logging.info("Evaluate '%s' with '%s'...", model_src, test_file)
+            logfile = os.path.join(PROJECT_ROOT,
+                                   "logs/%s-error-evaluation.log" %
+                                   time_prefix)
+            with open(logfile, "w") as log, open(model_use, "r") as modl_src_p:
+                p = subprocess.Popen(['nntoolkit', 'run',
+                                      '--batch-size', '1',
+                                      '-f%0.4f', test_file],
+                                     stdin=modl_src_p,
+                                     stdout=log)
+                ret = p.wait()
+                if ret != 0:
+                    logging.error("nntoolkit finished with ret code %s", str(ret))
+                    sys.exit()
+            return logfile
+        else:
+            logging.info("'%s' not found", target_folder)
+
+
+def classify_single_recording(raw_data_json, model_folder, verbose=False):
+    """Get the classification as a list of tuples. The first value is the
+       LaTeX code, the second value is the probability.
+    """
+    evaluation_file = evaluate_model(raw_data_json, model_folder, verbose)
+    PROJECT_ROOT = get_project_root()
+    with open(os.path.join(model_folder, "info.yml")) as ymlfile:
+            model_description = yaml.load(ymlfile)
+    translation_csv = os.path.join(PROJECT_ROOT,
+                                   model_description["data-source"],
+                                   "index2formula_id.csv")
+    index2latex = {}
+    with open(translation_csv) as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter=',', quotechar='"')
+        for row in spamreader:
+            index2latex[int(row['index'])] = row['latex']
+    with open(evaluation_file) as f:
+        content = f.read()
+    probabilities = map(float, content.split(" "))
+    results = []
+    for index, probability in enumerate(probabilities):
+        results.append((index2latex[index], probability))
+    results = sorted(results, key=lambda n: n[1], reverse=True)
+    return results

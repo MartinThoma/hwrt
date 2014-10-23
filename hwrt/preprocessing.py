@@ -48,7 +48,7 @@ def get_class(name):
     return None
 
 
-def get_preprocessing_queue(model_description_preprocessing):
+def get_preprocessing_queue(preprocessing_list):
     """Get preprocessing queue from a list of dictionaries
 
     >>> l = [{'Remove_duplicate_time': None}, \
@@ -62,7 +62,7 @@ def get_preprocessing_queue(model_description_preprocessing):
     ]
     """
     preprocessing_queue = []
-    for preprocessing in model_description_preprocessing:
+    for preprocessing in preprocessing_list:
         for alg, params in preprocessing.items():
             alg = get_class(alg)
             if params is None:
@@ -84,7 +84,8 @@ def get_preprocessing_queue(model_description_preprocessing):
 
 class Remove_duplicate_time(object):
     """If a recording has two points with the same timestamp, than the second
-       one will be discarded."""
+       point will be discarded. This is usefull for a couple of algorithms that
+       don't expect two points at the same time."""
     def __repr__(self):
         return "Remove_duplicate_time"
 
@@ -115,9 +116,9 @@ class Remove_duplicate_time(object):
         handwritten_data.set_pointlist(new_pointlist)
 
 
-class Remove_points(object):
-    """Remove all single point strokes from the recording, except if
-       the whole recording consists of points only.
+class Remove_dots(object):
+    """Remove all strokes that have only a single point (a dot) from the
+       recording, except if the whole recording consists of dots only.
     """
     def __repr__(self):
         return "Remove_points"
@@ -339,19 +340,24 @@ class Space_evenly(object):
                               self.number)
 
         for time in tnew:
-            for stroke_intervall in times:
-                if stroke_intervall["start"] <= time <= stroke_intervall["end"]:
-                    x = float(stroke_intervall['fx'](time))
-                    y = float(stroke_intervall['fy'](time))
+            for stroke_interval in times:
+                if stroke_interval["start"] <= time <= stroke_interval["end"]:
+                    x = float(stroke_interval['fx'](time))
+                    y = float(stroke_interval['fy'](time))
                     time = float(time)
                     new_pointlist.append({'x': x, 'y': y, 'time': time,
                                           'pen_down':
-                                          stroke_intervall['pen_down']})
+                                          stroke_interval['pen_down']})
         handwritten_data.set_pointlist([new_pointlist])
 
 
 class Space_evenly_per_stroke(object):
-    """Space the points evenly for every single stroke seperatly."""
+    """Space the points evenly for every single stroke separately. The
+       parameter `number` defines how many points are used per stroke and the
+       parameter `kind` defines which kind of interpolation is used. Possible
+       values include `cubic`, `quadratic`, `linear`, `nearest`. This part of
+       the implementation relies on `scipy.interpolate.interp1d`.
+    """
     def __init__(self, number=100, kind='cubic'):
         self.number = number
         self.kind = kind
@@ -465,8 +471,10 @@ class Space_evenly_per_stroke(object):
 
 
 class Douglas_peucker(object):
-    """Apply the Douglas-Peucker algorithm to each stroke of pointlist
-       seperately.
+    """Apply the Douglas-Peucker stroke simplification algorithm separately to
+       each stroke of the recording. The algorithm has a threshold parameter
+       `epsilon` that indicates how much the stroke is simplified. The smaller
+       the parameter, the closer will the resulting strokes be to the original.
     """
     def __init__(self, EPSILON):
         self.EPSILON = EPSILON
@@ -559,8 +567,11 @@ class Douglas_peucker(object):
 
 
 class Stroke_connect(object):
-    """Detect if strokes were probably accidentially disconnected. If that is
-       the case, connect them.
+    """`Stroke_connect`: Detect if strokes were probably accidentally
+       disconnected. If that is the case, connect them. This is detected by the
+       threshold parameter `minimum_distance`. If the distance between the end
+       point of a stroke and the first point of the next stroke is below the
+       minimum distance, the strokes will be connected.
     """
     def __init__(self, minimum_distance=0.05):
         self.minimum_distance = minimum_distance
@@ -604,7 +615,7 @@ class Stroke_connect(object):
 
 class Dot_reduction(object):
     """Reduce strokes where the maximum distance between points is below a
-       threshold to a single dot.
+       `threshold` to a single dot.
     """
     def __init__(self, threshold):
         self.threshold = threshold
@@ -707,7 +718,8 @@ class Wild_point_filter(object):
 
 
 class Weighted_average_smoothing(object):
-    """Smooth every stroke by a weighted average."""
+    """Smooth every stroke by a weighted average. This algorithm takes a list
+       `theta` of 3 numbers that are the weights used for smoothing."""
     def __init__(self, theta):
         """Theta is a list of 3 non-negative numbers"""
         assert len(theta) == 3, \

@@ -9,8 +9,8 @@ this:
  >>> import features
  >>> a = HandwrittenData(...)
  >>> feature_list = [features.Stroke_Count(),
-                    features.Constant_Point_Coordinates(lines=4,
-                                                        points_per_line=20,
+                    features.Constant_Point_Coordinates(strokes=4,
+                                                        points_per_stroke=20,
                                                         fill_empty_with=0)
                     ]
  >>> x = a.feature_extraction(feature_list)
@@ -48,16 +48,16 @@ def get_features(model_description_features):
 
     >>> l = [{'Stroke_Count': None}, \
              {'Constant_Point_Coordinates': \
-              [{'lines': 4}, \
-               {'points_per_line': 81}, \
+              [{'strokes': 4}, \
+               {'points_per_stroke': 81}, \
                {'fill_empty_with': 0}, \
                {'pen_down': False}] \
              } \
             ]
     >>> get_features(l)
     [Stroke_Count, Constant_Point_Coordinates
-     - lines: 4
-     - points per line: 81
+     - strokes: 4
+     - points per stroke: 81
      - fill empty with: 0
      - pen down feature: False
     ]
@@ -94,39 +94,39 @@ class Constant_Point_Coordinates(object):
 
     normalize = False
 
-    def __init__(self, lines=4, points_per_line=20, fill_empty_with=0,
+    def __init__(self, strokes=4, points_per_stroke=20, fill_empty_with=0,
                  pen_down=True):
-        self.lines = lines
-        self.points_per_line = points_per_line
+        self.strokes = strokes
+        self.points_per_stroke = points_per_stroke
         self.fill_empty_with = fill_empty_with
         self.pen_down = pen_down
 
     def __repr__(self):
         return ("Constant_Point_Coordinates\n"
-                " - lines: %i\n"
-                " - points per line: %i\n"
+                " - strokes: %i\n"
+                " - points per stroke: %i\n"
                 " - fill empty with: %i\n"
                 " - pen down feature: %r\n") % \
-               (self.lines, self.points_per_line, self.fill_empty_with,
+               (self.strokes, self.points_per_stroke, self.fill_empty_with,
                 self.pen_down)
 
     def __str__(self):
         return ("constant point coordinates\n"
-                " - lines: %i\n"
-                " - points per line: %i\n"
+                " - strokes: %i\n"
+                " - points per stroke: %i\n"
                 " - fill empty with: %i\n"
                 " - pen down feature: %r\n") % \
-               (self.lines, self.points_per_line, self.fill_empty_with,
+               (self.strokes, self.points_per_stroke, self.fill_empty_with,
                 self.pen_down)
 
     def get_dimension(self):
-        if self.lines > 0:
-            return 2*self.lines * self.points_per_line
+        if self.strokes > 0:
+            return 2*self.strokes * self.points_per_stroke
         else:
             if self.pen_down:
-                return 3*self.points_per_line
+                return 3*self.points_per_stroke
             else:
-                return 2*self.points_per_line
+                return 2*self.points_per_stroke
 
     def __call__(self, handwritten_data):
         assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
@@ -134,36 +134,36 @@ class Constant_Point_Coordinates(object):
             type(handwritten_data)
         x = []
         pointlist = handwritten_data.get_pointlist()
-        if self.lines > 0:
-            for line_nr in range(self.lines):
+        if self.strokes > 0:
+            for stroke_nr in range(self.strokes):
                 # make sure that the current symbol actually has that many
-                # lines
-                if line_nr < len(pointlist):
-                    for point_nr in range(self.points_per_line):
-                        if point_nr < len(pointlist[line_nr]):
-                            x.append(pointlist[line_nr][point_nr]['x'])
-                            x.append(pointlist[line_nr][point_nr]['y'])
+                # strokes
+                if stroke_nr < len(pointlist):
+                    for point_nr in range(self.points_per_stroke):
+                        if point_nr < len(pointlist[stroke_nr]):
+                            x.append(pointlist[stroke_nr][point_nr]['x'])
+                            x.append(pointlist[stroke_nr][point_nr]['y'])
                         else:
                             x.append(self.fill_empty_with)
                             x.append(self.fill_empty_with)
                 else:
-                    for i in range(self.points_per_line):
+                    for i in range(self.points_per_stroke):
                         x.append(self.fill_empty_with)
                         x.append(self.fill_empty_with)
         else:
             for point in handwritten_data.get_pointlist()[0]:
-                if len(x) >= 3*self.points_per_line or \
-                   (len(x) >= 2*self.points_per_line and not self.pen_down):
+                if len(x) >= 3*self.points_per_stroke or \
+                   (len(x) >= 2*self.points_per_stroke and not self.pen_down):
                     break
                 x.append(point['x'])
                 x.append(point['y'])
                 if self.pen_down:
                     x.append(int(point['pen_down']))
             if self.pen_down:
-                while len(x) != 3*self.points_per_line:
+                while len(x) != 3*self.points_per_stroke:
                     x.append(self.fill_empty_with)
             else:
-                while len(x) != 2*self.points_per_line:
+                while len(x) != 2*self.points_per_stroke:
                     x.append(self.fill_empty_with)
         assert self.get_dimension() == len(x), \
             "Dimension of %s should be %i, but was %i" % \
@@ -200,8 +200,8 @@ class First_N_Points(object):
         x = []
         pointlist = handwritten_data.get_pointlist()
         left = self.n
-        for line in pointlist:
-            for point in line:
+        for stroke in pointlist:
+            for point in stroke:
                 if left == 0:
                     break
                 else:
@@ -312,9 +312,9 @@ class Ink(object):
         ink = 0.
         # calculate ink used for this symbol
         # TODO: What about dots? What about speed?
-        for line in handwritten_data.get_pointlist():
+        for stroke in handwritten_data.get_pointlist():
             last_point = None
-            for point in line:
+            for point in stroke:
                 if last_point is not None:
                     ink += preprocessing._euclidean_distance(last_point, point)
                 last_point = point
@@ -440,8 +440,8 @@ class Center_of_mass(object):
             type(handwritten_data)
         xs = []
         ys = []
-        for line in handwritten_data.get_pointlist():
-            for point in line:
+        for stroke in handwritten_data.get_pointlist():
+            for point in stroke:
                 xs.append(point['x'])
                 ys.append(point['y'])
         return [float(sum(xs))/len(xs), float(sum(ys))/len(ys)]

@@ -14,7 +14,6 @@ import time
 import yaml
 import csv
 import itertools
-import shutil
 from collections import OrderedDict, Callable
 import pkg_resources
 # mine
@@ -72,15 +71,8 @@ def get_test_results(model_folder, basename, test_file):
                       basename,
                       model_folder)
     else:
-        # Copy model file
         model_use = "tmp.json"  # TODO write elsewhere in a temporary folder
-        shutil.copyfile(model_src, model_use)
-        # Adjust model file
-        with open(model_src) as f:
-            content = f.read()
-        content = content.replace("logreg", "sigmoid")
-        with open(model_use, "w") as f:
-            f.write(content)
+        utils.create_adjusted_model_for_percentages(model_src, model_use)
 
         # Start evaluation
         PROJECT_ROOT = utils.get_project_root()
@@ -334,12 +326,6 @@ def is_valid_file(parser, arg):
 
 
 def get_parser():
-    PROJECT_ROOT = utils.get_project_root()
-
-    # Get latest model folder
-    models_folder = os.path.join(PROJECT_ROOT, "models")
-    latest_model = utils.get_latest_folder(models_folder)
-
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
     parser = ArgumentParser(description=__doc__,
                             formatter_class=ArgumentDefaultsHelpFormatter)
@@ -348,7 +334,7 @@ def get_parser():
                         help="where is the model folder (with the info.yml)?",
                         metavar="FOLDER",
                         type=lambda x: utils.is_valid_folder(parser, x),
-                        default=latest_model)
+                        default=utils.default_model())
     parser.add_argument("-s", "--set",
                         dest="aset",
                         choices=['test', 'train', 'valid'],

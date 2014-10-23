@@ -24,6 +24,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   installation
    HandwrittenData
    preprocessing
    data_multiplication

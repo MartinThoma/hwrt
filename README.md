@@ -12,23 +12,28 @@ A toolkit for handwriting recognition. Especially on-line HWR.
 
 ### Installation
 
-    sudo pip install hwrt
+You can install the handwriting recognition toolkit directly via pip:
+
+    # pip install hwrt
+
+If that doesn't work, you should consult the
+[documentation](http://hwrt.readthedocs.org/).
 
 ### Update
 
 Currently, hwrt is under heavy development. That is very unlikely to change
 before december 2014. To update it, simply run
 
-    sudo pip install hwrt --upgrade
+    # pip install hwrt --upgrade
 
 
 ### For developers of hwrt
 
 Update the project:
 
-    python setup.py sdist upload
+    $ python setup.py sdist upload
 
 Coverage:
 
-    nosetests --with-coverage --cover-erase --cover-package hwrt --logging-level=INFO --cover-html
-    coveralls
+    $ nosetests --with-coverage --cover-erase --cover-package hwrt --logging-level=INFO --cover-html
+    $ coveralls

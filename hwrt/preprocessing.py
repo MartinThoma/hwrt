@@ -9,9 +9,9 @@ this:
 
  >>> a = HandwrittenData(...)
  >>> preprocessing_queue = [ScaleAndShift(),
-                           StrokeConnect(),
-                           DouglasPeucker(EPSILON=0.2),
-                           SpaceEvenly(number=100)]
+                            StrokeConnect(),
+                            DouglasPeucker(EPSILON=0.2),
+                            SpaceEvenly(number=100)]
  >>> a.preprocessing(preprocessing_queue)
 """
 

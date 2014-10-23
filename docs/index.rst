@@ -40,6 +40,7 @@ Binaries:
    analyze_data
    view
    train
+   record
    test
    backup
 

@@ -1,5 +1,5 @@
-Model testing
-================================
+Model Testing
+=============
 
 This tool calculates the error of a model according to different error
 measures.

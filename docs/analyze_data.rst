@@ -1,4 +1,4 @@
-Analyze data
+Analyze Data
 ================================
 
 This tool helps to analyze data by features.

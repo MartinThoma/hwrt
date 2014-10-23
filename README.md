@@ -4,7 +4,8 @@
 
 ## Handwriting Recognition Toolkit
 
-A toolkit for handwriting recognition. Especially on-line HWR.
+A toolkit for handwriting recognition (HWR). Especially on-line HWR. It
+was developed for the bachelor's thesis of Martin Thoma.
 
 ### Version history
 

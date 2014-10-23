@@ -179,7 +179,9 @@ class ConstantPointCoordinates(object):
 
 class FirstNPoints(object):
 
-    """First n points a 2*n dimensional feature."""
+    """Similar to the `ConstantPointCoordinates` feature, this feature takes the
+       first `n=81` point coordinates. It also has the `fill_empty_with=0` to
+       make sure that the dimension of this feature is always the same."""
 
     normalize = False
 
@@ -246,7 +248,7 @@ class StrokeCount(object):
 
 class Bitmap(object):
 
-    """n x n bitmap or the recording."""
+    """n × n grayscale bitmap of the recording."""
 
     normalize = True
 
@@ -355,8 +357,10 @@ class Width(object):
 
     """Width of a recording as a 1 dimensional feature.
 
-    Note that this is the current Width. so if you scaled the recording, this
-    will not be the original height.
+    .. note::
+
+        This is the current width. So if the recording was scaled, this will
+        not be the original width.
     """
 
     normalize = True
@@ -381,8 +385,10 @@ class Height(object):
 
     """Height of a recording as a a 1 dimensional feature.
 
-    Note that this is the current hight. so if you scaled the recording, this
-    will not be the original height.
+    .. note::
+
+        This is the current hight. So if the recording was scaled, this will not
+        be the original height.
     """
 
     normalize = True
@@ -405,7 +411,8 @@ class Height(object):
 
 class Time(object):
 
-    """Time it took to create the recording as a 1 dimensional feature."""
+    """The time in milliseconds it took to create the recording. This is a 1
+       dimensional feature."""
 
     normalize = True
 
@@ -427,7 +434,7 @@ class Time(object):
 
 class CenterOfMass(object):
 
-    """Center of mass as a 2 dimensional feature for a recording."""
+    """Center of mass of a recording as a 2 dimensional feature."""
 
     normalize = True
 
@@ -492,7 +499,11 @@ class StrokeCenter(object):
 
 
 class StrokeIntersections(object):
-    """Count the number of intersections the symbol has.
+    """Count the number of intersections which strokes in the recording have
+       with each other in form of a symmetrical matrix for the first
+       `stroke=4` strokes. The feature dimension is
+       $round \frac{\text{strokes}^2}{2} + \frac{\text{strokes}}{2}$,
+       because the symmetrical part is discarded.
 
     =======   ======= ======= ======= ===
       -       stroke1 stroke2 stroke3
@@ -602,7 +613,10 @@ class StrokeIntersections(object):
 
 class ReCurvature(object):
 
-    """Re-curvature is a 1 dimensional, global feature for a recording."""
+    """Re-curvature is a 1 dimensional, stroke-global feature for a recording.
+       It is the ratio
+       $\frac{\text{height}(stroke)}{\text{distance}(stroke[0], stroke[-1])}$.
+    """
 
     normalize = True
 

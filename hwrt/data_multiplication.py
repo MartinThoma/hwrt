@@ -12,6 +12,7 @@ this:
                             mulitply.rotate(-30, 30, 5)
                             ]
  >>> x = a.multiply(multiplication_queue)
+
 """
 
 import inspect

@@ -84,7 +84,7 @@ def get_preprocessing_queue(preprocessing_list):
 
 class RemoveDuplicateTime(object):
     """If a recording has two points with the same timestamp, than the second
-       point will be discarded. This is usefull for a couple of algorithms that
+       point will be discarded. This is useful for a couple of algorithms that
        don't expect two points at the same time."""
     def __repr__(self):
         return "RemoveDuplicateTime"

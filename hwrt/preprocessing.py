@@ -8,10 +8,10 @@ Each algorithm works on the HandwrittenData class. They have to be applied like
 this:
 
  >>> a = HandwrittenData(...)
- >>> preprocessing_queue = [Scale_and_shift(), \
-                           Stroke_connect(), \
-                           Douglas_peucker(EPSILON=0.2), \
-                           Space_evenly(number=100)]
+ >>> preprocessing_queue = [ScaleAndShift(),
+                           StrokeConnect(),
+                           DouglasPeucker(EPSILON=0.2),
+                           SpaceEvenly(number=100)]
  >>> a.preprocessing(preprocessing_queue)
 """
 
@@ -51,11 +51,11 @@ def get_class(name):
 def get_preprocessing_queue(preprocessing_list):
     """Get preprocessing queue from a list of dictionaries
 
-    >>> l = [{'Remove_duplicate_time': None}, \
-             {'Scale_and_shift': [{'center': True}]} \
+    >>> l = [{'RemoveDuplicateTime': None}, \
+             {'ScaleAndShift': [{'center': True}]} \
             ]
     >>> get_preprocessing_queue(l)
-    [Remove_duplicate_time, Scale_and_shift
+    [RemoveDuplicateTime, ScaleAndShift
      - center: True
      - max_width: 1
      - max_height: 1
@@ -82,12 +82,12 @@ def get_preprocessing_queue(preprocessing_list):
 # * __call__ must call the Handwriting.set_points
 
 
-class Remove_duplicate_time(object):
+class RemoveDuplicateTime(object):
     """If a recording has two points with the same timestamp, than the second
        point will be discarded. This is usefull for a couple of algorithms that
        don't expect two points at the same time."""
     def __repr__(self):
-        return "Remove_duplicate_time"
+        return "RemoveDuplicateTime"
 
     def __str__(self):
         return "remove duplicate time"
@@ -110,13 +110,13 @@ class Remove_duplicate_time(object):
         # Make sure there are no duplicates
         times = [point['time'] for stroke in new_pointlist for point in stroke]
         assert len(times) == len(set(times)), \
-            ("The list of all times in Remove_duplicate_time has %i values, "
+            ("The list of all times in RemoveDuplicateTime has %i values, "
              "but the set has %i values: %s --- %s") % \
             (len(times), len(set(times), pointlist, new_pointlist))
         handwritten_data.set_pointlist(new_pointlist)
 
 
-class Remove_dots(object):
+class RemoveDots(object):
     """Remove all strokes that have only a single point (a dot) from the
        recording, except if the whole recording consists of dots only.
     """
@@ -144,7 +144,7 @@ class Remove_dots(object):
             handwritten_data.set_pointlist(new_pointlist)
 
 
-class Scale_and_shift(object):
+class ScaleAndShift(object):
     """ Scale a recording so that it fits into a unit square. This keeps the
         aspect ratio. Then the recording is shifted. The default way is to
         shift it so that the recording is in [0, 1] × [0,1]. However, it
@@ -161,7 +161,7 @@ class Scale_and_shift(object):
         self.center_other = center_other
 
     def __repr__(self):
-        return ("Scale_and_shift\n"
+        return ("ScaleAndShift\n"
                 " - center: %r\n"
                 " - max_width: %i\n"
                 " - max_height: %i\n") % \
@@ -174,7 +174,7 @@ class Scale_and_shift(object):
                 " - max_height: %i\n") % \
             (self.center, self.max_width, self.max_height)
 
-    def get_scale_and_shift_parameters(self, handwritten_data):
+    def get_ScaleAndShift_parameters(self, handwritten_data):
         """ Take a list of points and calculate the factors for scaling and
             moving it so that it's in the unit square. Keept the aspect
             ratio.
@@ -216,7 +216,7 @@ class Scale_and_shift(object):
             "handwritten data is not of type HandwrittenData, but of %r" % \
             type(handwritten_data)
 
-        tmp = self.get_scale_and_shift_parameters(handwritten_data)
+        tmp = self.get_ScaleAndShift_parameters(handwritten_data)
         factor, addx, addy = tmp['factor'], tmp['addx'], tmp['addy']
         minx, miny, mint = tmp['minx'], tmp['miny'], tmp['mint']
 
@@ -238,7 +238,7 @@ class Scale_and_shift(object):
             (self.max_height, handwritten_data.get_height())
 
 
-class Space_evenly(object):
+class SpaceEvenly(object):
     """Space the points evenly in time over the complete recording. The
        parameter 'number' defines how many."""
     def __init__(self, number=100, kind='cubic'):
@@ -246,7 +246,7 @@ class Space_evenly(object):
         self.kind = kind
 
     def __repr__(self):
-        return ("Space_evenly\n"
+        return ("SpaceEvenly\n"
                 " - number: %i\n"
                 " - kind: %s\n") % \
             (self.number, self.kind)
@@ -351,7 +351,7 @@ class Space_evenly(object):
         handwritten_data.set_pointlist([new_pointlist])
 
 
-class Space_evenly_per_stroke(object):
+class SpaceEvenlyPerStroke(object):
     """Space the points evenly for every single stroke separately. The
        parameter `number` defines how many points are used per stroke and the
        parameter `kind` defines which kind of interpolation is used. Possible
@@ -363,7 +363,7 @@ class Space_evenly_per_stroke(object):
         self.kind = kind
 
     def __repr__(self):
-        return ("Space_evenly_per_stroke\n"
+        return ("SpaceEvenlyPerStroke\n"
                 " - number: %i\n"
                 " - kind: %s\n") % \
             (self.number, self.kind)
@@ -470,7 +470,7 @@ class Space_evenly_per_stroke(object):
         handwritten_data.set_pointlist(new_pointlist)
 
 
-class Douglas_peucker(object):
+class DouglasPeucker(object):
     """Apply the Douglas-Peucker stroke simplification algorithm separately to
        each stroke of the recording. The algorithm has a threshold parameter
        `epsilon` that indicates how much the stroke is simplified. The smaller
@@ -480,10 +480,10 @@ class Douglas_peucker(object):
         self.EPSILON = EPSILON
 
     def __repr__(self):
-        return "Douglas_peucker (EPSILON: %0.2f)\n" % self.EPSILON
+        return "DouglasPeucker (EPSILON: %0.2f)\n" % self.EPSILON
 
     def __str__(self):
-        return "Douglas_peucker (EPSILON: %0.2f)\n" % self.EPSILON
+        return "DouglasPeucker (EPSILON: %0.2f)\n" % self.EPSILON
 
     def DouglasPeucker(self, PointList, EPSILON):
         def LotrechterAbstand(p3, p1, p2):
@@ -563,11 +563,11 @@ class Douglas_peucker(object):
             pointlist[i] = self.DouglasPeucker(pointlist[i], self.EPSILON)
         handwritten_data.set_pointlist(pointlist)
         # This might have duplicated points! Filter them!
-        handwritten_data.preprocessing([Remove_duplicate_time()])
+        handwritten_data.preprocessing([RemoveDuplicateTime()])
 
 
-class Stroke_connect(object):
-    """`Stroke_connect`: Detect if strokes were probably accidentally
+class StrokeConnect(object):
+    """`StrokeConnect`: Detect if strokes were probably accidentally
        disconnected. If that is the case, connect them. This is detected by the
        threshold parameter `minimum_distance`. If the distance between the end
        point of a stroke and the first point of the next stroke is below the
@@ -577,7 +577,7 @@ class Stroke_connect(object):
         self.minimum_distance = minimum_distance
 
     def __repr__(self):
-        return "Stroke_connect (minimum_distance: %0.2f)" % \
+        return "StrokeConnect (minimum_distance: %0.2f)" % \
             self.minimum_distance
 
     def __str__(self):
@@ -613,7 +613,7 @@ class Stroke_connect(object):
             handwritten_data.set_pointlist(strokes)
 
 
-class Dot_reduction(object):
+class DotReduction(object):
     """Reduce strokes where the maximum distance between points is below a
        `threshold` to a single dot.
     """
@@ -621,11 +621,11 @@ class Dot_reduction(object):
         self.threshold = threshold
 
     def __repr__(self):
-        return "Dot_reduction (threshold: %0.2f)" % \
+        return "DotReduction (threshold: %0.2f)" % \
             self.threshold
 
     def __str__(self):
-        return "Dot_reduction (threshold: %0.2f)" % \
+        return "DotReduction (threshold: %0.2f)" % \
             self.threshold
 
     def __call__(self, handwritten_data):
@@ -678,7 +678,7 @@ class Dot_reduction(object):
         handwritten_data.set_pointlist(new_pointlist)
 
 
-class Wild_point_filter(object):
+class WildPointFilter(object):
     """Find wild points and remove them. The threshold means
        speed in pixels / ms.
     """
@@ -687,7 +687,7 @@ class Wild_point_filter(object):
         self.threshold = threshold
 
     def __repr__(self):
-        return "Wild_point_filter"
+        return "WildPointFilter"
 
     def __str__(self):
         return "Wild point filter (threshold: %0.2f)" % \
@@ -717,7 +717,7 @@ class Wild_point_filter(object):
         # more than 1/5 of the whole size, it is a wild point
 
 
-class Weighted_average_smoothing(object):
+class WeightedAverageSmoothing(object):
     """Smooth every stroke by a weighted average. This algorithm takes a list
        `theta` of 3 numbers that are the weights used for smoothing."""
     def __init__(self, theta):
@@ -730,7 +730,7 @@ class Weighted_average_smoothing(object):
         self.theta = list(1./sum(theta) * numpy.array(theta))
 
     def __repr__(self):
-        return "Weighted_average_smoothing"
+        return "WeightedAverageSmoothing"
 
     def __str__(self):
         return "Weighted average smoothing (theta: %s)" % \

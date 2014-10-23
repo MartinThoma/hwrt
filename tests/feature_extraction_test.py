@@ -58,19 +58,19 @@ def compare_pointlists(a, b, epsilon=0.001):
 
 # Tests
 def feature_detection_test():
-    l = [{'Stroke_Count': None},
-         {'Constant_Point_Coordinates':
+    l = [{'StrokeCount': None},
+         {'ConstantPointCoordinates':
           [{'strokes': 4},
            {'points_per_stroke': 81},
            {'fill_empty_with': 0},
            {'pen_down': False}]
           }
          ]
-    correct = [features.Stroke_Count(),
-               features.Constant_Point_Coordinates(strokes=4,
-                                                   points_per_stroke=81,
-                                                   fill_empty_with=0,
-                                                   pen_down=False)]
+    correct = [features.StrokeCount(),
+               features.ConstantPointCoordinates(strokes=4,
+                                                 points_per_stroke=81,
+                                                 fill_empty_with=0,
+                                                 pen_down=False)]
     feature_list = features.get_features(l)
     # TODO: Not only compare lengths of lists but actual contents.
     nose.tools.assert_equal(len(feature_list), len(correct))
@@ -82,9 +82,9 @@ def unknown_class_test():
 
 
 def repr_and_str_test():
-    l = [features.Constant_Point_Coordinates(),
-         features.First_N_Points(),
-         features.Stroke_Count(),
+    l = [features.ConstantPointCoordinates(),
+         features.FirstNPoints(),
+         features.StrokeCount(),
          features.Bitmap(),
          features.Ink()
          ]
@@ -94,9 +94,9 @@ def repr_and_str_test():
 
 
 def dimension_test():
-    l = [(features.Constant_Point_Coordinates(), 160),
-         (features.First_N_Points(), 162),  # TODO: Check
-         (features.Stroke_Count(), 1),
+    l = [(features.ConstantPointCoordinates(), 160),
+         (features.FirstNPoints(), 162),  # TODO: Check
+         (features.StrokeCount(), 1),
          (features.Bitmap(), 784),
          (features.Ink(), 1)
          ]
@@ -112,6 +112,6 @@ def height_test():
 
 
 def stroke_count_test():
-    feature_list = [features.Stroke_Count()]
+    feature_list = [features.StrokeCount()]
     a = get_symbol_as_handwriting(97705)
     nose.tools.assert_equal(a.feature_extraction(feature_list), [1])

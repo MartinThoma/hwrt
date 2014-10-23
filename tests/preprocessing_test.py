@@ -69,16 +69,16 @@ def flatten_test():
     nose.tools.assert_equal(flat_list, [1, 2, 3, 4, 5, 6, 7])
 
 
-def scale_and_shift_test_all():
-    preprocessing_queue = [preprocessing.Scale_and_shift()]
+def ScaleAndShift_test_all():
+    preprocessing_queue = [preprocessing.ScaleAndShift()]
     for a in get_all_symbols_as_handwriting():
         a.preprocessing(preprocessing_queue)
         s = a.get_pointlist()
         assert len(s) > 0
 
 
-def scale_and_shift_test_simple_1():
-    preprocessing_queue = [preprocessing.Scale_and_shift()]
+def ScaleAndShift_test_simple_1():
+    preprocessing_queue = [preprocessing.ScaleAndShift()]
     s = '[[{"x":0, "y":0, "time": 0}]]'
     a = HandwrittenData(s)
     a.preprocessing(preprocessing_queue)
@@ -87,8 +87,8 @@ def scale_and_shift_test_simple_1():
     assert s == expectation, "Got: %s; expected %s" % (s, expectation)
 
 
-def scale_and_shift_test_simple_2():
-    preprocessing_queue = [preprocessing.Scale_and_shift()]
+def ScaleAndShift_test_simple_2():
+    preprocessing_queue = [preprocessing.ScaleAndShift()]
     s = '[[{"x":10, "y":0, "time": 0}]]'
     a = HandwrittenData(s)
     a.preprocessing(preprocessing_queue)
@@ -97,8 +97,8 @@ def scale_and_shift_test_simple_2():
     assert s == expectation, "Got: %s; expected %s" % (s, expectation)
 
 
-def scale_and_shift_test_simple_3():
-    preprocessing_queue = [preprocessing.Scale_and_shift()]
+def ScaleAndShift_test_simple_3():
+    preprocessing_queue = [preprocessing.ScaleAndShift()]
     s = '[[{"x":0, "y":10, "time": 0}]]'
     a = HandwrittenData(s)
     a.preprocessing(preprocessing_queue)
@@ -107,8 +107,8 @@ def scale_and_shift_test_simple_3():
     assert s == expectation, "Got: %s; expected %s" % (s, expectation)
 
 
-def scale_and_shift_test_simple_4():
-    preprocessing_queue = [preprocessing.Scale_and_shift()]
+def ScaleAndShift_test_simple_4():
+    preprocessing_queue = [preprocessing.ScaleAndShift()]
     s = '[[{"x":0, "y":0, "time": 10}]]'
     a = HandwrittenData(s)
     a.preprocessing(preprocessing_queue)
@@ -117,8 +117,8 @@ def scale_and_shift_test_simple_4():
     assert s == expectation, "Got: %s; expected %s" % (s, expectation)
 
 
-def scale_and_shift_test_simple_5():
-    preprocessing_queue = [preprocessing.Scale_and_shift()]
+def ScaleAndShift_test_simple_5():
+    preprocessing_queue = [preprocessing.ScaleAndShift()]
     s = '[[{"x":42, "y":12, "time": 10}]]'
     a = HandwrittenData(s)
     a.preprocessing(preprocessing_queue)
@@ -127,8 +127,8 @@ def scale_and_shift_test_simple_5():
     assert s == expectation, "Got: %s; expected %s" % (s, expectation)
 
 
-def scale_and_shift_test_a():
-    preprocessing_queue = [preprocessing.Scale_and_shift()]
+def ScaleAndShift_test_a():
+    preprocessing_queue = [preprocessing.ScaleAndShift()]
     s = ('[[{"x":232,"y":423,"time":1407885913983},'
          '{"x":267,"y":262,"time":1407885914315},'
          '{"x":325,"y":416,"time":1407885914650}],'
@@ -146,8 +146,8 @@ def scale_and_shift_test_a():
         "Got: %s; expected %s" % (s, expectation)
 
 
-def scale_and_shift_test_a_center():
-    preprocessing_queue = [preprocessing.Scale_and_shift(center=True)]
+def ScaleAndShift_test_a_center():
+    preprocessing_queue = [preprocessing.ScaleAndShift(center=True)]
     s = ('[[{"y": 1.0, "x": -0.3655913978494625, "time": 0}, '
          '{"y": 0.0, "x": -0.1482000935016364, "time": 332}, '
          '{"y": 0.9565, "x": 0.21204835370333253, "time": 667}], '
@@ -166,8 +166,8 @@ def scale_and_shift_test_a_center():
 
 
 def space_evenly_per_stroke_test_all():
-    preprocessing_queue = [preprocessing.Space_evenly_per_stroke(number=100,
-                                                                 kind='cubic')]
+    preprocessing_queue = [preprocessing.SpaceEvenlyPerStroke(number=100,
+                                                              kind='cubic')]
     for a in get_all_symbols_as_handwriting():
         a.preprocessing(preprocessing_queue)
         s = a.get_pointlist()

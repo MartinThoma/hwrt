@@ -8,8 +8,8 @@ this:
 
  >>> import features
  >>> a = HandwrittenData(...)
- >>> feature_list = [features.Stroke_Count(),
-                    features.Constant_Point_Coordinates(strokes=4,
+ >>> feature_list = [features.StrokeCount(),
+                    features.ConstantPointCoordinates(strokes=4,
                                                         points_per_stroke=20,
                                                         fill_empty_with=0)
                     ]
@@ -46,8 +46,8 @@ def get_class(name):
 def get_features(model_description_features):
     """Get features from a list of dictionaries
 
-    >>> l = [{'Stroke_Count': None}, \
-             {'Constant_Point_Coordinates': \
+    >>> l = [{'StrokeCount': None}, \
+             {'ConstantPointCoordinates': \
               [{'strokes': 4}, \
                {'points_per_stroke': 81}, \
                {'fill_empty_with': 0}, \
@@ -55,7 +55,7 @@ def get_features(model_description_features):
              } \
             ]
     >>> get_features(l)
-    [Stroke_Count, Constant_Point_Coordinates
+    [StrokeCount, ConstantPointCoordinates
      - strokes: 4
      - points per stroke: 81
      - fill empty with: 0
@@ -88,9 +88,15 @@ def get_features(model_description_features):
 # Local features
 
 
-class Constant_Point_Coordinates(object):
+class ConstantPointCoordinates(object):
 
-    """Constatn point coordinates as a high dimensional feature."""
+    """Take the first `points_per_stroke=20` points coordinates of the first
+       `strokes=4` strokes as features. This leads to
+       $2 \cdot \text{points\_per\_stroke} \cdot \text{strokes}$ features.
+
+       If `points` is set to $0$, the first `points\_per\_stroke` point
+       coordinates and the \verb+pen_down+ feature is used. This leads to
+       $3 \cdot \text{points_per_stroke}$ features."""
 
     normalize = False
 
@@ -102,7 +108,7 @@ class Constant_Point_Coordinates(object):
         self.pen_down = pen_down
 
     def __repr__(self):
-        return ("Constant_Point_Coordinates\n"
+        return ("ConstantPointCoordinates\n"
                 " - strokes: %i\n"
                 " - points per stroke: %i\n"
                 " - fill empty with: %i\n"
@@ -171,7 +177,7 @@ class Constant_Point_Coordinates(object):
         return x
 
 
-class First_N_Points(object):
+class FirstNPoints(object):
 
     """First n points a 2*n dimensional feature."""
 
@@ -181,7 +187,7 @@ class First_N_Points(object):
         self.n = n
 
     def __repr__(self):
-        return ("First_N_Points\n"
+        return ("FirstNPoints\n"
                 " - n: %i\n") % \
                (self.n)
 
@@ -216,14 +222,14 @@ class First_N_Points(object):
 
 # Global features
 
-class Stroke_Count(object):
+class StrokeCount(object):
 
     """Stroke count as a 1 dimensional recording."""
 
     normalize = True
 
     def __repr__(self):
-        return "Stroke_Count"
+        return "StrokeCount"
 
     def __str__(self):
         return "stroke count"
@@ -321,7 +327,7 @@ class Ink(object):
         return [ink]
 
 
-class Aspect_ratio(object):
+class AspectRatio(object):
 
     """Aspect ratio of a recording as a 1 dimensional feature."""
 
@@ -419,14 +425,14 @@ class Time(object):
         return [float(handwritten_data.get_time())]
 
 
-class Center_of_mass(object):
+class CenterOfMass(object):
 
     """Center of mass as a 2 dimensional feature for a recording."""
 
     normalize = True
 
     def __repr__(self):
-        return "Center_of_mass"
+        return "CenterOfMass"
 
     def __str__(self):
         return "Center of mass"
@@ -447,7 +453,7 @@ class Center_of_mass(object):
         return [float(sum(xs))/len(xs), float(sum(ys))/len(ys)]
 
 
-class Stroke_center(object):
+class StrokeCenter(object):
 
     """Get the stroke center of mass coordinates as a 2 dimensional feature."""
 
@@ -457,7 +463,7 @@ class Stroke_center(object):
         self.strokes = strokes
 
     def __repr__(self):
-        return "Stroke_center"
+        return "StrokeCenter"
 
     def __str__(self):
         return "Stroke center"
@@ -485,7 +491,7 @@ class Stroke_center(object):
         return feature_vector
 
 
-class Stroke_intersections(object):
+class StrokeIntersections(object):
     """Count the number of intersections the symbol has.
 
     =======   ======= ======= ======= ===
@@ -506,10 +512,10 @@ class Stroke_intersections(object):
         self.strokes = strokes
 
     def __repr__(self):
-        return "Stroke_intersections"
+        return "StrokeIntersections"
 
     def __str__(self):
-        return "Stroke_intersections"
+        return "StrokeIntersections"
 
     def get_dimension(self):
         return int(round(float(self.strokes**2)/2 + float(self.strokes)/2))
@@ -594,7 +600,7 @@ class Stroke_intersections(object):
         return x
 
 
-class Re_curvature(object):
+class ReCurvature(object):
 
     """Re-curvature is a 1 dimensional, global feature for a recording."""
 
@@ -604,7 +610,7 @@ class Re_curvature(object):
         self.strokes = strokes
 
     def __repr__(self):
-        return "Re_curvature"
+        return "ReCurvature"
 
     def __str__(self):
         return "Re-curvature"

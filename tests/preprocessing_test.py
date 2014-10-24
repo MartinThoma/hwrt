@@ -97,12 +97,6 @@ def euclidean_distance_test():
     nose.tools.assert_equal(round(dist, 1), 36.4)
 
 
-def flatten_test():
-    l = [[1, 2, 3], [4], [], [5, 6, 7]]
-    flat_list = preprocessing._flatten(l)
-    nose.tools.assert_equal(flat_list, [1, 2, 3, 4, 5, 6, 7])
-
-
 def ScaleAndShift_test_all():
     preprocessing_queue = [preprocessing.ScaleAndShift()]
     for a in get_all_symbols_as_handwriting():

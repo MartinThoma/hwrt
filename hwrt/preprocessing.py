@@ -33,11 +33,6 @@ def _euclidean_distance(p1, p2):
     return math.sqrt((p1["x"]-p2["x"])**2 + (p1["y"]-p2["y"])**2)
 
 
-def _flatten(two_dimensional_list):
-    """Flatten a 2D list into a 1D list"""
-    return [i for inner_list in two_dimensional_list for i in inner_list]
-
-
 def get_class(name):
     """Get function pointer by string."""
     clsmembers = inspect.getmembers(sys.modules[__name__], inspect.isclass)
@@ -357,7 +352,8 @@ class SpaceEvenlyPerStroke(object):
        parameter `number` defines how many points are used per stroke and the
        parameter `kind` defines which kind of interpolation is used. Possible
        values include `cubic`, `quadratic`, `linear`, `nearest`. This part of
-       the implementation relies on `scipy.interpolate.interp1d`.
+       the implementation relies on
+       :mod:`scipy.interpolate.interp1d <scipy:scipy.interpolate.interp1d>`.
     """
     def __init__(self, number=100, kind='cubic'):
         self.number = number

@@ -13,8 +13,9 @@ Preprocessing classes
 
 Every feature class must have a ``__str__``, ``__repr__`` and a ``__call__``
 function where
+
 * ``__call__`` must take exactly one argument of type HandwrittenData
-* ``__call__`` must call the :meth:`Handwriting.set_points`
+* ``__call__`` must call the :mod:`Handwriting.set_points`
 
 
 Feature classes

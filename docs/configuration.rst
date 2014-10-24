@@ -17,6 +17,7 @@ The configuration file is in YAML format. The possible values are:
   script.
 
 There are 3 configurations that are probably only interesting for me:
+
 * ``dbconfig``: Only important if you want to access a MySQL db to get the data
 * ``dropbox_app_key`` and ``dropbox_app_secret``: Only important if you want
   to upload data to dropbox

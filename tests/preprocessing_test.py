@@ -56,6 +56,40 @@ def compare_pointlists(a, b, epsilon=0.001):
 
 
 # Tests
+def preprocessing_detection_test():
+    preprocessing_queue = [{'ScaleAndShift': None},
+                           {'StrokeConnect': None},
+                           {'DouglasPeucker': [{'epsilon': 0.2}]},
+                           {'SpaceEvenly': [{'number': 100}]}]
+    correct = [preprocessing.ScaleAndShift(),
+               preprocessing.StrokeConnect(),
+               preprocessing.DouglasPeucker(epsilon=0.2),
+               preprocessing.SpaceEvenly(number=100)]
+    feature_list = preprocessing.get_preprocessing_queue(preprocessing_queue)
+    # TODO: Not only compare lengths of lists but actual contents.
+    nose.tools.assert_equal(len(feature_list), len(correct))
+
+
+def unknown_class_test():
+    # TODO: Test if logging works
+    preprocessing.get_class("not_existant")
+
+
+def simple_execution_test():
+    algorithms = [preprocessing.RemoveDuplicateTime(),
+                  preprocessing.RemoveDots(),
+                  preprocessing.SpaceEvenly(),
+                  preprocessing.SpaceEvenlyPerStroke(),
+                  preprocessing.DouglasPeucker(),
+                  preprocessing.StrokeConnect(),
+                  preprocessing.DotReduction(),
+                  preprocessing.WildPointFilter(),
+                  preprocessing.WeightedAverageSmoothing()]
+    for algorithm in algorithms:
+        a = get_symbol_as_handwriting(292934)
+        algorithm(a)
+
+
 def euclidean_distance_test():
     p1 = {'x': 12, 'y': 15}
     p2 = {'x':  2, 'y': 50}

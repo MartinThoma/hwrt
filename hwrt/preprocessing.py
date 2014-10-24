@@ -10,7 +10,7 @@ this:
  >>> a = HandwrittenData(...)
  >>> preprocessing_queue = [ScaleAndShift(),
                             StrokeConnect(),
-                            DouglasPeucker(EPSILON=0.2),
+                            DouglasPeucker(epsilon=0.2),
                             SpaceEvenly(number=100)]
  >>> a.preprocessing(preprocessing_queue)
 """
@@ -25,7 +25,7 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
 # mine
-import HandwrittenData
+import hwrt.HandwrittenData as HandwrittenData
 
 
 def _euclidean_distance(p1, p2):
@@ -98,13 +98,13 @@ class RemoveDuplicateTime(object):
             type(handwritten_data)
         pointlist = handwritten_data.get_pointlist()
         new_pointlist = []
-        t = []
+        times = []
         for stroke in pointlist:
             new_stroke = []
             for point in stroke:
-                if point['time'] not in t:
+                if point['time'] not in times:
                     new_stroke.append(point)
-                    t.append(point['time'])
+                    times.append(point['time'])
             if len(new_stroke) > 0:
                 new_pointlist.append(new_stroke)
         # Make sure there are no duplicates
@@ -185,21 +185,21 @@ class ScaleAndShift(object):
         width = a['maxx'] - a['minx'] + self.width_add
         height = a['maxy'] - a['miny'] + self.height_add
 
-        factorX, factorY = 1, 1
+        factor_x, factor_y = 1, 1
         if width != 0:
-            factorX = self.max_width/width
+            factor_x = self.max_width/width
 
         if height != 0:
-            factorY = self.max_height/height
+            factor_y = self.max_height/height
 
-        factor = min(factorX, factorY)
+        factor = min(factor_x, factor_y)
         addx, addy = 0, 0
 
         if self.center:
             # Only one dimension (x or y) has to be centered (the smaller one)
-            add = -(factor/(2*max(factorX, factorY)))
+            add = -(factor/(2*max(factor_x, factor_y)))
 
-            if factor == factorX:
+            if factor == factor_x:
                 addy = add
                 if self.center_other:
                     addx = -(width*factor/2.0)
@@ -257,29 +257,13 @@ class SpaceEvenly(object):
                 " - kind: %s\n") % \
             (self.number, self.kind)
 
-    def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
-            "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
-        # Make sure that the lists are sorted
-        pointlist = handwritten_data.get_sorted_pointlist()
-
-        for i in range(len(pointlist)-1):
-            # The last point of the previous stroke should be lower than the
-            # first point of the next stroke
-            assert (pointlist[i][-1]["time"] <= pointlist[i+1][0]["time"]), \
-                ("Something is wrong with the time. The last point of "
-                 "stroke %i has a time of %0.2f, but the first point of "
-                 "stroke %i has a time of %0.2f. See raw_data_id %s") % \
-                (i,
-                 pointlist[i][-1]["time"],
-                 i+1,
-                 pointlist[i+1][0]["time"],
-                 str(handwritten_data.raw_data_id))
-
-        # calculate "pen_down" strokes
-        times = []
-        for i, stroke in enumerate(pointlist):
+    def _calculate_pen_down_strokes(self, pointlist, times=None):
+        """Calculate the intervall borders 'times' that contain the information
+           when a stroke started, when it ended and how it should be
+           interpolated."""
+        if times is None:
+            times = []
+        for stroke in pointlist:
             stroke_info = {"start": stroke[0]['time'],
                            "end": stroke[-1]['time'],
                            "pen_down": True}
@@ -306,8 +290,14 @@ class SpaceEvenly(object):
             stroke_info['fx'] = fx
             stroke_info['fy'] = fy
             times.append(stroke_info)
+        return times
 
-        # Model "pen_up" strokes
+    def _calculate_pen_up_strokes(self, pointlist, times=None):
+        """ 'Pen-up' strokes are virtual strokes that were not drawn. It
+            models the time when the user moved from one stroke to the next.
+        """
+        if times is None:
+            times = []
         for i in range(len(pointlist) - 1):
             stroke_info = {"start": pointlist[i][-1],
                            "end": pointlist[i+1][0],
@@ -329,13 +319,27 @@ class SpaceEvenly(object):
             stroke_info['fx'] = fx
             stroke_info['fy'] = fy
             times.append(stroke_info)
+        return times
 
-        new_pointlist = []
+    def __call__(self, handwritten_data):
+        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
+            "handwritten data is not of type HandwrittenData, but of %r" % \
+            type(handwritten_data)
+        # Make sure that the lists are sorted
+        pointlist = handwritten_data.get_sorted_pointlist()
+
+        # Build 'times' datastructure which will contain information about
+        # strokes and when they were started / ended and how they should be
+        # interpolated
+        times = self._calculate_pen_down_strokes(pointlist)
+        times = self._calculate_pen_up_strokes(pointlist, times)
 
         tnew = numpy.linspace(pointlist[0][0]['time'],
                               pointlist[-1][-1]['time'],
                               self.number)
 
+        # Create the new pointlist
+        new_pointlist = []
         for time in tnew:
             for stroke_interval in times:
                 if stroke_interval["start"] <= time <= stroke_interval["end"]:
@@ -473,17 +477,25 @@ class DouglasPeucker(object):
        `epsilon` that indicates how much the stroke is simplified. The smaller
        the parameter, the closer will the resulting strokes be to the original.
     """
-    def __init__(self, EPSILON):
-        self.EPSILON = EPSILON
+    def __init__(self, epsilon=0.2):
+        self.epsilon = epsilon
 
     def __repr__(self):
-        return "DouglasPeucker (EPSILON: %0.2f)\n" % self.EPSILON
+        return "DouglasPeucker (epsilon: %0.2f)\n" % self.epsilon
 
     def __str__(self):
-        return "DouglasPeucker (EPSILON: %0.2f)\n" % self.EPSILON
+        return "DouglasPeucker (epsilon: %0.2f)\n" % self.epsilon
 
-    def line_simplification(self, PointList, EPSILON):
-        def perpendicularDistance(p3, p1, p2):
+    def _stroke_simplification(self, pointlist):
+        """The Douglas-Peucker line simplification takes a list of points as an
+           argument. It tries to simplifiy this list by removing as many points
+           as possible while still maintaining the overall shape of the stroke.
+           It does so by taking the first and the last point, connecting them
+           by a straight line and searchin for the point with the highest
+           distance. If that distance is bigger than 'epsilon', the point is
+           important and the algorithm continues recursively."""
+
+        def perpendicular_distance(p3, p1, p2):
             """
             Calculate the distance from p3 to the stroke defined by p1 and p2.
             The distance is the length of the perpendicular from p3 on p1.
@@ -500,12 +512,12 @@ class DouglasPeucker(object):
             px = p2['x']-p1['x']
             py = p2['y']-p1['y']
 
-            something = px*px + py*py
-            if something == 0:
-                # TODO: really?
+            squared_distance = px*px + py*py
+            if squared_distance == 0:
+                # TODO: Is that the best thing to do?
                 return 0
 
-            u = ((x3 - p1['x']) * px + (y3 - p1['y']) * py) / something
+            u = ((x3 - p1['x']) * px + (y3 - p1['y']) * py) / squared_distance
 
             if u > 1:
                 u = 1
@@ -530,26 +542,25 @@ class DouglasPeucker(object):
         # Finde den Punkt mit dem größten Abstand
         dmax = 0
         index = 0
-        for i in range(1, len(PointList)):
-            d = perpendicularDistance(PointList[i], PointList[0], PointList[-1])
+        for i in range(1, len(pointlist)):
+            d = perpendicular_distance(pointlist[i],
+                                       pointlist[0],
+                                       pointlist[-1])
             if d > dmax:
                 index = i
                 dmax = d
 
-        # Wenn die maximale Entfernung größer als EPSILON ist, dann rekursiv
-        # vereinfachen
-        if dmax >= EPSILON:
+        # If the maximum distance is bigger than the threshold 'epsilon', then
+        # simplify the pointlist recursively
+        if dmax >= self.epsilon:
             # Recursive call
-            recResults1 = self.line_simplification(PointList[0:index], EPSILON)
-            recResults2 = self.line_simplification(PointList[index:], EPSILON)
-
-            # Ergebnisliste aufbauen
-            ResultList = recResults1[:-1] + recResults2
+            rec_results1 = self._stroke_simplification(pointlist[0:index])
+            rec_results2 = self._stroke_simplification(pointlist[index:])
+            result_list = rec_results1[:-1] + rec_results2
         else:
-            ResultList = [PointList[0], PointList[-1]]
+            result_list = [pointlist[0], pointlist[-1]]
 
-        # Ergebnis zurückgeben
-        return ResultList
+        return result_list
 
     def __call__(self, handwritten_data):
         assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
@@ -558,7 +569,7 @@ class DouglasPeucker(object):
         pointlist = handwritten_data.get_pointlist()
 
         for i in range(0, len(pointlist)):
-            pointlist[i] = self.line_simplification(pointlist[i], self.EPSILON)
+            pointlist[i] = self._stroke_simplification(pointlist[i])
         handwritten_data.set_pointlist(pointlist)
         # This might have duplicated points! Filter them!
         handwritten_data.preprocessing([RemoveDuplicateTime()])
@@ -615,7 +626,7 @@ class DotReduction(object):
     """Reduce strokes where the maximum distance between points is below a
        `threshold` to a single dot.
     """
-    def __init__(self, threshold):
+    def __init__(self, threshold=5):
         self.threshold = threshold
 
     def __repr__(self):
@@ -631,7 +642,7 @@ class DotReduction(object):
             "handwritten data is not of type HandwrittenData, but of %r" % \
             type(handwritten_data)
 
-        def get_max_distance(L):
+        def _get_max_distance(L):
             """Find the maximum distance between two points in a list of points
             :param L: list of points
             :type L: list
@@ -648,29 +659,29 @@ class DotReduction(object):
                                        max_dist)
                 return max_dist
 
-        def get_average_point(L):
+        def _get_average_point(pointlist):
             """Calculate the average point.
-            :param L: list of points
-            :type L: list
+            :param pointlist: list of points
+            :type pointlist: list
             :returns: a single point
             :rtype: dict
             """
             x, y, t = 0, 0, 0
-            for point in L:
+            for point in pointlist:
                 x += point['x']
                 y += point['y']
                 t += point['time']
-            x = float(x) / len(L)
-            y = float(y) / len(L)
-            t = float(t) / len(L)
+            x = float(x) / len(pointlist)
+            y = float(y) / len(pointlist)
+            t = float(t) / len(pointlist)
             return {'x': x, 'y': y, 'time': t}
 
         new_pointlist = []
         pointlist = handwritten_data.get_pointlist()
         for stroke in pointlist:
             new_stroke = stroke
-            if len(stroke) > 1 and get_max_distance(stroke) < self.threshold:
-                new_stroke = [get_average_point(stroke)]
+            if len(stroke) > 1 and _get_max_distance(stroke) < self.threshold:
+                new_stroke = [_get_average_point(stroke)]
             new_pointlist.append(new_stroke)
 
         handwritten_data.set_pointlist(new_pointlist)
@@ -680,7 +691,7 @@ class WildPointFilter(object):
     """Find wild points and remove them. The threshold means
        speed in pixels / ms.
     """
-    def __init__(self, threshold):
+    def __init__(self, threshold=3.0):
         """The threshold is a speed threshold"""
         self.threshold = threshold
 
@@ -718,8 +729,10 @@ class WildPointFilter(object):
 class WeightedAverageSmoothing(object):
     """Smooth every stroke by a weighted average. This algorithm takes a list
        `theta` of 3 numbers that are the weights used for smoothing."""
-    def __init__(self, theta):
+    def __init__(self, theta=None):
         """Theta is a list of 3 non-negative numbers"""
+        if theta is None:
+            theta = [1./6, 4./6, 1./6]
         assert len(theta) == 3, \
             "theta has length %i, but should have length 3" % \
             len(theta)
@@ -734,7 +747,10 @@ class WeightedAverageSmoothing(object):
         return "Weighted average smoothing (theta: %s)" % \
             self.theta
 
-    def calculate_average(self, points):
+    def _calculate_average(self, points):
+        """Calculate the arithmetic mean of the points x and y coordinates
+           seperately.
+        """
         assert len(self.theta) == len(points), \
             "points has length %i, but should have length %i" % \
             (len(points), len(self.theta))
@@ -757,7 +773,7 @@ class WeightedAverageSmoothing(object):
             if len(stroke) > 1:
                 for i in range(1, len(stroke)-1):
                     points = [stroke[i-1], stroke[i], stroke[i+1]]
-                    p = self.calculate_average(points)
+                    p = self._calculate_average(points)
                     new_pointlist[-1].append(p)
                 new_pointlist[-1].append(stroke[-1])
         handwritten_data.set_pointlist(new_pointlist)

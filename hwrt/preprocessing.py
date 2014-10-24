@@ -174,7 +174,7 @@ class ScaleAndShift(object):
                 " - max_height: %i\n") % \
             (self.center, self.max_width, self.max_height)
 
-    def get_ScaleAndShift_parameters(self, handwritten_data):
+    def _get_parameters(self, handwritten_data):
         """ Take a list of points and calculate the factors for scaling and
             moving it so that it's in the unit square. Keept the aspect
             ratio.
@@ -216,7 +216,7 @@ class ScaleAndShift(object):
             "handwritten data is not of type HandwrittenData, but of %r" % \
             type(handwritten_data)
 
-        tmp = self.get_ScaleAndShift_parameters(handwritten_data)
+        tmp = self._get_parameters(handwritten_data)
         factor, addx, addy = tmp['factor'], tmp['addx'], tmp['addy']
         minx, miny, mint = tmp['minx'], tmp['miny'], tmp['mint']
 
@@ -375,6 +375,52 @@ class SpaceEvenlyPerStroke(object):
                 " - kind: %s\n") % \
             (self.number, self.kind)
 
+    def _space(self, handwritten_data, stroke, kind):
+        """Do the interpolation of 'kind' for 'stroke'"""
+        new_stroke = []
+        stroke = sorted(stroke, key=lambda p: p['time'])
+
+        x, y, t = [], [], []
+
+        for point in stroke:
+            x.append(point['x'])
+            y.append(point['y'])
+            t.append(point['time'])
+
+        x, y = numpy.array(x), numpy.array(y)
+        failed = False
+        try:
+            fx = interp1d(t, x, kind=kind)
+            fy = interp1d(t, y, kind=kind)
+        except Exception as e:
+            if handwritten_data.raw_data_id is not None:
+                logging.debug("spline failed for raw_data_id %i",
+                              handwritten_data.raw_data_id)
+            else:
+                logging.debug("spline failed")
+            logging.debug(e)
+            failed = True
+
+        tnew = numpy.linspace(t[0], t[-1], self.number)
+
+        # linear interpolation fallback due to
+        # https://github.com/scipy/scipy/issues/3868
+        if failed:
+            try:
+                fx = interp1d(t, x, kind='linear')
+                fy = interp1d(t, y, kind='linear')
+                failed = False
+            except Exception as e:
+                logging.debug("len(stroke) = %i", len(stroke))
+                logging.debug("len(x) = %i", len(x))
+                logging.debug("len(y) = %i", len(y))
+                logging.debug("stroke=%s", stroke)
+                raise e
+
+        for x, y, t in zip(fx(tnew), fy(tnew), tnew):
+            new_stroke.append({'x': x, 'y': y, 'time': t})
+        return new_stroke
+
     def __call__(self, handwritten_data):
         assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
             "handwritten data is not of type HandwrittenData, but of %r" % \
@@ -383,90 +429,18 @@ class SpaceEvenlyPerStroke(object):
         new_pointlist = []
 
         for stroke in pointlist:
-            new_stroke = []
             if len(stroke) < 2:
                 # Don't do anything if there are less than 2 points
                 new_stroke = stroke
             elif 2 <= len(stroke) <= 3:
                 # Linear interpolation for 2 or 3 points
-                # TODO: This is much code duplication. Can this be done better?
-                stroke = sorted(stroke, key=lambda p: p['time'])
-
-                x, y, t = [], [], []
-
-                for point in stroke:
-                    x.append(point['x'])
-                    y.append(point['y'])
-                    t.append(point['time'])
-
-                x, y = numpy.array(x), numpy.array(y)
-                failed = False
-                try:
-                    fx = interp1d(t, x, kind='linear')
-                    fy = interp1d(t, y, kind='linear')
-                except Exception as e:
-                    if handwritten_data.raw_data_id is not None:
-                        logging.debug("spline failed for raw_data_id %i",
-                                      handwritten_data.raw_data_id)
-                    else:
-                        logging.debug("spline failed")
-                    logging.debug(e)
-                    failed = True
-
-                tnew = numpy.linspace(t[0], t[-1], self.number)
-
-                # linear interpolation fallback due to
-                # https://github.com/scipy/scipy/issues/3868
-                if failed:
-                    try:
-                        fx = interp1d(t, x, kind='linear')
-                        fy = interp1d(t, y, kind='linear')
-                        failed = False
-                    except Exception as e:
-                        raise e
-
-                for x, y, t in zip(fx(tnew), fy(tnew), tnew):
-                    new_stroke.append({'x': x, 'y': y, 'time': t})
+                new_stroke = self._space(handwritten_data,
+                                         stroke,
+                                         'linear')
             else:
-                x, y, t = [], [], []
-
-                for point in stroke:
-                    x.append(point['x'])
-                    y.append(point['y'])
-                    t.append(point['time'])
-
-                x, y = numpy.array(x), numpy.array(y)
-                failed = False
-                try:
-                    fx = interp1d(t, x, kind=self.kind)
-                    fy = interp1d(t, y, kind=self.kind)
-                except Exception as e:
-                    if handwritten_data.raw_data_id is not None:
-                        logging.debug("spline failed for raw_data_id %i",
-                                      handwritten_data.raw_data_id)
-                    else:
-                        logging.debug("spline failed")
-                    logging.debug(e)
-                    failed = True
-
-                tnew = numpy.linspace(t[0], t[-1], self.number)
-
-                # linear interpolation fallback due to
-                # https://github.com/scipy/scipy/issues/3868
-                if failed:
-                    try:
-                        fx = interp1d(t, x, kind='linear')
-                        fy = interp1d(t, y, kind='linear')
-                        failed = False
-                    except Exception as e:
-                        logging.debug("len(stroke) = %i", len(stroke))
-                        logging.debug("len(x) = %i", len(x))
-                        logging.debug("len(y) = %i", len(y))
-                        logging.debug("stroke=%s", stroke)
-                        raise e
-
-                for x, y, t in zip(fx(tnew), fy(tnew), tnew):
-                    new_stroke.append({'x': x, 'y': y, 'time': t})
+                new_stroke = self._space(handwritten_data,
+                                         stroke,
+                                         self.kind)
             new_pointlist.append(new_stroke)
         handwritten_data.set_pointlist(new_pointlist)
 

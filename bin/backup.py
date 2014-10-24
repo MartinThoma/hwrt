@@ -235,7 +235,7 @@ if __name__ == '__main__':
 
     if not check_dropbox():
         logging.error("Dropbox login data was not correct. "
-                      "Please check your '~/.writemathrc' file.")
+                      "Please check your '~/.hwrtrc' file.")
     else:
         if not args.onlydropbox:
             main(args.destination, args.small)

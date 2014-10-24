@@ -17,6 +17,7 @@ this:
 """
 
 import inspect
+import imp
 import urllib
 import os
 import Image
@@ -29,8 +30,9 @@ from shapely.geometry import LineString
 import itertools
 import numpy
 # mine
-import hwrt.HandwrittenData as HandwrittenData
-import hwrt.preprocessing as preprocessing
+import HandwrittenData
+import preprocessing
+import utils
 
 
 def get_class(name):
@@ -39,6 +41,17 @@ def get_class(name):
     for string_name, act_class in clsmembers:
         if string_name == name:
             return act_class
+
+    # Check if the user has specified a plugin and if the class is in there
+    cfg = utils.get_project_configuration()
+    if 'features' in cfg:
+        modname = os.path.splitext(os.path.basename(cfg['features']))[0]
+        usermodule = imp.load_source(modname, cfg['features'])
+        clsmembers = inspect.getmembers(usermodule, inspect.isclass)
+        for string_name, act_class in clsmembers:
+            if string_name == name:
+                return act_class
+
     logging.debug("Unknown feature class '%s'.", name)
     return None
 
@@ -92,7 +105,8 @@ class ConstantPointCoordinates(object):
 
     """Take the first `points_per_stroke=20` points coordinates of the first
        `strokes=4` strokes as features. This leads to
-       :math:`2 \cdot \text{points\_per\_stroke} \cdot \text{strokes}` features.
+       :math:`2 \cdot \text{points\_per\_stroke} \cdot \text{strokes}`
+       features.
 
        If `points` is set to 0, the first `points\_per\_stroke` point
        coordinates and the \verb+pen_down+ feature is used. This leads to

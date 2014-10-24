@@ -57,7 +57,7 @@ def is_valid_folder(parser, arg):
 def get_project_configuration():
     """Get project configuration as dictionary."""
     home = os.path.expanduser("~")
-    rcfile = os.path.join(home, ".writemathrc")
+    rcfile = os.path.join(home, ".hwrtrc")
     if not os.path.isfile(rcfile):
         create_project_configuration(rcfile)
     with open(rcfile, 'r') as ymlfile:
@@ -67,8 +67,8 @@ def get_project_configuration():
 
 def create_project_configuration(filename):
     home = os.path.expanduser("~")
-    writemath = os.path.join(home, "writemath")
-    config = {'root': writemath,
+    project_root_folder = os.path.join(home, "hwr-experiments")
+    config = {'root': project_root_folder,
               'nntoolkit': None,
               'dropbox_app_key': None,
               'dropbox_app_secret': None}

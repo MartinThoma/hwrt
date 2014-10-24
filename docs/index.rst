@@ -31,11 +31,13 @@ Contents:
    :maxdepth: 2
 
    installation
+   configuration
    HandwrittenData
    preprocessing
    data_multiplication
    features
    create_pfiles
+   plugins
 
 Binaries:
 

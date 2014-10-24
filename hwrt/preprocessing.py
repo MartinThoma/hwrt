@@ -17,28 +17,50 @@ this:
 
 import numpy
 import inspect
+import imp
 from scipy.interpolate import interp1d
 import math
 import logging
 import sys
+import os
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
 # mine
-import hwrt.HandwrittenData as HandwrittenData
+import HandwrittenData
+import utils
 
 
 def _euclidean_distance(p1, p2):
-    """Calculate the euclidean distance of two 2D points."""
+    """Calculate the euclidean distance of two 2D points.
+
+    >>> _euclidean_distance({'x': 0, 'y': 0}, {'x': 0, 'y': 3})
+    3.0
+    >>> _euclidean_distance({'x': 0, 'y': 0}, {'x': 0, 'y': -3})
+    3.0
+    >>> _euclidean_distance({'x': 0, 'y': 0}, {'x': 3, 'y': 4})
+    5.0
+    """
     return math.sqrt((p1["x"]-p2["x"])**2 + (p1["y"]-p2["y"])**2)
 
 
 def get_class(name):
-    """Get function pointer by string."""
+    """Get the class by its name as a string."""
     clsmembers = inspect.getmembers(sys.modules[__name__], inspect.isclass)
     for string_name, act_class in clsmembers:
         if string_name == name:
             return act_class
+
+    # Check if the user has specified a plugin and if the class is in there
+    cfg = utils.get_project_configuration()
+    if 'preprocessing' in cfg:
+        modname = os.path.splitext(os.path.basename(cfg['preprocessing']))[0]
+        usermodule = imp.load_source(modname, cfg['preprocessing'])
+        clsmembers = inspect.getmembers(usermodule, inspect.isclass)
+        for string_name, act_class in clsmembers:
+            if string_name == name:
+                return act_class
+
     logging.debug("Unknown class '%s'.", name)
     return None
 
@@ -46,8 +68,8 @@ def get_class(name):
 def get_preprocessing_queue(preprocessing_list):
     """Get preprocessing queue from a list of dictionaries
 
-    >>> l = [{'RemoveDuplicateTime': None}, \
-             {'ScaleAndShift': [{'center': True}]} \
+    >>> l = [{'RemoveDuplicateTime': None},
+             {'ScaleAndShift': [{'center': True}]}
             ]
     >>> get_preprocessing_queue(l)
     [RemoveDuplicateTime, ScaleAndShift

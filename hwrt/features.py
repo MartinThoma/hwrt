@@ -29,8 +29,8 @@ from shapely.geometry import LineString
 import itertools
 import numpy
 # mine
-import HandwrittenData
-import preprocessing
+import hwrt.HandwrittenData as HandwrittenData
+import hwrt.preprocessing as preprocessing
 
 
 def get_class(name):
@@ -92,11 +92,11 @@ class ConstantPointCoordinates(object):
 
     """Take the first `points_per_stroke=20` points coordinates of the first
        `strokes=4` strokes as features. This leads to
-       $2 \cdot \text{points\_per\_stroke} \cdot \text{strokes}$ features.
+       :math:`2 \cdot \text{points\_per\_stroke} \cdot \text{strokes}` features.
 
-       If `points` is set to $0$, the first `points\_per\_stroke` point
+       If `points` is set to 0, the first `points\_per\_stroke` point
        coordinates and the \verb+pen_down+ feature is used. This leads to
-       $3 \cdot \text{points_per_stroke}$ features."""
+       :math:`3 \cdot \text{points_per_stroke}` features."""
 
     normalize = False
 
@@ -153,7 +153,7 @@ class ConstantPointCoordinates(object):
                             x.append(self.fill_empty_with)
                             x.append(self.fill_empty_with)
                 else:
-                    for i in range(self.points_per_stroke):
+                    for _ in range(self.points_per_stroke):
                         x.append(self.fill_empty_with)
                         x.append(self.fill_empty_with)
         else:
@@ -423,6 +423,8 @@ class Time(object):
         return "Time"
 
     def get_dimension(self):
+        """Get the dimension of the returned feature. This equals the number
+           of elements in the returned list of numbers."""
         return 1
 
     def __call__(self, handwritten_data):
@@ -502,7 +504,7 @@ class StrokeIntersections(object):
     """Count the number of intersections which strokes in the recording have
        with each other in form of a symmetrical matrix for the first
        `stroke=4` strokes. The feature dimension is
-       $round \frac{\text{strokes}^2}{2} + \frac{\text{strokes}}{2}$,
+       :math:`round \frac{\text{strokes}^2}{2} + \frac{\text{strokes}}{2}`,
        because the symmetrical part is discarded.
 
     =======   ======= ======= ======= ===
@@ -598,12 +600,12 @@ class StrokeIntersections(object):
                                                      pointlist[j]))
         # print("%s - %i" % (handwritten_data.formula_in_latex,
         #                    handwritten_data.raw_data_id))
-        curr = 0
-        for i in range(self.strokes, 0, -1):
-            line = "\t"*(self.strokes - i)
-            for j in range(i):
-                line += str(x[curr]) + "\t"
-                curr += 1
+        # curr = 0
+        # for i in range(self.strokes, 0, -1):
+        #     line = "\t"*(self.strokes - i)
+        #     for j in range(i):
+        #         line += str(x[curr]) + "\t"
+        #         curr += 1
 
         assert self.get_dimension() == len(x), \
             "Dimension of %s should be %i, but was %i" % \
@@ -615,7 +617,7 @@ class ReCurvature(object):
 
     """Re-curvature is a 1 dimensional, stroke-global feature for a recording.
        It is the ratio
-       $\frac{\text{height}(stroke)}{\text{distance}(stroke[0], stroke[-1])}$.
+       :math:`\frac{\text{height}(s)}{\text{distance}(s[0], s[-1])}`.
     """
 
     normalize = True

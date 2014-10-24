@@ -38,3 +38,5 @@ Coverage:
 
     $ nosetests --with-coverage --cover-erase --cover-package hwrt --logging-level=INFO --cover-html
     $ coveralls
+
+Code smug: `pylint`

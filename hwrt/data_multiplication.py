@@ -25,7 +25,7 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
 import math
 from copy import deepcopy
 # mine
-import HandwrittenData
+from hwrt import HandwrittenData
 
 
 def get_class(name):
@@ -88,7 +88,7 @@ class Multiply(object):
             "handwritten data is not of type HandwrittenData, but of %r" % \
             type(handwritten_data)
         new_trainging_set = []
-        for i in range(self.nr):
+        for _ in range(self.nr):
             new_trainging_set.append(handwritten_data)
         training_set = new_trainging_set
         return training_set

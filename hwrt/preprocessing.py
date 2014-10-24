@@ -318,9 +318,6 @@ class SpaceEvenly(object):
                     x.append(point['x'])
                     y.append(point['y'])
                     t.append(point['time'])
-                else:
-                    # TODO: That should not happen
-                    pass
             if len(x) == 1:
                 # constant interpolation
                 fx, fy = lambda x: float(x), lambda y: float(y)
@@ -485,10 +482,11 @@ class DouglasPeucker(object):
     def __str__(self):
         return "DouglasPeucker (EPSILON: %0.2f)\n" % self.EPSILON
 
-    def DouglasPeucker(self, PointList, EPSILON):
-        def LotrechterAbstand(p3, p1, p2):
+    def line_simplification(self, PointList, EPSILON):
+        def perpendicularDistance(p3, p1, p2):
             """
             Calculate the distance from p3 to the stroke defined by p1 and p2.
+            The distance is the length of the perpendicular from p3 on p1.
             :param p1: start of stroke
             :type p1: dictionary with "x" and "y"
             :param p2: end of stroke
@@ -503,7 +501,7 @@ class DouglasPeucker(object):
             py = p2['y']-p1['y']
 
             something = px*px + py*py
-            if (something == 0):
+            if something == 0:
                 # TODO: really?
                 return 0
 
@@ -533,7 +531,7 @@ class DouglasPeucker(object):
         dmax = 0
         index = 0
         for i in range(1, len(PointList)):
-            d = LotrechterAbstand(PointList[i], PointList[0], PointList[-1])
+            d = perpendicularDistance(PointList[i], PointList[0], PointList[-1])
             if d > dmax:
                 index = i
                 dmax = d
@@ -542,8 +540,8 @@ class DouglasPeucker(object):
         # vereinfachen
         if dmax >= EPSILON:
             # Recursive call
-            recResults1 = self.DouglasPeucker(PointList[0:index], EPSILON)
-            recResults2 = self.DouglasPeucker(PointList[index:], EPSILON)
+            recResults1 = self.line_simplification(PointList[0:index], EPSILON)
+            recResults2 = self.line_simplification(PointList[index:], EPSILON)
 
             # Ergebnisliste aufbauen
             ResultList = recResults1[:-1] + recResults2
@@ -560,7 +558,7 @@ class DouglasPeucker(object):
         pointlist = handwritten_data.get_pointlist()
 
         for i in range(0, len(pointlist)):
-            pointlist[i] = self.DouglasPeucker(pointlist[i], self.EPSILON)
+            pointlist[i] = self.line_simplification(pointlist[i], self.EPSILON)
         handwritten_data.set_pointlist(pointlist)
         # This might have duplicated points! Filter them!
         handwritten_data.preprocessing([RemoveDuplicateTime()])

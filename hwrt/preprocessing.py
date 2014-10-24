@@ -7,12 +7,12 @@ Preprocessing algorithms.
 Each algorithm works on the HandwrittenData class. They have to be applied like
 this:
 
- >>> a = HandwrittenData(...)
- >>> preprocessing_queue = [ScaleAndShift(),
-                            StrokeConnect(),
-                            DouglasPeucker(epsilon=0.2),
-                            SpaceEvenly(number=100)]
- >>> a.preprocessing(preprocessing_queue)
+    >>> a = HandwrittenData(...)
+    >>> preprocessing_queue = [ScaleAndShift(),
+                               StrokeConnect(),
+                               DouglasPeucker(epsilon=0.2),
+                               SpaceEvenly(number=100)]
+    >>> a.preprocessing(preprocessing_queue)
 """
 
 import numpy

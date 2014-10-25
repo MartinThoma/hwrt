@@ -58,3 +58,6 @@ target/
 
 # Nosetests
 cover/
+
+# aspell
+*.bak

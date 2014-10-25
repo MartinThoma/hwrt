@@ -63,7 +63,7 @@ of each class separated by spaces.
 
 has to print the model in standard output.
 
-The `hwrt` toolset is independant of the way the training command is
+The `hwrt` toolset is independent of the way the training command is
 formatted as the training command gets inserted directly into the configuration
 file ``info.yml`` of the model.
 

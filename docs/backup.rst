@@ -1,7 +1,7 @@
 Backup from MySQL server
 ================================
 
-This tool is only usefull if you also have a `write-math <https://github.com/MartinThoma/write-math>`_
+This tool is only useful if you also have a `write-math <https://github.com/MartinThoma/write-math>`_
 MySQL server running.
 
 .. code:: bash
@@ -9,7 +9,7 @@ MySQL server running.
  $ backup.py --help
  usage: backup.py [-h] [-d FOLDER] [-s] [-o]
  
- Download raw data from online server and back it up (e.g. on dropbox)
+ Download raw data from online server and back it up (e.g. on DropBox)
  handwriting_datasets.pickle.
  
  optional arguments:
@@ -20,6 +20,6 @@ MySQL server running.
                          /raw-datasets)
    -s, --small           should only a small dataset (with all capital letters)
                          be created? (default: False)
-   -o, --onlydropbox     don't download new files; only upload to dropbox
+   -o, --onlydropbox     don't download new files; only upload to DropBox
                         (default: False)
 

@@ -38,6 +38,7 @@ Contents:
    features
    create_pfiles
    plugins
+   development
 
 Binaries:
 

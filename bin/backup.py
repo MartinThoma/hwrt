@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Download raw data from online server and back it up (e.g. on dropbox)
+Download raw data from online server and back it up (e.g. on DropBox)
 handwriting_datasets.pickle.
 """
 
@@ -34,7 +34,7 @@ def input_string(question=""):
 
 
 def check_dropbox():
-    """Check if the dropbox signin data is correct."""
+    """Check if the DropBox signin data is correct."""
     cfg = utils.get_project_configuration()
     if 'dropbox_app_key' not in cfg:
         logging.error("'dropbox_app_key' was not found.")
@@ -47,7 +47,7 @@ def check_dropbox():
 
 
 def dropbox_upload(filename, directory, client):
-    """Upload the data to dropbox.
+    """Upload the data to DropBox.
     :param filename: Name of the file that gets uploaded.
     :type filename: string
     :param directory: Name of the directory in which the file is that gets
@@ -229,7 +229,7 @@ def get_parser():
     parser.add_argument("-o", "--onlydropbox", dest="onlydropbox",
                         action="store_true", default=False,
                         help=("don't download new files; only upload to "
-                              "dropbox"))
+                              "DropBox"))
     return parser
 
 

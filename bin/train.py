@@ -86,6 +86,7 @@ def main(model_folder):
 
 
 def get_parser():
+    """Return the parser object for this script."""
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
     parser = ArgumentParser(description=__doc__,
                             formatter_class=ArgumentDefaultsHelpFormatter)

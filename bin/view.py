@@ -135,6 +135,7 @@ def display_data(raw_data_string, raw_data_id, model_folder):
 
 
 def get_parser():
+    """Return the parser object for this script."""
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
     parser = ArgumentParser(description=__doc__,
                             formatter_class=ArgumentDefaultsHelpFormatter)

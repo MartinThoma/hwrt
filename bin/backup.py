@@ -27,7 +27,6 @@ def input_string(question=""):
     """A function that works for both, Python 2.x and Python 3.x.
        It asks the user for input and returns it as a string.
     """
-    import sys
     if sys.version_info[0] == 2:
         return raw_input(question)
     else:
@@ -48,6 +47,13 @@ def check_dropbox():
 
 
 def dropbox_upload(filename, directory, client):
+    """Upload the data to dropbox.
+    :param filename: Name of the file that gets uploaded.
+    :type filename: string
+    :param directory: Name of the directory in which the file is that gets
+                      uploaded (relativ to the project root)
+    :type directory: string
+    :param client: a DropBox client object"""
     local_path = os.path.join(utils.get_project_root(), directory, filename)
     online_path = os.path.join(directory, filename)
     filesize = os.path.getsize(local_path)
@@ -72,8 +78,8 @@ def sync_directory(directory):
     cfg = utils.get_project_configuration()
 
     # Information about files in this folder
-    PROJECT_ROOT = utils.get_project_root()
-    directory_information_file = os.path.join(PROJECT_ROOT,
+    project_root = utils.get_project_root()
+    directory_information_file = os.path.join(project_root,
                                               directory, "info.yml")
     if not os.path.isfile(directory_information_file):  # create if not exists
         with open(directory_information_file, 'w') as ymlfile:
@@ -100,7 +106,7 @@ def sync_directory(directory):
         return False
 
     # Get all local files
-    local_path = os.path.join(PROJECT_ROOT, directory)
+    local_path = os.path.join(project_root, directory)
     files = [f for f in os.listdir(local_path)
              if os.path.isfile(os.path.join(local_path, f))]
     files = filter(lambda n: n.endswith(".pickle"), files)
@@ -132,13 +138,14 @@ def sync_directory(directory):
 def main(destination=os.path.join(utils.get_project_root(),
                                   "raw-datasets"),
          small_dataset=False):
+    """Main part of the backup script."""
     time_prefix = time.strftime("%Y-%m-%d-%H-%M")
     if small_dataset:
         filename = "%s-handwriting_datasets-small-raw.pickle" % time_prefix
     else:
         filename = "%s-handwriting_datasets-raw.pickle" % time_prefix
     destination_path = os.path.join(destination, filename)
-    logging.info("Data will be written to '%s'" % destination_path)
+    logging.info("Data will be written to '%s'", destination_path)
     cfg = utils.get_database_configuration()
     mysql = cfg['mysql_online']
     connection = MySQLdb.connect(host=mysql['host'],
@@ -177,8 +184,7 @@ def main(destination=os.path.join(utils.get_project_root(),
                "WHERE `accepted_formula_id` = %s" % str(formula['id']))
         cursor.execute(sql)
         raw_datasets = cursor.fetchall()
-        logging.info("%s (%i)" % (formula['formula_in_latex'],
-                                  len(raw_datasets)))
+        logging.info("%s (%i)", formula['formula_in_latex'], len(raw_datasets))
         for raw_data in raw_datasets:
             try:
                 handwriting = HandwrittenData(raw_data['data'],
@@ -194,21 +200,20 @@ def main(destination=os.path.join(utils.get_project_root(),
                                              'formula_in_latex':
                                              formula['formula_in_latex'],
                                              'is_in_testset':
-                                             raw_data['is_in_testset']
-                                             })
+                                             raw_data['is_in_testset']})
             except Exception as e:
-                logging.info("Raw data id: %s" % raw_data['id'])
+                logging.info("Raw data id: %s", raw_data['id'])
                 logging.info(e)
     pickle.dump({'handwriting_datasets': handwriting_datasets,
-                 'formula_id2latex': formula_id2latex,
-                 },
+                 'formula_id2latex': formula_id2latex},
                 open(destination_path, "wb"),
                 2)
 
 
 def get_parser():
-    PROJECT_ROOT = utils.get_project_root()
-    archive_path = os.path.join(PROJECT_ROOT, "raw-datasets")
+    """Return the parser object for this script."""
+    project_root = utils.get_project_root()
+    archive_path = os.path.join(project_root, "raw-datasets")
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
     parser = ArgumentParser(description=__doc__,
                             formatter_class=ArgumentDefaultsHelpFormatter)

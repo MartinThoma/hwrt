@@ -17,6 +17,7 @@ import hwrt
 
 
 def get_parser():
+    """Return the parser object for this script."""
     parser = argparse.ArgumentParser(description=__doc__,
                                      prog='hwrt')
     parser.add_argument('--version',

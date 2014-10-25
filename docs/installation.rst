@@ -32,7 +32,14 @@ As a last step, you can install hwrt:
 
     # pip install hwrt
 
-Please send me an email (info@martin-thoma.de) if that didn’t work.
+You can check if it worked by
+
+.. code:: bash
+
+    $ hwrt --version
+    hwrt 0.1.101
+
+Please send me an email (info@martin-thoma.de) if that didn't work.
 
 
 nntoolkit

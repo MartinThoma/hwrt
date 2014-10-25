@@ -8,7 +8,7 @@ specifying a Python script in ``preprocessing`` or ``features``.
 If a preprocessing class or a feature class exists in the official hwrt and
 in a plugin simultaniously, the hwrt implementation is used.
 
-Preprocessing classes
+Preprocessing Classes
 ---------------------
 
 Every feature class must have a ``__str__``, ``__repr__`` and a ``__call__``
@@ -18,7 +18,7 @@ function where
 * ``__call__`` must call the :mod:`Handwriting.set_points`
 
 
-Feature classes
+Feature Classes
 ---------------
 
 Every feature class must have a ``__str__``, ``__repr__``, ``__call__`` and
@@ -30,7 +30,7 @@ Every feature class must have a ``__str__``, ``__repr__``, ``__call__`` and
 * have a 'normalize' attribute that is either true or false
 
 
-Preprocessing plugin example
+Preprocessing Plugin Example
 ----------------------------
 
 .. code-block:: python
@@ -58,7 +58,7 @@ Preprocessing plugin example
             new_pointlist.append(new_stroke)
             handwritten_data.set_pointlist(new_pointlist)
 
-Feature plugin example
+Feature Plugin Example
 ----------------------
 
 .. code-block:: python

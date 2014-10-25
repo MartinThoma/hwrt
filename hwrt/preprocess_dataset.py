@@ -21,20 +21,15 @@ sys.modules['hwrt.HandwrittenData'] = HandwrittenData
 sys.modules['HandwrittenData'] = HandwrittenData
 
 
-def main(folder):
-    raw_datapath, outputpath, p_queue = get_parameters(folder)
-    create_preprocessed_dataset(raw_datapath, outputpath, p_queue)
-    utils.create_run_logfile(folder)
-
-
 def get_parameters(folder):
-    PROJECT_ROOT = utils.get_project_root()
+    """Get the parameters of the preprocessing done within ``folder``."""
+
     # Read the model description file
     with open(os.path.join(folder, "info.yml"), 'r') as ymlfile:
         preprocessing_description = yaml.load(ymlfile)
 
     # Get the path of the raw data
-    raw_datapath = os.path.join(PROJECT_ROOT,
+    raw_datapath = os.path.join(utils.get_project_root(),
                                 preprocessing_description['data-source'])
     # Get the path were the preprocessed file should be put
     outputpath = os.path.join(folder, "data.pickle")
@@ -46,12 +41,14 @@ def get_parameters(folder):
 
 
 def create_preprocessed_dataset(path_to_data, outputpath, preprocessing_queue):
+    """Create a preprocessed dataset file by applying ``preprocessing_queue``
+       to ``path_to_data``. The result will be stored in ``outputpath``."""
     # Log everything
-    logging.info("Data soure %s" % path_to_data)
-    logging.info("Output will be stored in %s" % outputpath)
+    logging.info("Data soure %s", path_to_data)
+    logging.info("Output will be stored in %s", outputpath)
     tmp = "Preprocessing Queue:\n"
-    for el in preprocessing_queue:
-        tmp += str(el) + "\n"
+    for preprocessing_class in preprocessing_queue:
+        tmp += str(preprocessing_class) + "\n"
     logging.info(tmp)
     # Load from pickled file
     if not os.path.isfile(path_to_data):
@@ -77,17 +74,23 @@ def create_preprocessed_dataset(path_to_data, outputpath, preprocessing_queue):
     print("")
     pickle.dump({'handwriting_datasets': raw_datasets,
                  'formula_id2latex': loaded['formula_id2latex'],
-                 'preprocessing_queue': preprocessing_queue
-                 },
+                 'preprocessing_queue': preprocessing_queue},
                 open(outputpath, "wb"),
                 2)
 
 
+def main(folder):
+    """Main part of preprocess_dataset that glues things togeter."""
+    raw_datapath, outputpath, p_queue = get_parameters(folder)
+    create_preprocessed_dataset(raw_datapath, outputpath, p_queue)
+    utils.create_run_logfile(folder)
+
+
 if __name__ == '__main__':
-    PROJECT_ROOT = utils.get_project_root()
 
     # Get latest model description file
-    preprocessed_folder = os.path.join(PROJECT_ROOT, "preprocessed")
+    preprocessed_folder = os.path.join(utils.get_project_root(),
+                                       "preprocessed")
     latest_preprocessed = utils.get_latest_folder(preprocessed_folder)
 
     # Get command line arguments

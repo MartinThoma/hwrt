@@ -12,6 +12,7 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
 import yaml
 import MySQLdb
 import MySQLdb.cursors
+import cPickle as pickle
 # mine
 import hwrt
 from hwrt.HandwrittenData import HandwrittenData
@@ -21,10 +22,13 @@ import hwrt.features as features
 import hwrt.data_multiplication as data_multiplication
 
 
-def fetch_data(raw_data_id):
-    """Get the data from raw_data_id from the server."""
+def _fetch_data_from_server(raw_data_id):
+    """Get the data from raw_data_id from the server.
+    :returns: The ``data`` if fetching worked, ``None`` if it failed."""
     # Import configuration file
     cfg = utils.get_database_configuration()
+    if cfg is None:
+        return None
 
     # Establish database connection
     connection = MySQLdb.connect(host=cfg[args.mysql]['host'],
@@ -41,7 +45,18 @@ def fetch_data(raw_data_id):
     return cursor.fetchone()
 
 
-def get_system(model_folder):
+def _get_data_from_rawfile(path_to_data, raw_data_id):
+    """Get a HandwrittenData object that has ``raw_data_id`` from a pickle file
+       ``path_to_data``."""
+    loaded = pickle.load(open(path_to_data))
+    raw_datasets = loaded['handwriting_datasets']
+    for raw_dataset in raw_datasets:
+        if raw_dataset['handwriting'].raw_data_id == raw_data_id:
+            return raw_dataset['handwriting']
+    return None
+
+
+def _get_system(model_folder):
     """Return the preprocessing description, the feature description and the
        model description."""
     project_root = utils.get_project_root()
@@ -90,7 +105,7 @@ def display_data(raw_data_string, raw_data_id, model_folder):
     print(raw_data_string)
     print("```")
 
-    preprocessing_desc, feature_desc, _ = get_system(model_folder)
+    preprocessing_desc, feature_desc, _ = _get_system(model_folder)
 
     # Print preprocessing queue
     print("#### Preprocessing")
@@ -163,11 +178,25 @@ def get_parser():
 
 if __name__ == '__main__':
     args = get_parser().parse_args()
-
-    # do something
-    data = fetch_data(args.id)
+    data = _fetch_data_from_server(args.id)
     if data is None:
-        print("RAW_DATA_ID %i does not exist." % args.id)
+        logging.info("RAW_DATA_ID %i does not exist or "
+                     "database connection did not work.", args.id)
+        # The data was not on the server / the connection to the server did
+        # not work. So try it again with the model data
+        preprocessing_desc, _, _ = _get_system(args.model)
+        raw_datapath = os.path.join(utils.get_project_root(),
+                                    preprocessing_desc['data-source'])
+        handwriting = _get_data_from_rawfile(raw_datapath, args.id)
+        if handwriting is None:
+            logging.info("Recording with ID %i was not found in %s",
+                         args.id,
+                         raw_datapath)
+        else:
+            print("hwrt version: %s" % hwrt.__version__)
+            display_data(handwriting.raw_data_json,
+                         handwriting.formula_id,
+                         args.model)
     else:
         print("hwrt version: %s" % hwrt.__version__)
         display_data(data['data'], data['id'], args.model)

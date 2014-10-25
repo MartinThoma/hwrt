@@ -112,12 +112,25 @@ def get_latest_folder(folder):
 def get_database_config_file():
     """Get the absolute path to the database configuration file."""
     cfg = get_project_configuration()
-    return cfg['dbconfig']
+    if 'dbconfig' in cfg:
+        if os.path.isfile(cfg['dbconfig']):
+            return cfg['dbconfig']
+        else:
+            logging.info("File '%s' was not found. Adjust 'dbconfig' in your "
+                         "~/.hwrtrc file.",
+                         cfg['dbconfig'])
+    else:
+        logging.info("No database connection file found. "
+                     "Specify 'dbconfig' in your ~/.hwrtrc file.")
+    return None
 
 
 def get_database_configuration():
     """Get database configuration as dictionary."""
-    with open(get_database_config_file(), 'r') as ymlfile:
+    db_config = get_database_config_file()
+    if db_config is None:
+        return None
+    with open(db_config, 'r') as ymlfile:
         cfg = yaml.load(ymlfile)
     return cfg
 

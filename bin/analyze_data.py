@@ -17,13 +17,32 @@ import numpy
 from collections import defaultdict
 import math
 # My modules
-from hwrt.HandwrittenData import HandwrittenData  # Needed because of pickle
+# HandwrittenData is necessary because of pickle
+from hwrt.HandwrittenData import HandwrittenData  # pylint: disable=unused-import
 import hwrt.features as features
 import hwrt.Geometry as Geometry
 import hwrt.utils as utils
 
 
 def sort_by_formula_id(raw_datasets):
+    """"The parameter ``raw_datasets`` has to be of the format
+
+    [{'is_in_testset': 0,
+      'formula_id': 31L,
+      'handwriting': HandwrittenData(raw_data_id=2953),
+      'formula_in_latex': 'A',
+      'id': 2953L},
+     {'is_in_testset': 0,
+      'formula_id': 31L,
+      'handwriting': HandwrittenData(raw_data_id=4037),
+      'formula_in_latex': 'A',
+      'id': 4037L},
+     {'is_in_testset': 0,
+      'formula_id': 31L,
+      'handwriting': HandwrittenData(raw_data_id=4056),
+      'formula_in_latex': 'A',
+      'id': 4056L}]
+    """
     by_formula_id = defaultdict(list)
     for el in raw_datasets:
         by_formula_id[el['handwriting'].formula_id].append(el['handwriting'])
@@ -31,12 +50,13 @@ def sort_by_formula_id(raw_datasets):
 
 
 def filter_label(label, replace_by_similar=True):
+    """Some labels currently don't work together because of LaTeX naming
+       clashes. Those will be replaced by simple strings. """
     bad_names = ['celsius', 'degree', 'ohm', 'venus', 'mars', 'astrosun',
                  'fullmoon', 'leftmoon', 'female', 'male', 'checked',
                  'diameter', 'sun', 'Bowtie', 'sqrt',
                  'cong', 'copyright', 'dag', 'parr', 'notin', 'dotsc',
-                 'mathds', 'mathfrak'
-                 ]
+                 'mathds', 'mathfrak']
     if any(label[1:].startswith(bad) for bad in bad_names):
         if label == '\\dag' and replace_by_similar:
             return '\\dagger'
@@ -54,8 +74,7 @@ def analyze_feature(raw_datasets, feature, basename="aspect_ratios"):
        and the name of the symbol as a csv file.
     """
     # Get folder where results should get stored
-    PROJECT_ROOT = utils.get_project_root()
-    folder = os.path.join(PROJECT_ROOT, "analyzation/")
+    folder = os.path.join(utils.get_project_root(), "analyzation/")
 
     # Prepare files
     csv_filename = os.path.join(folder, basename+'.csv')
@@ -70,7 +89,7 @@ def analyze_feature(raw_datasets, feature, basename="aspect_ratios"):
 
     by_formula_id = sort_by_formula_id(raw_datasets)
     print_data = []
-    for formula_id, datasets in by_formula_id.items():
+    for _, datasets in by_formula_id.items():
         values = []
         for data in datasets:
             value = feature(data)[0]
@@ -91,7 +110,6 @@ def analyze_feature(raw_datasets, feature, basename="aspect_ratios"):
 
 def analyze_creator(raw_datasets, filename="creator.csv"):
     """Analyze who created most of the data."""
-    from collections import defaultdict
 
     # prepare file
     root = utils.get_project_root()
@@ -122,8 +140,7 @@ def analyze_creator(raw_datasets, filename="creator.csv"):
 def analyze_instroke_speed(raw_datasets, filename="instroke_speed.csv"):
     """Analyze how fast the points were in pixel/ms."""
     # prepare file
-    root = utils.get_project_root()
-    folder = os.path.join(root, "analyzation/")
+    folder = os.path.join(utils.get_project_root(), "analyzation/")
     workfilename = os.path.join(folder, filename)
     open(workfilename, 'w').close()  # Truncate the file
     write_file = open(workfilename, "a")
@@ -151,8 +168,8 @@ def analyze_instroke_speed(raw_datasets, filename="instroke_speed.csv"):
     for value in print_data:
         write_file.write("%0.8f\n" % (value))
 
-    logging.info("instroke speed mean: %0.8f" % numpy.mean(print_data))
-    logging.info("instroke speed std: %0.8f" % numpy.std(print_data))
+    logging.info("instroke speed mean: %0.8f", numpy.mean(print_data))
+    logging.info("instroke speed std: %0.8f", numpy.std(print_data))
     write_file.close()
 
 
@@ -187,8 +204,8 @@ def analyze_distance_betwee_strokes(raw_datasets,
     for value in print_data:
         write_file.write("%0.8f\n" % (value))
 
-    logging.info("dist_between_strokes mean:\t%0.8fpx" % numpy.mean(print_data))
-    logging.info("dist_between_strokes std: \t%0.8fpx" % numpy.std(print_data))
+    logging.info("dist_between_strokes mean:\t%0.8fpx", numpy.mean(print_data))
+    logging.info("dist_between_strokes std: \t%0.8fpx", numpy.std(print_data))
     write_file.close()
 
 
@@ -201,7 +218,11 @@ def get_bounding_box_distance(raw_datasets):
     # 193
     # 524
 
-    def get_stroke_bounding_box(stroke):
+    def _get_stroke_bounding_box(stroke):
+        """Get the bounding box of a stroke. A stroke is a list of points
+           {'x': 123, 'y': 456, 'time': 42} and a bounding box is the smallest
+           rectangle that contains all points.
+        """
         min_x, max_x = stroke[0]['x'], stroke[0]['x']
         min_y, max_y = stroke[0]['y'], stroke[0]['y']
         #  if len(stroke) == 1: ?
@@ -214,7 +235,10 @@ def get_bounding_box_distance(raw_datasets):
         maxp = Geometry.Point(max_x, max_y)
         return Geometry.BoundingBox(minp, maxp)
 
-    def get_bb_distance(a, b):
+    def _get_bb_distance(a, b):
+        """"Take two bounding boxes a and b and get the smallest distance
+            between them.
+        """
         points_a = [Geometry.Point(a.p1.x, a.p1.y),
                     Geometry.Point(a.p1.x, a.p2.y),
                     Geometry.Point(a.p2.x, a.p1.y),
@@ -235,9 +259,9 @@ def get_bounding_box_distance(raw_datasets):
                    Geometry.LineSegment(points_b[1], points_b[2]),
                    Geometry.LineSegment(points_b[2], points_b[3]),
                    Geometry.LineSegment(points_b[3], points_b[0])]
-        for la in lines_a:
-            for lb in lines_b:
-                min_distance = min(min_distance, la.dist_to(lb))
+        for line_in_a in lines_a:
+            for line_in_b in lines_b:
+                min_distance = min(min_distance, line_in_a.dist_to(line_in_b))
         return min_distance
 
     bbfile = open("bounding_boxdist.html", "a")
@@ -251,7 +275,7 @@ def get_bounding_box_distance(raw_datasets):
         bounding_boxes = []
         for stroke in pointlist:
             # TODO: Get bounding boxes of strokes
-            bounding_boxes.append(get_stroke_bounding_box(stroke))
+            bounding_boxes.append(_get_stroke_bounding_box(stroke))
 
         got_change = True
         while got_change:
@@ -297,7 +321,7 @@ def get_bounding_box_distance(raw_datasets):
                 for j, bb2 in enumerate(bounding_boxes):
                     if k == j:
                         continue
-                    dist_tmp.append(get_bb_distance(bb, bb2))
+                    dist_tmp.append(_get_bb_distance(bb, bb2))
                 bb_dist.append(min(dist_tmp))
             bb_dist = max(bb_dist)
             dim = max([bb.get_largest_dimension() for bb in bounding_boxes])
@@ -322,7 +346,7 @@ def get_bounding_box_distance(raw_datasets):
                     #     for j, bb2 in enumerate(bounding_boxes):
                     #         if k == j:
                     #             continue
-                    #         dist_tmp.append(get_bb_distance(bb, bb2))
+                    #         dist_tmp.append(_get_bb_distance(bb, bb2))
                     #     print(dist_tmp)
                     #     bb_dist.append(min(dist_tmp))
                     # raw_dataset['handwriting'].show()
@@ -332,13 +356,6 @@ def get_bounding_box_distance(raw_datasets):
                                  (url_base,
                                   raw_dataset['handwriting'].raw_data_id))
     print("\r100%"+"\033[K\n")
-
-
-def get_max_distances(raw_datasets):
-    """For each symbol and each line of the symbol: Get the maximum
-       two points have. Print this distance to a file.
-    """
-    pass
 
 
 def get_time_between_controll_points(raw_datasets):
@@ -356,7 +373,7 @@ def get_time_between_controll_points(raw_datasets):
         times_between_points, times_between_strokes = [], []
         last_stroke_end = None
         if len(raw_dataset['handwriting'].get_pointlist()) == 0:
-            logging.warning("%i has no content." %
+            logging.warning("%i has no content.",
                             raw_dataset['handwriting'].raw_data_id)
             continue
         for stroke in raw_dataset['handwriting'].get_sorted_pointlist():
@@ -395,15 +412,15 @@ def main(handwriting_datasets_file):
     # logging.info("get_bounding_box_distance...")
     # get_bounding_box_distance(raw_datasets)
 
-    f = [(features.Aspect_ratio(), "aspect_ratio.csv"),
-         (features.Re_curvature(1), "re_curvature.csv"),
-         (features.Height(), "height.csv"),
-         (features.Width(), "width.csv"),
-         (features.Time(), "time.csv"),
-         (features.Ink(), "ink.csv"),
-         (features.Stroke_Count(), "stroke-count.csv")]
-    for feat, filename in f:
-        logging.info("create %s..." % filename)
+    featurelist = [(features.AspectRatio(), "aspect_ratio.csv"),
+                   (features.ReCurvature(1), "re_curvature.csv"),
+                   (features.Height(), "height.csv"),
+                   (features.Width(), "width.csv"),
+                   (features.Time(), "time.csv"),
+                   (features.Ink(), "ink.csv"),
+                   (features.StrokeCount(), "stroke-count.csv")]
+    for feat, filename in featurelist:
+        logging.info("create %s...", filename)
         analyze_feature(raw_datasets, feat, filename)
 
     logging.info("creator...")
@@ -413,11 +430,12 @@ def main(handwriting_datasets_file):
 
 
 def get_parser():
-    PROJECT_ROOT = utils.get_project_root()
+    """Return the parser object for this script."""
+    project_root = utils.get_project_root()
 
     # Get latest (raw) dataset
-    DATASET_FOLDER = os.path.join(PROJECT_ROOT, "raw-datasets")
-    LATEST_DATASET = utils.get_latest_in_folder(DATASET_FOLDER, "raw.pickle")
+    dataset_folder = os.path.join(project_root, "raw-datasets")
+    latest_dataset = utils.get_latest_in_folder(dataset_folder, "raw.pickle")
 
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
     parser = ArgumentParser(description=__doc__,
@@ -427,7 +445,7 @@ def get_parser():
                         help="where are the pickled handwriting_datasets?",
                         metavar="FILE",
                         type=lambda x: utils.is_valid_file(parser, x),
-                        default=LATEST_DATASET)
+                        default=latest_dataset)
     return parser
 
 

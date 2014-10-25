@@ -95,7 +95,7 @@ def main(feature_folder, create_learning_curve=False):
     for algorithm in feature_list:
         print("* %s" % str(algorithm))
     print("```")
-    logging.info("## Start creating pfiles")
+    logging.info("Start creating pfiles")
 
     # Traindata has to come first because of feature normalization
     for dataset_name, dataset, is_traindata in \

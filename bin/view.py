@@ -36,19 +36,15 @@ def fetch_data(raw_data_id):
 
     # Download dataset
     sql = ("SELECT `id`, `data` "
-           "FROM `wm_raw_draw_data` WHERE `id`=%i") % args.id
+           "FROM `wm_raw_draw_data` WHERE `id`=%i") % raw_data_id
     cursor.execute(sql)
-    data = cursor.fetchone()
-    return data
+    return cursor.fetchone()
 
 
-def display_data(raw_data_string, raw_data_id, model_folder):
-    print("#### Raw Data (ID: %i)" % raw_data_id)
-    print("```")
-    print(raw_data_string)
-    print("```")
-
-    PROJECT_ROOT = utils.get_project_root()
+def get_system(model_folder):
+    """Return the preprocessing description, the feature description and the
+       model description."""
+    project_root = utils.get_project_root()
 
     # Get model description
     model_description_file = os.path.join(model_folder, "info.yml")
@@ -58,69 +54,82 @@ def display_data(raw_data_string, raw_data_id, model_folder):
                       model_description_file)
         sys.exit(-1)
     with open(model_description_file, 'r') as ymlfile:
-        model_description = yaml.load(ymlfile)
+        model_desc = yaml.load(ymlfile)
 
     # Get the feature description
-    feature_description_file = os.path.join(PROJECT_ROOT,
-                                            model_description['data-source'],
+    feature_description_file = os.path.join(project_root,
+                                            model_desc['data-source'],
                                             "info.yml")
     if not os.path.isfile(feature_description_file):
         logging.error("You are probably not in the folder of a model, because "
                       "%s is not a file.", feature_description_file)
         sys.exit(-1)
     with open(feature_description_file, 'r') as ymlfile:
-        feature_description = yaml.load(ymlfile)
+        feature_desc = yaml.load(ymlfile)
 
     # Get the preprocessing description
     preprocessing_description_file = os.path.join(
-        PROJECT_ROOT,
-        feature_description['data-source'],
+        project_root,
+        feature_desc['data-source'],
         "info.yml")
     if not os.path.isfile(preprocessing_description_file):
         logging.error("You are probably not in the folder of a model, because "
                       "%s is not a file.", preprocessing_description_file)
         sys.exit(-1)
     with open(preprocessing_description_file, 'r') as ymlfile:
-        preprocessing_description = yaml.load(ymlfile)
+        preprocessing_desc = yaml.load(ymlfile)
+
+    return (preprocessing_desc, feature_desc, model_desc)
+
+
+def display_data(raw_data_string, raw_data_id, model_folder):
+    """Print ``raw_data_id`` with the content ``raw_data_string`` after
+       applying the preprocessing of ``model_folder`` to it."""
+    print("#### Raw Data (ID: %i)" % raw_data_id)
+    print("```")
+    print(raw_data_string)
+    print("```")
+
+    preprocessing_desc, feature_desc, _ = get_system(model_folder)
 
     # Print preprocessing queue
     print("#### Preprocessing")
     print("```")
-    tmp = preprocessing_description['queue']
+    tmp = preprocessing_desc['queue']
     preprocessing_queue = preprocessing.get_preprocessing_queue(tmp)
     for algorithm in preprocessing_queue:
         print("* " + str(algorithm))
     print("```")
 
-    feature_list = features.get_features(feature_description['features'])
-    INPUT_FEATURES = sum(map(lambda n: n.get_dimension(), feature_list))
-    print("#### Features (%i)" % INPUT_FEATURES)
+    feature_list = features.get_features(feature_desc['features'])
+    input_features = sum(map(lambda n: n.get_dimension(), feature_list))
+    print("#### Features (%i)" % input_features)
     print("```")
     for algorithm in feature_list:
         print("* %s" % str(algorithm))
     print("```")
 
     # Get Handwriting
-    a = HandwrittenData(raw_data_string, raw_data_id=raw_data_id)
+    recording = HandwrittenData(raw_data_string, raw_data_id=raw_data_id)
 
     # Get the preprocessing queue
-    tmp = preprocessing_description['queue']
+    tmp = preprocessing_desc['queue']
     preprocessing_queue = preprocessing.get_preprocessing_queue(tmp)
-    a.preprocessing(preprocessing_queue)
+    recording.preprocessing(preprocessing_queue)
 
-    tmp = feature_description['features']
+    tmp = feature_desc['features']
     feature_list = features.get_features(tmp)
-    x = a.feature_extraction(feature_list)
-    t = [round(el, 3) for el in x]
+    feature_values = recording.feature_extraction(feature_list)
+    feature_values = [round(el, 3) for el in feature_values]
     print("Features:")
-    print(t)
+    print(feature_values)
 
     # Get the list of data multiplication algorithms
     mult_queue = data_multiplication.get_data_multiplication_queue(
-        feature_description['data-multiplication'])
+        feature_desc['data-multiplication'])
 
     # Multiply traing_set
-    training_set = [a]
+    training_set = [recording]
     for algorithm in mult_queue:
         new_trning_set = []
         for recording in training_set:

@@ -273,6 +273,7 @@ def analyze_results(translation_csv, what_evaluated_file, evaluation_file, n,
 
 
 def main(model_folder, aset='test', n=3, merge=True):
+    """Main part of the test script."""
     PROJECT_ROOT = utils.get_project_root()
 
     if aset == 'test':

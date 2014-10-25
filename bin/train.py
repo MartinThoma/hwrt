@@ -70,6 +70,7 @@ def train_model(model_folder, model_description, data):
 
 
 def main(model_folder):
+    """Main part of the training script."""
     model_description_file = os.path.join(model_folder, "info.yml")
 
     # Read the model description file

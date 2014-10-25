@@ -5,7 +5,7 @@ except ImportError:
 
 config = {
     'name': 'hwrt',
-    'version': '0.1.101',
+    'version': '0.1.102',
     'author': 'Martin Thoma',
     'author_email': 'info@martin-thoma.de',
     'packages': ['hwrt'],

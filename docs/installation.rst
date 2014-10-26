@@ -42,6 +42,25 @@ You can check if it worked by
 Please send me an email (info@martin-thoma.de) if that didn't work.
 
 
+First steps
+-----------
+
+First of all, you should download the raw data. This is done by executing
+``download.py``.
+
+Next, you can view a simple example by ``view.py``. For example, with
+``view.py --list`` you can view all raw data IDs of your current data.
+With ``view.py -i 291075`` you can see how the preprocessing steps and the
+later data multiplication steps influence the recording. If you didn't execute
+view from a model folder and if you didn't specify another model with ``-m``,
+you will get the output of the small baseline model that was created in your
+projects root folder (``~/hwr-experiments`` per default, but you can modify that
+with ``~/.hwrtrc``). That will show 3 rotated images of :math:`\pi`.
+
+If you want to see more examples, have a look at
+https://github.com/MartinThoma/hwr-experiments
+
+
 nntoolkit
 ---------
 

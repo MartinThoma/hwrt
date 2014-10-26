@@ -16,4 +16,14 @@ Tools
 * ``pylint`` to find code smug
 * GitHub for hosting the source code
 * http://hwrt.readthedocs.org/ for hosting the documentation
-* 
+
+
+Code coverage can be tested with
+
+.. code:: bash
+
+    $ nosetests --with-coverage --cover-erase --cover-package hwrt --logging-level=INFO --cover-html
+
+and uploaded to coveralls.io with
+
+    $ coveralls

@@ -5,7 +5,7 @@ except ImportError:
 
 config = {
     'name': 'hwrt',
-    'version': '0.1.115',
+    'version': '0.1.117',
     'author': 'Martin Thoma',
     'author_email': 'info@martin-thoma.de',
     'packages': ['hwrt'],
@@ -22,7 +22,8 @@ config = {
         "argparse",
         "theano",
         "nose",
-        "natsort"
+        "natsort",
+        "PyYAML"
     ],
     'keywords': ['HWRT', 'recognition', 'handwriting', 'on-line'],
     'download_url': 'https://github.com/MartinThoma/hwrt',

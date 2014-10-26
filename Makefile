@@ -1,5 +1,4 @@
 docs:
-	cd docs; make html
 	python setup.py upload_docs --upload-dir docs/_build/html
 
 update:

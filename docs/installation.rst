@@ -15,6 +15,13 @@ Debian-based systems you can do this with the following commands:
     # apt-get install libblas-dev liblapack-dev gfortran
     # apt-get install python-scipy python-numpy
 
+If you want to use MySQL functionality, you will need
+
+.. code:: bash
+
+    # apt-get install libmysqlclient-dev
+    # pip install MySQL-python
+
 Now you can install the remaining packages:
 
 .. code:: bash

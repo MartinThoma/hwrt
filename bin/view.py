@@ -10,8 +10,6 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
 import yaml
-import MySQLdb
-import MySQLdb.cursors
 import cPickle as pickle
 # mine
 import hwrt
@@ -25,6 +23,8 @@ import hwrt.data_multiplication as data_multiplication
 def _fetch_data_from_server(raw_data_id):
     """Get the data from raw_data_id from the server.
     :returns: The ``data`` if fetching worked, ``None`` if it failed."""
+    import MySQLdb
+    import MySQLdb.cursors
     # Import configuration file
     cfg = utils.get_database_configuration()
     if cfg is None:
@@ -199,6 +199,11 @@ def get_parser():
                         help="list all raw data IDs / symbol IDs",
                         action='store_true',
                         default=False)
+    parser.add_argument("-s", "--server",
+                        dest="server",
+                        help="contact the MySQL server",
+                        action='store_true',
+                        default=False)
     return parser
 
 if __name__ == '__main__':
@@ -209,8 +214,11 @@ if __name__ == '__main__':
                                     preprocessing_desc['data-source'])
         _list_ids(raw_datapath)
     else:
-        data = _fetch_data_from_server(args.id)
-        if data is None:
+        if args.server:
+            data = _fetch_data_from_server(args.id)
+            print("hwrt version: %s" % hwrt.__version__)
+            display_data(data['data'], data['id'], args.model)
+        else:
             logging.info("RAW_DATA_ID %i does not exist or "
                          "database connection did not work.", args.id)
             # The data was not on the server / the connection to the server did
@@ -228,6 +236,3 @@ if __name__ == '__main__':
                 display_data(handwriting.raw_data_json,
                              handwriting.formula_id,
                              args.model)
-        else:
-            print("hwrt version: %s" % hwrt.__version__)
-            display_data(data['data'], data['id'], args.model)

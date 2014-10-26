@@ -56,6 +56,22 @@ def _get_data_from_rawfile(path_to_data, raw_data_id):
     return None
 
 
+def _list_ids(path_to_data):
+    """List raw data IDs grouped by symbol ID from a pickle file
+       ``path_to_data``."""
+    loaded = pickle.load(open(path_to_data))
+    raw_datasets = loaded['handwriting_datasets']
+    raw_ids = {}
+    for raw_dataset in raw_datasets:
+        raw_data_id = raw_dataset['handwriting'].raw_data_id
+        if raw_dataset['formula_id'] not in raw_ids:
+            raw_ids[raw_dataset['formula_id']] = [raw_data_id]
+        else:
+            raw_ids[raw_dataset['formula_id']].append(raw_data_id)
+    for symbol_id in sorted(raw_ids):
+        print("%i: %s" % (symbol_id, sorted(raw_ids[symbol_id])))
+
+
 def _get_system(model_folder):
     """Return the preprocessing description, the feature description and the
        model description."""
@@ -100,15 +116,19 @@ def _get_system(model_folder):
 def display_data(raw_data_string, raw_data_id, model_folder):
     """Print ``raw_data_id`` with the content ``raw_data_string`` after
        applying the preprocessing of ``model_folder`` to it."""
-    print("#### Raw Data (ID: %i)" % raw_data_id)
+    print("## Raw Data (ID: %i)" % raw_data_id)
     print("```")
     print(raw_data_string)
     print("```")
 
     preprocessing_desc, feature_desc, _ = _get_system(model_folder)
 
+    # Print model
+    print("## Model")
+    print("%s\n" % model_folder)
+
     # Print preprocessing queue
-    print("#### Preprocessing")
+    print("## Preprocessing")
     print("```")
     tmp = preprocessing_desc['queue']
     preprocessing_queue = preprocessing.get_preprocessing_queue(tmp)
@@ -118,7 +138,7 @@ def display_data(raw_data_string, raw_data_id, model_folder):
 
     feature_list = features.get_features(feature_desc['features'])
     input_features = sum(map(lambda n: n.get_dimension(), feature_list))
-    print("#### Features (%i)" % input_features)
+    print("## Features (%i)" % input_features)
     print("```")
     for algorithm in feature_list:
         print("* %s" % str(algorithm))
@@ -174,29 +194,40 @@ def get_parser():
                         metavar="FOLDER",
                         type=lambda x: utils.is_valid_folder(parser, x),
                         default=utils.default_model())
+    parser.add_argument("-l", "--list",
+                        dest="list",
+                        help="list all raw data IDs / symbol IDs",
+                        action='store_true',
+                        default=False)
     return parser
 
 if __name__ == '__main__':
     args = get_parser().parse_args()
-    data = _fetch_data_from_server(args.id)
-    if data is None:
-        logging.info("RAW_DATA_ID %i does not exist or "
-                     "database connection did not work.", args.id)
-        # The data was not on the server / the connection to the server did
-        # not work. So try it again with the model data
+    if args.list:
         preprocessing_desc, _, _ = _get_system(args.model)
         raw_datapath = os.path.join(utils.get_project_root(),
                                     preprocessing_desc['data-source'])
-        handwriting = _get_data_from_rawfile(raw_datapath, args.id)
-        if handwriting is None:
-            logging.info("Recording with ID %i was not found in %s",
-                         args.id,
-                         raw_datapath)
+        _list_ids(raw_datapath)
+    else:
+        data = _fetch_data_from_server(args.id)
+        if data is None:
+            logging.info("RAW_DATA_ID %i does not exist or "
+                         "database connection did not work.", args.id)
+            # The data was not on the server / the connection to the server did
+            # not work. So try it again with the model data
+            preprocessing_desc, _, _ = _get_system(args.model)
+            raw_datapath = os.path.join(utils.get_project_root(),
+                                        preprocessing_desc['data-source'])
+            handwriting = _get_data_from_rawfile(raw_datapath, args.id)
+            if handwriting is None:
+                logging.info("Recording with ID %i was not found in %s",
+                             args.id,
+                             raw_datapath)
+            else:
+                print("hwrt version: %s" % hwrt.__version__)
+                display_data(handwriting.raw_data_json,
+                             handwriting.formula_id,
+                             args.model)
         else:
             print("hwrt version: %s" % hwrt.__version__)
-            display_data(handwriting.raw_data_json,
-                         handwriting.formula_id,
-                         args.model)
-    else:
-        print("hwrt version: %s" % hwrt.__version__)
-        display_data(data['data'], data['id'], args.model)
+            display_data(data['data'], data['id'], args.model)

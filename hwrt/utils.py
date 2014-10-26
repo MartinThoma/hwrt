@@ -16,6 +16,7 @@ import datetime
 import subprocess
 import shutil
 import csv
+import pkg_resources
 # mine
 import preprocess_dataset
 import features
@@ -79,6 +80,38 @@ def create_project_configuration(filename):
 def get_project_root():
     """Get the project root folder as a string."""
     cfg = get_project_configuration()
+    # At this point it can be sure that the configuration file exists
+    # Now make sure the project structure exists
+    for dirname in ["raw-datasets", "preprocessed", "feature-files", "models"]:
+        directory = os.path.join(cfg['root'], dirname)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+    raw_yml_path = pkg_resources.resource_filename('hwrt', 'misc/')
+
+    # TODO: How to check for updates if it already exists?
+    raw_data_dst = os.path.join(cfg['root'], "raw-datasets/info.yml")
+    if not os.path.isfile(raw_data_dst):
+        raw_yml_pkg_src = os.path.join(raw_yml_path, "info.yml")
+        shutil.copy(raw_yml_pkg_src, raw_data_dst)
+
+    # Make sure small-baseline folders exists
+    for dirname in ["models/small-baseline", "feature-files/small",
+                    "preprocessed/small-baseline"]:
+        directory = os.path.join(cfg['root'], dirname)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+    # Make sure small-baseline yml files exist
+    paths = [("preprocessed/small-baseline/", "preprocessing-small-info.yml"),
+             ("feature-files/small/", "feature-small-info.yml"),
+             ("models/small-baseline/", "model-small-info.yml")]
+    for dest, src in paths:
+        raw_data_dst = os.path.join(cfg['root'], "%s/info.yml" % dest)
+        if not os.path.isfile(raw_data_dst):
+            raw_yml_pkg_src = os.path.join(raw_yml_path, src)
+            shutil.copy(raw_yml_pkg_src, raw_data_dst)
+
     return cfg['root']
 
 
@@ -106,7 +139,15 @@ def get_latest_folder(folder):
     folders = [os.path.join(folder, name) for name in os.listdir(folder)
                if os.path.isdir(os.path.join(folder, name))]
     folders = natsort.natsorted(folders, reverse=True)
-    return os.path.abspath(folders[0])
+    if len(folders) == 0:
+        # No model folder!
+        logging.error("You don't have any model folder. I suggest you "
+                      "have a look at "
+                      "https://github.com/MartinThoma/hwr-experiments and "
+                      "http://hwrt.readthedocs.org/")
+        sys.exit(-1)
+    else:
+        return os.path.abspath(folders[0])
 
 
 def get_database_config_file():

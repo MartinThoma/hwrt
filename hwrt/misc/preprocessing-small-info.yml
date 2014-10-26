@@ -1,0 +1,14 @@
+data-source: raw-datasets/2014-08-26-17-59-handwriting_datasets-small-raw.pickle
+queue:
+  - RemoveDuplicateTime: null
+  - ScaleAndShift:
+      - max_width: 1.0
+      - max_height: 1.0
+      - center: true
+  - SpaceEvenlyPerStroke:
+      - kind: linear
+      - number: 20
+  - ScaleAndShift:
+      - max_width: 1.0
+      - max_height: 1.0
+      - center: true

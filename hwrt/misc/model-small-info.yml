@@ -1,0 +1,7 @@
+data-source: feature-files/small
+training: nntoolkit train --epochs 10 --learning-rate 1 --momentum 0.1 --hook='!detl
+    test {{testing}},err=testresult_%e.txt' {{training}} {{validation}} {{testing}}
+    < {{src_model}} > {{target_model}}
+model:
+    type: mlp
+    topology: 161:488:38

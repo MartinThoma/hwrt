@@ -1,0 +1,15 @@
+data-source: preprocessed/small-baseline
+data-multiplication:
+  - Multiply:
+      - nr: 1
+  - Rotate:
+      - minimum: -30
+      - maximum: 30
+      - num: 5
+features:
+  - StrokeCount: null
+  - ConstantPointCoordinates:
+      - strokes: 4
+      - points_per_stroke: 20
+      - fill_empty_with: 0
+      - pen_down: false

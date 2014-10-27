@@ -7,20 +7,38 @@ The ``hwrt`` toolkit can be installed via pip:
 
     # pip install hwrt
 
-However, you might have to install some packages first for ``scipy``. On
-Debian-based systems you can do this with the following commands:
+However, you might have to install some packages first for ``scipy``. 
+
+
+Debian-based systems
+~~~~~~~~~~~~~~~~~~~~
+Debian-based systems are Ubuntu, Linux Mint, and of course Debian. If you have
+such a Linux system, then the following commands will help you to install the
+``hwrt`` package.
+
+For ``scipy``, ``numpy`` and ``matplotlib`` you might need these packages:
 
 .. code:: bash
 
-    # apt-get install libblas-dev liblapack-dev gfortran
+    # apt-get install python-pip libblas-dev liblapack-dev gfortran
     # apt-get install python-scipy python-numpy
+    # apt-get install libfreetype6-dev
+    # apt-get install libgeos-dev
 
 If you want to use MySQL functionality, you will need
 
 .. code:: bash
 
     # apt-get install libmysqlclient-dev
+
+
+Python packages
+~~~~~~~~~~~~~~~
+
+.. code:: bash
+
     # pip install MySQL-python
+
 
 Now you can install the remaining packages:
 
@@ -38,6 +56,10 @@ As a last step, you can install hwrt:
 .. code:: bash
 
     # pip install hwrt
+
+
+Test installation
+~~~~~~~~~~~~~~~~~
 
 You can check if it worked by
 

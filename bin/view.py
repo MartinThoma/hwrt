@@ -10,10 +10,14 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
 import yaml
-import cPickle as pickle
+try:  # Python 2
+    import cPickle as pickle
+except ImportError:  # Python 3
+    import pickle
 # mine
 import hwrt
-from hwrt.HandwrittenData import HandwrittenData
+from hwrt import HandwrittenData
+sys.modules['HandwrittenData'] = HandwrittenData
 import hwrt.utils as utils
 import hwrt.preprocessing as preprocessing
 import hwrt.features as features
@@ -145,7 +149,7 @@ def display_data(raw_data_string, raw_data_id, model_folder):
     print("```")
 
     # Get Handwriting
-    recording = HandwrittenData(raw_data_string, raw_data_id=raw_data_id)
+    recording = HandwrittenData.HandwrittenData(raw_data_string, raw_data_id=raw_data_id)
 
     # Get the preprocessing queue
     tmp = preprocessing_desc['queue']

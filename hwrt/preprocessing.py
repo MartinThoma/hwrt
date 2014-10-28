@@ -27,8 +27,8 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
 # mine
-import HandwrittenData
-import utils
+from . import HandwrittenData
+from . import utils
 
 
 def _euclidean_distance(p1, p2):

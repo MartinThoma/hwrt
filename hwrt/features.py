@@ -20,7 +20,6 @@ import inspect
 import imp
 import urllib
 import os
-import Image
 import logging
 import sys
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
@@ -30,9 +29,9 @@ from shapely.geometry import LineString
 import itertools
 import numpy
 # mine
-import HandwrittenData
-import preprocessing
-import utils
+from . import HandwrittenData
+from . import preprocessing
+from . import utils
 
 
 def get_class(name):
@@ -297,6 +296,7 @@ class Bitmap(object):
                                                           url=url,
                                                           folder=foldername)
         os.system(command)
+        from PIL import Image  # TODO: remove dependency for Python3
         im = Image.open("%s%i.png" % (foldername, raw_data_id))
         pix = im.load()
         # pixel_image = [[0 for i in range(28)] for j in range(28)]

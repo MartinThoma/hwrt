@@ -11,7 +11,10 @@ import sys
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
-import cPickle as pickle
+try:  # Python 2
+    import cPickle as pickle
+except ImportError:  # Python 3
+    import pickle
 import time
 import numpy
 from collections import defaultdict

@@ -18,10 +18,6 @@ import shutil
 import csv
 import pkg_resources
 # mine
-import preprocess_dataset
-import features
-import create_pfiles
-import create_model
 from HandwrittenData import HandwrittenData
 
 
@@ -67,6 +63,8 @@ def get_project_configuration():
 
 
 def create_project_configuration(filename):
+    """Create a project configuration file which contains a configuration
+       that might make sense."""
     home = os.path.expanduser("~")
     project_root_folder = os.path.join(home, "hwr-experiments")
     config = {'root': project_root_folder,
@@ -188,7 +186,6 @@ def input_string(question=""):
     """A function that works for both, Python 2.x and Python 3.x.
        It asks the user for input and returns it as a string.
     """
-    import sys
     if sys.version_info[0] == 2:
         return raw_input(question)
     else:
@@ -240,6 +237,8 @@ def query_yes_no(question, default="yes"):
 
 
 def get_latest_model(model_folder, basename):
+    """Get the latest model (determined by the name of the model in
+       natural sorted order) which begins with ``basename``."""
     models = filter(lambda n: n.endswith(".json"), os.listdir(model_folder))
     models = filter(lambda n: n.startswith(basename), models)
     models = natsort.natsorted(models, reverse=True)
@@ -287,6 +286,10 @@ def update_if_outdated(folder):
     """Check if the currently watched instance (model, feature or
         preprocessing) is outdated and update it eventually.
     """
+
+    from . import preprocess_dataset
+    from . import create_pfiles
+    from . import create_model
 
     folders = []
     while os.path.isdir(folder):
@@ -372,8 +375,8 @@ def default_model():
 
     scriptfile should be __file__ of the calling script
     """
-    PROJECT_ROOT = get_project_root()
-    models_dir = os.path.join(PROJECT_ROOT, "models")
+    project_root = get_project_root()
+    models_dir = os.path.join(project_root, "models")
     curr_dir = os.getcwd()
     if os.path.commonprefix([models_dir, curr_dir]) == models_dir and \
        curr_dir != models_dir:
@@ -397,6 +400,8 @@ def create_adjusted_model_for_percentages(model_src, model_use):
 
 def evaluate_model(recording, model_folder, verbose=False):
     """Evaluate model for a single recording."""
+    from . import preprocess_dataset
+    from . import features
 
     folders = []
     folder = model_folder
@@ -455,11 +460,11 @@ def evaluate_model(recording, model_folder, verbose=False):
             model_use = "tmp.json"
             create_adjusted_model_for_percentages(model_src, model_use)
             # Run evaluation
-            PROJECT_ROOT = get_project_root()
+            project_root = get_project_root()
             time_prefix = time.strftime("%Y-%m-%d-%H-%M")
             test_file = output_filename
             logging.info("Evaluate '%s' with '%s'...", model_src, test_file)
-            logfile = os.path.join(PROJECT_ROOT,
+            logfile = os.path.join(project_root,
                                    "logs/%s-error-evaluation.log" %
                                    time_prefix)
             with open(logfile, "w") as log, open(model_use, "r") as modl_src_p:
@@ -470,7 +475,8 @@ def evaluate_model(recording, model_folder, verbose=False):
                                      stdout=log)
                 ret = p.wait()
                 if ret != 0:
-                    logging.error("nntoolkit finished with ret code %s", str(ret))
+                    logging.error("nntoolkit finished with ret code %s",
+                                  str(ret))
                     sys.exit()
             return logfile
         else:
@@ -482,10 +488,10 @@ def classify_single_recording(raw_data_json, model_folder, verbose=False):
        LaTeX code, the second value is the probability.
     """
     evaluation_file = evaluate_model(raw_data_json, model_folder, verbose)
-    PROJECT_ROOT = get_project_root()
+    project_root = get_project_root()
     with open(os.path.join(model_folder, "info.yml")) as ymlfile:
-            model_description = yaml.load(ymlfile)
-    translation_csv = os.path.join(PROJECT_ROOT,
+        model_description = yaml.load(ymlfile)
+    translation_csv = os.path.join(project_root,
                                    model_description["data-source"],
                                    "index2formula_id.csv")
     index2latex = {}

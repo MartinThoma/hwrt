@@ -9,13 +9,16 @@ import os
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
-import cPickle as pickle
+try:  # Python 2
+    import cPickle as pickle
+except ImportError:  # Python 3
+    import pickle
 import time
 import yaml
 # mine
-import utils
-import preprocessing
-import HandwrittenData
+from . import utils
+from . import preprocessing
+from . import HandwrittenData
 
 sys.modules['hwrt.HandwrittenData'] = HandwrittenData
 sys.modules['HandwrittenData'] = HandwrittenData

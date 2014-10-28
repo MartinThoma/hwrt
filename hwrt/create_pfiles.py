@@ -18,7 +18,10 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     stream=sys.stdout)
 import os
 import csv
-import cPickle as pickle
+try:  # Python 2
+    import cPickle as pickle
+except ImportError:  # Python 3
+    import pickle
 import time
 import gc
 import utils
@@ -27,9 +30,9 @@ import numpy
 from collections import defaultdict
 # mine
 from HandwrittenData import HandwrittenData  # Needed because of pickle
-import preprocessing  # Needed because of pickle
-import features
-import data_multiplication
+from . import preprocessing  # Needed because of pickle
+from . import features
+from . import data_multiplication
 
 
 def main(feature_folder, create_learning_curve=False):

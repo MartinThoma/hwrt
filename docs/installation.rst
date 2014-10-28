@@ -31,6 +31,16 @@ If you want to use MySQL functionality, you will need
 
     # apt-get install libmysqlclient-dev
 
+If you want to use bitmap features, you have to install `pillow`_. This might
+include installing the following:
+
+.. code:: bash
+
+    # apt-get install python-dev python-setuptools
+    # apt-get install python3-dev python3-setuptools
+    # apt-get install libtiff4-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms1-dev libwebp-dev
+    # pip install PILLOW
+
 
 Python packages
 ~~~~~~~~~~~~~~~
@@ -135,3 +145,4 @@ Upgrading hwrt to the latest version is much easier:
 .. _Caffe: http://caffe.berkeleyvision.org/
 .. _cuDNN: https://developer.nvidia.com/cuDNN
 .. _Deeplearning: http://www.deeplearning.net/tutorial/
+.. _pillow: http://python-pillow.github.io/

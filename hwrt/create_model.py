@@ -10,8 +10,8 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
 # mine
-import utils
-import features
+from . import utils
+from . import features
 
 
 def create_model(model_folder, model_type, topology, override):

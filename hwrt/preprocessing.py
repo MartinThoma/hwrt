@@ -26,7 +26,8 @@ import os
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
-# mine
+
+# hwrt modules
 from . import HandwrittenData
 from . import utils
 
@@ -316,8 +317,8 @@ class SpaceEvenly(object):
         if times is None:
             times = []
         for i in range(len(pointlist) - 1):
-            stroke_info = {"start": pointlist[i][-1],
-                           "end": pointlist[i+1][0],
+            stroke_info = {"start": pointlist[i][-1]['time'],
+                           "end": pointlist[i+1][0]['time'],
                            "pen_down": False}
             x, y, t = [], [], []
             for point in [pointlist[i][-1], pointlist[i+1][0]]:
@@ -728,7 +729,8 @@ class WeightedAverageSmoothing(object):
         assert len(theta) == 3, \
             "theta has length %i, but should have length 3" % \
             len(theta)
-        theta = map(float, theta)
+        theta = [float(element) for element in theta]
+
         # Normalize parameters to a sum of 1
         self.theta = list(1./sum(theta) * numpy.array(theta))
 

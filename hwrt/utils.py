@@ -17,8 +17,9 @@ import subprocess
 import shutil
 import csv
 import pkg_resources
-# mine
-from HandwrittenData import HandwrittenData
+
+# hwrt modules
+from . import HandwrittenData
 
 
 def print_status(total, current, start_time=None):
@@ -420,7 +421,7 @@ def evaluate_model(recording, model_folder, verbose=False):
             logging.info("Start applying preprocessing methods...")
             t = target_folder
             _, _, preprocessing_queue = preprocess_dataset.get_parameters(t)
-            handwriting = HandwrittenData(recording)
+            handwriting = HandwrittenData.HandwrittenData(recording)
             if verbose:
                 handwriting.show()
             handwriting.preprocessing(preprocessing_queue)

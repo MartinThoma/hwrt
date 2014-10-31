@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """
-Display a raw_data_id.
+Display a recorded handwritten symbol as well as the preprocessing methods
+and the data multiplication steps that get applied.
 """
 
 import sys
@@ -14,7 +15,8 @@ try:  # Python 2
     import cPickle as pickle
 except ImportError:  # Python 3
     import pickle
-# mine
+
+# hwrt modules
 import hwrt
 from hwrt import HandwrittenData
 sys.modules['HandwrittenData'] = HandwrittenData
@@ -29,6 +31,7 @@ def _fetch_data_from_server(raw_data_id):
     :returns: The ``data`` if fetching worked, ``None`` if it failed."""
     import MySQLdb
     import MySQLdb.cursors
+
     # Import configuration file
     cfg = utils.get_database_configuration()
     if cfg is None:
@@ -51,7 +54,9 @@ def _fetch_data_from_server(raw_data_id):
 
 def _get_data_from_rawfile(path_to_data, raw_data_id):
     """Get a HandwrittenData object that has ``raw_data_id`` from a pickle file
-       ``path_to_data``."""
+       ``path_to_data``.
+       :returns: The HandwrittenData object if ``raw_data_id`` is in
+                 path_to_data, otherwise ``None``."""
     loaded = pickle.load(open(path_to_data))
     raw_datasets = loaded['handwriting_datasets']
     for raw_dataset in raw_datasets:
@@ -76,10 +81,24 @@ def _list_ids(path_to_data):
         print("%i: %s" % (symbol_id, sorted(raw_ids[symbol_id])))
 
 
+def _get_description(prev_description):
+    """Get the parsed description file (a dictionary) from another
+       parsed description file."""
+    current_desc_file = os.path.join(utils.get_project_root(),
+                                     prev_description['data-source'],
+                                     "info.yml")
+    if not os.path.isfile(current_desc_file):
+        logging.error("You are probably not in the folder of a model, because "
+                      "%s is not a file.", current_desc_file)
+        sys.exit(-1)
+    with open(current_desc_file, 'r') as ymlfile:
+        current_description = yaml.load(ymlfile)
+    return current_description
+
+
 def _get_system(model_folder):
     """Return the preprocessing description, the feature description and the
        model description."""
-    project_root = utils.get_project_root()
 
     # Get model description
     model_description_file = os.path.join(model_folder, "info.yml")
@@ -91,28 +110,9 @@ def _get_system(model_folder):
     with open(model_description_file, 'r') as ymlfile:
         model_desc = yaml.load(ymlfile)
 
-    # Get the feature description
-    feature_description_file = os.path.join(project_root,
-                                            model_desc['data-source'],
-                                            "info.yml")
-    if not os.path.isfile(feature_description_file):
-        logging.error("You are probably not in the folder of a model, because "
-                      "%s is not a file.", feature_description_file)
-        sys.exit(-1)
-    with open(feature_description_file, 'r') as ymlfile:
-        feature_desc = yaml.load(ymlfile)
-
-    # Get the preprocessing description
-    preprocessing_description_file = os.path.join(
-        project_root,
-        feature_desc['data-source'],
-        "info.yml")
-    if not os.path.isfile(preprocessing_description_file):
-        logging.error("You are probably not in the folder of a model, because "
-                      "%s is not a file.", preprocessing_description_file)
-        sys.exit(-1)
-    with open(preprocessing_description_file, 'r') as ymlfile:
-        preprocessing_desc = yaml.load(ymlfile)
+    # Get the feature and the preprocessing description
+    feature_desc = _get_description(model_desc)
+    preprocessing_desc = _get_description(feature_desc)
 
     return (preprocessing_desc, feature_desc, model_desc)
 
@@ -149,13 +149,15 @@ def display_data(raw_data_string, raw_data_id, model_folder):
     print("```")
 
     # Get Handwriting
-    recording = HandwrittenData.HandwrittenData(raw_data_string, raw_data_id=raw_data_id)
+    recording = HandwrittenData.HandwrittenData(raw_data_string,
+                                                raw_data_id=raw_data_id)
 
     # Get the preprocessing queue
     tmp = preprocessing_desc['queue']
     preprocessing_queue = preprocessing.get_preprocessing_queue(tmp)
     recording.preprocessing(preprocessing_queue)
 
+    # Get feature values as list of floats, rounded to 3 decimal places
     tmp = feature_desc['features']
     feature_list = features.get_features(tmp)
     feature_values = recording.feature_extraction(feature_list)
@@ -210,33 +212,38 @@ def get_parser():
                         default=False)
     return parser
 
-if __name__ == '__main__':
-    args = get_parser().parse_args()
-    if args.list:
-        preprocessing_desc, _, _ = _get_system(args.model)
+
+def main(list_ids, model, contact_server, raw_data_id):
+    """Main function of view.py."""
+    if list_ids:
+        preprocessing_desc, _, _ = _get_system(model)
         raw_datapath = os.path.join(utils.get_project_root(),
                                     preprocessing_desc['data-source'])
         _list_ids(raw_datapath)
     else:
-        if args.server:
-            data = _fetch_data_from_server(args.id)
+        if contact_server:
+            data = _fetch_data_from_server(raw_data_id)
             print("hwrt version: %s" % hwrt.__version__)
-            display_data(data['data'], data['id'], args.model)
+            display_data(data['data'], data['id'], model)
         else:
             logging.info("RAW_DATA_ID %i does not exist or "
-                         "database connection did not work.", args.id)
+                         "database connection did not work.", raw_data_id)
             # The data was not on the server / the connection to the server did
             # not work. So try it again with the model data
-            preprocessing_desc, _, _ = _get_system(args.model)
+            preprocessing_desc, _, _ = _get_system(model)
             raw_datapath = os.path.join(utils.get_project_root(),
                                         preprocessing_desc['data-source'])
-            handwriting = _get_data_from_rawfile(raw_datapath, args.id)
+            handwriting = _get_data_from_rawfile(raw_datapath, raw_data_id)
             if handwriting is None:
                 logging.info("Recording with ID %i was not found in %s",
-                             args.id,
+                             raw_data_id,
                              raw_datapath)
             else:
                 print("hwrt version: %s" % hwrt.__version__)
                 display_data(handwriting.raw_data_json,
                              handwriting.formula_id,
-                             args.model)
+                             model)
+
+if __name__ == '__main__':
+    args = get_parser().parse_args()
+    main(args.list, args.model, args.server, args.id)

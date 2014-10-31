@@ -7,13 +7,15 @@ logging.basicConfig(format="%(asctime)s %(levelname)s %(message)s",
                     stream=sys.stdout)
 import time
 import json
+
 # GUI
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.graphics import Color, Ellipse, Line
 from kivy.logger import Logger
 Logger.setLevel(logging.ERROR)
-# mine
+
+# hwrt modules
 import hwrt.utils as utils
 
 

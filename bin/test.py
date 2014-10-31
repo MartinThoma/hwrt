@@ -16,7 +16,8 @@ import csv
 import itertools
 from collections import OrderedDict, Callable
 import pkg_resources
-# mine
+
+# hwrt modules
 import hwrt.utils as utils
 
 

@@ -29,3 +29,26 @@ and uploaded to coveralls.io with
 .. code:: bash
 
     $ coveralls
+
+Project structure
+-----------------
+
+The project structure is
+
+
+    .
+    ├── bin
+    ├── docs
+    ├── hwrt
+    │   ├── misc
+    │   └── templates
+    └── tests
+        └── symbols
+
+
+where the folder ``bin`` contains all scripts that can directly be used,
+``hwrt`` contains all modules and ``tests`` contains unittests written with
+nosetools.
+
+The symbols subfolder contains JSON files of recordings that are used for
+testing.

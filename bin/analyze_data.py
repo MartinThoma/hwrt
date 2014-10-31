@@ -19,7 +19,8 @@ import time
 import numpy
 from collections import defaultdict
 import math
-# My modules
+
+# hwrt modules
 # HandwrittenData is necessary because of pickle
 from hwrt.HandwrittenData import HandwrittenData  # pylint: disable=unused-import
 import hwrt.features as features

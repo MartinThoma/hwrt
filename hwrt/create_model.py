@@ -9,7 +9,8 @@ import sys
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
-# mine
+
+# hwrt modules
 from . import utils
 from . import features
 

@@ -19,7 +19,7 @@ def get_all_symbols():
 
 def get_symbol(raw_data_id):
     current_folder = os.path.dirname(os.path.realpath(__file__))
-    file_path = os.path.join(current_folder, "symbols/%i.txt" % raw_data_id)
+    file_path = os.path.join(current_folder, "symbols/%i.json" % raw_data_id)
     return file_path
 
 

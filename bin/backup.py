@@ -21,7 +21,8 @@ import hashlib
 import webbrowser
 import yaml
 import time
-# mine
+
+# hwrt modules
 from hwrt.HandwrittenData import HandwrittenData
 import hwrt.utils as utils
 

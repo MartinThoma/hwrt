@@ -13,17 +13,15 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
 import yaml
 import hashlib
 import urllib
-# my ones
+
+# hwrt modules
 import hwrt.utils as utils
 
 
 def is_file_consistent(local_path_file, md5_hash):
     """Check if file is there and if the md5_hash is correct."""
-    if not os.path.isfile(local_path_file):
-        return False
-    if hashlib.md5(open(local_path_file, 'rb').read()).hexdigest() != md5_hash:
-        return False
-    return True
+    return os.path.isfile(local_path_file) and \
+        hashlib.md5(open(local_path_file, 'rb').read()).hexdigest() == md5_hash
 
 
 def get_parser():

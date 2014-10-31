@@ -4,3 +4,6 @@ docs:
 update:
 	python setup.py sdist upload
 	sudo pip install hwrt --upgrade
+
+test:
+	nosetests --with-coverage --cover-erase --cover-package hwrt --logging-level=INFO --cover-html

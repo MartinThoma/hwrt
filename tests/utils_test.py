@@ -22,3 +22,9 @@ def execution_test():
                             "2h, 0 minutes 0s 0ms")
     nose.tools.assert_equal(utils.get_readable_time(25*1000*60*60+3),
                             "25h, 0 minutes 0s 3ms")
+    utils.print_status(3, 1, 123)
+    utils.get_nntoolkit()
+    utils.get_database_config_file()
+    utils.get_database_configuration()
+    nose.tools.assert_equal(utils.sizeof_fmt(1), "1.0 bytes")
+    nose.tools.assert_equal(utils.sizeof_fmt(1111), "1.1 KB")

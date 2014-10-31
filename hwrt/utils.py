@@ -23,7 +23,13 @@ from . import HandwrittenData
 
 
 def print_status(total, current, start_time=None):
-    """Show how much work was done / how much work is remaining"""
+    """Show how much work was done / how much work is remaining
+    :param total: The total amount of work
+    :type total: float
+    :param current: The work that has been done so far
+    :type current: float
+    :param start_time: The start time in seconds since 1970 to estimate the
+                       remaining time."""
     percentage_done = float(current)/total
     sys.stdout.write("\r%0.2f%% " % (percentage_done*100))
     if start_time is not None:

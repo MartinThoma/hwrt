@@ -24,7 +24,7 @@ import math
 # HandwrittenData is necessary because of pickle
 from hwrt.HandwrittenData import HandwrittenData  # pylint: disable=unused-import
 import hwrt.features as features
-import hwrt.Geometry as Geometry
+import hwrt.geometry as geometry
 import hwrt.utils as utils
 
 
@@ -235,34 +235,34 @@ def get_bounding_box_distance(raw_datasets):
             max_x = max(point['x'], max_x)
             min_y = min(point['y'], min_y)
             max_y = max(point['y'], max_y)
-        minp = Geometry.Point(min_x, min_y)
-        maxp = Geometry.Point(max_x, max_y)
-        return Geometry.BoundingBox(minp, maxp)
+        minp = geometry.Point(min_x, min_y)
+        maxp = geometry.Point(max_x, max_y)
+        return geometry.BoundingBox(minp, maxp)
 
     def _get_bb_distance(a, b):
         """"Take two bounding boxes a and b and get the smallest distance
             between them.
         """
-        points_a = [Geometry.Point(a.p1.x, a.p1.y),
-                    Geometry.Point(a.p1.x, a.p2.y),
-                    Geometry.Point(a.p2.x, a.p1.y),
-                    Geometry.Point(a.p2.x, a.p2.y)]
-        points_b = [Geometry.Point(b.p1.x, b.p1.y),
-                    Geometry.Point(b.p1.x, b.p2.y),
-                    Geometry.Point(b.p2.x, b.p1.y),
-                    Geometry.Point(b.p2.x, b.p2.y)]
+        points_a = [geometry.Point(a.p1.x, a.p1.y),
+                    geometry.Point(a.p1.x, a.p2.y),
+                    geometry.Point(a.p2.x, a.p1.y),
+                    geometry.Point(a.p2.x, a.p2.y)]
+        points_b = [geometry.Point(b.p1.x, b.p1.y),
+                    geometry.Point(b.p1.x, b.p2.y),
+                    geometry.Point(b.p2.x, b.p1.y),
+                    geometry.Point(b.p2.x, b.p2.y)]
         min_distance = points_a[0].dist_to(points_b[0])
         for pa in points_a:
             for pb in points_b:
                 min_distance = min(min_distance, pa.dist_to(pb))
-        lines_a = [Geometry.LineSegment(points_a[0], points_a[1]),
-                   Geometry.LineSegment(points_a[1], points_a[2]),
-                   Geometry.LineSegment(points_a[2], points_a[3]),
-                   Geometry.LineSegment(points_a[3], points_a[0])]
-        lines_b = [Geometry.LineSegment(points_b[0], points_b[1]),
-                   Geometry.LineSegment(points_b[1], points_b[2]),
-                   Geometry.LineSegment(points_b[2], points_b[3]),
-                   Geometry.LineSegment(points_b[3], points_b[0])]
+        lines_a = [geometry.LineSegment(points_a[0], points_a[1]),
+                   geometry.LineSegment(points_a[1], points_a[2]),
+                   geometry.LineSegment(points_a[2], points_a[3]),
+                   geometry.LineSegment(points_a[3], points_a[0])]
+        lines_b = [geometry.LineSegment(points_b[0], points_b[1]),
+                   geometry.LineSegment(points_b[1], points_b[2]),
+                   geometry.LineSegment(points_b[2], points_b[3]),
+                   geometry.LineSegment(points_b[3], points_b[0])]
         for line_in_a in lines_a:
             for line_in_b in lines_b:
                 min_distance = min(min_distance, line_in_a.dist_to(line_in_b))
@@ -288,7 +288,7 @@ def get_bounding_box_distance(raw_datasets):
             while i < len(bounding_boxes):
                 j = i + 1
                 while j < len(bounding_boxes):
-                    if Geometry.do_bb_intersect(bounding_boxes[i],
+                    if geometry.do_bb_intersect(bounding_boxes[i],
                                                 bounding_boxes[j]):
                         got_change = True
                         new_bounding_boxes = []
@@ -300,9 +300,9 @@ def get_bounding_box_distance(raw_datasets):
                                   bounding_boxes[j].p2.x)
                         p2y = max(bounding_boxes[i].p2.y,
                                   bounding_boxes[j].p2.y)
-                        p1 = Geometry.Point(p1x, p1y)
-                        p2 = Geometry.Point(p2x, p2y)
-                        new_bounding_boxes.append(Geometry.BoundingBox(p1, p2))
+                        p1 = geometry.Point(p1x, p1y)
+                        p2 = geometry.Point(p2x, p2y)
+                        new_bounding_boxes.append(geometry.BoundingBox(p1, p2))
                         for k in range(len(bounding_boxes)):
                             if k != i and k != j:
                                 new_bounding_boxes.append(bounding_boxes[k])

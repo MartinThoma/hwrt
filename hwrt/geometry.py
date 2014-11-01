@@ -12,6 +12,7 @@ class Point(object):
         self.y = float(y)
 
     def dist_to(self, p2):
+        """Measure the distance to another point."""
         return math.hypot(self.x - p2.x, self.y - p2.y)
 
     def __repr__(self):
@@ -32,6 +33,7 @@ class LineSegment(object):
         self.p2 = p2
 
     def dist_to(self, l2):
+        """Measure the distance to another line segment."""
         return segments_distance(self, l2)
 
     def __repr__(self):
@@ -60,6 +62,7 @@ class BoundingBox(object):
         return self.__repr__()
 
     def get_area(self):
+        """Calculate area of bounding box."""
         return (self.p2.x-self.p1.x)*(self.p2.y-self.p2.y)
 
     def get_width(self):
@@ -77,6 +80,7 @@ class BoundingBox(object):
         return self.p2.y - self.p1.y
 
     def get_largest_dimension(self):
+        """Get the larger dimension of the bounding box."""
         return max(self.get_height(), self.get_width())
 
 

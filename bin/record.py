@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+"""Record new handwritten symbol and classify it."""
+
 import logging
 import sys
 logging.basicConfig(format="%(asctime)s %(levelname)s %(message)s",
@@ -20,16 +22,19 @@ canvas = None
 
 
 def unix_time():
+    """Get current UNIX time in milliseconds (since 1970)."""
     return int(round(time.time() * 1000))
 
 
-def start(event):
+def start(_):
+    """Start a new stroke."""
     global recording
     recording.append([])
 
 
 def motion(event):
-    global recording, w
+    """Record points of a stroke."""
+    global recording, canvas
     if len(recording) > 0:
         x, y = event.x, event.y
         recording[-1].append({'x': x, 'y': y, 'time': unix_time()})
@@ -43,6 +48,7 @@ def motion(event):
 
 
 def get_parser():
+    """Get parser object for record.py"""
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
     parser = ArgumentParser(description=__doc__,
                             formatter_class=ArgumentDefaultsHelpFormatter)
@@ -63,7 +69,8 @@ def get_parser():
     return parser
 
 
-def show_results(results, n=10):  # args.n
+def show_results(results, n=10):
+    """Show the TOP n results of a classification."""
     # Print headline
     print("{0:18s} {1:5s}".format("LaTeX Code", "Prob"))
     print("#"*50)
@@ -76,7 +83,8 @@ def show_results(results, n=10):  # args.n
     print("#"*50)
 
 
-def main(model, n):
+def main(model, n, verbose):
+    """Main of record.py"""
     global canvas
     root = tk.Tk()
     canvas = tk.Canvas(root, width=250, height=250)
@@ -87,14 +95,12 @@ def main(model, n):
     raw_data_json = json.dumps(recording)
     logging.info(recording)
     logging.info("Start evaluation...")
-    # TODO: use args.verbose instead of True if possible
-    # args.model,
     results = utils.classify_single_recording(raw_data_json,
                                               model,
-                                              True)
+                                              verbose)
     show_results(results, n)
 
 
 if __name__ == '__main__':
     args = get_parser().parse_args()
-    main(args.model, args.n)
+    main(args.model, args.n, args.verbose)

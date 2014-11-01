@@ -471,6 +471,9 @@ def evaluate_model(recording, model_folder, verbose=False):
             time_prefix = time.strftime("%Y-%m-%d-%H-%M")
             test_file = output_filename
             logging.info("Evaluate '%s' with '%s'...", model_src, test_file)
+            logfilefolder = os.path.join(project_root, "logs/")
+            if not os.path.exists(logfilefolder):
+                os.makedirs(logfilefolder)
             logfile = os.path.join(project_root,
                                    "logs/%s-error-evaluation.log" %
                                    time_prefix)

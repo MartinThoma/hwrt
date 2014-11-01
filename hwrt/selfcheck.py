@@ -52,7 +52,7 @@ def check_python_modules():
     required_modules = ['argparse', 'matplotlib', 'natsort', 'MySQLdb',
                         'cPickle', 'theano', 'dropbox', 'yaml',
                         'webbrowser', 'hashlib', 'shapely', 'numpy',
-                        'jinja2']
+                        'jinja2', 'Tkinter']
     found = []
     for required_module in required_modules:
         try:

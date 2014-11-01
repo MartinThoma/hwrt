@@ -9,52 +9,37 @@ import time
 import json
 
 # GUI
-from kivy.app import App
-from kivy.uix.widget import Widget
-from kivy.graphics import Color, Ellipse, Line
-from kivy.logger import Logger
-Logger.setLevel(logging.ERROR)
+import Tkinter as tk
 
 # hwrt modules
 import hwrt.utils as utils
+
+recording = []
+last_stroke = []
+canvas = None
 
 
 def unix_time():
     return int(round(time.time() * 1000))
 
 
-recording = []
-last_stroke = []
+def start(event):
+    global recording
+    recording.append([])
 
 
-class MyPaintWidget(Widget):
-
-    def on_touch_down(self, touch):
-        global recording, last_stroke
-        with self.canvas:
-            Color(1, 1, 0)
-            d = 5.
-            Ellipse(pos=(touch.x - d / 2, touch.y - d / 2), size=(d, d))
-            touch.ud['line'] = Line(points=(touch.x, touch.y))
-            # Record keeping
-            if len(last_stroke) > 0:
-                recording.append(last_stroke)
-                last_stroke = []
-            point = {"x": touch.x, "y": -touch.y, "time": unix_time()}
-            last_stroke.append(point)
-
-    def on_touch_move(self, touch):
-        global last_stroke
-        touch.ud['line'].points += [touch.x, touch.y]
-        # Record keeping
-        point = {"x": touch.x, "y": -touch.y, "time": unix_time()}
-        last_stroke.append(point)
-
-
-class MyPaintApp(App):
-
-    def build(self):
-        return MyPaintWidget()
+def motion(event):
+    global recording, w
+    if len(recording) > 0:
+        x, y = event.x, event.y
+        recording[-1].append({'x': x, 'y': y, 'time': unix_time()})
+        if len(recording[-1]) >= 2:
+            #canvas.get_tk_widget().delete("all")
+            for stroke in recording:
+                s = [(p['x'], p['y']) for p in stroke]
+                canvas.create_line(s,
+                                   width=3, fill="red",
+                                   smooth=True)
 
 
 def get_parser():
@@ -78,20 +63,7 @@ def get_parser():
     return parser
 
 
-if __name__ == '__main__':
-    args = get_parser().parse_args()
-    MyPaintApp().run()
-    recording.append(last_stroke)
-    last_stroke = []
-    raw_data_json = json.dumps(recording)
-    logging.info(recording)
-    logging.info("Start evaluation...")
-    # TODO: use args.verbose instead of True if possible
-    results = utils.classify_single_recording(raw_data_json,
-                                              args.model,
-                                              True)
-    n = args.n
-
+def show_results(results, n=10):  # args.n
     # Print headline
     print("{0:18s} {1:5s}".format("LaTeX Code", "Prob"))
     print("#"*50)
@@ -102,3 +74,27 @@ if __name__ == '__main__':
             n -= 1
         print("{0:18s} {1:5f}".format(latex, probability))
     print("#"*50)
+
+
+def main(model, n):
+    global canvas
+    root = tk.Tk()
+    canvas = tk.Canvas(root, width=250, height=250)
+    canvas.pack()
+    root.bind('<B1-Motion>', motion)
+    root.bind('<Button-1>', start)
+    root.mainloop()
+    raw_data_json = json.dumps(recording)
+    logging.info(recording)
+    logging.info("Start evaluation...")
+    # TODO: use args.verbose instead of True if possible
+    # args.model,
+    results = utils.classify_single_recording(raw_data_json,
+                                              model,
+                                              True)
+    show_results(results, n)
+
+
+if __name__ == '__main__':
+    args = get_parser().parse_args()
+    main(args.model, args.n)

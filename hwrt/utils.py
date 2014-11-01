@@ -378,10 +378,8 @@ def get_readable_time(t):
 
 
 def default_model():
-    """Get a path for a default value for the model.
-
-    scriptfile should be __file__ of the calling script
-    """
+    """Get a path for a default value for the model. Start searching in the
+    current directory."""
     project_root = get_project_root()
     models_dir = os.path.join(project_root, "models")
     curr_dir = os.getcwd()
@@ -461,6 +459,8 @@ def evaluate_model(recording, model_folder, verbose=False):
                       (input_filename, feature_count, output_filename)
             logging.info(command)
             os.system(command)
+            # Clean up
+            os.remove(input_filename)
         elif "model" in target_folder:
             logging.info("Create running model...")
             model_src = get_latest_model(target_folder, "model")
@@ -488,6 +488,8 @@ def evaluate_model(recording, model_folder, verbose=False):
             return logfile
         else:
             logging.info("'%s' not found", target_folder)
+    # Cleanup
+    os.remove(output_filename)
 
 
 def classify_single_recording(raw_data_json, model_folder, verbose=False):

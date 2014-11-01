@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
 Display a recorded handwritten symbol as well as the preprocessing methods
 and the data multiplication steps that get applied.

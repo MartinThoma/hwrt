@@ -24,16 +24,16 @@ except ImportError:  # Python 3
     import pickle
 import time
 import gc
-import utils
 import yaml
 import numpy
 from collections import defaultdict
 
 # hwrt modules
-from HandwrittenData import HandwrittenData  # Needed because of pickle
+from . import HandwrittenData  # Needed because of pickle
 from . import preprocessing  # Needed because of pickle
 from . import features
 from . import data_multiplication
+from . import utils
 
 
 def main(feature_folder, create_learning_curve=False):

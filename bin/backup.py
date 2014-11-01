@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """
 Download raw data from online server and back it up (e.g. on DropBox)
 handwriting_datasets.pickle.

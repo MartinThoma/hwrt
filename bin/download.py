@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """Check if data files are here and which version they have. Contact the
    server for the latest version and update them if they are outdated.

@@ -8,6 +8,7 @@ import nose
 from hwrt.HandwrittenData import HandwrittenData
 import hwrt.preprocessing as preprocessing
 import hwrt.features as features
+import hwrt.data_multiplication as data_multiplication
 
 
 # Test helper
@@ -59,61 +60,23 @@ def compare_pointlists(a, b, epsilon=0.001):
 
 
 # Tests
-def feature_detection_test():
-    l = [{'StrokeCount': None},
-         {'ConstantPointCoordinates':
-          [{'strokes': 4},
-           {'points_per_stroke': 81},
-           {'fill_empty_with': 0},
-           {'pen_down': False}]
+def data_multiplication_detection_test():
+    l = [{'Multiply': [{'nr': 1}]},
+         {'Rotate':
+          [{'min': -3},
+           {'max': +3},
+           {'num': 3}]
           }
          ]
-    correct = [features.StrokeCount(),
-               features.ConstantPointCoordinates(strokes=4,
-                                                 points_per_stroke=81,
-                                                 fill_empty_with=0,
-                                                 pen_down=False)]
-    feature_list = features.get_features(l)
+    correct = [data_multiplication.Multiply(nr=1),
+               data_multiplication.Rotate(min=-3,
+                                          max=3,
+                                          num=3)]
+    mult_queue = data_multiplication.get_data_multiplication_queue(l)
     # TODO: Not only compare lengths of lists but actual contents.
-    nose.tools.assert_equal(len(feature_list), len(correct))
+    nose.tools.assert_equal(len(mult_queue), len(correct))
 
 
 def unknown_class_test():
     # TODO: Test if logging works
-    features.get_class("not_existant")
-
-
-def repr_and_str_test():
-    l = [features.ConstantPointCoordinates(),
-         features.FirstNPoints(),
-         features.StrokeCount(),
-         features.Bitmap(),
-         features.Ink()
-         ]
-    for alg in l:
-        alg.__str__()
-        alg.__repr__()
-
-
-def dimension_test():
-    l = [(features.ConstantPointCoordinates(), 160),
-         (features.FirstNPoints(), 162),  # TODO: Check
-         (features.StrokeCount(), 1),
-         (features.Bitmap(), 784),
-         (features.Ink(), 1)
-         ]
-    for alg, dimension in l:
-        nose.tools.assert_equal(alg.get_dimension(), dimension)
-
-
-def height_test():
-    feature_list = [features.Height()]
-    a = get_symbol_as_handwriting(97705)
-    # TODO: Check if this is correct
-    nose.tools.assert_equal(a.feature_extraction(feature_list), [263.0])
-
-
-def stroke_count_test():
-    feature_list = [features.StrokeCount()]
-    a = get_symbol_as_handwriting(97705)
-    nose.tools.assert_equal(a.feature_extraction(feature_list), [1])
+    data_multiplication.get_class("not_existant")

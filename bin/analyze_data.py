@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """Analyze data in a pickle file by maximum time / width / height and
    similar features.

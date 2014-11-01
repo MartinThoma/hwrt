@@ -15,7 +15,8 @@ except ImportError:  # Python 3
     import pickle
 import time
 import yaml
-# mine
+
+# hwrt modules
 from . import utils
 from . import preprocessing
 from . import HandwrittenData

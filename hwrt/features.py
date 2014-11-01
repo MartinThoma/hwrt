@@ -28,7 +28,8 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
 from shapely.geometry import LineString
 import itertools
 import numpy
-# mine
+
+# hwrt modules
 from . import HandwrittenData
 from . import preprocessing
 from . import utils
@@ -177,7 +178,13 @@ class ConstantPointCoordinates(object):
                 x.append(point['x'])
                 x.append(point['y'])
                 if self.pen_down:
-                    x.append(int(point['pen_down']))
+                    if 'pen_down' not in point:
+                        logging.error("The "
+                                      "ConstantPointCoordinates(strokes=0) "
+                                      "feature should only be used after "
+                                      "SpaceEvenly preprocessing step.")
+                    else:
+                        x.append(int(point['pen_down']))
             if self.pen_down:
                 while len(x) != 3*self.points_per_stroke:
                     x.append(self.fill_empty_with)

@@ -2,7 +2,8 @@
 
 import os
 import nose.tools
-# mine
+
+# hwrt modules
 from hwrt.HandwrittenData import HandwrittenData
 
 

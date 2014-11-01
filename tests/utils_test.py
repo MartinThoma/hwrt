@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 import nose
-# mine
+
+# hwrt modules
 import hwrt.utils as utils
 
 

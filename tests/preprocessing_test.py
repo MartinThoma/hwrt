@@ -2,7 +2,8 @@
 
 import os
 import nose
-# mine
+
+# hwrt modules
 from hwrt.HandwrittenData import HandwrittenData
 import hwrt.preprocessing as preprocessing
 

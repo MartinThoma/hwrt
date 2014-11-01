@@ -24,7 +24,8 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     stream=sys.stdout)
 import math
 from copy import deepcopy
-# mine
+
+# hwrt modules
 from hwrt import HandwrittenData
 
 

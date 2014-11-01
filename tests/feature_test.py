@@ -2,7 +2,8 @@
 
 import os
 import nose
-# mine
+
+# hwrt modules
 from hwrt.HandwrittenData import HandwrittenData
 import hwrt.preprocessing as preprocessing
 import hwrt.features as features
@@ -75,7 +76,19 @@ def dimensionality_test():
     feature_list = [(features.StrokeCount(), 1),
                     (features.ConstantPointCoordinates(strokes=4,
                                                        points_per_stroke=20,
-                                                       fill_empty_with=0), 160)
+                                                       fill_empty_with=0),
+                     160),
+                    (features.ConstantPointCoordinates(strokes=0,
+                                                       points_per_stroke=20,
+                                                       fill_empty_with=0), 60),
+                    (features.ConstantPointCoordinates(strokes=0,
+                                                       points_per_stroke=20,
+                                                       pen_down=False), 40),
+                    (features.AspectRatio(), 1),
+                    (features.Width(), 1),
+                    (features.Height(), 1),
+                    (features.Time(), 1),
+                    (features.CenterOfMass(), 2)
                     ]
     for feat, dimension in feature_list:
         nose.tools.assert_equal(feat.get_dimension(), dimension)
@@ -87,7 +100,19 @@ def unknown_class_test():
 
 
 def simple_execution_test():
-    algorithms = [features.ConstantPointCoordinates()]
+    algorithms = [features.ConstantPointCoordinates(),
+                  features.ConstantPointCoordinates(strokes=0),
+                  features.FirstNPoints(),
+                  # features.Bitmap(),
+                  features.Ink(),
+                  features.AspectRatio(),
+                  features.Width(),
+                  features.Time(),
+                  features.CenterOfMass(),
+                  features.StrokeCenter(),
+                  features.StrokeIntersections(),
+                  features.ReCurvature()
+                  ]
     for algorithm in algorithms:
         a = get_symbol_as_handwriting(292934)
         algorithm(a)

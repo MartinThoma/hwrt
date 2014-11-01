@@ -63,14 +63,14 @@ def compare_pointlists(a, b, epsilon=0.001):
 def data_multiplication_detection_test():
     l = [{'Multiply': [{'nr': 1}]},
          {'Rotate':
-          [{'min': -3},
-           {'max': +3},
+          [{'minimum': -3},
+           {'maximum': +3},
            {'num': 3}]
           }
          ]
     correct = [data_multiplication.Multiply(nr=1),
-               data_multiplication.Rotate(min=-3,
-                                          max=3,
+               data_multiplication.Rotate(minimum=-3,
+                                          maximum=3,
                                           num=3)]
     mult_queue = data_multiplication.get_data_multiplication_queue(l)
     # TODO: Not only compare lengths of lists but actual contents.

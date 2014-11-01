@@ -39,7 +39,6 @@ include installing the following:
     # apt-get install python-dev python-setuptools
     # apt-get install python3-dev python3-setuptools
     # apt-get install libtiff4-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms1-dev libwebp-dev
-    # pip install PILLOW
 
 
 Python packages
@@ -54,6 +53,7 @@ Now you can install the remaining packages:
 
 .. code:: bash
 
+    # pip install PILLOW
     # pip install natsort matplotlib coveralls shapely
     # pip install numpy
     # pip install scipy
@@ -76,7 +76,7 @@ You can check if it worked by
 .. code:: bash
 
     $ hwrt --version
-    hwrt 0.1.101
+    hwrt 0.1.127
 
 Please send me an email (info@martin-thoma.de) if that didn't work.
 

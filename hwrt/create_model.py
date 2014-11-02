@@ -16,13 +16,23 @@ from . import features
 
 
 def create_model(model_folder, model_type, topology, override):
+    """Create a model if it doesn't exist already.
+    :param model_folder: The path to the folder where the model is described
+                         with an ``info.yml``
+    :param model_type: MLP
+    :param topology: Something like 160:500:369 - that means the first layer
+                     has 160 neurons, the second layer has 500 neurons and the
+                     last layer has 369 neurons.
+    :param override: If a model exists, override it.
+    :type override: boolean"""
     latest_model = utils.get_latest_in_folder(model_folder, ".json")
     if (latest_model == "") or override:
         logging.info("Create a base model...")
         model_src = os.path.join(model_folder, "model-0.json")
-        command = "nntoolkit make %s %s > %s" % (model_type,
-                                                 topology,
-                                                 model_src)
+        command = "%s make %s %s > %s" % (utils.get_nntoolkit(),
+                                          model_type,
+                                          topology,
+                                          model_src)
         logging.info(command)
         os.system(command)
     else:
@@ -30,6 +40,7 @@ def create_model(model_folder, model_type, topology, override):
 
 
 def main(model_folder, override=False):
+    """Parse the info.yml from ``model_folder`` and create the model file."""
     # That would cause an infinite loop:
     # utils.update_if_outdated(model_folder)
     model_description_file = os.path.join(model_folder, "info.yml")
@@ -37,17 +48,17 @@ def main(model_folder, override=False):
     with open(model_description_file, 'r') as ymlfile:
         model_description = yaml.load(ymlfile)
 
-    PROJECT_ROOT = utils.get_project_root()
+    project_root = utils.get_project_root()
     # Read the feature description file
-    feature_folder = os.path.join(PROJECT_ROOT,
+    feature_folder = os.path.join(project_root,
                                   model_description['data-source'])
     with open(os.path.join(feature_folder, "info.yml"), 'r') as ymlfile:
         feature_description = yaml.load(ymlfile)
     # Get a list of all used features
     feature_list = features.get_features(feature_description['features'])
     # Get the dimension of the feature vector
-    INPUT_FEATURES = sum(map(lambda n: n.get_dimension(), feature_list))
-    logging.info("Number of features: %i" % INPUT_FEATURES)
+    input_features = sum(map(lambda n: n.get_dimension(), feature_list))
+    logging.info("Number of features: %i", input_features)
 
     # Analyze model
     logging.info(model_description['model'])
@@ -60,11 +71,12 @@ def main(model_folder, override=False):
     utils.create_run_logfile(model_folder)
 
 
-if __name__ == "__main__":
-    PROJECT_ROOT = utils.get_project_root()
+def get_parser():
+    """Return the parser object for this script."""
+    project_root = utils.get_project_root()
 
     # Get latest model folder
-    models_folder = os.path.join(PROJECT_ROOT, "models")
+    models_folder = os.path.join(project_root, "models")
     latest_model = utils.get_latest_folder(models_folder)
 
     # Get command line arguments
@@ -82,5 +94,9 @@ if __name__ == "__main__":
                         default=False,
                         help=("should the model be overridden "
                               "if it already exists?"))
-    args = parser.parse_args()
+    return parser
+
+
+if __name__ == "__main__":
+    args = get_parser().parse_args()
     main(args.model, args.override)

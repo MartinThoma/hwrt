@@ -16,6 +16,8 @@ import hwrt.utils as utils
 
 
 def generate_training_command(model_folder):
+    """Generate a string that contains a command with all necessary
+       parameters to train the model."""
     utils.update_if_outdated(model_folder)
     model_description_file = os.path.join(model_folder, "info.yml")
     # Read the model description file
@@ -23,15 +25,15 @@ def generate_training_command(model_folder):
         model_description = yaml.load(ymlfile)
 
     # Get the data paths (pfiles)
-    PROJECT_ROOT = utils.get_project_root()
+    project_root = utils.get_project_root()
     data = {}
-    data['training'] = os.path.join(PROJECT_ROOT,
+    data['training'] = os.path.join(project_root,
                                     model_description["data-source"],
                                     "traindata.pfile")
-    data['testing'] = os.path.join(PROJECT_ROOT,
+    data['testing'] = os.path.join(project_root,
                                    model_description["data-source"],
                                    "testdata.pfile")
-    data['validating'] = os.path.join(PROJECT_ROOT,
+    data['validating'] = os.path.join(project_root,
                                       model_description["data-source"],
                                       "validdata.pfile")
 
@@ -61,6 +63,9 @@ def generate_training_command(model_folder):
 
 
 def train_model(model_folder, model_description, data):
+    """Train the model in ``model_folder``.
+    :param data: The information where the data (pfiles) is.
+    :type data: dictionary"""
     os.chdir(model_folder)
     training = generate_training_command(model_folder)
     if training is None:

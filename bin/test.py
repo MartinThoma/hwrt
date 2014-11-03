@@ -76,10 +76,10 @@ def get_test_results(model_folder, basename, test_file):
         utils.create_adjusted_model_for_percentages(model_src, model_use)
 
         # Start evaluation
-        PROJECT_ROOT = utils.get_project_root()
+        project_root = utils.get_project_root()
         time_prefix = time.strftime("%Y-%m-%d-%H-%M")
         logging.info("Evaluate '%s' with '%s'...", model_src, test_file)
-        logfile = os.path.join(PROJECT_ROOT,
+        logfile = os.path.join(project_root,
                                "logs/%s-error-evaluation.log" %
                                time_prefix)
         with open(logfile, "w") as log, open(model_use, "r") as model_src_p:
@@ -106,68 +106,11 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
     # Gather data
     correct = []
     wrong = []
-    confusing = [('\sum', '\Sigma'),
-                 ('\prod', '\Pi', '\sqcap'),
-                 ('\coprod', '\\amalg', '\\sqcup'),
-                 ('\perp', '\\bot'),
-                 ('\models', '\\vDash'),
-                 ('|', '\mid'),
-                 ('\Delta', '\\triangle', '\\vartriangle'),
-                 ('\|', '\parallel'),
-                 ('\ohm', '\Omega'),
-                 ('\setminus', '\\backslash'),
-                 ('\checked', '\checkmark'),
-                 ('\&', '\with'),
-                 ('\#', '\sharp'),
-                 ('\S', '\mathsection'),
-                 ('\\nabla', '\\triangledown'),
-                 ('\lhd', '\\triangleleft', '\\vartriangleleft'),
-                 ('\\oiint', '\\varoiint'),
-                 ('\mathbb{R}', '\mathds{R}'),
-                 ('\mathbb{Q}', '\mathds{Q}'),
-                 ('\mathbb{Z}', '\mathds{Z}'),
-                 ('\mathcal{A}', '\mathscr{A}'),
-                 ('\mathcal{D}', '\mathscr{D}'),
-                 ('\mathcal{N}', '\mathscr{N}'),
-                 ('\mathcal{R}', '\mathscr{R}'),
-                 ('\propto', '\\varpropto')]
-    understandable = [('\\alpha', '\propto', '\\varpropto', '\ltimes'),
-                      ('0', 'O', 'o', '\circ', '\degree', '\\fullmoon',
-                       '\mathcal{O}'),
-                      ('\epsilon', '\\varepsilon', '\in', '\mathcal{E}'),
-                      ('\Lambda', '\wedge'),
-                      ('\emptyset', '\O', '\o', '\diameter', '\\varnothing'),
-                      ('\\rightarrow', '\longrightarrow', '\shortrightarrow'),
-                      ('\Rightarrow', '\Longrightarrow'),
-                      ('\Leftrightarrow', '\Longleftrightarrow'),
-                      ('\mapsto', '\longmapsto'),
-                      ('\mathbb{1}', '\mathds{1}'),
-                      ('\mathscr{L}', '\mathcal{L}'),
-                      ('\\mathbb{Q}', '\\mathds{Q}'),
-                      ('\\mathbb{Z}', '\\mathds{Z}', '\\mathcal{Z}'),
-                      ('\geq', '\geqslant', '\succeq'),
-                      ('\leq', '\leqslant'),
-                      ('\Pi', '\pi', '\prod'),
-                      ('\psi', '\Psi'),
-                      ('\phi', '\Phi', '\emptyset'),
-                      ('\\rho', '\\varrho'),
-                      ('\\theta', '\Theta'),
-                      ('\odot', '\\astrosun'),
-                      ('\cdot', '\\bullet'),
-                      ('\\beta', '\ss'),
-                      ('\male', '\mars'),
-                      ('\\female', '\\venus'),
-                      ('\Bowtie', '\\bowtie'),
-                      ('\diamond', '\diamondsuit', '\lozenge'),
-                      ('\dots', '\dotsc'),
-                      ('\mathcal{T}', '\\tau'),
-                      ('\mathcal{C}', 'C'),
-                      ('x', '\\times', 'X', '\\chi', '\\mathcal{X}')]
-    confusing = make_all(confusing)
+    merge_cfg_path = pkg_resources.resource_filename('hwrt', 'misc/')
+    merge = os.path.join(merge_cfg_path, "merge.yml")
+    confusing = make_all(merge)
     if not merge:
         confusing = []
-    if False:
-        confusing += make_all(understandable)
     for known, evaluated in zip(true_data, eval_data):
         evaluated_t1 = evaluated.keys()[0]
         if known['index'] in evaluated.keys()[:n]:
@@ -181,8 +124,8 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
             known['confused'] = formula_id  # That's an index!
             wrong.append(known)
     classification_error = (len(wrong) / float(len(wrong) + len(correct)))
-    logging.info("Classification error: %0.4f (%i wrong)" %
-                 (classification_error, len(wrong)))
+    logging.info("Classification error: %0.4f (%i wrong)",
+                 classification_error, len(wrong))
 
     # Get the data
     errors_by_correct_classification = DefaultOrderedDict(list)
@@ -192,22 +135,26 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
         errors_by_wrong_classification[el['confused']].append(el)
 
     # Sort errors_by_correct_classification
-    errors_by_correct_classification = OrderedDict(sorted(errors_by_correct_classification.iteritems(),
-                                                   key=lambda n: len(n[1]),
-                                                   reverse=True))
+    tmp = sorted(errors_by_correct_classification.iteritems(),
+                 key=lambda n: len(n[1]),
+                 reverse=True)
+    errors_by_correct_classification = OrderedDict(tmp)
     for key in errors_by_correct_classification:
-        errors_by_correct_classification[key] = sorted(errors_by_correct_classification[key],
-                                                       key=lambda n: n['confused'])
+        tmp = sorted(errors_by_correct_classification[key],
+                     key=lambda n: n['confused'])
+        errors_by_correct_classification[key] = tmp
     # Sort errors_by_wrong_classification
-    errors_by_wrong_classification = OrderedDict(sorted(errors_by_wrong_classification.iteritems(),
-                                                 key=lambda n: len(n[1]),
-                                                 reverse=True))
+    tmp = sorted(errors_by_wrong_classification.iteritems(),
+                 key=lambda n: len(n[1]),
+                 reverse=True)
+    errors_by_wrong_classification = OrderedDict(tmp)
     for key in errors_by_wrong_classification:
-        errors_by_wrong_classification[key] = sorted(errors_by_wrong_classification[key],
-                                                     key=lambda n: n['latex'])
+        tmp = sorted(errors_by_wrong_classification[key],
+                     key=lambda n: n['latex'])
+        errors_by_wrong_classification[key] = tmp
 
     # Get the tempalte
-    PROJECT_ROOT = utils.get_project_root()
+    project_root = utils.get_project_root()
     template_path = pkg_resources.resource_filename('hwrt', 'templates/')
     template = os.path.join(template_path, "classification-error-report.html")
     with open(template) as f:
@@ -215,7 +162,7 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
 
     # Find right place for report file
     time_prefix = time.strftime("%Y-%m-%d-%H-%M")
-    target = os.path.join(PROJECT_ROOT,
+    target = os.path.join(project_root,
                           ("reports/"
                            "%s-classification-error-report.html") %
                           time_prefix)
@@ -275,7 +222,7 @@ def analyze_results(translation_csv, what_evaluated_file, evaluation_file, n,
 
 def main(model_folder, aset='test', n=3, merge=True):
     """Main part of the test script."""
-    PROJECT_ROOT = utils.get_project_root()
+    project_root = utils.get_project_root()
 
     if aset == 'test':
         key_model, key_file = 'testing', 'testdata'
@@ -291,15 +238,15 @@ def main(model_folder, aset='test', n=3, merge=True):
         model_description = yaml.load(ymlfile)
 
     # Get the data paths (pfiles)
-    PROJECT_ROOT = utils.get_project_root()
+    project_root = utils.get_project_root()
     data = {}
-    data['training'] = os.path.join(PROJECT_ROOT,
+    data['training'] = os.path.join(project_root,
                                     model_description["data-source"],
                                     "traindata.pfile")
-    data['testing'] = os.path.join(PROJECT_ROOT,
+    data['testing'] = os.path.join(project_root,
                                    model_description["data-source"],
                                    "testdata.pfile")
-    data['validating'] = os.path.join(PROJECT_ROOT,
+    data['validating'] = os.path.join(project_root,
                                       model_description["data-source"],
                                       "validdata.pfile")
 
@@ -307,10 +254,10 @@ def main(model_folder, aset='test', n=3, merge=True):
     evaluation_file = get_test_results(model_folder,
                                        "model",
                                        test_data_path)
-    translation_csv = os.path.join(PROJECT_ROOT,
+    translation_csv = os.path.join(project_root,
                                    model_description["data-source"],
                                    "index2formula_id.csv")
-    what_evaluated_file = os.path.join(PROJECT_ROOT,
+    what_evaluated_file = os.path.join(project_root,
                                        model_description["data-source"],
                                        "translation-%s.csv" % key_file)
     analyze_results(translation_csv, what_evaluated_file, evaluation_file, n,

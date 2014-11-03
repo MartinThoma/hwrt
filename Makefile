@@ -7,3 +7,6 @@ update:
 
 test:
 	nosetests --with-coverage --cover-erase --cover-package hwrt --logging-level=INFO --cover-html
+
+count:
+	cloc . --exclude-dir=docs,cover,dist,hwrt.egg-info

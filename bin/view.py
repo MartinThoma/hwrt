@@ -118,7 +118,7 @@ def _get_system(model_folder):
     return (preprocessing_desc, feature_desc, model_desc)
 
 
-def display_data(raw_data_string, raw_data_id, model_folder):
+def display_data(raw_data_string, raw_data_id, model_folder, show_raw):
     """Print ``raw_data_id`` with the content ``raw_data_string`` after
        applying the preprocessing of ``model_folder`` to it."""
     print("## Raw Data (ID: %i)" % raw_data_id)
@@ -152,6 +152,8 @@ def display_data(raw_data_string, raw_data_id, model_folder):
     # Get Handwriting
     recording = HandwrittenData.HandwrittenData(raw_data_string,
                                                 raw_data_id=raw_data_id)
+    if show_raw:
+        recording.show()
 
     # Get the preprocessing queue
     tmp = preprocessing_desc['queue']
@@ -211,10 +213,15 @@ def get_parser():
                         help="contact the MySQL server",
                         action='store_true',
                         default=False)
+    parser.add_argument("-r", "--raw",
+                        dest="show_raw",
+                        help="show the raw recording (without preprocessing)",
+                        action='store_true',
+                        default=False)
     return parser
 
 
-def main(list_ids, model, contact_server, raw_data_id):
+def main(list_ids, model, contact_server, raw_data_id, show_raw):
     """Main function of view.py."""
     if list_ids:
         preprocessing_desc, _, _ = _get_system(model)
@@ -225,7 +232,7 @@ def main(list_ids, model, contact_server, raw_data_id):
         if contact_server:
             data = _fetch_data_from_server(raw_data_id)
             print("hwrt version: %s" % hwrt.__version__)
-            display_data(data['data'], data['id'], model)
+            display_data(data['data'], data['id'], model, show_raw)
         else:
             logging.info("RAW_DATA_ID %i does not exist or "
                          "database connection did not work.", raw_data_id)
@@ -243,8 +250,9 @@ def main(list_ids, model, contact_server, raw_data_id):
                 print("hwrt version: %s" % hwrt.__version__)
                 display_data(handwriting.raw_data_json,
                              handwriting.formula_id,
-                             model)
+                             model,
+                             show_raw)
 
 if __name__ == '__main__':
     args = get_parser().parse_args()
-    main(args.list, args.model, args.server, args.id)
+    main(args.list, args.model, args.server, args.id, args.show_raw)

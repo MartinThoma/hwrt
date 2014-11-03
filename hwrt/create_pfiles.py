@@ -37,14 +37,15 @@ from . import utils
 
 
 def main(feature_folder, create_learning_curve=False):
-    PROJECT_ROOT = utils.get_project_root()
+    """main function of create_pfiles.py"""
+    project_root = utils.get_project_root()
 
     # Read the feature description file
     with open(os.path.join(feature_folder, "info.yml"), 'r') as ymlfile:
         feature_description = yaml.load(ymlfile)
 
     # Get preprocessed .pickle file from model description file
-    path_to_data = os.path.join(PROJECT_ROOT,
+    path_to_data = os.path.join(project_root,
                                 feature_description['data-source'])
     if os.path.isdir(path_to_data):
         path_to_data = os.path.join(path_to_data, "data.pickle")
@@ -67,7 +68,7 @@ def main(feature_folder, create_learning_curve=False):
 
     os.chdir(feature_folder)
     logging.info("Start creation of pfiles...")
-    logging.info("Get sets from '%s' ..." % path_to_data)
+    logging.info("Get sets from '%s' ...", path_to_data)
     (training_set, validation_set, test_set, formula_id2index,
      preprocessing_queue, index2latex) = get_sets(path_to_data)
 
@@ -83,7 +84,7 @@ def main(feature_folder, create_learning_curve=False):
             f.write("%i,%i,%s\n" % (index, formula_id, index2latex[index]))
 
     # Get the dimension of the feature vector
-    INPUT_FEATURES = sum(map(lambda n: n.get_dimension(), feature_list))
+    input_features = sum(map(lambda n: n.get_dimension(), feature_list))
 
     # Output data for documentation
     print("Classes (nr of symbols): %i" % len(formula_id2index))
@@ -94,11 +95,12 @@ def main(feature_folder, create_learning_curve=False):
         print("* " + str(algorithm))
     print("```")
 
-    print("#### Features (%i)" % INPUT_FEATURES)
+    print("#### Features (%i)" % input_features)
     print("```")
     for algorithm in feature_list:
         print("* %s" % str(algorithm))
     print("```")
+
     logging.info("Start creating pfiles")
 
     # Traindata has to come first because of feature normalization
@@ -107,7 +109,7 @@ def main(feature_folder, create_learning_curve=False):
          ("testdata", test_set, False),
          ("validdata", validation_set, False)]:
         t0 = time.time()
-        logging.info("Start preparing '%s' ..." % dataset_name)
+        logging.info("Start preparing '%s' ...", dataset_name)
         prepared, translation = prepare_dataset(dataset,
                                                 formula_id2index,
                                                 feature_list,
@@ -115,7 +117,7 @@ def main(feature_folder, create_learning_curve=False):
         logging.info("%s length: %i", dataset_name, len(prepared))
         logging.info("start 'make_pfile' ...")
         make_pfile(dataset_name,
-                   INPUT_FEATURES,
+                   input_features,
                    prepared,
                    os.path.join(feature_folder, target_paths[dataset_name]),
                    create_learning_curve)
@@ -127,8 +129,7 @@ def main(feature_folder, create_learning_curve=False):
                 f.write("%i,%i,%s,%i\n" % (formula_id2index[el[2]],
                                            el[0], el[1], el[2]))
         t1 = time.time() - t0
-        logging.info("%s was written. Needed %0.2f seconds" %
-                     (dataset_name, t1))
+        logging.info("%s was written. Needed %0.2f seconds", dataset_name, t1)
         gc.collect()
     utils.create_run_logfile(feature_folder)
 
@@ -239,8 +240,10 @@ def prepare_dataset(dataset, formula_id2index, feature_list, is_traindata):
             # normalization
             start = 0
             with open("featurenormalization.csv", 'wb') as csvfile:
-                spamwriter = csv.writer(csvfile, delimiter=';',
-                                        quotechar='"', quoting=csv.QUOTE_MINIMAL)
+                spamwriter = csv.writer(csvfile,
+                                        delimiter=';',
+                                        quotechar='"',
+                                        quoting=csv.QUOTE_MINIMAL)
                 for feature in feature_list:
                     end = start + feature.get_dimension()
                     # append the data to the feature class
@@ -325,11 +328,12 @@ def make_pfile(dataset_name, feature_count, data,
         #os.remove(input_filename)
 
 
-if __name__ == '__main__':
-    PROJECT_ROOT = utils.get_project_root()
+def get_parser():
+    """Return the parser object for this script."""
+    project_root = utils.get_project_root()
 
     # Get latest model description file
-    feature_folder = os.path.join(PROJECT_ROOT, "feature-files")
+    feature_folder = os.path.join(project_root, "feature-files")
     latest_featurefolder = utils.get_latest_folder(feature_folder)
 
     # Get command line arguments
@@ -348,6 +352,9 @@ if __name__ == '__main__':
                         help="create pfiles for a learning curve",
                         action='store_true',
                         default=False)
-    args = parser.parse_args()
+    return parser
 
+
+if __name__ == '__main__':
+    args = get_parser().parse_args()
     main(args.folder, args.create_learning_curve)

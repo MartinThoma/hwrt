@@ -38,3 +38,7 @@ def training_set_multiplication_test():
     mult_queue = [data_multiplication.Multiply()]
     create_pfiles.training_set_multiplication(training_set, mult_queue)
     # nose.tools.assert_equal(len(feature_list), len(correct))
+
+
+def parser_test():
+    create_pfiles.get_parser()

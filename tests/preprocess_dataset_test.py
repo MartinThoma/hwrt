@@ -17,3 +17,11 @@ def execution_test():
     small = os.path.join(utils.get_project_root(),
                          "preprocessed/small-baseline")
     preprocess_dataset.main(small)
+
+
+def get_parameters_test():
+    # TODO: nose.proxy.UnicodeDecodeError: 'utf-8' codec can't decode byte 0x80
+    #                                      in position 0: invalid start byte
+    small = os.path.join(utils.get_project_root(),
+                         "preprocessed/small-baseline")
+    preprocess_dataset.get_parameters(small)

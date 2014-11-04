@@ -15,14 +15,22 @@ import argparse
 
 # hwrt modules
 import hwrt
-# from backup import parser as backup_parser
-# from view import parser as view_parser
+from hwrt import create_pfiles
+from hwrt import create_model
 
 
 def get_parser():
     """Return the parser object for this script."""
     parser = argparse.ArgumentParser(description=__doc__,
                                      prog='hwrt')
+    subparsers = parser.add_subparsers(dest='cmd')
+    subparsers.add_parser('create_pfiles',
+                          add_help=False,
+                          description="Create pfiles",
+                          parents=[create_pfiles.get_parser()])
+    subparsers.add_parser('create_model',
+                          add_help=False,
+                          parents=[create_model.get_parser()])
     parser.add_argument('--version',
                         action='version',
                         version=('hwrt %s' % str(hwrt.__version__)))
@@ -38,14 +46,5 @@ def main(check):
         selfcheck.main()
 
 if __name__ == '__main__':
-
-    # subparsers = parser.add_subparsers(dest='cmd')
-    # # or use the parser.setdefault() as described in the documentation
-    # backup = subparsers.add_parser('backup',
-    #                                add_help=False,
-    #                                parents=[backup_parser])
-    # view = subparsers.add_parser('view',
-    #                              add_help=False,
-    #                              parents=[view_parser])
     args = get_parser().parse_args()
     main(args.check)

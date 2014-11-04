@@ -10,6 +10,7 @@ import hwrt.preprocessing as preprocessing
 import hwrt.features as features
 import hwrt.create_pfiles as create_pfiles
 import hwrt.data_multiplication as data_multiplication
+import hwrt.utils as utils
 
 
 # Test helper

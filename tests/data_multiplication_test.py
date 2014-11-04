@@ -61,7 +61,8 @@ def compare_pointlists(a, b, epsilon=0.001):
 
 # Tests
 def data_multiplication_detection_test():
-    l = [{'Multiply': [{'nr': 1}]},
+    l = [{'Multiply': None},
+         {'Multiply': [{'nr': 1}]},
          {'Rotate':
           [{'minimum': -3},
            {'maximum': +3},
@@ -69,6 +70,7 @@ def data_multiplication_detection_test():
           }
          ]
     correct = [data_multiplication.Multiply(nr=1),
+               data_multiplication.Multiply(nr=1),
                data_multiplication.Rotate(minimum=-3,
                                           maximum=3,
                                           num=3)]
@@ -80,3 +82,11 @@ def data_multiplication_detection_test():
 def unknown_class_test():
     # TODO: Test if logging works
     data_multiplication.get_class("not_existant")
+
+
+def rotate_test():
+    recording = get_symbol_as_handwriting(292934)
+    rotation = data_multiplication.Rotate(minimum=-3, maximum=3, num=3)
+    new_recordings = rotation(recording)
+    # TODO: Not only compare lengths of lists but actual contents.
+    nose.tools.assert_equal(len(new_recordings), 3)

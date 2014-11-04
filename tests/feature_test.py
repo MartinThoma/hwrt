@@ -4,6 +4,8 @@
 import os
 import nose
 
+from nose.plugins.skip import SkipTest
+
 # hwrt modules
 from hwrt.HandwrittenData import HandwrittenData
 import hwrt.preprocessing as preprocessing
@@ -111,9 +113,33 @@ def simple_execution_test():
                   features.Time(),
                   features.CenterOfMass(),
                   features.StrokeCenter(),
+                  features.StrokeCenter(8),
                   features.StrokeIntersections(),
                   features.ReCurvature()
                   ]
     for algorithm in algorithms:
-        a = get_symbol_as_handwriting(292934)
-        algorithm(a)
+        recording = get_symbol_as_handwriting(292934)
+        algorithm(recording)
+
+
+def stroke_intersection1_test():
+    """A '&' has one stroke. This stroke intersects itself once."""
+    recording = get_symbol_as_handwriting(97705)
+    feature = features.StrokeIntersections(1)
+    nose.tools.assert_equal(feature(recording), [2])
+
+
+@SkipTest
+def stroke_intersection2_test():
+    """A 't' has two strokes. They don't intersect themselves, but they
+       intersect once."""
+    recording = get_symbol_as_handwriting(293035)
+    feature = features.StrokeIntersections(2)
+    nose.tools.assert_equal(feature(recording), [0, 1, 0])
+
+
+def recurvature_test():
+    """A 'o' ends in itself. The re-curvature is therefore 0."""
+    recording = get_symbol_as_handwriting(293036)
+    feature = features.ReCurvature(1)
+    nose.tools.assert_equal(feature(recording), [1])

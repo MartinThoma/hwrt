@@ -538,6 +538,10 @@ class StrokeIntersections(object):
 
     Returns values of upper triangular matrix (including diagonal)
     from left to right, top to bottom.
+
+    ..warning
+
+        This method has an error. It should probably not be used.
     """
 
     normalize = True
@@ -564,11 +568,9 @@ class StrokeIntersections(object):
             # This can be solved more efficiently with sweep line
             counter = 0
             lines = []
-            last = stroke[0]
-            for point in stroke[1:]:
+            for last, point in zip(stroke, stroke[1:]):
                 line = LineString([(last['x'], last['y']),
                                    (point['x'], point['y'])])
-                last = point
                 lines.append((len(lines), line))
 
             for line1, line2 in itertools.combinations(lines, 2):
@@ -579,24 +581,21 @@ class StrokeIntersections(object):
             return counter
 
         def count_intersections(stroke_a, stroke_b):
-            # This can be solved more efficiently with sweep line
             counter = 0
+
             # build data structure a
             lines_a = []
-            last = stroke_a[0]
-            for point in stroke_a[1:]:
+            for last, point in zip(stroke_a, stroke_a[1:]):
                 line = LineString([(last['x'], last['y']),
                                    (point['x'], point['y'])])
                 lines_a.append(line)
-                last = point
+
             # build data structure b
             lines_b = []
-            last = stroke_b[0]
-            for point in stroke_b[1:]:
+            for last, point in zip(stroke_b, stroke_b[1:]):
                 line = LineString([(last['x'], last['y']),
                                    (point['x'], point['y'])])
                 lines_b.append(line)
-                last = point
 
             # Calculate intersections
             for line1, line2 in itertools.product(lines_a, lines_b):
@@ -639,11 +638,15 @@ class ReCurvature(object):
     """Re-curvature is a 1 dimensional, stroke-global feature for a recording.
        It is the ratio
        :math:`\frac{\text{height}(s)}{\text{distance}(s[0], s[-1])}`.
+       If s[0] == s[-1], then the re-curvature is defined to be 1.
     """
 
     normalize = True
 
     def __init__(self, strokes=4):
+        assert strokes > 0, \
+            "This attribute has to be positive, but was %s" % \
+            str(strokes)
         self.strokes = strokes
 
     def __repr__(self):
@@ -663,11 +666,10 @@ class ReCurvature(object):
         for stroke in handwritten_data.get_pointlist():
             stroke_y = [point['y'] for point in stroke]
             height = max(stroke_y) - min(stroke_y)
-            length = 0.0
-            last_point = stroke[0]
-            for point in stroke[1:]:
-                length += preprocessing._euclidean_distance(point, last_point)
-                last_point = point
+            # length = 0.0
+            # for last_point, point in zip(stroke, stroke[1:]):
+            #     length += preprocessing._euclidean_distance(point, last_point)
+            length = preprocessing._euclidean_distance(stroke[0], stroke[-1])
 
             if length == 0:
                 x.append(1)

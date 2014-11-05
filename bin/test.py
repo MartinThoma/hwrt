@@ -106,9 +106,12 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
     # Gather data
     correct = []
     wrong = []
+    # Get MER classes
     merge_cfg_path = pkg_resources.resource_filename('hwrt', 'misc/')
-    merge = os.path.join(merge_cfg_path, "merge.yml")
-    confusing = make_all(merge)
+    merge_cfg_file = os.path.join(merge_cfg_path, "merge.yml")
+    merge_data = yaml.load(open(merge_cfg_file, 'r'))
+    # Make classes
+    confusing = make_all(merge_data)
     if not merge:
         confusing = []
     for known, evaluated in zip(true_data, eval_data):
@@ -124,8 +127,8 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
             known['confused'] = formula_id  # That's an index!
             wrong.append(known)
     classification_error = (len(wrong) / float(len(wrong) + len(correct)))
-    logging.info("Classification error: %0.4f (%i wrong)",
-                 classification_error, len(wrong))
+    logging.info("Classification error (n=%i, MER=%r): %0.4f (%i wrong)",
+                 n, merge, classification_error, len(wrong))
 
     # Get the data
     errors_by_correct_classification = DefaultOrderedDict(list)
@@ -292,7 +295,7 @@ def get_parser():
                         help="which set should get analyzed?",
                         default='test')
     parser.add_argument("-n",
-                        dest="n", default=3, type=int,
+                        dest="n", default=1, type=int,
                         help="Top-N error")
     parser.add_argument("--merge",
                         action="store_true", dest="merge", default=False,

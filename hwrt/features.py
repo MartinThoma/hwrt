@@ -637,8 +637,8 @@ class ReCurvature(object):
 
     """Re-curvature is a 1 dimensional, stroke-global feature for a recording.
        It is the ratio
-       :math:`\frac{\text{height}(s)}{\text{distance}(s[0], s[-1])}`.
-       If s[0] == s[-1], then the re-curvature is defined to be 1.
+       :math:`\frac{\text{height}(s)}{\text{length}(s)}`.
+       If ``length}(s) == 0``, then the re-curvature is defined to be 1.
     """
 
     normalize = True
@@ -666,10 +666,9 @@ class ReCurvature(object):
         for stroke in handwritten_data.get_pointlist():
             stroke_y = [point['y'] for point in stroke]
             height = max(stroke_y) - min(stroke_y)
-            # length = 0.0
-            # for last_point, point in zip(stroke, stroke[1:]):
-            #     length += preprocessing._euclidean_distance(point, last_point)
-            length = preprocessing._euclidean_distance(stroke[0], stroke[-1])
+            length = 0.0
+            for last_point, point in zip(stroke, stroke[1:]):
+                length += preprocessing._euclidean_distance(point, last_point)
 
             if length == 0:
                 x.append(1)

@@ -86,7 +86,7 @@ def analyze_feature(raw_datasets, feature, basename="aspect_ratios"):
     csv_file.close()
 
 
-def main(handwriting_datasets_file):
+def main(handwriting_datasets_file, analyze_features):
     """Start the creation of the wanted metric."""
     # Load from pickled file
     logging.info("Start loading data '%s' ...", handwriting_datasets_file)
@@ -95,17 +95,17 @@ def main(handwriting_datasets_file):
     logging.info("%i datasets loaded.", len(raw_datasets))
     logging.info("Start analyzing...")
 
-    # Analyze features
-    featurelist = [(features.AspectRatio(), "aspect_ratio.csv"),
-                   (features.ReCurvature(1), "re_curvature.csv"),
-                   (features.Height(), "height.csv"),
-                   (features.Width(), "width.csv"),
-                   (features.Time(), "time.csv"),
-                   (features.Ink(), "ink.csv"),
-                   (features.StrokeCount(), "stroke-count.csv")]
-    for feat, filename in featurelist:
-        logging.info("create %s...", filename)
-        analyze_feature(raw_datasets, feat, filename)
+    if analyze_features:
+        featurelist = [(features.AspectRatio(), "aspect_ratio.csv"),
+                       (features.ReCurvature(1), "re_curvature.csv"),
+                       (features.Height(), "height.csv"),
+                       (features.Width(), "width.csv"),
+                       (features.Time(), "time.csv"),
+                       (features.Ink(), "ink.csv"),
+                       (features.StrokeCount(), "stroke-count.csv")]
+        for feat, filename in featurelist:
+            logging.info("create %s...", filename)
+            analyze_feature(raw_datasets, feat, filename)
 
     # Analyze everything specified in configuration
     cfg = utils.get_project_configuration()
@@ -134,9 +134,14 @@ def get_parser():
                         metavar="FILE",
                         type=lambda x: utils.is_valid_file(parser, x),
                         default=latest_dataset)
+    parser.add_argument("-f", "--features",
+                        dest="analyze_features",
+                        help="analyze features",
+                        action="store_true",
+                        default=False)
     return parser
 
 
 if __name__ == '__main__':
     args = get_parser().parse_args()
-    main(args.handwriting_datasets)
+    main(args.handwriting_datasets, args.analyze_features)

@@ -53,13 +53,18 @@ def get_class(name):
     if 'data_analyzation_plugins' in cfg:
         basename = os.path.basename(cfg['data_analyzation_plugins'])
         modname = os.path.splitext(basename)[0]
-        usermodule = imp.load_source(modname, cfg['data_analyzation_plugins'])
-        clsmembers = inspect.getmembers(usermodule, inspect.isclass)
-        for string_name, act_class in clsmembers:
-            if string_name == name:
-                return act_class
+        if os.path.isfile(cfg['data_analyzation_plugins']):
+            usermodule = imp.load_source(modname,
+                                         cfg['data_analyzation_plugins'])
+            clsmembers = inspect.getmembers(usermodule, inspect.isclass)
+            for string_name, act_class in clsmembers:
+                if string_name == name:
+                    return act_class
+        else:
+            logging.warning("File '%s' does not exist. Adjust ~/.hwrtrc.",
+                            cfg['data_analyzation_plugins'])
 
-    logging.debug("Unknown class '%s'.", name)
+    logging.warning("Unknown class '%s'.", name)
     return None
 
 
@@ -69,14 +74,15 @@ def get_metrics(metrics_description):
     for metric in metrics_description:
         for feat, params in metric.items():
             feat = get_class(feat)
-            if params is None:
-                metric_list.append(feat())
-            else:
-                parameters = {}
-                for dicts in params:
-                    for param_name, param_value in dicts.items():
-                        parameters[param_name] = param_value
-                metric_list.append(feat(**parameters))
+            if feat is not None:
+                if params is None:
+                    metric_list.append(feat())
+                else:
+                    parameters = {}
+                    for dicts in params:
+                        for param_name, param_value in dicts.items():
+                            parameters[param_name] = param_value
+                    metric_list.append(feat(**parameters))
     return metric_list
 
 # Helper functions that are useful for some metrics

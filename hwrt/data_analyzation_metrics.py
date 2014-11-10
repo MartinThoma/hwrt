@@ -256,23 +256,25 @@ class InterStrokeDistance(object):
         write_file.close()
 
 
-class TimeBetweenPoints(object):
+class TimeBetweenPointsAndStrokes(object):
     """For each recording: Store the average time between controll points of
        one stroke / controll points of two different strokes.
     """
 
-    def __init__(self, filename="average_time_between_points.txt"):
-        self.filename = prepare_file(filename)
+    def __init__(self, filename="average_time_between_points.txt",
+                 filename_strokes="average_time_between_strokes.txt"):
+        self.filename_points = prepare_file(filename)
+        self.filename_strokes = prepare_file(filename_strokes)
 
     def __repr__(self):
-        return "TimeBetweenPoints(%s)" % self.filename
+        return "TimeBetweenPointsAndStrokes(%s)" % self.filename
 
     def __str__(self):
-        return "TimeBetweenPoints(%s)" % self.filename
+        return "TimeBetweenPointsAndStrokes(%s)" % self.filename
 
     def __call__(self, raw_datasets):
-        average_between_points = open("average_time_between_points.txt", "a")
-        average_between_strokes = open("average_time_between_strokes.txt", "a")
+        average_between_points = open(self.filename_points, "a")
+        average_between_strokes = open(self.filename_strokes, "a")
         start_time = time.time()
         for i, raw_dataset in enumerate(raw_datasets):
             if i % 100 == 0 and i > 0:

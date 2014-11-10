@@ -87,6 +87,6 @@ def unknown_class_test():
 def execution_test():
     raw_datasets = get_raw_datasets()
     l = [dam.Creator(), dam.InstrokeSpeed(), dam.InterStrokeDistance(),
-         dam.TimeBetweenPoints()]
+         dam.TimeBetweenPointsAndStrokes()]
     for alg in l:
         alg(raw_datasets)

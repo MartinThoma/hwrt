@@ -63,7 +63,7 @@ class BoundingBox(object):
 
     def get_area(self):
         """Calculate area of bounding box."""
-        return (self.p2.x-self.p1.x)*(self.p2.y-self.p2.y)
+        return (self.p2.x-self.p1.x)*(self.p2.y-self.p1.y)
 
     def get_width(self):
         """
@@ -155,15 +155,33 @@ def point_segment_distance(point, segment):
     if dx == dy == 0:  # the segment's just a point
         return point.dist_to(segment.p1)
 
-    if dx == 0:
-        if (point.y <= segment.p1.y or point.y <= segment.p2.y) and \
-           (point.y >= segment.p2.y or point.y >= segment.p2.y):
-            return abs(point.x - segment.p1.x)
+    if dx == 0:  # It's a straight vertical line
+        if point.y <= segment.p1.y and segment.p1.y <= segment.p2.y:
+            # and point is below p1 of line
+            return point.dist_to(segment.p1)
+        elif point.y <= segment.p2.y and segment.p2.y <= segment.p1.y:
+            # or the other way around
+            return point.dist_to(segment.p2)
+        elif segment.p1.y <= segment.p2.y and segment.p2.y <= point.y:
+            # or the point is above that vertical line (where p2 is on top)
+            return point.dist_to(segment.p2)
+        elif segment.p2.y <= segment.p1.y and segment.p1.y <= point.y:
+            # or the point is above that vertical line (where p1 is on top)
+            return point.dist_to(segment.p1)
 
-    if dy == 0:
-        if (point.x <= segment.p1.x or point.x <= segment.p2.x) and \
-           (point.x >= segment.p2.x or point.x >= segment.p2.x):
-            return abs(point.y - segment.p1.y)
+    if dy == 0:  # It's a straight horizontal line
+        if point.x <= segment.p1.x and segment.p1.x <= segment.p2.x:
+            # and point is left p1 of line
+            return point.dist_to(segment.p1)
+        elif point.x <= segment.p2.x and segment.p2.x <= segment.p1.x:
+            # or the other way around
+            return point.dist_to(segment.p2)
+        elif segment.p1.x <= segment.p2.x and segment.p2.x <= point.x:
+            # or the point is right that vertical line (where p2 is right)
+            return point.dist_to(segment.p2)
+        elif segment.p2.x <= segment.p1.x and segment.p1.x <= point.x:
+            # or the point is right that vertical line (where p1 is right)
+            return point.dist_to(segment.p1)
 
     # Calculate the t that minimizes the distance.
     t = ((point.x - segment.p1.x) * dx + (point.y - segment.p1.y) * dy) / \

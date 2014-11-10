@@ -91,8 +91,10 @@ def get_metrics(metrics_description):
 def prepare_file(filename):
     """Trunkate the file and return the filename."""
     root = utils.get_project_root()
-    folder = os.path.join(root, "analyzation/")
-    workfilename = os.path.join(folder, filename)
+    directory = os.path.join(root, "analyzation/")
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    workfilename = os.path.join(directory, filename)
     open(workfilename, 'w').close()  # Truncate the file
     return workfilename
 
@@ -144,12 +146,7 @@ class Creator(object):
         return "AnalyzeCreator(%s)" % self.filename
 
     def __call__(self, raw_datasets):
-        # prepare file
-        root = utils.get_project_root()
-        folder = os.path.join(root, "analyzation/")
-        workfilename = os.path.join(folder, self.filename)
-        open(workfilename, 'w').close()  # Truncate the file
-        write_file = open(workfilename, "a")
+        write_file = open(self.filename, "a")
         write_file.write("creatorid,nr of symbols\n")  # heading
 
         print_data = defaultdict(int)
@@ -157,7 +154,7 @@ class Creator(object):
         for i, raw_dataset in enumerate(raw_datasets):
             if i % 100 == 0 and i > 0:
                 utils.print_status(len(raw_datasets), i, start_time)
-            print_data[raw_dataset['handwriting'].formula_id] += 1
+            print_data[raw_dataset['handwriting'].user_id] += 1
         print("\r100%"+"\033[K\n")
 
         # Sort the data by highest value, descending
@@ -169,7 +166,7 @@ class Creator(object):
         write_file.write("total,%i\n" %
                          sum([value for _, value in print_data]))
         for userid, value in print_data:
-            write_file.write("%i,%i\n" % (userid, value))
+            write_file.write("%s,%i\n" % (str(userid), value))
         write_file.close()
 
 

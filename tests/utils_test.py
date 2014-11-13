@@ -30,3 +30,21 @@ def execution_test():
     utils.get_database_configuration()
     nose.tools.assert_equal(utils.sizeof_fmt(1), "1.0 bytes")
     nose.tools.assert_equal(utils.sizeof_fmt(1111), "1.1 KB")
+
+
+def parser_test():
+    from argparse import ArgumentParser
+    import os
+    parser = ArgumentParser()
+    home = os.path.expanduser("~")
+    rcfile = os.path.join(home, ".hwrtrc")
+    parser.add_argument("-m", "--model",
+                        dest="model",
+                        type=lambda x: utils.is_valid_folder(parser, x))
+    parser.parse_args(['-m', home])
+
+    parser = ArgumentParser()
+    parser.add_argument("-m", "--model",
+                        dest="model",
+                        type=lambda x: utils.is_valid_file(parser, x))
+    parser.parse_args(['-m', rcfile])

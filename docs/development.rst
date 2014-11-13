@@ -30,11 +30,29 @@ and uploaded to coveralls.io with
 
     $ coveralls
 
+
+Documentation
+-------------
+
+The documentation is generated with `Sphinx <http://sphinx-doc.org/latest/index.html>`_.
+On Debian derivates it can be installed with
+
+.. code:: bash
+
+    $ sudo apt-get install python-sphinx
+
+Sphinx makes use of `reStructured Text <http://openalea.gforge.inria.fr/doc/openalea/doc/_build/html/source/sphinx/rest_syntax.html>`_
+
+The documentation can be built with ``make html``.
+
+
+
 Project structure
 -----------------
 
 The project structure is
 
+::
 
     .
     ├── bin

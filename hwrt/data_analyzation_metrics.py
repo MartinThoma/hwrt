@@ -237,10 +237,10 @@ class InterStrokeDistance(object):
             pointlist = raw_dataset['handwriting'].get_sorted_pointlist()
 
             for last_stroke, stroke in zip(pointlist, pointlist[1:]):
-                p1 = last_stroke[-1]
-                p2 = stroke[0]
-                space_dist = math.hypot(p1['x'] - p2['x'],
-                                        p1['y'] - p2['y'])
+                point1 = last_stroke[-1]
+                point2 = stroke[0]
+                space_dist = math.hypot(point1['x'] - point2['x'],
+                                        point1['y'] - point2['y'])
                 print_data.append(space_dist)
         print("\r100%"+"\033[K\n")
         # Sort the data by highest value, descending
@@ -267,10 +267,12 @@ class TimeBetweenPointsAndStrokes(object):
         self.filename_strokes = prepare_file(filename_strokes)
 
     def __repr__(self):
-        return "TimeBetweenPointsAndStrokes(%s)" % self.filename
+        return "TimeBetweenPointsAndStrokes(%s, %s)" % \
+            (self.filename_points, self.filename_strokes)
 
     def __str__(self):
-        return "TimeBetweenPointsAndStrokes(%s)" % self.filename
+        return "TimeBetweenPointsAndStrokes(%s, %s)" % \
+            (self.filename_points, self.filename_strokes)
 
     def __call__(self, raw_datasets):
         average_between_points = open(self.filename_points, "a")

@@ -7,6 +7,7 @@ update:
 
 test:
 	nosetests --with-coverage --cover-erase --cover-package hwrt --logging-level=INFO --cover-html
+	cheesecake_index -n hwrt -v
 
 count:
 	cloc . --exclude-dir=docs,cover,dist,hwrt.egg-info

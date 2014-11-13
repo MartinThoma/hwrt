@@ -27,6 +27,7 @@ from copy import deepcopy
 
 # hwrt modules
 from hwrt import HandwrittenData
+from hwrt import utils
 
 
 def get_class(name):
@@ -47,19 +48,7 @@ def get_data_multiplication_queue(model_description_multiply):
     >>> get_data_multiplication_queue(l)
     [Multiply (1 times), Rotate (-30.00, 30.00, 5.00)]
     """
-    feature_list = []
-    for feature in model_description_multiply:
-        for feat, params in feature.items():
-            feat = get_class(feat)
-            if params is None:
-                feature_list.append(feat())
-            else:
-                parameters = {}
-                for dicts in params:
-                    for param_name, param_value in dicts.items():
-                        parameters[param_name] = param_value
-                feature_list.append(feat(**parameters))
-    return feature_list
+    return utils.get_objectlist(model_description_multiply, get_class)
 
 # Only data multiplication classes follow
 # Everyone must have a __str__, __repr__, __call__ and get_dimension function

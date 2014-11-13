@@ -75,19 +75,7 @@ def get_features(model_description_features):
      - pen down feature: False
     ]
     """
-    feature_list = []
-    for feature in model_description_features:
-        for feat, params in feature.items():
-            feat = get_class(feat)
-            if params is None:
-                feature_list.append(feat())
-            else:
-                parameters = {}
-                for dicts in params:
-                    for param_name, param_value in dicts.items():
-                        parameters[param_name] = param_value
-                feature_list.append(feat(**parameters))
-    return feature_list
+    return utils.get_objectlist(model_description_features, get_class)
 
 # Only feature calculation classes follow
 # Everyone must have a __str__, __repr__, __call__ and get_dimension function

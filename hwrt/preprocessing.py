@@ -79,19 +79,7 @@ def get_preprocessing_queue(preprocessing_list):
      - max_height: 1
     ]
     """
-    preprocessing_queue = []
-    for preprocessing in preprocessing_list:
-        for alg, params in preprocessing.items():
-            alg = get_class(alg)
-            if params is None:
-                preprocessing_queue.append(alg())
-            else:
-                parameters = {}
-                for dicts in params:
-                    for param_name, param_value in dicts.items():
-                        parameters[param_name] = param_value
-                preprocessing_queue.append(alg(**parameters))
-    return preprocessing_queue
+    return utils.get_objectlist(preprocessing_list, get_class)
 
 # Only preprocessing classes follow
 # Everyone must have a __str__, __repr__ and __call__

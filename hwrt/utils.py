@@ -519,3 +519,19 @@ def classify_single_recording(raw_data_json, model_folder, verbose=False):
         results.append((index2latex[index], probability))
     results = sorted(results, key=lambda n: n[1], reverse=True)
     return results
+
+
+def get_objectlist(description, get_class):
+    object_list = []
+    for feature in description:
+        for feat, params in feature.items():
+            feat = get_class(feat)
+            if params is None:
+                object_list.append(feat())
+            else:
+                parameters = {}
+                for dicts in params:
+                    for param_name, param_value in dicts.items():
+                        parameters[param_name] = param_value
+                object_list.append(feat(**parameters))
+    return object_list

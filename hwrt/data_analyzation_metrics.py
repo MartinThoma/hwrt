@@ -70,20 +70,7 @@ def get_class(name):
 
 def get_metrics(metrics_description):
     """Get metrics from a list of dictionaries. """
-    metric_list = []
-    for metric in metrics_description:
-        for feat, params in metric.items():
-            feat = get_class(feat)
-            if feat is not None:
-                if params is None:
-                    metric_list.append(feat())
-                else:
-                    parameters = {}
-                    for dicts in params:
-                        for param_name, param_value in dicts.items():
-                            parameters[param_name] = param_value
-                    metric_list.append(feat(**parameters))
-    return metric_list
+    return utils.get_objectlist(metrics_description, get_class)
 
 # Helper functions that are useful for some metrics
 

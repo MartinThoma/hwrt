@@ -235,3 +235,13 @@ def point_segment_distance_test():
     point = geometry.Point(-1, -1)
     nose.tools.assert_equal(geometry.point_segment_distance(point, line),
                             2**0.5)
+
+
+def segments_intersection_test():
+    l1 = geometry.LineSegment(geometry.Point(0, 0), geometry.Point(2, 2))
+    l2 = geometry.LineSegment(geometry.Point(1, 1), geometry.Point(3, 3))
+    nose.tools.assert_equal(geometry.segments_intersect(l1, l2), True)
+
+    l1 = geometry.LineSegment(geometry.Point(0, 0), geometry.Point(2, 2))
+    l2 = geometry.LineSegment(geometry.Point(2.1, 2.1), geometry.Point(3, 3))
+    nose.tools.assert_equal(geometry.segments_intersect(l1, l2), False)

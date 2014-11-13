@@ -36,6 +36,16 @@ class LineSegment(object):
         """Measure the distance to another line segment."""
         return segments_distance(self, l2)
 
+    def get_slope(self):
+        """Return the slope m of this line segment."""
+        # y1 = m*x1 + t
+        # y2 = m*x2 + t => y1-y2 = m*(x1-x2) <=> m = (y1-y2)/(x1-x2)
+        return ((self.p1.y-self.p2.y) / (self.p1.x-self.p2.x))
+
+    def get_offset(self):
+        """Get the offset t of this line segment."""
+        return self.p1.y-self.get_slope()*self.p1.x
+
     def __repr__(self):
         return "line[%s -> %s]" % (str(self.p1), str(self.p2))
 
@@ -125,12 +135,32 @@ def segments_intersect(segment1, segment2):
     True
     """
     dx1 = segment1.p2.x - segment1.p1.x
-    dy1 = segment1.p2.y - segment1.p2.y
+    dy1 = segment1.p2.y - segment1.p1.y
     dx2 = segment2.p2.x - segment2.p1.x
     dy2 = segment2.p2.y - segment2.p1.y
     delta = dx2 * dy1 - dy2 * dx1
     if delta == 0:  # parallel segments
-        # TODO: Could be (partially) identical!
+        # Line segments could be (partially) identical.
+        # In that case this functin should return True.
+        if dx1 == 0:
+            # Lines segments are vertical
+            if segment1.p1.x == segment2.p1.x:
+                if segment1.p1.y > segment1.p2.y:
+                    segment1.p1, segment1.p2 = segment1.p2, segment1.p1
+                if segment2.p1.y > segment2.p2.y:
+                    segment2.p1, segment2.p2 = segment2.p2, segment2.p1
+                # Lines segments are on the same line
+                if segment1.p1.y <= segment2.p1.y <= segment1.p2.y or \
+                   segment2.p1.y <= segment1.p1.y <= segment2.p2.y:
+                    return True
+        else:
+            # The equation f(x) = m*x + t defines any non-vertical line
+            t1 = segment1.get_offset()
+            t2 = segment2.get_offset()
+            if t1 == t2:  # line segments are on the same line
+                if segment1.p1.y <= segment2.p1.y <= segment1.p2.y or \
+                   segment2.p1.y <= segment1.p1.y <= segment2.p2.y:
+                    return True
         return False
     s = (dx1 * (segment2.p1.y - segment1.p1.y) +
          dy1 * (segment1.p1.x - segment2.p1.x)) / delta
@@ -156,32 +186,24 @@ def point_segment_distance(point, segment):
         return point.dist_to(segment.p1)
 
     if dx == 0:  # It's a straight vertical line
-        if point.y <= segment.p1.y and segment.p1.y <= segment.p2.y:
-            # and point is below p1 of line
+        pIsBelowP1 = point.y <= segment.p1.y and segment.p1.y <= segment.p2.y
+        pIsBelowP2 = point.y <= segment.p2.y and segment.p2.y <= segment.p1.y
+        pIsAboveP2 = segment.p1.y <= segment.p2.y and segment.p2.y <= point.y
+        pIsAboveP1 = segment.p2.y <= segment.p1.y and segment.p1.y <= point.y
+        if pIsBelowP1 or pIsAboveP1:
             return point.dist_to(segment.p1)
-        elif point.y <= segment.p2.y and segment.p2.y <= segment.p1.y:
-            # or the other way around
+        elif pIsBelowP2 or pIsAboveP2:
             return point.dist_to(segment.p2)
-        elif segment.p1.y <= segment.p2.y and segment.p2.y <= point.y:
-            # or the point is above that vertical line (where p2 is on top)
-            return point.dist_to(segment.p2)
-        elif segment.p2.y <= segment.p1.y and segment.p1.y <= point.y:
-            # or the point is above that vertical line (where p1 is on top)
-            return point.dist_to(segment.p1)
 
     if dy == 0:  # It's a straight horizontal line
-        if point.x <= segment.p1.x and segment.p1.x <= segment.p2.x:
-            # and point is left p1 of line
+        pIsLeftP1 = point.x <= segment.p1.x and segment.p1.x <= segment.p2.x
+        pIsLeftP2 = point.x <= segment.p2.x and segment.p2.x <= segment.p1.x
+        pIsRightP2 = segment.p1.x <= segment.p2.x and segment.p2.x <= point.x
+        pIsRightP1 = segment.p2.x <= segment.p1.x and segment.p1.x <= point.x
+        if pIsLeftP1 or pIsRightP1:
             return point.dist_to(segment.p1)
-        elif point.x <= segment.p2.x and segment.p2.x <= segment.p1.x:
-            # or the other way around
+        elif pIsLeftP2 or pIsRightP2:
             return point.dist_to(segment.p2)
-        elif segment.p1.x <= segment.p2.x and segment.p2.x <= point.x:
-            # or the point is right that vertical line (where p2 is right)
-            return point.dist_to(segment.p2)
-        elif segment.p2.x <= segment.p1.x and segment.p1.x <= point.x:
-            # or the point is right that vertical line (where p1 is right)
-            return point.dist_to(segment.p1)
 
     # Calculate the t that minimizes the distance.
     t = ((point.x - segment.p1.x) * dx + (point.y - segment.p1.y) * dy) / \

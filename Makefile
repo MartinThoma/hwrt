@@ -11,3 +11,9 @@ test:
 
 count:
 	cloc . --exclude-dir=docs,cover,dist,hwrt.egg-info
+
+countc:
+	cloc . --exclude-dir=docs,cover,dist,hwrt.egg-info,tests
+
+countt:
+	cloc tests

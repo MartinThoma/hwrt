@@ -29,8 +29,9 @@ import numpy
 from collections import defaultdict
 
 # hwrt modules
-from . import HandwrittenData  # Needed because of pickle
-from . import preprocessing  # Needed because of pickle
+# HandwrittenData and preprocessing are needed because of pickle
+from . import HandwrittenData  # pylint: disable=W0611
+from . import preprocessing  # pylint: disable=W0611
 from . import features
 from . import data_multiplication
 from . import utils

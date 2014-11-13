@@ -36,8 +36,9 @@ import math
 import numpy
 
 # hwrt modules
-from . import HandwrittenData  # Necessary for pickle files
-from . import preprocessing  # Necessary for pickle files
+# HandwrittenData and preprocessing are needed because of pickle
+from . import HandwrittenData  # pylint: disable=W0611
+from . import preprocessing  # pylint: disable=W0611
 from . import utils
 
 

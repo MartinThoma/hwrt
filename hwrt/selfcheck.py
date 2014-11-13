@@ -1,12 +1,17 @@
 #!/usr/bin/env python
 
+"""Check if all necessary modules / programs / files for HWRT are there and
+   if the version is ok.
+"""
+
 import imp
 import sys
 import platform
 import os
 
 
-class bcolors:
+class bcolors(object):
+    """Terminal colors with ANSI escape codes."""
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKGREEN = '\033[92m'
@@ -16,7 +21,9 @@ class bcolors:
 
 
 def which(program):
+    """Get the path of a program or ``None`` if ``program`` is not in path."""
     def is_exe(fpath):
+        """Check for windows users."""
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 
     fpath, fname = os.path.split(program)
@@ -34,6 +41,7 @@ def which(program):
 
 
 def check_python_version():
+    """Check if the currently running Python version is new enough."""
     # Required due to multiple with statements on one line
     req_version = (2, 7)
     cur_version = sys.version_info
@@ -48,6 +56,7 @@ def check_python_version():
 
 
 def check_python_modules():
+    """Check if all necessary / recommended modules are installed."""
     print("\033[1mCheck modules\033[0m")
     required_modules = ['argparse', 'matplotlib', 'natsort', 'MySQLdb',
                         'cPickle', 'theano', 'dropbox', 'yaml',
@@ -110,6 +119,7 @@ def check_python_modules():
 
 
 def check_executables():
+    """Check if all necessary / recommended executables are installed."""
     print("\033[1mCheck executables\033[0m")
     required_executables = ["pfile_create", "nntoolkit"]
     for executable in required_executables:
@@ -125,6 +135,7 @@ def check_executables():
 
 
 def main():
+    """Execute all checks."""
     # TODO: Check if nntoolkit exists by config file entry
     check_python_version()
     check_python_modules()

@@ -522,6 +522,12 @@ def classify_single_recording(raw_data_json, model_folder, verbose=False):
 
 
 def get_objectlist(description, get_class):
+    """Take a description and return a list of classes.
+    :param description: list of dictionaries, where each dictionary has only
+                        one entry. The key is the name of a class.
+                        The value of that entry is a list of
+                        dictionaries again. Those dictionaries are paramters.
+    :returns: List of objects."""
     object_list = []
     for feature in description:
         for feat, params in feature.items():

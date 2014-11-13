@@ -128,6 +128,8 @@ class ConstantPointCoordinates(object):
                 self.pen_down)
 
     def get_dimension(self):
+        """Get the dimension of the returned feature. This equals the number
+           of elements in the returned list of numbers."""
         if self.strokes > 0:
             return 2*self.strokes * self.points_per_stroke
         else:
@@ -207,6 +209,8 @@ class FirstNPoints(object):
                (self.n)
 
     def get_dimension(self):
+        """Get the dimension of the returned feature. This equals the number
+           of elements in the returned list of numbers."""
         return 2*self.n
 
     def __call__(self, handwritten_data):
@@ -245,6 +249,8 @@ class StrokeCount(object):
         return "stroke count"
 
     def get_dimension(self):
+        """Get the dimension of the returned feature. This equals the number
+           of elements in the returned list of numbers."""
         return 1
 
     def __call__(self, handwritten_data):
@@ -270,6 +276,8 @@ class Bitmap(object):
         return self.__repr__()
 
     def get_dimension(self):
+        """Get the dimension of the returned feature. This equals the number
+           of elements in the returned list of numbers."""
         return self.n**2
 
     def __call__(self, handwritten_data):
@@ -320,6 +328,8 @@ class Ink(object):
         return "ink"
 
     def get_dimension(self):
+        """Get the dimension of the returned feature. This equals the number
+           of elements in the returned list of numbers."""
         return 1
 
     def __call__(self, handwritten_data):
@@ -351,6 +361,8 @@ class AspectRatio(object):
         return "Aspect Ratio"
 
     def get_dimension(self):
+        """Get the dimension of the returned feature. This equals the number
+           of elements in the returned list of numbers."""
         return 1
 
     def __call__(self, handwritten_data):
@@ -381,6 +393,8 @@ class Width(object):
         return "Width"
 
     def get_dimension(self):
+        """Get the dimension of the returned feature. This equals the number
+           of elements in the returned list of numbers."""
         return 1
 
     def __call__(self, handwritten_data):
@@ -409,6 +423,8 @@ class Height(object):
         return "Height"
 
     def get_dimension(self):
+        """Get the dimension of the returned feature. This equals the number
+           of elements in the returned list of numbers."""
         return 1
 
     def __call__(self, handwritten_data):
@@ -456,6 +472,8 @@ class CenterOfMass(object):
         return "Center of mass"
 
     def get_dimension(self):
+        """Get the dimension of the returned feature. This equals the number
+           of elements in the returned list of numbers."""
         return 2
 
     def __call__(self, handwritten_data):
@@ -487,6 +505,8 @@ class StrokeCenter(object):
         return "Stroke center"
 
     def get_dimension(self):
+        """Get the dimension of the returned feature. This equals the number
+           of elements in the returned list of numbers."""
         return self.strokes*2
 
     def __call__(self, handwritten_data):
@@ -544,6 +564,8 @@ class StrokeIntersections(object):
         return "StrokeIntersections"
 
     def get_dimension(self):
+        """Get the dimension of the returned feature. This equals the number
+           of elements in the returned list of numbers."""
         return int(round(float(self.strokes**2)/2 + float(self.strokes)/2))
 
     def __call__(self, handwritten_data):
@@ -569,6 +591,7 @@ class StrokeIntersections(object):
             return counter
 
         def count_intersections(stroke_a, stroke_b):
+            """Count the intersections of two strokes with each other."""
             counter = 0
 
             # build data structure a
@@ -644,6 +667,8 @@ class ReCurvature(object):
         return "Re-curvature"
 
     def get_dimension(self):
+        """Get the dimension of the returned feature. This equals the number
+           of elements in the returned list of numbers."""
         return self.strokes
 
     def __call__(self, handwritten_data):

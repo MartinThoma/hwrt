@@ -3,6 +3,8 @@
 
 import nose
 
+from nose.plugins.skip import SkipTest
+
 # hwrt modules
 import hwrt.selfcheck as selfcheck
 

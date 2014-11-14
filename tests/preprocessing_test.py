@@ -95,7 +95,7 @@ def simple_execution_test():
 def euclidean_distance_test():
     p1 = {'x': 12, 'y': 15}
     p2 = {'x':  2, 'y': 50}
-    dist = preprocessing._euclidean_distance(p1, p2)
+    dist = preprocessing.euclidean_distance(p1, p2)
     nose.tools.assert_equal(round(dist, 1), 36.4)
 
 

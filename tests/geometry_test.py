@@ -13,6 +13,8 @@ def object_creation_test():
     p2 = geometry.Point(1, 1)
     geometry.LineSegment(p1, p2)
     geometry.BoundingBox(p1, p2)
+    geometry.PolygonalChain([{'x': 0, 'y': 0}, {'x': 10, 'y': 5},
+                             {'x': 2, 'y': 3}])
 
 
 def point_distance_test():
@@ -245,3 +247,8 @@ def segments_intersection_test():
     l1 = geometry.LineSegment(geometry.Point(0, 0), geometry.Point(2, 2))
     l2 = geometry.LineSegment(geometry.Point(2.1, 2.1), geometry.Point(3, 3))
     nose.tools.assert_equal(geometry.segments_intersect(l1, l2), False)
+
+    # 2 vertical line segments
+    l1 = geometry.LineSegment(geometry.Point(42, 2), geometry.Point(42, 0))
+    l2 = geometry.LineSegment(geometry.Point(42, 1), geometry.Point(42, -1))
+    nose.tools.assert_equal(geometry.segments_intersect(l1, l2), True)

@@ -54,7 +54,7 @@ Now you can install the remaining packages:
 .. code:: bash
 
     # pip install PILLOW
-    # pip install natsort matplotlib coveralls shapely
+    # pip install natsort matplotlib coveralls
     # pip install numpy
     # pip install scipy
 

@@ -3,6 +3,7 @@
 """Calculate the distance between line segments."""
 
 import math
+import itertools
 
 
 class Point(object):
@@ -51,6 +52,45 @@ class LineSegment(object):
 
     def __str__(self):
         return self.__repr__()
+
+
+class PolygonalChain(object):
+    """A list of line segments."""
+    def __init__(self, pointlist):
+        assert isinstance(pointlist, list), \
+            "lineSegments is not of type list, but of %r" % type(pointlist)
+        self.lineSegments = []
+        for point1, point2 in zip(pointlist, pointlist[1:]):
+            point1 = Point(point1['x'], point1['y'])
+            point2 = Point(point2['x'], point2['y'])
+            self.lineSegments.append(LineSegment(point1, point2))
+
+    def __iter__(self):
+        return iter(self.lineSegments)
+
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
+    def count_selfintersections(self):
+        """ Get the number of self-intersections of this polygonal chain."""
+        # This can be solved more efficiently with sweep line
+        counter = 0
+        for i, j in itertools.combinations(range(len(self.lineSegments)), 2):
+            if abs(i-j) > 1 and segments_intersect(self.lineSegments[i],
+                                                   self.lineSegments[j]):
+                counter += 1
+        return counter
+
+    def count_intersections(self, lineSegmentsB):
+        """Count the intersections of two strokes with each other."""
+        lineSegmentsA = self.lineSegments
+        counter = 0
+
+        # Calculate intersections
+        for line1, line2 in itertools.product(lineSegmentsA, lineSegmentsB):
+            if segments_intersect(line1, line2):
+                counter += 1
+        return counter
 
 
 class BoundingBox(object):

@@ -6,14 +6,15 @@ own implementation
 
 .. code:: bash
 
- $ train.py --help
- usage: train.py [-h] [-m FOLDER]
- 
- Create and train a given model.
- 
- optional arguments:
-   -h, --help            show this help message and exit
-   -m FOLDER, --model FOLDER
-                         where is the model folder (with a info.yml)? (default:
-                         /home/moose/Downloads/write-math/archive/models/small-
-                         baseline)
+    $ train.py --help
+    usage: train.py [-h] [-m FOLDER]
+
+    Create and train a given model.
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -m FOLDER, --model FOLDER
+                            where is the model folder (with a info.yml)? (default:
+                            /home/moose/GitHub/hwr-experiments/models
+                            /visualization-smooth-only)
+

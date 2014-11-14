@@ -539,5 +539,5 @@ def get_objectlist(description, get_class):
                 for dicts in params:
                     for param_name, param_value in dicts.items():
                         parameters[param_name] = param_value
-                object_list.append(feat(**parameters))
+                object_list.append(feat(**parameters))  # pylint: disable=W0142
     return object_list

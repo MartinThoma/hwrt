@@ -44,6 +44,7 @@ def _fetch_data_from_server(raw_data_id):
                                  passwd=cfg[args.mysql]['passwd'],
                                  db=cfg[args.mysql]['db'],
                                  cursorclass=MySQLdb.cursors.DictCursor)
+    logging.info("Connection: %s", str(connection))
     cursor = connection.cursor()
 
     # Download dataset

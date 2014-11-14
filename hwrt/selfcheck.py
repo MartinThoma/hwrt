@@ -9,6 +9,9 @@ import sys
 import platform
 import os
 
+# hwrt
+from . import utils
+
 
 class bcolors(object):
     """Terminal colors with ANSI escape codes."""
@@ -60,7 +63,7 @@ def check_python_modules():
     print("\033[1mCheck modules\033[0m")
     required_modules = ['argparse', 'matplotlib', 'natsort', 'MySQLdb',
                         'cPickle', 'theano', 'dropbox', 'yaml',
-                        'webbrowser', 'hashlib', 'shapely', 'numpy',
+                        'webbrowser', 'hashlib', 'numpy',
                         'jinja2', 'Tkinter']
     found = []
     for required_module in required_modules:
@@ -94,10 +97,6 @@ def check_python_modules():
         import theano
         print("theano version: %s (0.6.0 tested)" %
               theano.__version__)
-    if "shapely" in found:
-        import shapely
-        print("shapely version: %s (1.2.14 tested)" %
-              shapely.__version__)
     if "numpy" in found:
         import numpy
         print("numpy version: %s (1.8.1 tested)" %
@@ -121,7 +120,7 @@ def check_python_modules():
 def check_executables():
     """Check if all necessary / recommended executables are installed."""
     print("\033[1mCheck executables\033[0m")
-    required_executables = ["pfile_create", "nntoolkit"]
+    required_executables = ["pfile_create", utils.get_nntoolkit()]
     for executable in required_executables:
         path = which(executable)
         if path is None:
@@ -136,7 +135,6 @@ def check_executables():
 
 def main():
     """Execute all checks."""
-    # TODO: Check if nntoolkit exists by config file entry
     check_python_version()
     check_python_modules()
     check_executables()

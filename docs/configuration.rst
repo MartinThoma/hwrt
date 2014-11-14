@@ -32,8 +32,8 @@ The following is an example ``~/.hwrtrc`` configuration file:
 
     root: /home/moose/GitHub/hwr-experiments
     nntoolkit: nntoolkitfancyname
-    preprocessing: /home/moose/Desktop/preprocessing.py
-    features: /home/moose/Desktop/features.py
-    dbconfig: /home/moose/Downloads/write-math/tools/db.config.yml
+    preprocessing: /home/moose/hwrt-config/preprocessing.py
+    features: /home/moose/hwrt-config/features.py
+    dbconfig: /home/moose/hwrt-config/db.config.yml
     dropbox_app_key: 'INSERT_APP_KEY'
     dropbox_app_secret: 'INSERT_APP_SECRET'

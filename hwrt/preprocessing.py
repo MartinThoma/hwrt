@@ -32,14 +32,14 @@ from . import HandwrittenData
 from . import utils
 
 
-def _euclidean_distance(p1, p2):
+def euclidean_distance(p1, p2):
     """Calculate the euclidean distance of two 2D points.
 
-    >>> _euclidean_distance({'x': 0, 'y': 0}, {'x': 0, 'y': 3})
+    >>> euclidean_distance({'x': 0, 'y': 0}, {'x': 0, 'y': 3})
     3.0
-    >>> _euclidean_distance({'x': 0, 'y': 0}, {'x': 0, 'y': -3})
+    >>> euclidean_distance({'x': 0, 'y': 0}, {'x': 0, 'y': -3})
     3.0
-    >>> _euclidean_distance({'x': 0, 'y': 0}, {'x': 3, 'y': 4})
+    >>> euclidean_distance({'x': 0, 'y': 0}, {'x': 3, 'y': 4})
     5.0
     """
     return math.sqrt((p1["x"]-p2["x"])**2 + (p1["y"]-p2["y"])**2)
@@ -588,7 +588,7 @@ class StrokeConnect(object):
             while i < len(pointlist)-1:
                 last_point = pointlist[i][-1]
                 first_point = pointlist[i+1][0]
-                if _euclidean_distance(last_point, first_point) < \
+                if euclidean_distance(last_point, first_point) < \
                    self.minimum_distance:
                     strokes.append(pointlist[i]+pointlist[i+1])
                     pointlist[i+1] = strokes[-1]
@@ -633,10 +633,10 @@ class DotReduction(object):
             if len(L) <= 1:
                 return -1
             else:
-                max_dist = _euclidean_distance(L[0], L[1])
+                max_dist = euclidean_distance(L[0], L[1])
                 for i in range(len(L)-1):
                     for j in range(i+1, len(L)):
-                        max_dist = max(_euclidean_distance(L[i], L[j]),
+                        max_dist = max(euclidean_distance(L[i], L[j]),
                                        max_dist)
                 return max_dist
 

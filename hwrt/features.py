@@ -25,7 +25,6 @@ import sys
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
-from shapely.geometry import LineString
 import itertools
 import numpy
 
@@ -33,6 +32,7 @@ import numpy
 from . import HandwrittenData
 from . import preprocessing
 from . import utils
+from . import geometry
 
 
 def get_class(name):
@@ -299,7 +299,7 @@ class Bitmap(object):
                                                           url=url,
                                                           folder=foldername)
         os.system(command)
-        from PIL import Image  # TODO: remove dependency for Python3
+        from PIL import Image
         im = Image.open("%s%i.png" % (foldername, raw_data_id))
         pix = im.load()
         # pixel_image = [[0 for i in range(28)] for j in range(28)]
@@ -343,7 +343,7 @@ class Ink(object):
             last_point = None
             for point in stroke:
                 if last_point is not None:
-                    ink += preprocessing._euclidean_distance(last_point, point)
+                    ink += preprocessing.euclidean_distance(last_point, point)
                 last_point = point
         return [ink]
 
@@ -573,70 +573,24 @@ class StrokeIntersections(object):
             "handwritten data is not of type HandwrittenData, but of %r" % \
             type(handwritten_data)
 
-        def count_stroke_selfintersections(stroke):
-            """ Get the number of self-intersections of a stroke."""
-            # This can be solved more efficiently with sweep line
-            counter = 0
-            lines = []
-            for last, point in zip(stroke, stroke[1:]):
-                line = LineString([(last['x'], last['y']),
-                                   (point['x'], point['y'])])
-                lines.append((len(lines), line))
+        pointlist = handwritten_data.get_pointlist()
+        polygonalChains = []
 
-            for line1, line2 in itertools.combinations(lines, 2):
-                index1, line1 = line1
-                index2, line2 = line2
-                if line1.intersects(line2) and abs(index1 - index2) > 1:
-                    counter += 1
-            return counter
-
-        def count_intersections(stroke_a, stroke_b):
-            """Count the intersections of two strokes with each other."""
-            counter = 0
-
-            # build data structure a
-            lines_a = []
-            for last, point in zip(stroke_a, stroke_a[1:]):
-                line = LineString([(last['x'], last['y']),
-                                   (point['x'], point['y'])])
-                lines_a.append(line)
-
-            # build data structure b
-            lines_b = []
-            for last, point in zip(stroke_b, stroke_b[1:]):
-                line = LineString([(last['x'], last['y']),
-                                   (point['x'], point['y'])])
-                lines_b.append(line)
-
-            # Calculate intersections
-            for line1, line2 in itertools.product(lines_a, lines_b):
-                if line1.intersects(line2):
-                    counter += 1
-            return counter
+        # Make sure the dimension is correct
+        for i in range(self.strokes):
+            if i >= self.strokes:
+                break
+            if i < len(pointlist):
+                polygonalChains.append(geometry.PolygonalChain(pointlist[i]))
+            else:
+                polygonalChains.append(None)
 
         x = []
-        pointlist = handwritten_data.get_pointlist()
-        for i in range(self.strokes):
-            for j in range(i, self.strokes):
-                if len(pointlist) <= i or len(pointlist) <= j:
-                    # There are less strokes! If there is no stroke, nothing
-                    # can intersect
-                    x.append(0)
-                else:
-                    # Does stroke i intersect stroke j?
-                    if i == j:
-                        x.append(count_stroke_selfintersections(pointlist[i]))
-                    else:
-                        x.append(count_intersections(pointlist[i],
-                                                     pointlist[j]))
-        # print("%s - %i" % (handwritten_data.formula_in_latex,
-        #                    handwritten_data.raw_data_id))
-        # curr = 0
-        # for i in range(self.strokes, 0, -1):
-        #     line = "\t"*(self.strokes - i)
-        #     for j in range(i):
-        #         line += str(x[curr]) + "\t"
-        #         curr += 1
+        for chainA, chainB in itertools.combinations_with_replacement(polygonalChains, 2):
+            if chainA == chainB:
+                x.append(chainA.count_selfintersections())
+            else:
+                x.append(chainA.count_intersections(chainB))
 
         assert self.get_dimension() == len(x), \
             "Dimension of %s should be %i, but was %i" % \
@@ -681,7 +635,7 @@ class ReCurvature(object):
             height = max(stroke_y) - min(stroke_y)
             length = 0.0
             for last_point, point in zip(stroke, stroke[1:]):
-                length += preprocessing._euclidean_distance(point, last_point)
+                length += preprocessing.euclidean_distance(point, last_point)
 
             if length == 0:
                 x.append(1)

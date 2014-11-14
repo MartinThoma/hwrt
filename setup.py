@@ -24,8 +24,7 @@ config = {
         "nose",
         "natsort",
         "PyYAML",
-        "matplotlib",
-        "shapely"
+        "matplotlib"
     ],
     'keywords': ['HWRT', 'recognition', 'handwriting', 'on-line'],
     'download_url': 'https://github.com/MartinThoma/hwrt',

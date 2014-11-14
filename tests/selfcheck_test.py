@@ -8,6 +8,7 @@ import hwrt.selfcheck as selfcheck
 
 
 # Tests
+@SkipTest
 def execution_test():
     selfcheck.main()
 

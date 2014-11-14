@@ -14,9 +14,13 @@
 import argparse
 
 # hwrt modules
+# Every HWR tool that should be available through
+#   hwrt TOOL
+# has to be added to ``get_parser()`` and to ``main``.
 import hwrt
 from hwrt import create_pfiles
 from hwrt import create_model
+from hwrt import selfcheck
 
 
 def get_parser():
@@ -31,20 +35,18 @@ def get_parser():
     subparsers.add_parser('create_model',
                           add_help=False,
                           parents=[create_model.get_parser()])
+    subparsers.add_parser('check',
+                          add_help=False)
     parser.add_argument('--version',
                         action='version',
                         version=('hwrt %s' % str(hwrt.__version__)))
-    parser.add_argument('--check',
-                        action='store_true',
-                        default=False)
     return parser
 
 
-def main(check):
-    if check:
-        from hwrt import selfcheck
+def main(args):
+    if args.cmd == 'check':
         selfcheck.main()
 
 if __name__ == '__main__':
     args = get_parser().parse_args()
-    main(args.check)
+    main(args)

@@ -16,6 +16,12 @@ class Point(object):
         """Measure the distance to another point."""
         return math.hypot(self.x - p2.x, self.y - p2.y)
 
+    def __eq__(self, other):
+        return (self.x-other.x)**2 + (self.y-other.y)**2 < 0.000001
+
+    def __hash__(self):
+        return hash((self.x, self.y))
+
     def __repr__(self):
         return "p(%0.2f, %0.2f)" % (self.x, self.y)
 
@@ -76,21 +82,21 @@ class PolygonalChain(object):
         # This can be solved more efficiently with sweep line
         counter = 0
         for i, j in itertools.combinations(range(len(self.lineSegments)), 2):
-            if abs(i-j) > 1 and segments_intersect(self.lineSegments[i],
-                                                   self.lineSegments[j]):
+            inters = get_segments_intersections(self.lineSegments[i],
+                                                self.lineSegments[j])
+            if abs(i-j) > 1 and len(inters) > 0:
                 counter += 1
         return counter
 
     def count_intersections(self, lineSegmentsB):
         """Count the intersections of two strokes with each other."""
         lineSegmentsA = self.lineSegments
-        counter = 0
 
         # Calculate intersections
+        intersection_points = []
         for line1, line2 in itertools.product(lineSegmentsA, lineSegmentsB):
-            if segments_intersect(line1, line2):
-                counter += 1
-        return counter
+            intersection_points += get_segments_intersections(line1, line2)
+        return len(set(intersection_points))
 
 
 class BoundingBox(object):
@@ -157,7 +163,7 @@ def segments_distance(segment1, segment2):
     >>> "%0.2f" % segments_distance(c, e)
     '0.00'
     """
-    if segments_intersect(segment1, segment2):
+    if len(get_segments_intersections(segment1, segment2)) >= 1:
         return 0
     # try each of the 4 vertices w/the other segment
     distances = []
@@ -168,11 +174,12 @@ def segments_distance(segment1, segment2):
     return min(distances)
 
 
-def segments_intersect(segment1, segment2):
-    """Check if two line segments in the plane intersect.
-    >>> segments_intersect(LineSegment(Point(0,0), Point(1,0)), \
-                           LineSegment(Point(0,0), Point(1,0)))
-    True
+def get_segments_intersections(segment1, segment2):
+    """Return at least one point in a list where segments intersect if an
+       intersection exists. Otherwise, return an empty list.
+    >>> get_segments_intersections(LineSegment(Point(0,0), Point(1,0)), \
+                                   LineSegment(Point(0,0), Point(1,0)))
+    [Point(0,0)]
     """
     dx1 = segment1.p2.x - segment1.p1.x
     dy1 = segment1.p2.y - segment1.p1.y
@@ -190,23 +197,55 @@ def segments_intersect(segment1, segment2):
                 if segment2.p1.y > segment2.p2.y:
                     segment2.p1, segment2.p2 = segment2.p2, segment2.p1
                 # Lines segments are on the same line
-                if segment1.p1.y <= segment2.p1.y <= segment1.p2.y or \
-                   segment2.p1.y <= segment1.p1.y <= segment2.p2.y:
-                    return True
+                if segment1.p1.y <= segment2.p1.y <= segment1.p2.y:
+                    return [Point(segment1.p1.x, segment2.p1.y)]
+                if segment2.p1.y <= segment1.p1.y <= segment2.p2.y:
+                    return [Point(segment1.p1.x, segment1.p1.y)]
         else:
             # The equation f(x) = m*x + t defines any non-vertical line
             t1 = segment1.get_offset()
             t2 = segment2.get_offset()
             if t1 == t2:  # line segments are on the same line
-                if segment1.p1.y <= segment2.p1.y <= segment1.p2.y or \
-                   segment2.p1.y <= segment1.p1.y <= segment2.p2.y:
-                    return True
-        return False
-    s = (dx1 * (segment2.p1.y - segment1.p1.y) +
-         dy1 * (segment1.p1.x - segment2.p1.x)) / delta
-    t = (dx2 * (segment1.p1.y - segment2.p1.y) +
-         dy2 * (segment2.p1.x - segment1.p1.x)) / (-delta)
-    return (0 <= s <= 1) and (0 <= t <= 1)
+                if segment1.p1.x <= segment2.p1.x <= segment1.p2.x:
+                    return [Point(segment2.p1.x,
+                                  segment2.get_slope()*segment2.p1.x+t2)]
+                if segment2.p1.x <= segment1.p1.x <= segment2.p2.x:
+                    return [Point(segment1.p1.x,
+                                  segment1.get_slope()*segment1.p1.x+t1)]
+        return []
+    if dx2 == 0:  # Line 2 is a vertical line, but line 1 isn't
+        segment1, segment2 = segment2, segment1
+        dx1, dx2 = dx2, dx1
+    if dx1 == 0:  # Line 1 is a vertical line, but line 2 isn't
+        if segment2.p1.x > segment2.p2.x:
+            segment2.p1, segment2.p2 = segment2.p2, segment2.p1
+        if segment2.p1.x <= segment1.p1.x <= segment2.p2.x:
+            # The x-values overlap
+            m2 = segment2.get_slope()
+            t2 = segment2.get_offset()
+            y = m2*segment1.p1.x + t2
+            if segment1.p1.y > segment1.p2.y:
+                segment1.p1, segment1.p2 = segment1.p2, segment1.p1
+            if segment1.p1.y <= y <= segment1.p2.y:
+                return [Point(segment1.p1.x, y)]
+            else:
+                return []
+        else:
+            return []
+
+    m1, t1 = segment1.get_slope(), segment1.get_offset()
+    m2, t2 = segment2.get_slope(), segment2.get_offset()
+    x = (t2-t1)/(m1-m2)
+    if segment1.p1.x > segment1.p2.x:
+        segment1.p1, segment1.p2 = segment1.p2, segment1.p1
+    if segment2.p1.x > segment2.p2.x:
+        segment2.p1, segment2.p2 = segment2.p2, segment2.p1
+    if (segment1.p1.x <= x <= segment1.p2.x) and \
+       (segment2.p1.x <= x <= segment2.p2.x):
+        # The intersection is on both line segments - not only on the lines
+        return [Point(x, m1*x+t1)]
+    else:
+        return []
 
 
 def point_segment_distance(point, segment):

@@ -242,13 +242,41 @@ def point_segment_distance_test():
 def segments_intersection_test():
     l1 = geometry.LineSegment(geometry.Point(0, 0), geometry.Point(2, 2))
     l2 = geometry.LineSegment(geometry.Point(1, 1), geometry.Point(3, 3))
-    nose.tools.assert_equal(geometry.segments_intersect(l1, l2), True)
+    nose.tools.assert_equal(geometry.get_segments_intersections(l1, l2),
+                            [geometry.Point(1, 1)])
 
     l1 = geometry.LineSegment(geometry.Point(0, 0), geometry.Point(2, 2))
     l2 = geometry.LineSegment(geometry.Point(2.1, 2.1), geometry.Point(3, 3))
-    nose.tools.assert_equal(geometry.segments_intersect(l1, l2), False)
+    nose.tools.assert_equal(geometry.get_segments_intersections(l1, l2), [])
 
     # 2 vertical line segments
     l1 = geometry.LineSegment(geometry.Point(42, 2), geometry.Point(42, 0))
     l2 = geometry.LineSegment(geometry.Point(42, 1), geometry.Point(42, -1))
-    nose.tools.assert_equal(geometry.segments_intersect(l1, l2), True)
+    nose.tools.assert_equal(geometry.get_segments_intersections(l1, l2),
+                            [geometry.Point(42, 0)])
+
+    l1 = geometry.LineSegment(geometry.Point(-1, 0), geometry.Point(1, 0))
+    l2 = geometry.LineSegment(geometry.Point(0, -1), geometry.Point(0, 1))
+    nose.tools.assert_equal(geometry.get_segments_intersections(l1, l2),
+                            [geometry.Point(0, 0)])
+
+
+def segment_intersection_test():
+    l1 = geometry.LineSegment(geometry.Point(289, 69), geometry.Point(290, 69))
+    l2 = geometry.LineSegment(geometry.Point(291, 69), geometry.Point(292, 69))
+    nose.tools.assert_equal(geometry.get_segments_intersections(l1, l2), [])
+
+
+def stroke_selfintersection_test():
+    a = [{'y': 69, 'x': 289},
+         {'y': 69, 'x': 290},
+         {'y': 69, 'x': 291},
+         {'y': 69, 'x': 292},
+         {'y': 69, 'x': 293},
+         {'y': 69, 'x': 295},
+         {'y': 70, 'x': 297},
+         {'y': 70, 'x': 299},
+         {'y': 71, 'x': 302},
+         {'y': 72, 'x': 303}]
+    a = geometry.PolygonalChain(a)
+    nose.tools.assert_equal(a.count_selfintersections(), 0)

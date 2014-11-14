@@ -129,7 +129,6 @@ def stroke_intersection1_test():
     nose.tools.assert_equal(feature(recording), [2])
 
 
-@SkipTest
 def stroke_intersection2_test():
     """A 't' has two strokes. They don't intersect themselves, but they
        intersect once."""

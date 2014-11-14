@@ -3,16 +3,15 @@
 
 import nose
 
-from nose.plugins.skip import SkipTest
-
 # hwrt modules
 import hwrt.selfcheck as selfcheck
 
 
 # Tests
-@SkipTest
 def execution_test():
-    selfcheck.main()
+    # selfcheck.main()
+    selfcheck.check_python_version()
+    selfcheck.check_python_modules()
 
 
 def which_test():

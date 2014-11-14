@@ -147,19 +147,21 @@ class HandwrittenData(object):
             assert len(pointlist) > 1, \
                 "Lenght of pointlist was %i. Got: %s" % (len(pointlist),
                                                          pointlist)
+            # Create a new pointlist that models pen-down strokes and pen
+            # up strokes 
             new_pointlist = []
-            last = None
+            last_pendown_state = None
             stroke = []
             for point in pointlist[0]:
-                if last is None:
-                    last = point['pen_down']
-                if point['pen_down'] != last:
+                if last_pendown_state is None:
+                    last_pendown_state = point['pen_down']
+                if point['pen_down'] != last_pendown_state:
                     new_pointlist.append(stroke)
-                    last = point['pen_down']
+                    last_pendown_state = point['pen_down']
                     stroke = []
                 else:
                     stroke.append(point)
-            new_pointlist.append(stroke)
+            new_pointlist.append(stroke)  # add the last stroke
             pointlist = new_pointlist
 
         _, ax = plt.subplots()

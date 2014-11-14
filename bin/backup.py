@@ -143,11 +143,14 @@ def sync_directory(directory):
 
 def main(destination=os.path.join(utils.get_project_root(),
                                   "raw-datasets"),
-         small_dataset=False):
+         small_dataset=False,
+         tiny_dataset=False):
     """Main part of the backup script."""
     time_prefix = time.strftime("%Y-%m-%d-%H-%M")
     if small_dataset:
         filename = "%s-handwriting_datasets-small-raw.pickle" % time_prefix
+    elif tiny_dataset:
+        filename = "%s-handwriting_datasets-tiny-raw.pickle" % time_prefix
     else:
         filename = "%s-handwriting_datasets-raw.pickle" % time_prefix
     destination_path = os.path.join(destination, filename)
@@ -169,6 +172,14 @@ def main(destination=os.path.join(utils.get_project_root(),
                "AND id != 1 "  # exclude trash class
                "AND id <= 81 "
                "ORDER BY `id` ASC")
+    elif tiny_dataset:
+        sql = ("SELECT `id`, `formula_in_latex` FROM `wm_formula` "
+               # only use the important symbol subset
+               "WHERE `is_important` = 1 "
+               "AND id != 1 "  # exclude trash class
+               "AND id <= 40 "
+               "ORDER BY `id` ASC "
+               "LIMIT 2")
     else:
         sql = ("SELECT `id`, `formula_in_latex` FROM `wm_formula` "
                # only use the important symbol subset
@@ -232,6 +243,10 @@ def get_parser():
                         action="store_true", default=False,
                         help=("should only a small dataset (with all capital "
                               "letters) be created?"))
+    parser.add_argument("--tiny", dest="tiny",
+                        action="store_true", default=False,
+                        help=("should only a tiny dataset for unit-testing "
+                              "be created?"))
     parser.add_argument("-o", "--onlydropbox", dest="onlydropbox",
                         action="store_true", default=False,
                         help=("don't download new files; only upload to "
@@ -249,7 +264,7 @@ if __name__ == '__main__':
                       "Please check your '~/.hwrtrc' file.")
     else:
         if not args.onlydropbox:
-            main(args.destination, args.small)
+            main(args.destination, args.small, args.tiny)
         if sync_directory("raw-datasets"):
             logging.info("Successfully uploaded files to Dropbox.")
         else:

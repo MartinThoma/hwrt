@@ -233,7 +233,8 @@ def main(list_ids, model, contact_server, raw_data_id, show_raw):
         if contact_server:
             data = _fetch_data_from_server(raw_data_id)
             print("hwrt version: %s" % hwrt.__version__)
-            display_data(data['data'], data['id'], model, show_raw)
+            if data is not None:
+                display_data(data['data'], data['id'], model, show_raw)
         else:
             logging.info("RAW_DATA_ID %i does not exist or "
                          "database connection did not work.", raw_data_id)

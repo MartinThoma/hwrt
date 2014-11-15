@@ -25,7 +25,7 @@ import sys
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
-import itertools
+from itertools import combinations_with_replacement
 import numpy
 
 # hwrt modules
@@ -189,9 +189,10 @@ class ConstantPointCoordinates(object):
 
 class FirstNPoints(object):
 
-    """Similar to the `ConstantPointCoordinates` feature, this feature takes the
-       first `n=81` point coordinates. It also has the `fill_empty_with=0` to
-       make sure that the dimension of this feature is always the same."""
+    """Similar to the ``ConstantPointCoordinates`` feature, this feature takes
+       the first ``n=81`` point coordinates. It also has the
+       ``fill_empty_with=0`` to make sure that the dimension of this feature is
+       always the same."""
 
     normalize = False
 
@@ -410,8 +411,8 @@ class Height(object):
 
     .. note::
 
-        This is the current hight. So if the recording was scaled, this will not
-        be the original height.
+        This is the current hight. So if the recording was scaled, this will
+        not be the original height.
     """
 
     normalize = True
@@ -586,7 +587,7 @@ class StrokeIntersections(object):
                 polygonalChains.append(None)
 
         x = []
-        for chainA, chainB in itertools.combinations_with_replacement(polygonalChains, 2):
+        for chainA, chainB in combinations_with_replacement(polygonalChains, 2):
             if chainA == chainB:
                 x.append(chainA.count_selfintersections())
             else:

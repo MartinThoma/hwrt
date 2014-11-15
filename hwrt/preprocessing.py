@@ -399,7 +399,7 @@ class SpaceEvenlyPerStroke(object):
         try:
             fx = interp1d(t, x, kind=kind)
             fy = interp1d(t, y, kind=kind)
-        except Exception as e:
+        except Exception as e:  # pylint: disable=W0703
             if handwritten_data.raw_data_id is not None:
                 logging.debug("spline failed for raw_data_id %i",
                               handwritten_data.raw_data_id)

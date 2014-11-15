@@ -148,7 +148,7 @@ class HandwrittenData(object):
                 "Lenght of pointlist was %i. Got: %s" % (len(pointlist),
                                                          pointlist)
             # Create a new pointlist that models pen-down strokes and pen
-            # up strokes 
+            # up strokes
             new_pointlist = []
             last_pendown_state = None
             stroke = []

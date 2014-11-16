@@ -70,3 +70,12 @@ nosetools.
 
 The symbols subfolder contains JSON files of recordings that are used for
 testing.
+
+
+Current State
+-------------
+
+::
+
+    date, lines of code (without tests), lines of test code, test coverage, pylint score, cheesecake_index, users
+    2014-11-16, 3361, 936, 72%, 9.70, 314/595, 1

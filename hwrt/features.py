@@ -93,12 +93,12 @@ class ConstantPointCoordinates(object):
 
     """Take the first ``points_per_stroke=20`` points coordinates of the first
        ``strokes=4`` strokes as features. This leads to
-       :math:`2 \cdot \text{points\_per\_stroke} \cdot \text{strokes}`
+       :math:`2 \\cdot \\text{points\_per\_stroke} \\cdot \\text{strokes}`
        features.
 
        If ``points`` is set to 0, the first ``points\_per\_stroke`` point
        coordinates and the \verb+pen_down+ feature is used. This leads to
-       :math:`3 \cdot \text{points_per_stroke}` features."""
+       :math:`3 \\cdot \\text{points_per_stroke}` features."""
 
     normalize = False
 
@@ -534,7 +534,7 @@ class StrokeIntersections(object):
     """Count the number of intersections which strokes in the recording have
        with each other in form of a symmetrical matrix for the first
        `stroke=4` strokes. The feature dimension is
-       :math:`round \frac{\text{strokes}^2}{2} + \frac{\text{strokes}}{2}`,
+       :math:`round \\frac{\\text{strokes}^2}{2} + \\frac{\\text{strokes}}{2}`,
        because the symmetrical part is discarded.
 
     =======   ======= ======= ======= ===
@@ -603,7 +603,7 @@ class ReCurvature(object):
 
     """Re-curvature is a 1 dimensional, stroke-global feature for a recording.
        It is the ratio
-       :math:`\frac{\text{height}(s)}{\text{length}(s)}`.
+       :math:`\\frac{\\text{height}(s)}{\\text{length}(s)}`.
        If ``length}(s) == 0``, then the re-curvature is defined to be 1.
     """
 

@@ -138,49 +138,62 @@ class ConstantPointCoordinates(object):
             else:
                 return 2*self.points_per_stroke
 
+    def _features_with_strokes(self, handwritten_data):
+        """Calculate the ConstantPointCoordinates features for the case of
+           a fixed number of strokes."""
+        x = []
+        pointlist = handwritten_data.get_pointlist()
+        for stroke_nr in range(self.strokes):
+            # make sure that the current symbol actually has that many
+            # strokes
+            if stroke_nr < len(pointlist):
+                for point_nr in range(self.points_per_stroke):
+                    if point_nr < len(pointlist[stroke_nr]):
+                        x.append(pointlist[stroke_nr][point_nr]['x'])
+                        x.append(pointlist[stroke_nr][point_nr]['y'])
+                    else:
+                        x.append(self.fill_empty_with)
+                        x.append(self.fill_empty_with)
+            else:
+                for _ in range(self.points_per_stroke):
+                    x.append(self.fill_empty_with)
+                    x.append(self.fill_empty_with)
+        return x
+
+    def _features_without_strokes(self, handwritten_data):
+        """Calculate the ConstantPointCoordinates features for the case of
+           a single (callapesed) stroke with pen_down features."""
+        x = []
+        for point in handwritten_data.get_pointlist()[0]:
+            if len(x) >= 3*self.points_per_stroke or \
+               (len(x) >= 2*self.points_per_stroke and not self.pen_down):
+                break
+            x.append(point['x'])
+            x.append(point['y'])
+            if self.pen_down:
+                if 'pen_down' not in point:
+                    logging.error("The "
+                                  "ConstantPointCoordinates(strokes=0) "
+                                  "feature should only be used after "
+                                  "SpaceEvenly preprocessing step.")
+                else:
+                    x.append(int(point['pen_down']))
+        if self.pen_down:
+            while len(x) != 3*self.points_per_stroke:
+                x.append(self.fill_empty_with)
+        else:
+            while len(x) != 2*self.points_per_stroke:
+                x.append(self.fill_empty_with)
+        return x
+
     def __call__(self, handwritten_data):
         assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
             "handwritten data is not of type HandwrittenData, but of %r" % \
             type(handwritten_data)
-        x = []
-        pointlist = handwritten_data.get_pointlist()
         if self.strokes > 0:
-            for stroke_nr in range(self.strokes):
-                # make sure that the current symbol actually has that many
-                # strokes
-                if stroke_nr < len(pointlist):
-                    for point_nr in range(self.points_per_stroke):
-                        if point_nr < len(pointlist[stroke_nr]):
-                            x.append(pointlist[stroke_nr][point_nr]['x'])
-                            x.append(pointlist[stroke_nr][point_nr]['y'])
-                        else:
-                            x.append(self.fill_empty_with)
-                            x.append(self.fill_empty_with)
-                else:
-                    for _ in range(self.points_per_stroke):
-                        x.append(self.fill_empty_with)
-                        x.append(self.fill_empty_with)
+            x = self._features_with_strokes(handwritten_data)
         else:
-            for point in handwritten_data.get_pointlist()[0]:
-                if len(x) >= 3*self.points_per_stroke or \
-                   (len(x) >= 2*self.points_per_stroke and not self.pen_down):
-                    break
-                x.append(point['x'])
-                x.append(point['y'])
-                if self.pen_down:
-                    if 'pen_down' not in point:
-                        logging.error("The "
-                                      "ConstantPointCoordinates(strokes=0) "
-                                      "feature should only be used after "
-                                      "SpaceEvenly preprocessing step.")
-                    else:
-                        x.append(int(point['pen_down']))
-            if self.pen_down:
-                while len(x) != 3*self.points_per_stroke:
-                    x.append(self.fill_empty_with)
-            else:
-                while len(x) != 2*self.points_per_stroke:
-                    x.append(self.fill_empty_with)
+            x = self._features_without_strokes(handwritten_data)
         assert self.get_dimension() == len(x), \
             "Dimension of %s should be %i, but was %i" % \
             (self.__str__(), self.get_dimension(), len(x))
@@ -534,7 +547,7 @@ class StrokeIntersections(object):
     """Count the number of intersections which strokes in the recording have
        with each other in form of a symmetrical matrix for the first
        `stroke=4` strokes. The feature dimension is
-       :math:`round \\frac{\\text{strokes}^2}{2} + \\frac{\\text{strokes}}{2}`,
+       :math:`round(\\frac{\\text{strokes}^2}{2} + \\frac{\\text{strokes}}{2})`
        because the symmetrical part is discarded.
 
     =======   ======= ======= ======= ===
@@ -543,6 +556,7 @@ class StrokeIntersections(object):
     stroke1     0        1      0     ...
     stroke2     1        2      0     ...
     stroke3     0        0      0     ...
+    ...         ...      ...    ...   ...
     =======   ======= ======= ======= ===
 
     Returns values of upper triangular matrix (including diagonal)

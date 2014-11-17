@@ -4,6 +4,7 @@ python:
 install: 
   - pip install natsort matplotlib coveralls
   - pip install shapely
+  - pip install mysql-python
 script:
   - nosetests --with-coverage
 virtualenv:

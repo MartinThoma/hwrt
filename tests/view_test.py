@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import nose
+from nose.plugins.skip import SkipTest
 import shutil
 import os
 
@@ -25,6 +26,10 @@ def execution_test():
     view._list_ids(target)
     #view._get_description(yaml.read(open()))
     #display_data(raw_data_string, raw_data_id, model_folder, show_raw)
+
+
+@SkipTest
+def execute_main_test():
     model_small = os.path.join(utils.get_project_root(),
                                "models",
                                "small-baseline")

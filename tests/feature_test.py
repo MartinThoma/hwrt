@@ -97,11 +97,6 @@ def dimensionality_test():
         nose.tools.assert_equal(feat.get_dimension(), dimension)
 
 
-def unknown_class_test():
-    # TODO: Test if logging works
-    features.get_class("not_existant")
-
-
 def simple_execution_test():
     algorithms = [features.ConstantPointCoordinates(),
                   features.ConstantPointCoordinates(strokes=0),

@@ -25,8 +25,6 @@ this:
  >>> creator_metric = Creator('creator.csv')
  >>> creator_metric(a)
 """
-import inspect
-import imp
 import os
 import logging
 import sys
@@ -42,36 +40,11 @@ from . import preprocessing  # pylint: disable=W0611
 from . import utils
 
 
-def get_class(name):
-    """Get the class by its name as a string."""
-    clsmembers = inspect.getmembers(sys.modules[__name__], inspect.isclass)
-    for string_name, act_class in clsmembers:
-        if string_name == name:
-            return act_class
-
-    # Check if the user has specified a plugin and if the class is in there
-    cfg = utils.get_project_configuration()
-    if 'data_analyzation_plugins' in cfg:
-        basename = os.path.basename(cfg['data_analyzation_plugins'])
-        modname = os.path.splitext(basename)[0]
-        if os.path.isfile(cfg['data_analyzation_plugins']):
-            usermodule = imp.load_source(modname,
-                                         cfg['data_analyzation_plugins'])
-            clsmembers = inspect.getmembers(usermodule, inspect.isclass)
-            for string_name, act_class in clsmembers:
-                if string_name == name:
-                    return act_class
-        else:
-            logging.warning("File '%s' does not exist. Adjust ~/.hwrtrc.",
-                            cfg['data_analyzation_plugins'])
-
-    logging.warning("Unknown class '%s'.", name)
-    return None
-
-
 def get_metrics(metrics_description):
     """Get metrics from a list of dictionaries. """
-    return utils.get_objectlist(metrics_description, get_class)
+    return utils.get_objectlist(metrics_description,
+                                config_key='data_analyzation_plugins',
+                                module=sys.modules[__name__])
 
 # Helper functions that are useful for some metrics
 

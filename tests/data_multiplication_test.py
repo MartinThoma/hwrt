@@ -79,11 +79,6 @@ def data_multiplication_detection_test():
     nose.tools.assert_equal(len(mult_queue), len(correct))
 
 
-def unknown_class_test():
-    # TODO: Test if logging works
-    data_multiplication.get_class("not_existant")
-
-
 def rotate_test():
     recording = get_symbol_as_handwriting(292934)
     rotation = data_multiplication.Rotate(minimum=-3, maximum=3, num=3)

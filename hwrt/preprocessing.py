@@ -16,13 +16,10 @@ this:
 """
 
 import numpy
-import inspect
-import imp
 from scipy.interpolate import interp1d
 import math
 import logging
 import sys
-import os
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
@@ -45,27 +42,6 @@ def euclidean_distance(p1, p2):
     return math.sqrt((p1["x"]-p2["x"])**2 + (p1["y"]-p2["y"])**2)
 
 
-def get_class(name):
-    """Get the class by its name as a string."""
-    clsmembers = inspect.getmembers(sys.modules[__name__], inspect.isclass)
-    for string_name, act_class in clsmembers:
-        if string_name == name:
-            return act_class
-
-    # Check if the user has specified a plugin and if the class is in there
-    cfg = utils.get_project_configuration()
-    if 'preprocessing' in cfg:
-        modname = os.path.splitext(os.path.basename(cfg['preprocessing']))[0]
-        usermodule = imp.load_source(modname, cfg['preprocessing'])
-        clsmembers = inspect.getmembers(usermodule, inspect.isclass)
-        for string_name, act_class in clsmembers:
-            if string_name == name:
-                return act_class
-
-    logging.debug("Unknown class '%s'.", name)
-    return None
-
-
 def get_preprocessing_queue(preprocessing_list):
     """Get preprocessing queue from a list of dictionaries
 
@@ -79,7 +55,9 @@ def get_preprocessing_queue(preprocessing_list):
      - max_height: 1
     ]
     """
-    return utils.get_objectlist(preprocessing_list, get_class)
+    return utils.get_objectlist(preprocessing_list,
+                                config_key='preprocessing',
+                                module=sys.modules[__name__])
 
 # Only preprocessing classes follow
 # Everyone must have a __str__, __repr__ and __call__

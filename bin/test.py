@@ -165,6 +165,9 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
 
     # Find right place for report file
     time_prefix = time.strftime("%Y-%m-%d-%H-%M")
+    directory = os.path.join(project_root, "reports")
+    if not os.path.exists(directory):
+        os.makedirs(directory)
     target = os.path.join(project_root,
                           ("reports/"
                            "%s-classification-error-report.html") %

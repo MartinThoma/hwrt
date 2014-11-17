@@ -27,7 +27,7 @@ import hwrt.features as features
 import hwrt.data_multiplication as data_multiplication
 
 
-def _fetch_data_from_server(raw_data_id):
+def _fetch_data_from_server(raw_data_id, mysql_cfg):
     """Get the data from raw_data_id from the server.
     :returns: The ``data`` if fetching worked, ``None`` if it failed."""
     import MySQLdb
@@ -39,10 +39,10 @@ def _fetch_data_from_server(raw_data_id):
         return None
 
     # Establish database connection
-    connection = MySQLdb.connect(host=cfg[args.mysql]['host'],
-                                 user=cfg[args.mysql]['user'],
-                                 passwd=cfg[args.mysql]['passwd'],
-                                 db=cfg[args.mysql]['db'],
+    connection = MySQLdb.connect(host=cfg[mysql_cfg]['host'],
+                                 user=cfg[mysql_cfg]['user'],
+                                 passwd=cfg[mysql_cfg]['passwd'],
+                                 db=cfg[mysql_cfg]['db'],
                                  cursorclass=MySQLdb.cursors.DictCursor)
     logging.info("Connection: %s", str(connection))
     cursor = connection.cursor()
@@ -222,7 +222,7 @@ def get_parser():
     return parser
 
 
-def main(list_ids, model, contact_server, raw_data_id, show_raw):
+def main(list_ids, model, contact_server, raw_data_id, show_raw, mysql_cfg):
     """Main function of view.py."""
     if list_ids:
         preprocessing_desc, _, _ = _get_system(model)
@@ -231,7 +231,7 @@ def main(list_ids, model, contact_server, raw_data_id, show_raw):
         _list_ids(raw_datapath)
     else:
         if contact_server:
-            data = _fetch_data_from_server(raw_data_id)
+            data = _fetch_data_from_server(raw_data_id, mysql_cfg)
             print("hwrt version: %s" % hwrt.__version__)
             if data is not None:
                 display_data(data['data'], data['id'], model, show_raw)
@@ -257,4 +257,5 @@ def main(list_ids, model, contact_server, raw_data_id, show_raw):
 
 if __name__ == '__main__':
     args = get_parser().parse_args()
-    main(args.list, args.model, args.server, args.id, args.show_raw)
+    main(args.list, args.model, args.server, args.id, args.show_raw,
+         args.mysql)

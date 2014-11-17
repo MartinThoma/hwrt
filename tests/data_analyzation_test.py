@@ -69,19 +69,10 @@ def compare_pointlists(a, b, epsilon=0.001):
 
 
 # Tests
-def get_class_test():
-    nose.tools.assert_equal(dam.get_class('Creator'), dam.Creator)
-
-
 def get_metrics_test():
     d = [{'Creator': None}, {'Creator': [{'filename': 'bla'}]}]
     metrics = dam.get_metrics(d)
     nose.tools.assert_equal(len(metrics), 2)
-
-
-def unknown_class_test():
-    # TODO: Test if logging works
-    dam.get_class("not_existant")
 
 
 def execution_test():

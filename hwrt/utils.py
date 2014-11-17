@@ -3,6 +3,8 @@
 """Utility functions that can be used in multiple scripts."""
 
 from __future__ import print_function
+import inspect
+import imp
 import logging
 import sys
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
@@ -87,7 +89,11 @@ def get_project_root():
     cfg = get_project_configuration()
     # At this point it can be sure that the configuration file exists
     # Now make sure the project structure exists
-    for dirname in ["raw-datasets", "preprocessed", "feature-files", "models"]:
+    for dirname in ["raw-datasets",
+                    "preprocessed",
+                    "feature-files",
+                    "models",
+                    "reports"]:
         directory = os.path.join(cfg['root'], dirname)
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -521,7 +527,7 @@ def classify_single_recording(raw_data_json, model_folder, verbose=False):
     return results
 
 
-def get_objectlist(description, get_class):
+def get_objectlist(description, config_key, module):
     """Take a description and return a list of classes.
     :param description: list of dictionaries, where each dictionary has only
                         one entry. The key is the name of a class.
@@ -531,7 +537,7 @@ def get_objectlist(description, get_class):
     object_list = []
     for feature in description:
         for feat, params in feature.items():
-            feat = get_class(feat)
+            feat = get_class(feat, config_key, module)
             if params is None:
                 object_list.append(feat())
             else:
@@ -541,3 +547,28 @@ def get_objectlist(description, get_class):
                         parameters[param_name] = param_value
                 object_list.append(feat(**parameters))  # pylint: disable=W0142
     return object_list
+
+
+def get_class(name, config_key, module):
+    """Get the class by its name as a string."""
+    clsmembers = inspect.getmembers(module, inspect.isclass)
+    for string_name, act_class in clsmembers:
+        if string_name == name:
+            return act_class
+
+    # Check if the user has specified a plugin and if the class is in there
+    cfg = get_project_configuration()
+    if config_key in cfg:
+        modname = os.path.splitext(os.path.basename(cfg[config_key]))[0]
+        if os.path.isfile(cfg[config_key]):
+            usermodule = imp.load_source(modname, cfg[config_key])
+            clsmembers = inspect.getmembers(usermodule, inspect.isclass)
+            for string_name, act_class in clsmembers:
+                if string_name == name:
+                    return act_class
+        else:
+            logging.warning("File '%s' does not exist. Adjust ~/.hwrtrc.",
+                            cfg['data_analyzation_plugins'])
+
+    logging.debug("Unknown class '%s'.", name)
+    return None

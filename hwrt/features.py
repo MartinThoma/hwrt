@@ -16,8 +16,6 @@ this:
  >>> x = a.feature_extraction(feature_list)
 """
 
-import inspect
-import imp
 import urllib
 import os
 import logging
@@ -25,7 +23,7 @@ import sys
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
-from itertools import combinations_with_replacement
+from itertools import combinations_with_replacement as combinations_wr
 import numpy
 
 # hwrt modules
@@ -33,27 +31,6 @@ from . import HandwrittenData
 from . import preprocessing
 from . import utils
 from . import geometry
-
-
-def get_class(name):
-    """Get function pointer by string."""
-    clsmembers = inspect.getmembers(sys.modules[__name__], inspect.isclass)
-    for string_name, act_class in clsmembers:
-        if string_name == name:
-            return act_class
-
-    # Check if the user has specified a plugin and if the class is in there
-    cfg = utils.get_project_configuration()
-    if 'features' in cfg:
-        modname = os.path.splitext(os.path.basename(cfg['features']))[0]
-        usermodule = imp.load_source(modname, cfg['features'])
-        clsmembers = inspect.getmembers(usermodule, inspect.isclass)
-        for string_name, act_class in clsmembers:
-            if string_name == name:
-                return act_class
-
-    logging.debug("Unknown feature class '%s'.", name)
-    return None
 
 
 def get_features(model_description_features):
@@ -75,7 +52,9 @@ def get_features(model_description_features):
      - pen down feature: False
     ]
     """
-    return utils.get_objectlist(model_description_features, get_class)
+    return utils.get_objectlist(model_description_features,
+                                config_key='features',
+                                module=sys.modules[__name__])
 
 # Only feature calculation classes follow
 # Everyone must have a __str__, __repr__, __call__ and get_dimension function
@@ -93,11 +72,11 @@ class ConstantPointCoordinates(object):
 
     """Take the first ``points_per_stroke=20`` points coordinates of the first
        ``strokes=4`` strokes as features. This leads to
-       :math:`2 \\cdot \\text{points\_per\_stroke} \\cdot \\text{strokes}`
+       :math:`2 \\cdot \\text{points_per_stroke} \\cdot \\text{strokes}`
        features.
 
-       If ``points`` is set to 0, the first ``points\_per\_stroke`` point
-       coordinates and the \verb+pen_down+ feature is used. This leads to
+       If ``points`` is set to 0, the first ``points_per_stroke`` point
+       coordinates and the ``pen_down`` feature is used. This leads to
        :math:`3 \\cdot \\text{points_per_stroke}` features."""
 
     normalize = False
@@ -546,7 +525,7 @@ class StrokeCenter(object):
 class StrokeIntersections(object):
     """Count the number of intersections which strokes in the recording have
        with each other in form of a symmetrical matrix for the first
-       `stroke=4` strokes. The feature dimension is
+       ``stroke=4`` strokes. The feature dimension is
        :math:`round(\\frac{\\text{strokes}^2}{2} + \\frac{\\text{strokes}}{2})`
        because the symmetrical part is discarded.
 
@@ -601,7 +580,7 @@ class StrokeIntersections(object):
                 polygonalChains.append(None)
 
         x = []
-        for chainA, chainB in combinations_with_replacement(polygonalChains, 2):
+        for chainA, chainB in combinations_wr(polygonalChains, 2):
             if chainA == chainB:
                 x.append(chainA.count_selfintersections())
             else:
@@ -618,7 +597,7 @@ class ReCurvature(object):
     """Re-curvature is a 1 dimensional, stroke-global feature for a recording.
        It is the ratio
        :math:`\\frac{\\text{height}(s)}{\\text{length}(s)}`.
-       If ``length}(s) == 0``, then the re-curvature is defined to be 1.
+       If ``length(s) == 0``, then the re-curvature is defined to be 1.
     """
 
     normalize = True

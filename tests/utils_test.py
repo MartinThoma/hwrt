@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import nose
+import mock
 
 # hwrt modules
+import hwrt
 import hwrt.utils as utils
 
 
@@ -48,3 +50,25 @@ def parser_test():
                         dest="model",
                         type=lambda x: utils.is_valid_file(parser, x))
     parser.parse_args(['-m', rcfile])
+
+
+def get_class_test():
+    utils.get_class('ScaleAndShift', 'preprocessing', hwrt.preprocessing)
+    utils.get_class('BongaBonga', 'preprocessing', hwrt.preprocessing)
+
+
+def query_yes_no_test():
+    with mock.patch('__builtin__.raw_input', return_value='y'):
+        nose.tools.assert_equal(utils.query_yes_no("bla"), True)
+        nose.tools.assert_equal(utils.query_yes_no("bla", None), True)
+        nose.tools.assert_equal(utils.query_yes_no("bla", "yes"), True)
+        nose.tools.assert_equal(utils.query_yes_no("bla", "no"), True)
+    with mock.patch('__builtin__.raw_input', return_value=''):
+        nose.tools.assert_equal(utils.query_yes_no("bla", 'yes'), True)
+        nose.tools.assert_equal(utils.query_yes_no("bla", 'no'), False)
+
+
+@nose.tools.raises(Exception)
+def query_yes_no_exception_test():
+    with mock.patch('__builtin__.raw_input', return_value=''):
+        utils.query_yes_no("bla", "asdf")

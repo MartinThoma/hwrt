@@ -72,11 +72,6 @@ def preprocessing_detection_test():
     nose.tools.assert_equal(len(feature_list), len(correct))
 
 
-def unknown_class_test():
-    # TODO: Test if logging works
-    preprocessing.get_class("not_existant")
-
-
 def simple_execution_test():
     algorithms = [preprocessing.RemoveDuplicateTime(),
                   preprocessing.RemoveDots(),

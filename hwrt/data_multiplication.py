@@ -15,7 +15,6 @@ this:
 
 """
 
-import inspect
 import numpy
 import logging
 import sys
@@ -30,16 +29,6 @@ from hwrt import HandwrittenData
 from hwrt import utils
 
 
-def get_class(name):
-    """Get function pointer by string."""
-    clsmembers = inspect.getmembers(sys.modules[__name__], inspect.isclass)
-    for string_name, act_class in clsmembers:
-        if string_name == name:
-            return act_class
-    logging.debug("Unknown data multiplication class '%s'.", name)
-    return None
-
-
 def get_data_multiplication_queue(model_description_multiply):
     """Get features from a list of dictionaries
 
@@ -48,7 +37,9 @@ def get_data_multiplication_queue(model_description_multiply):
     >>> get_data_multiplication_queue(l)
     [Multiply (1 times), Rotate (-30.00, 30.00, 5.00)]
     """
-    return utils.get_objectlist(model_description_multiply, get_class)
+    return utils.get_objectlist(model_description_multiply,
+                                config_key='data_multiplication',
+                                module=sys.modules[__name__])
 
 # Only data multiplication classes follow
 # Everyone must have a __str__, __repr__, __call__ and get_dimension function

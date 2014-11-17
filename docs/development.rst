@@ -77,5 +77,6 @@ Current State
 
 ::
 
-    date, lines of code (without tests), lines of test code, test coverage, pylint score, cheesecake_index, users
+    date, lines of code (without tests), lines of test code, test coverage, pylint score, cheesecake_index, users, changes
     2014-11-16, 3361, 936, 72%, 9.70, 314/595, 1
+    2014-11-17, 3332, 965, 72%, 9.70, 314/595, 1, moved 'view.py' to subcommand 'hwrt view'

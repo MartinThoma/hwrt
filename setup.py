@@ -5,13 +5,13 @@ except ImportError:
 
 config = {
     'name': 'hwrt',
-    'version': '0.1.156',
+    'version': '0.1.158',
     'author': 'Martin Thoma',
     'author_email': 'info@martin-thoma.de',
     'packages': ['hwrt'],
-    'scripts': ['bin/backup.py', 'bin/download.py',
+    'scripts': ['bin/hwrt', 'bin/backup.py',
                 'bin/test.py', 'bin/train.py', 'bin/analyze_data.py',
-                'bin/hwrt', 'bin/record.py'],
+                'bin/record.py'],
     'package_data': {'hwrt': ['templates/*', 'misc/*']},
     'url': 'https://github.com/MartinThoma/hwrt',
     'license': 'MIT',

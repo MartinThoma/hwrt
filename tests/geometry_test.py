@@ -266,6 +266,10 @@ def segment_intersection_test():
     l2 = geometry.LineSegment(geometry.Point(291, 69), geometry.Point(292, 69))
     nose.tools.assert_equal(geometry.get_segments_intersections(l1, l2), [])
 
+    l1 = geometry.LineSegment(geometry.Point(0, 0), geometry.Point(0, 10))
+    l2 = geometry.LineSegment(geometry.Point(5, 5), geometry.Point(2, 0))
+    nose.tools.assert_equal(geometry.get_segments_intersections(l1, l2), [])
+
 
 def stroke_selfintersection_test():
     a = [{'y': 69, 'x': 289},

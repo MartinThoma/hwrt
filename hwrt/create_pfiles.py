@@ -84,25 +84,15 @@ def main(feature_folder, create_learning_curve=False):
         for formula_id, index in index2formula_id:
             f.write("%i,%i,%s\n" % (index, formula_id, index2latex[index]))
 
-    # Get the dimension of the feature vector
-    input_features = sum(map(lambda n: n.get_dimension(), feature_list))
-
     # Output data for documentation
     print("Classes (nr of symbols): %i" % len(formula_id2index))
-
-    print("#### Preprocessing")
-    print("```")
-    for algorithm in preprocessing_queue:
-        print("* " + str(algorithm))
-    print("```")
-
-    print("#### Features (%i)" % input_features)
-    print("```")
-    for algorithm in feature_list:
-        print("* %s" % str(algorithm))
-    print("```")
+    preprocessing.print_preprocessing_list(preprocessing_queue)
+    features.print_featurelist(feature_list)
 
     logging.info("Start creating pfiles")
+
+    # Get the dimension of the feature vector
+    input_features = sum(map(lambda n: n.get_dimension(), feature_list))
 
     # Traindata has to come first because of feature normalization
     for dataset_name, dataset, is_traindata in \

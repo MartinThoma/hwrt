@@ -68,6 +68,20 @@ def query_yes_no_test():
         nose.tools.assert_equal(utils.query_yes_no("bla", 'no'), False)
 
 
+def input_string_test():
+    with mock.patch('__builtin__.raw_input', return_value='y'):
+        nose.tools.assert_equal(utils.input_string("bla"), "y")
+
+
+def input_int_default_test():
+    with mock.patch('__builtin__.raw_input', return_value='yes'):
+        nose.tools.assert_equal(utils.input_int_default("bla"), 0)
+        nose.tools.assert_equal(utils.input_int_default("bla", 42), 42)
+    with mock.patch('__builtin__.raw_input', return_value=1337):
+        nose.tools.assert_equal(utils.input_int_default("bla"), 1337)
+        nose.tools.assert_equal(utils.input_int_default("bla", 42), 1337)
+
+
 @nose.tools.raises(Exception)
 def query_yes_no_exception_test():
     with mock.patch('__builtin__.raw_input', return_value=''):

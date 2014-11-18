@@ -133,22 +133,17 @@ def display_data(raw_data_string, raw_data_id, model_folder, show_raw):
     print("## Model")
     print("%s\n" % model_folder)
 
-    # Print preprocessing queue
-    print("## Preprocessing")
-    print("```")
+    # Get the preprocessing queue
     tmp = preprocessing_desc['queue']
     preprocessing_queue = preprocessing.get_preprocessing_queue(tmp)
-    for algorithm in preprocessing_queue:
-        print("* " + str(algorithm))
-    print("```")
 
-    feature_list = features.get_features(feature_desc['features'])
-    input_features = sum(map(lambda n: n.get_dimension(), feature_list))
-    print("## Features (%i)" % input_features)
-    print("```")
-    for algorithm in feature_list:
-        print("* %s" % str(algorithm))
-    print("```")
+    # Get feature values as list of floats, rounded to 3 decimal places
+    tmp = feature_desc['features']
+    feature_list = features.get_features(tmp)
+
+    # Print preprocessing queue
+    preprocessing.print_preprocessing_list(preprocessing_queue)
+    features.print_featurelist(feature_list)
 
     # Get Handwriting
     recording = HandwrittenData.HandwrittenData(raw_data_string,
@@ -156,14 +151,8 @@ def display_data(raw_data_string, raw_data_id, model_folder, show_raw):
     if show_raw:
         recording.show()
 
-    # Get the preprocessing queue
-    tmp = preprocessing_desc['queue']
-    preprocessing_queue = preprocessing.get_preprocessing_queue(tmp)
     recording.preprocessing(preprocessing_queue)
 
-    # Get feature values as list of floats, rounded to 3 decimal places
-    tmp = feature_desc['features']
-    feature_list = features.get_features(tmp)
     feature_values = recording.feature_extraction(feature_list)
     feature_values = [round(el, 3) for el in feature_values]
     print("Features:")

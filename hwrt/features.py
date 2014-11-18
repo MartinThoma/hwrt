@@ -56,6 +56,18 @@ def get_features(model_description_features):
                                 config_key='features',
                                 module=sys.modules[__name__])
 
+
+def print_featurelist(feature_list):
+    """Print the feature_list in a human-readable form.
+    :type feature_list: List of feature objects
+    """
+    input_features = sum(map(lambda n: n.get_dimension(), feature_list))
+    print("## Features (%i)" % input_features)
+    print("```")
+    for algorithm in feature_list:
+        print("* %s" % str(algorithm))
+    print("```")
+
 # Only feature calculation classes follow
 # Everyone must have a __str__, __repr__, __call__ and get_dimension function
 # where

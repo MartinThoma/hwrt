@@ -22,6 +22,7 @@ from hwrt import create_pfiles
 from hwrt import create_model
 from hwrt import selfcheck
 from hwrt import view
+from hwrt import download
 
 
 def get_parser():
@@ -39,6 +40,9 @@ def get_parser():
     subparsers.add_parser('view',
                           add_help=False,
                           parents=[view.get_parser()])
+    subparsers.add_parser('download',
+                          add_help=False,
+                          parents=[download.get_parser()])
     subparsers.add_parser('check',
                           add_help=False)
     parser.add_argument('--version',
@@ -52,6 +56,8 @@ def main(args):
         selfcheck.main()
     elif args.cmd == 'view':
         view.main(args.list, args.model, args.server, args.id, args.show_raw)
+    elif args.cmd == 'download':
+        download.main()
 
 if __name__ == '__main__':
     args = get_parser().parse_args()

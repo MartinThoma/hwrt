@@ -59,6 +59,17 @@ def get_preprocessing_queue(preprocessing_list):
                                 config_key='preprocessing',
                                 module=sys.modules[__name__])
 
+
+def print_preprocessing_list(preprocessing_queue):
+    """Print the preproc_list in a human-readable form.
+    :type preprocessing_queue: List of preprocessing objects
+    """
+    print("## Preprocessing")
+    print("```")
+    for algorithm in preprocessing_queue:
+        print("* " + str(algorithm))
+    print("```")
+
 # Only preprocessing classes follow
 # Everyone must have a __str__, __repr__ and __call__
 # where

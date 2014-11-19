@@ -6,16 +6,16 @@
 from __future__ import print_function
 import logging
 import sys
-import os
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
+import os
+import yaml
 try:  # Python 2
     import cPickle as pickle
 except ImportError:  # Python 3
     import pickle
 import time
-import yaml
 
 # hwrt modules
 from . import utils

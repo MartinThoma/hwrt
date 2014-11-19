@@ -55,7 +55,8 @@ def main(args):
     if args.cmd == 'check':
         selfcheck.main()
     elif args.cmd == 'view':
-        view.main(args.list, args.model, args.server, args.id, args.show_raw)
+        view.main(args.list, args.model, args.server, args.id, args.show_raw,
+                  args.mysql)
     elif args.cmd == 'download':
         download.main()
 

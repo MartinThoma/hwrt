@@ -5,12 +5,12 @@ Display a recorded handwritten symbol as well as the preprocessing methods
 and the data multiplication steps that get applied.
 """
 
-import sys
-import os
 import logging
+import sys
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
+import os
 import yaml
 try:  # Python 2
     import cPickle as pickle
@@ -211,7 +211,8 @@ def get_parser():
     return parser
 
 
-def main(list_ids, model, contact_server, raw_data_id, show_raw, mysql_cfg):
+def main(list_ids, model, contact_server, raw_data_id, show_raw,
+         mysql_cfg='mysql_online'):
     """Main function of view.py."""
     if list_ids:
         preprocessing_desc, _, _ = _get_system(model)

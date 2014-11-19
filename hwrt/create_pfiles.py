@@ -17,6 +17,7 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
 import os
+import yaml
 import csv
 try:  # Python 2
     import cPickle as pickle
@@ -24,7 +25,6 @@ except ImportError:  # Python 3
     import pickle
 import time
 import gc
-import yaml
 import numpy
 from collections import defaultdict
 
@@ -282,41 +282,25 @@ def make_pfile(dataset_name, feature_count, data,
             tmp = output_filename_save.split(".")
             tmp[-2] += "-%i-examples" % trainingexamples
             output_filename = ".".join(map(str, tmp))
-            # Count what has been written so far
+
+            # Make sure the data has not more than ``trainingexamples``
             seen_symbols = defaultdict(int)
-            with open(input_filename, "w") as f:
-                symbolnr = 0
-                for instance in data:
-                    feature_string, label = instance
-                    if seen_symbols[label] >= trainingexamples:
-                        continue
+            new_data = {}
+            for feature_string, label in data:
+                if seen_symbols[label] < trainingexamples:
                     seen_symbols[label] += 1
-                    assert len(feature_string) == feature_count, \
-                        "Expected %i features, got %i features" % \
-                        (feature_count, len(feature_string))
-                    feature_string = " ".join(map(str, feature_string))
-                    line = "%i 0 %s %i" % (symbolnr, feature_string, label)
-                    print(line, file=f)
-                    symbolnr += 1
-            command = "pfile_create -i %s -f %i -l 1 -o %s" % \
-                      (input_filename, feature_count, output_filename)
-            logging.info(command)
-            os.system(command)
+                    new_data = (feature_string, label)
+
+            # Create the pfile
+            utils.create_pfile(output_filename,
+                               feature_count,
+                               new_data,
+                               input_filename)
     else:
-        with open(input_filename, "w") as f:
-            for symbolnr, instance in enumerate(data):
-                feature_string, label = instance
-                assert len(feature_string) == feature_count, \
-                    "Expected %i features, got %i features" % \
-                    (feature_count, len(feature_string))
-                feature_string = " ".join(map(str, feature_string))
-                line = "%i 0 %s %i" % (symbolnr, feature_string, label)
-                print(line, file=f)
-        command = "pfile_create -i %s -f %i -l 1 -o %s" % \
-                  (input_filename, feature_count, output_filename)
-        logging.info(command)
-        os.system(command)
-        #os.remove(input_filename)
+        utils.create_pfile(output_filename,
+                           feature_count,
+                           data,
+                           input_filename)
 
 
 def get_parser():

@@ -81,3 +81,4 @@ Current State
     2014-11-16, 3361, 936, 72%, 9.70, 314/595, 1
     2014-11-17, 3332, 965, 72%, 9.70, 314/595, 1, moved 'view.py' to subcommand 'hwrt view'
     2014-11-18, 3325, 988, 71%, 9.71, 314/595, 1, moved 'download.py' to subcommand 'hwrt download'
+    2014-11-19, 3312, 988, 72%, 9.71, 314/595, 1, refactoring

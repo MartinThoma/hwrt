@@ -15,18 +15,19 @@ this:
     >>> a.preprocessing(preprocessing_queue)
 """
 
-import numpy
-from scipy.interpolate import interp1d
-import math
 import logging
 import sys
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
+import numpy
+from scipy.interpolate import interp1d
+import math
 
 # hwrt modules
 from . import HandwrittenData
 from . import utils
+from . import geometry
 
 
 def euclidean_distance(p1, p2):
@@ -484,8 +485,12 @@ class DouglasPeucker(object):
 
             squared_distance = px*px + py*py
             if squared_distance == 0:
-                # TODO: Is that the best thing to do?
-                return 0
+                # The line is in fact only a single dot.
+                # In this case the distance of two points has to be
+                # calculated
+                linePoint = geometry.Point(p1['x'], p1['y'])
+                point = geometry.Point(p3['x'], p3['y'])
+                return linePoint.dist_to(point)
 
             u = ((x3 - p1['x']) * px + (y3 - p1['y']) * py) / squared_distance
 

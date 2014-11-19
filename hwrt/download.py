@@ -5,12 +5,12 @@
    server for the latest version and update them if they are outdated.
 """
 
-import sys
-import os
 import logging
+import sys
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
+import os
 import yaml
 import hashlib
 import urllib

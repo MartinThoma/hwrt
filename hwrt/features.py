@@ -16,13 +16,13 @@ this:
  >>> x = a.feature_extraction(feature_list)
 """
 
-import urllib
-import os
 import logging
 import sys
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
+import os
+import urllib
 from itertools import combinations_with_replacement as combinations_wr
 import numpy
 

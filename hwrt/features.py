@@ -18,9 +18,6 @@ this:
 
 import logging
 import sys
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
 import os
 import urllib
 from itertools import combinations_with_replacement as combinations_wr
@@ -301,7 +298,7 @@ class Bitmap(object):
                    "-gravity center -extent {n}x{n} "
                    "-monochrome {folder}{id}.png").format(id=raw_data_id,
                                                           n=self.n,
-                                                          url=url,
+                                                          # url=url,
                                                           folder=foldername)
         os.system(command)
         from PIL import Image

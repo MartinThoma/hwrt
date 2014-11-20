@@ -17,9 +17,6 @@ this:
 
 import logging
 import sys
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
 import numpy
 from scipy.interpolate import interp1d
 import math

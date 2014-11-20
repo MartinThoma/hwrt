@@ -13,6 +13,12 @@
 
 import argparse
 
+import logging
+import sys
+logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
+                    level=logging.DEBUG,
+                    stream=sys.stdout)
+
 # hwrt modules
 # Every HWR tool that should be available through
 #   hwrt TOOL

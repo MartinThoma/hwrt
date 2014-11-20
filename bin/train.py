@@ -3,13 +3,13 @@
 
 """Create and train a given model."""
 
-import os
-import yaml
 import logging
 import sys
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
+import os
+import yaml
 
 # hwrt modules
 import hwrt.utils as utils

@@ -43,3 +43,19 @@ def training_set_multiplication_test():
 
 def parser_test():
     create_pfiles.get_parser()
+
+
+def prepare_dataset_test():
+    dataset = []
+    for i in range(200):
+        dataset.append({'handwriting': get_symbol_as_handwriting(97705),
+                        'formula_id': 42})
+    # dataset[-1]['handwriting'].formula_id = 42
+    formula_id2index = {}
+    formula_id2index[42] = 1
+    feature_list = [features.StrokeCount()]
+    is_traindata = False
+    create_pfiles.prepare_dataset(dataset,
+                                  formula_id2index,
+                                  feature_list,
+                                  is_traindata)

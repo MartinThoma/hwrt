@@ -7,9 +7,6 @@ and the data multiplication steps that get applied.
 
 import logging
 import sys
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
 import os
 import yaml
 try:  # Python 2

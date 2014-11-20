@@ -16,11 +16,7 @@ this:
 """
 
 import numpy
-import logging
 import sys
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
 import math
 from copy import deepcopy
 

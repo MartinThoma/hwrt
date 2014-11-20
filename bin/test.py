@@ -5,10 +5,10 @@
 
 import logging
 import sys
-import os
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
+import os
 import subprocess
 import time
 import yaml

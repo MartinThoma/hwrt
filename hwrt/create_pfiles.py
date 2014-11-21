@@ -267,8 +267,6 @@ def make_pfile(dataset_name, feature_count, data,
     :param data: data format ('feature_string', 'label')
     :type data: list of tuples
     """
-    input_filename = os.path.abspath("%s.raw" % dataset_name)
-    logging.info("Temporary file: '%s'", input_filename)
     # create raw data file for pfile_create
     if dataset_name == "traindata" and create_learning_curve:
         max_trainingexamples = 501
@@ -289,15 +287,9 @@ def make_pfile(dataset_name, feature_count, data,
                     new_data = (feature_string, label)
 
             # Create the pfile
-            utils.create_pfile(output_filename,
-                               feature_count,
-                               new_data,
-                               input_filename)
+            utils.create_pfile(output_filename, feature_count, new_data)
     else:
-        utils.create_pfile(output_filename,
-                           feature_count,
-                           data,
-                           input_filename)
+        utils.create_pfile(output_filename, feature_count, data)
 
 
 def get_parser():

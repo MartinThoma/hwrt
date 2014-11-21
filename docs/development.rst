@@ -88,3 +88,4 @@ Current State
     2014-11-18, 3325,  988, 71%, 9.71, 314/595, 1, moved 'download.py' to subcommand 'hwrt download'
     2014-11-19, 3312,  988, 72%, 9.71, 314/595, 1, refactoring
     2014-11-20, 3281, 1001, 72%, 9.78, 314/595, 1, refactoring (logging); added test case for create_pfiles
+    2014-11-21, 3274, 1001, 72%, 9.78, 314/595, 1, refactoring (temporary file)

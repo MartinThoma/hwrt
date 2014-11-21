@@ -16,6 +16,7 @@ import subprocess
 import shutil
 import csv
 import pkg_resources
+import tempfile
 
 # hwrt modules
 from . import HandwrittenData
@@ -406,31 +407,30 @@ def create_adjusted_model_for_percentages(model_src, model_use):
         f.write(content)
 
 
-def create_pfile(output_filename, feature_count, data, input_filename):
+def create_pfile(output_filename, feature_count, data):
     """Create a pfile.
     :param output_filename: name of the pfile that will be created
     :param feature_count: dimension of all features combined
     :type feature_count: int
     :param data: list of (x, y) tuples, where x is the feature vector
                  of dimension ``feature_count`` and y is a label.
-    :param input_filename: path to a file that will be created temporarily
     """
-    # TODO: The input_filename should not be necessary!
-    with open(input_filename, "w") as f:
-        for symbolnr, instance in enumerate(data):
-            feature_string, label = instance
-            assert len(feature_string) == feature_count, \
-                "Expected %i features, got %i features" % \
-                (feature_count, len(feature_string))
-            feature_string = " ".join(map(str, feature_string))
-            line = "%i 0 %s %i" % (symbolnr, feature_string, label)
-            print(line, file=f)
+    f = tempfile.NamedTemporaryFile()
+    input_filename = f.name
+
+    for symbolnr, instance in enumerate(data):
+        feature_string, label = instance
+        assert len(feature_string) == feature_count, \
+            "Expected %i features, got %i features" % \
+            (feature_count, len(feature_string))
+        feature_string = " ".join(map(str, feature_string))
+        line = "%i 0 %s %i" % (symbolnr, feature_string, label)
+        print(line, file=f)
+
     command = "pfile_create -i %s -f %i -l 1 -o %s" % \
               (input_filename, feature_count, output_filename)
     logging.info(command)
     os.system(command)
-    # Clean up
-    os.remove(input_filename)
 
 
 def evaluate_model(recording, model_folder, verbose=False):
@@ -476,7 +476,7 @@ def evaluate_model(recording, model_folder, verbose=False):
 
             # Create pfile
             output_filename = "evaluate.pfile"
-            create_pfile(output_filename, feature_count, [(x, 0)], "tmp.txt")
+            create_pfile(output_filename, feature_count, [(x, 0)])
         elif "model" in target_folder:
             logging.info("Create running model...")
             model_src = get_latest_model(target_folder, "model")

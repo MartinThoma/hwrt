@@ -18,3 +18,11 @@ steps by specifying a model folder.
       -l, --list            list all raw data IDs / symbol IDs
       -s, --server          contact the MySQL server
       -r, --raw             show the raw recording (without preprocessing)
+
+The following image shows how ``hwrt view`` displays an image. The different
+colors correspond to different strokes.
+
+.. image:: interrupted-stroke.png
+    :width: 512px
+    :align: center
+    :alt: Recording as showed by ``hwrt view``

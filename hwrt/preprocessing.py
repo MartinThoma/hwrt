@@ -463,61 +463,13 @@ class DouglasPeucker(object):
            distance. If that distance is bigger than 'epsilon', the point is
            important and the algorithm continues recursively."""
 
-        def perpendicular_distance(p3, p1, p2):
-            """
-            Calculate the distance from p3 to the stroke defined by p1 and p2.
-            The distance is the length of the perpendicular from p3 on p1.
-            :param p1: start of stroke
-            :type p1: dictionary with "x" and "y"
-            :param p2: end of stroke
-            :type p2: dictionary with "x" and "y"
-            :param p3: point
-            :type p3: dictionary with "x" and "y"
-            """
-            x3 = p3['x']
-            y3 = p3['y']
-
-            px = p2['x']-p1['x']
-            py = p2['y']-p1['y']
-
-            squared_distance = px*px + py*py
-            if squared_distance == 0:
-                # The line is in fact only a single dot.
-                # In this case the distance of two points has to be
-                # calculated
-                linePoint = geometry.Point(p1['x'], p1['y'])
-                point = geometry.Point(p3['x'], p3['y'])
-                return linePoint.dist_to(point)
-
-            u = ((x3 - p1['x']) * px + (y3 - p1['y']) * py) / squared_distance
-
-            if u > 1:
-                u = 1
-            elif u < 0:
-                u = 0
-
-            x = p1['x'] + u * px
-            y = p1['y'] + u * py
-
-            dx = x - x3
-            dy = y - y3
-
-            # Note: If the actual distance does not matter,
-            # if you only want to compare what this function
-            # returns to other results of this function, you
-            # can just return the squared distance instead
-            # (i.e. remove the sqrt) to gain a little performance
-
-            dist = math.sqrt(dx*dx + dy*dy)
-            return dist
-
-        # Finde den Punkt mit dem größten Abstand
+        # Find the point with the biggest distance
         dmax = 0
         index = 0
         for i in range(1, len(pointlist)):
-            d = perpendicular_distance(pointlist[i],
-                                       pointlist[0],
-                                       pointlist[-1])
+            d = geometry.perpendicular_distance(pointlist[i],
+                                                pointlist[0],
+                                                pointlist[-1])
             if d > dmax:
                 index = i
                 dmax = d

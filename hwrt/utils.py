@@ -415,7 +415,7 @@ def create_pfile(output_filename, feature_count, data):
     :param data: list of (x, y) tuples, where x is the feature vector
                  of dimension ``feature_count`` and y is a label.
     """
-    f = tempfile.NamedTemporaryFile()
+    f = tempfile.NamedTemporaryFile(delete=False)
     input_filename = f.name
 
     for symbolnr, instance in enumerate(data):
@@ -426,18 +426,22 @@ def create_pfile(output_filename, feature_count, data):
         feature_string = " ".join(map(str, feature_string))
         line = "%i 0 %s %i" % (symbolnr, feature_string, label)
         print(line, file=f)
+    f.close()
 
     command = "pfile_create -i %s -f %i -l 1 -o %s" % \
               (input_filename, feature_count, output_filename)
     logging.info(command)
-    os.system(command)
+    return_code = os.system(command)
+    if return_code != 0:
+        logging.error("pfile_create failed with return code %i.", return_code)
+        sys.exit(-1)
+
+    # Cleanup
+    os.remove(input_filename)
 
 
-def evaluate_model(recording, model_folder, verbose=False):
-    """Evaluate model for a single recording."""
-    from . import preprocess_dataset
-    from . import features
-
+def get_recognizer_folders(model_folder):
+    """Get a list of folders [preprocessed, feature-files, model]."""
     folders = []
     folder = model_folder
     while os.path.isdir(folder):
@@ -446,9 +450,15 @@ def evaluate_model(recording, model_folder, verbose=False):
         with open(os.path.join(folder, "info.yml")) as ymlfile:
             content = yaml.load(ymlfile)
         folder = os.path.join(get_project_root(), content['data-source'])
-    folders = folders[::-1]  # Reverse order to get the most "basic one first"
+    return folders[::-1]  # Reverse order to get the most "basic one first"
 
-    for target_folder in folders:
+
+def evaluate_model(recording, model_folder, verbose=False):
+    """Evaluate model for a single recording."""
+    from . import preprocess_dataset
+    from . import features
+
+    for target_folder in get_recognizer_folders(model_folder):
         # The source is later than the target. That means we need to
         # refresh the target
         if "preprocessed" in target_folder:
@@ -475,7 +485,9 @@ def evaluate_model(recording, model_folder, verbose=False):
             x = handwriting.feature_extraction(feature_list)
 
             # Create pfile
-            output_filename = "evaluate.pfile"
+            output_file_pointer = tempfile.NamedTemporaryFile(delete=False)
+            output_filename = output_file_pointer.name
+            output_file_pointer.close()
             create_pfile(output_filename, feature_count, [(x, 0)])
         elif "model" in target_folder:
             logging.info("Create running model...")
@@ -507,8 +519,26 @@ def evaluate_model(recording, model_folder, verbose=False):
             return logfile
         else:
             logging.info("'%s' not found", target_folder)
-    # Cleanup
     os.remove(output_filename)
+
+
+def get_index2latex(model_description):
+    """Get a dictionary that maps indices to LaTeX commands.
+
+    :param model_description: A model description file that points to
+                              a feature folder where an
+                              ``index2formula_id.csv`` has to be.
+    :returns: Dictionary that maps indices to LaTeX commands
+    """
+    index2latex = {}
+    translation_csv = os.path.join(get_project_root(),
+                                   model_description["data-source"],
+                                   "index2formula_id.csv")
+    with open(translation_csv) as csvfile:
+        csvreader = csv.DictReader(csvfile, delimiter=',', quotechar='"')
+        for row in csvreader:
+            index2latex[int(row['index'])] = row['latex']
+    return index2latex
 
 
 def classify_single_recording(raw_data_json, model_folder, verbose=False):
@@ -516,20 +546,15 @@ def classify_single_recording(raw_data_json, model_folder, verbose=False):
        LaTeX code, the second value is the probability.
     """
     evaluation_file = evaluate_model(raw_data_json, model_folder, verbose)
-    project_root = get_project_root()
     with open(os.path.join(model_folder, "info.yml")) as ymlfile:
         model_description = yaml.load(ymlfile)
-    translation_csv = os.path.join(project_root,
-                                   model_description["data-source"],
-                                   "index2formula_id.csv")
-    index2latex = {}
-    with open(translation_csv) as csvfile:
-        spamreader = csv.DictReader(csvfile, delimiter=',', quotechar='"')
-        for row in spamreader:
-            index2latex[int(row['index'])] = row['latex']
+
+    index2latex = get_index2latex(model_description)
+
+    # Map line to probabilites for latex commands
     with open(evaluation_file) as f:
-        content = f.read()
-    probabilities = map(float, content.split(" "))
+        probabilities = f.read()
+    probabilities = map(float, probabilities.split(" "))
     results = []
     for index, probability in enumerate(probabilities):
         results.append((index2latex[index], probability))

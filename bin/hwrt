@@ -39,18 +39,25 @@ def get_parser():
     subparsers.add_parser('create_pfiles',
                           add_help=False,
                           description="Create pfiles",
-                          parents=[create_pfiles.get_parser()])
+                          parents=[create_pfiles.get_parser()],
+                          help=("A tool to create compressed feature files "
+                                "from preprocessed files."))
     subparsers.add_parser('create_model',
                           add_help=False,
-                          parents=[create_model.get_parser()])
+                          parents=[create_model.get_parser()],
+                          help=("Create a model file."))
     subparsers.add_parser('view',
                           add_help=False,
-                          parents=[view.get_parser()])
+                          parents=[view.get_parser()],
+                          help=("Display raw preprocessed recordings."))
     subparsers.add_parser('download',
                           add_help=False,
-                          parents=[download.get_parser()])
+                          parents=[download.get_parser()],
+                          help=("Download the raw data to start analyzation "
+                                "/ traning."))
     subparsers.add_parser('check',
-                          add_help=False)
+                          add_help=False,
+                          help="Self-check of the HWRT toolkit.")
     parser.add_argument('--version',
                         action='version',
                         version=('hwrt %s' % str(hwrt.__version__)))

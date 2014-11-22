@@ -89,3 +89,4 @@ Current State
     2014-11-19, 3312,  988, 72%, 9.71, 314/595, 1, refactoring
     2014-11-20, 3281, 1001, 72%, 9.78, 314/595, 1, refactoring (logging); added test case for create_pfiles
     2014-11-21, 3274, 1001, 72%, 9.78, 314/595, 1, refactoring (temporary file)
+    2014-11-22, 3282, 1001, 72%, 9.82, 315/595, 1, refactoring (temporary file for evaluation, fixed issue #7)

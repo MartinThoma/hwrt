@@ -46,28 +46,24 @@ def filter_label(label, replace_by_similar=True):
 
 
 def analyze_feature(raw_datasets, feature, basename="aspect_ratios"):
-    """Apply 'feature' to all recordings in 'raw_datasets'. Store the
+    """Apply ``feature`` to all recordings in ``raw_datasets``. Store the
        results in two files. One file stores the raw result, the other one
        groups the results by symbols and stores the mean, standard deviation
        and the name of the symbol as a csv file.
     """
-    # Get folder where results should get stored
-    folder = os.path.join(utils.get_project_root(), "analyzation/")
 
     # Prepare files
-    csv_filename = os.path.join(folder, basename+'.csv')
-    raw_filename = os.path.join(folder, basename+'.raw')
-    open(csv_filename, 'w').close()  # Truncate the file
-    open(raw_filename, 'w').close()  # Truncate the file
-    csv_file = open(csv_filename, 'a')
-    raw_file = open(raw_filename, 'a')
+    csv_file = dam.prepare_file(basename+'.csv')
+    raw_file = dam.prepare_file(basename+'.raw')
+
+    csv_file = open(csv_file, 'a')
+    raw_file = open(raw_file, 'a')
 
     csv_file.write("label,mean,std\n")  # Write header
     raw_file.write("latex,raw_data_id,value\n")  # Write header
 
-    by_formula_id = dam.sort_by_formula_id(raw_datasets)
     print_data = []
-    for _, datasets in by_formula_id.items():
+    for _, datasets in dam.sort_by_formula_id(raw_datasets).items():
         values = []
         for data in datasets:
             value = feature(data)[0]
@@ -80,6 +76,7 @@ def analyze_feature(raw_datasets, feature, basename="aspect_ratios"):
 
     # Sort the data by highest mean, descending
     print_data = sorted(print_data, key=lambda n: n[1], reverse=True)
+
     # Write data to file
     for label, mean, std in print_data:
         csv_file.write("%s,%0.2f,%0.2f\n" % (label, mean, std))
@@ -111,10 +108,11 @@ def main(handwriting_datasets_file, analyze_features):
     cfg = utils.get_project_configuration()
     if 'data_analyzation_queue' in cfg:
         metrics = dam.get_metrics(cfg['data_analyzation_queue'])
-
-    for metric in metrics:
-        logging.info("Start metric %s...", str(metric))
-        metric(raw_datasets)
+        for metric in metrics:
+            logging.info("Start metric %s...", str(metric))
+            metric(raw_datasets)
+    else:
+        logging.info("No 'data_analyzation_queue' in ~/.hwrtrc")
 
 
 def get_parser():

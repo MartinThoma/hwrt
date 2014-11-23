@@ -51,8 +51,7 @@ def get_metrics(metrics_description):
 
 def prepare_file(filename):
     """Trunkate the file and return the filename."""
-    root = utils.get_project_root()
-    directory = os.path.join(root, "analyzation/")
+    directory = os.path.join(utils.get_project_root(), "analyzation/")
     if not os.path.exists(directory):
         os.makedirs(directory)
     workfilename = os.path.join(directory, filename)
@@ -108,7 +107,7 @@ class Creator(object):
 
     def __call__(self, raw_datasets):
         write_file = open(self.filename, "a")
-        write_file.write("creatorid,nr of symbols\n")  # heading
+        write_file.write("creatorid,nr of recordings\n")  # heading
 
         print_data = defaultdict(int)
         start_time = time.time()

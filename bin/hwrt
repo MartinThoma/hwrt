@@ -4,9 +4,9 @@
 """hwrt, the handwriting recognition toolkit, is a set of executable scripts
    and Python modules that are useful for handwriting recognition.
 
-   Current scripts include: analyze_data.py, backup.py, download.py, view.py
+   Current scripts include: analyze_data.py, backup.py, download.py.
 
-   For train.py, test.py and get_top_n_error.py you will need an internal
+   For train.py, test.py and record.py you will need an internal
    toolkit for training of neural networks.
 """
 
@@ -29,13 +29,33 @@ from hwrt import create_model
 from hwrt import selfcheck
 from hwrt import view
 from hwrt import download
+from hwrt import analyze_data
 
 
 def get_parser():
     """Return the parser object for this script."""
     parser = argparse.ArgumentParser(description=__doc__,
                                      prog='hwrt')
+    parser.add_argument('--version',
+                        action='version',
+                        version=('hwrt %s' % str(hwrt.__version__)))
     subparsers = parser.add_subparsers(dest='cmd')
+    subparsers.add_parser('check',
+                          add_help=False,
+                          help="Self-check of the HWRT toolkit.")
+    subparsers.add_parser('view',
+                          add_help=False,
+                          parents=[view.get_parser()],
+                          help=("Display raw preprocessed recordings."))
+    subparsers.add_parser('download',
+                          add_help=False,
+                          parents=[download.get_parser()],
+                          help=("Download the raw data to start analyzation "
+                                "/ traning."))
+    subparsers.add_parser('analyze_data',
+                          add_help=False,
+                          parents=[analyze_data.get_parser()],
+                          help=("Analyze data according to many metrics."))
     subparsers.add_parser('create_pfiles',
                           add_help=False,
                           description="Create pfiles",
@@ -46,21 +66,6 @@ def get_parser():
                           add_help=False,
                           parents=[create_model.get_parser()],
                           help=("Create a model file."))
-    subparsers.add_parser('view',
-                          add_help=False,
-                          parents=[view.get_parser()],
-                          help=("Display raw preprocessed recordings."))
-    subparsers.add_parser('download',
-                          add_help=False,
-                          parents=[download.get_parser()],
-                          help=("Download the raw data to start analyzation "
-                                "/ traning."))
-    subparsers.add_parser('check',
-                          add_help=False,
-                          help="Self-check of the HWRT toolkit.")
-    parser.add_argument('--version',
-                        action='version',
-                        version=('hwrt %s' % str(hwrt.__version__)))
     return parser
 
 
@@ -72,6 +77,12 @@ def main(args):
                   args.mysql)
     elif args.cmd == 'download':
         download.main()
+    elif args.cmd == 'analyze_data':
+        analyze_data.main(args.handwriting_datasets, args.analyze_features)
+    elif args.cmd == 'create_pfiles':
+        create_pfiles.main(args.folder, args.create_learning_curve)
+    elif args.cmd == 'create_model':
+        create_model.main(args.model, args.override)
 
 if __name__ == '__main__':
     args = get_parser().parse_args()

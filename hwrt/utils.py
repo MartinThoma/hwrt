@@ -77,7 +77,9 @@ def create_project_configuration(filename):
     config = {'root': project_root_folder,
               'nntoolkit': None,
               'dropbox_app_key': None,
-              'dropbox_app_secret': None}
+              'dropbox_app_secret': None,
+              'dbconfig': None,
+              'data_analyzation_queue': [{'Creator': None}]}
     with open(filename, 'w') as f:
         yaml.dump(config, f, default_flow_style=False)
 
@@ -453,6 +455,43 @@ def get_recognizer_folders(model_folder):
     return folders[::-1]  # Reverse order to get the most "basic one first"
 
 
+def _evaluate_model_single_file(target_folder, test_file):
+    """Evaluate a model for a single recording.
+    :param target_folder: Folder where the model is
+    :param test_file: The test file
+    """
+    logging.info("Create running model...")
+    model_src = get_latest_model(target_folder, "model")
+    model_file_pointer = tempfile.NamedTemporaryFile(delete=False)
+    model_use = model_file_pointer.name
+    model_file_pointer.close()
+    logging.info("Adjusted model is in %s.", model_use)
+    create_adjusted_model_for_percentages(model_src, model_use)
+
+    # Run evaluation
+    project_root = get_project_root()
+    time_prefix = time.strftime("%Y-%m-%d-%H-%M")
+    logging.info("Evaluate '%s' with '%s'...", model_src, test_file)
+    logfilefolder = os.path.join(project_root, "logs/")
+    if not os.path.exists(logfilefolder):
+        os.makedirs(logfilefolder)
+    logfile = os.path.join(project_root,
+                           "logs/%s-error-evaluation.log" %
+                           time_prefix)
+    with open(logfile, "w") as log, open(model_use, "r") as modl_src_p:
+        p = subprocess.Popen(['nntoolkit', 'run',
+                              '--batch-size', '1',
+                              '-f%0.4f', test_file],
+                             stdin=modl_src_p,
+                             stdout=log)
+        ret = p.wait()
+        if ret != 0:
+            logging.error("nntoolkit finished with ret code %s",
+                          str(ret))
+            sys.exit()
+    return (logfile, model_use)
+
+
 def evaluate_model(recording, model_folder, verbose=False):
     """Evaluate model for a single recording."""
     from . import preprocess_dataset
@@ -485,41 +524,16 @@ def evaluate_model(recording, model_folder, verbose=False):
             x = handwriting.feature_extraction(feature_list)
 
             # Create pfile
-            output_file_pointer = tempfile.NamedTemporaryFile(delete=False)
-            output_filename = output_file_pointer.name
-            output_file_pointer.close()
+            _, output_filename = tempfile.mkstemp(suffix='.pfile', text=True)
             create_pfile(output_filename, feature_count, [(x, 0)])
         elif "model" in target_folder:
-            logging.info("Create running model...")
-            model_src = get_latest_model(target_folder, "model")
-            model_use = "tmp.json"
-            create_adjusted_model_for_percentages(model_src, model_use)
-            # Run evaluation
-            project_root = get_project_root()
-            time_prefix = time.strftime("%Y-%m-%d-%H-%M")
-            test_file = output_filename
-            logging.info("Evaluate '%s' with '%s'...", model_src, test_file)
-            logfilefolder = os.path.join(project_root, "logs/")
-            if not os.path.exists(logfilefolder):
-                os.makedirs(logfilefolder)
-            logfile = os.path.join(project_root,
-                                   "logs/%s-error-evaluation.log" %
-                                   time_prefix)
-            with open(logfile, "w") as log, open(model_use, "r") as modl_src_p:
-                p = subprocess.Popen(['nntoolkit', 'run',
-                                      '--batch-size', '1',
-                                      '-f%0.4f', test_file],
-                                     stdin=modl_src_p,
-                                     stdout=log)
-                ret = p.wait()
-                if ret != 0:
-                    logging.error("nntoolkit finished with ret code %s",
-                                  str(ret))
-                    sys.exit()
+            logfile, model_use = _evaluate_model_single_file(target_folder,
+                                                             output_filename)
             return logfile
         else:
             logging.info("'%s' not found", target_folder)
     os.remove(output_filename)
+    os.remove(model_use)
 
 
 def get_index2latex(model_description):

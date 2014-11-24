@@ -91,3 +91,4 @@ Current State
     2014-11-21, 3274, 1001, 72%, 9.78, 314/595, 1, refactoring (temporary file)
     2014-11-22, 3282, 1001, 72%, 9.82, 315/595, 1, refactoring (temporary file for evaluation, fixed issue #7)
     2014-11-23, 3279, 1043, 72%, 9.83, 315/595, 1, moved 'analyze_data.py' to subcommand 'hwrt analyze_data'; refactoring (analyze_data.py)
+    2014-11-24, 3286, 1069, 73%, 9.83, 315/595, 1, hwrt/utils.py: refactoring (tempfile; splitted long function)

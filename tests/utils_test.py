@@ -3,6 +3,8 @@
 
 import nose
 import mock
+import os
+import argparse
 
 # hwrt modules
 import hwrt
@@ -86,3 +88,45 @@ def input_int_default_test():
 def query_yes_no_exception_test():
     with mock.patch('__builtin__.raw_input', return_value=''):
         utils.query_yes_no("bla", "asdf")
+
+
+@nose.tools.raises(SystemExit)
+def is_valid_file_test():
+    parser = argparse.ArgumentParser()
+
+    # Does exist
+    path = os.path.realpath(__file__)
+    nose.tools.assert_equal(utils.is_valid_file(parser, path), path)
+
+    # Does not exist
+    utils.is_valid_file(parser, "/etc/nonexistingfile")
+
+
+@nose.tools.raises(SystemExit)
+def is_valid_folder_test():
+    parser = argparse.ArgumentParser()
+
+    # Does exist
+    nose.tools.assert_equal(utils.is_valid_folder(parser, "/etc"), "/etc")
+
+    # Does not exist
+    utils.is_valid_folder(parser, "/etc/nonexistingfoler")
+
+
+def create_project_configuration_test():
+    filename = 'projectconftesttmp.txt'
+    utils.create_project_configuration(filename)
+    if os.path.isfile(filename):
+        os.remove(filename)
+
+
+def get_latest_model_test():
+    model_folder = "/etc"
+    basename = "model"
+    nose.tools.assert_equal(utils.get_latest_model(model_folder, basename),
+                            None)
+
+
+def choose_raw_dataset_test():
+    with mock.patch('__builtin__.raw_input', return_value=0):
+        utils.choose_raw_dataset()

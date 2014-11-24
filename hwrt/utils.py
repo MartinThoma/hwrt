@@ -78,7 +78,7 @@ def create_project_configuration(filename):
               'nntoolkit': None,
               'dropbox_app_key': None,
               'dropbox_app_secret': None,
-              'dbconfig': None,
+              'dbconfig': os.path.join(home, "hwrt-config/db.config.yml"),
               'data_analyzation_queue': [{'Creator': None}]}
     with open(filename, 'w') as f:
         yaml.dump(config, f, default_flow_style=False)

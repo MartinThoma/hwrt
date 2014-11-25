@@ -78,6 +78,7 @@ def get_metrics_test():
 def execution_test():
     raw_datasets = get_raw_datasets()
     l = [dam.Creator(), dam.InstrokeSpeed(), dam.InterStrokeDistance(),
-         dam.TimeBetweenPointsAndStrokes()]
+         dam.TimeBetweenPointsAndStrokes(),
+         dam.AnalyzeErrors()]
     for alg in l:
         alg(raw_datasets)

@@ -25,6 +25,7 @@ this:
  >>> creator_metric = Creator('creator.csv')
  >>> creator_metric(a)
 """
+from __future__ import print_function
 import os
 import logging
 import sys
@@ -271,3 +272,124 @@ class TimeBetweenPointsAndStrokes(object):
         print("\r100%"+"\033[K\n")
         average_between_points.close()
         average_between_strokes.close()
+
+
+class AnalyzeErrors(object):
+    """Analyze the number of errors in the dataset."""
+
+    def __init__(self, filename="errors.txt", time_max_threshold=30*1000):
+        self.filename = prepare_file(filename)
+        self.time_max_threshold = time_max_threshold  # in ms
+        self.dot_symbols = ['i', 'j', '\cdot', '\div', '\\because',
+                            '\\therefore']
+
+    def __repr__(self):
+        return "AnalyzeErrors"
+
+    def __str__(self):
+        return "AnalyzeErrors"
+
+    def _write_data(self, symbols, err_recs, nr_raw_datasets,
+                    total_error_count, percentages, time_max_list):
+        """Write all obtained data to a file."""
+        write_file = open(self.filename, "a")
+        s = ""
+        for symbol, count in sorted(symbols.items(), key=lambda n: n[0]):
+            if symbol in ['a', '0', 'A']:
+                s += "\n%s (%i), " % (symbol, count)
+            elif symbol in ['z', '9', 'Z']:
+                s += "%s (%i) \n" % (symbol, count)
+            else:
+                s += "%s (%i), " % (symbol, count)
+        print("## Data", file=write_file)
+        print("Symbols: %i" % len(symbols), file=write_file)
+        print("Recordings: %i" % sum(symbols.values()), file=write_file)
+        print("```", file=write_file)
+        print(s[:-1], file=write_file)
+        print("```", file=write_file)
+
+        # Show errors
+        print("Recordings with wild points: %i (%0.2f%%)" %
+              (err_recs['wild_points'],
+               float(err_recs['wild_points'])/nr_raw_datasets*100),
+              file=write_file)
+        print("wild points: %i" % total_error_count['wild_points'],
+              file=write_file)
+        print("Recordings with missing stroke: %i (%0.2f%%)" %
+              (err_recs['missing_stroke'],
+               float(err_recs['missing_stroke'])/nr_raw_datasets*100),
+              file=write_file)
+        print("Recordings with errors: %i (%0.2f%%)" %
+              (err_recs['total'],
+               float(err_recs['total'])/nr_raw_datasets*100),
+              file=write_file)
+        print("Recordings with dots: %i (%0.2f%%)" %
+              (err_recs['single_dots'],
+               float(err_recs['single_dots'])/nr_raw_datasets*100),
+              file=write_file)
+        print("dots: %i" % total_error_count['single_dots'], file=write_file)
+        print("size changing removal: %i (%0.2f%%)" %
+              (len(percentages),
+               float(len(percentages))/nr_raw_datasets*100),
+              file=write_file)
+        print("%i recordings took more than %i ms. That were: " %
+              (len(time_max_list), self.time_max_threshold),
+              file=write_file)
+        for recording in time_max_list:
+            print("* %ims: %s: %s" %
+                  (recording.get_time(),
+                   utils.get_readable_time(recording.get_time()),
+                   recording),
+                  file=write_file)
+        write_file.close()
+
+    def __call__(self, raw_datasets):
+        # Initialize variables
+        symbols = defaultdict(int)
+
+        # Count errornous recordings
+        err_recs = {'wild_points': 0, 'missing_stroke': 0,
+                    'single_dots': 0,  # except symbols_with_dots
+                    'total': 0}
+
+        # Count errors (one type of error might occur multiple times in
+        # a single recording)
+        total_error_count = {'wild_points': 0, 'single_dots': 0}
+
+        percentages = []
+
+        # List with recordings that are over the time maximum
+        time_max_list = []
+
+        for raw_dataset in raw_datasets:
+            recording = raw_dataset['handwriting']
+            symbols[recording.formula_in_latex] += 1
+            if recording.get_time() > self.time_max_threshold:
+                time_max_list.append(recording)
+            if recording.wild_point_count > 0:
+                err_recs['wild_points'] += 1
+                total_error_count['wild_points'] += recording.wild_point_count
+            err_recs['missing_stroke'] += recording.missing_stroke
+            if recording.wild_point_count > 0 or \
+               recording.missing_stroke:
+                err_recs['total'] += 1
+            if recording.count_single_dots() > 0 and \
+               raw_dataset['formula_in_latex'] not in self.dot_symbols and \
+               "dots" not in raw_dataset['formula_in_latex']:
+                err_recs['single_dots'] += 1
+                old_area = recording.get_area()
+                tmp = [preprocessing.RemoveDots()]
+                recording.preprocessing(tmp)
+                new_area = recording.get_area()
+                percentage = float(new_area)/float(old_area)
+                if percentage < 1.0:
+                    percentages.append(percentage)
+            total_error_count['single_dots'] += recording.count_single_dots()
+
+        time_max_list = sorted(time_max_list,
+                               key=lambda n: n.get_time(),
+                               reverse=True)
+
+        self._write_data(symbols, err_recs, len(raw_datasets),
+                         total_error_count, percentages,
+                         time_max_list)

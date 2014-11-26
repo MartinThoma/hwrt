@@ -115,7 +115,7 @@ def get_project_root():
 
     # Make sure small-baseline yml files exist
     paths = [("preprocessed/small-baseline/", "preprocessing-small-info.yml"),
-             ("feature-files/small/", "feature-small-info.yml"),
+             ("feature-files/small-baseline/", "feature-small-info.yml"),
              ("models/small-baseline/", "model-small-info.yml")]
     for dest, src in paths:
         raw_data_dst = os.path.join(cfg['root'], "%s/info.yml" % dest)

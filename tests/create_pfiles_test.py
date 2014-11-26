@@ -59,3 +59,89 @@ def prepare_dataset_test():
                                   formula_id2index,
                                   feature_list,
                                   is_traindata)
+
+
+def normalize_features_one_test():
+    feature_list = [features.Width(), features.Height()]
+    prepared = [([123], 1)]
+    is_traindata = True
+    out = create_pfiles._normalize_features(feature_list,
+                                            prepared,
+                                            is_traindata)
+    nose.tools.assert_equal(out, [([0.0], 1)])
+
+
+def normalize_features_two_test():
+    feature_list = [features.Width(), features.Height()]
+    prepared = [([123], 1), ([100], 1)]
+    is_traindata = True
+    out = create_pfiles._normalize_features(feature_list,
+                                            prepared,
+                                            is_traindata)
+    # Mean: 111.5; Range: 23
+    nose.tools.assert_equal(out, [([0.5], 1), ([-0.5], 1)])
+
+    # Now the other set
+    prepared = [([111.5], 1), ([90], 1), ([180], 1)]
+    is_traindata = False
+    out = create_pfiles._normalize_features(feature_list,
+                                            prepared,
+                                            is_traindata)
+    nose.tools.assert_equal(out, [([0.0], 1),
+                                  ([-0.93478260869565222], 1),
+                                  ([2.9782608695652173], 1)])
+
+
+def normalize_features_two_feats_test():
+    feature_list = [features.Width(), features.Height()]
+    prepared = [([123, 123], 1), ([100, 100], 1)]
+    is_traindata = True
+    out = create_pfiles._normalize_features(feature_list,
+                                            prepared,
+                                            is_traindata)
+    # Mean: 111.5; Range: 23
+    nose.tools.assert_equal(out, [([0.5, 0.5], 1), ([-0.5, -0.5], 1)])
+
+    # Now the other set
+    prepared = [([111.5, 111.5], 1), ([146, 146], 1), ([54, 54], 1)]
+    is_traindata = False
+    out = create_pfiles._normalize_features(feature_list,
+                                            prepared,
+                                            is_traindata)
+    nose.tools.assert_equal(out, [([0.0, 0.0], 1),
+                                  ([1.5, 1.5], 1),
+                                  ([-2.5, -2.5], 1)])
+
+
+def normalize_features_two_feats2_test():
+    feature_list = [features.Width(), features.Height()]
+    prepared = [([123, 123], 1), ([100, 100], 1)]
+    is_traindata = True
+    out = create_pfiles._normalize_features(feature_list,
+                                            prepared,
+                                            is_traindata)
+    # Mean: 111.5; Range: 23
+    nose.tools.assert_equal(out, [([0.5, 0.5], 1), ([-0.5, -0.5], 1)])
+
+    # Now the other set
+    prepared = [([111.5, 146], 1), ([146, 111.5], 1), ([54, 54], 1)]
+    is_traindata = False
+    out = create_pfiles._normalize_features(feature_list,
+                                            prepared,
+                                            is_traindata)
+    nose.tools.assert_equal(out, [([0.0, 1.5], 1),
+                                  ([1.5, 0.0], 1),
+                                  ([-2.5, -2.5], 1)])
+
+
+def normalize_features_two_classes_test():
+    feature_list = [features.Width(), features.Height()]
+    prepared = [([123], 1), ([100], 1), ([500], 2)]
+    is_traindata = True
+    out = create_pfiles._normalize_features(feature_list,
+                                            prepared,
+                                            is_traindata)
+    # Mean: 241; Range: 400
+    nose.tools.assert_equal(out, [([-0.295], 1),
+                                  ([-0.3525], 1),
+                                  ([0.6475], 2)])

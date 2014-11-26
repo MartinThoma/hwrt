@@ -1,4 +1,4 @@
-data-source: feature-files/small
+data-source: feature-files/small-baseline
 training: nntoolkit train --epochs 10 --learning-rate 1 --momentum 0.1 --hook='!nntoolkit
     test {{testing}},err=testresult_%e.txt' {{training}} {{validation}} {{testing}}
     < {{src_model}} > {{target_model}}

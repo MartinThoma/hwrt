@@ -194,7 +194,64 @@ def get_sets(path_to_data):
             preprocessing_queue, index2latex)
 
 
-def prepare_dataset(dataset, formula_id2index, feature_list, is_traindata):
+def _calculate_feature_stats(feature_list, prepared, serialization_file):  # pylint: disable=R0914
+    """Calculate min, max and mean for each feature. Store it in object."""
+    # Create feature only list
+    feats = [x for x, _ in prepared]  # Label is not necessary
+
+    # Calculate all means / mins / maxs
+    means = numpy.mean(feats, 0)
+    mins = numpy.min(feats, 0)
+    maxs = numpy.max(feats, 0)
+
+    # Calculate, min, max and mean vector for each feature with
+    # normalization
+    start = 0
+    with open(serialization_file, 'wb') as csvfile:
+        spamwriter = csv.writer(csvfile,
+                                delimiter=';',
+                                quotechar='"',
+                                quoting=csv.QUOTE_MINIMAL)
+        for feature in feature_list:
+            end = start + feature.get_dimension()
+            # append the data to the feature class
+            feature.mean = numpy.array(means[start:end])
+            feature.min = numpy.array(mins[start:end])
+            feature.max = numpy.array(maxs[start:end])
+            start = end
+            for mean, fmax, fmin in zip(feature.mean, feature.max,
+                                        feature.min):
+                spamwriter.writerow([mean, fmax - fmin])
+
+
+def _normalize_features(feature_list, prepared, is_traindata):
+    """Normalize features (mean subtraction, division by variance or range).
+    """
+    if is_traindata:
+        _calculate_feature_stats(feature_list,
+                                 prepared,
+                                 "featurenormalization.csv")
+
+    start = 0
+    for feature in feature_list:
+        end = start + feature.get_dimension()
+        # For every instance in the dataset: Normalize!
+        for i in range(len(prepared)):
+            # The 0 is necessary as every element is (x, y)
+            feature_range = (feature.max - feature.min)
+            if feature_range == 0:
+                feature_range = 1
+            prepared[i][0][start:end] = (prepared[i][0][start:end] -
+                                         feature.mean) / feature_range
+        start = end
+    return prepared
+
+
+def prepare_dataset(dataset,
+                    formula_id2index,
+                    feature_list,
+                    is_traindata,
+                    do_normalization=False):
     """Transform each instance of dataset to a (Features, Label) tuple."""
     prepared = []
     start_time = time.time()
@@ -214,46 +271,8 @@ def prepare_dataset(dataset, formula_id2index, feature_list, is_traindata):
     sys.stdout.flush()
 
     # Feature normalization
-    if False:
-        if is_traindata:
-            # Create feature only list
-            feats = []
-            for x, y in prepared:
-                feats.append(x)
-            # Calculate all means / mins / maxs
-            means = numpy.mean(feats, 0)
-            mins = numpy.min(feats, 0)
-            maxs = numpy.max(feats, 0)
-            # Calculate, min, max and mean vector for each feature with
-            # normalization
-            start = 0
-            with open("featurenormalization.csv", 'wb') as csvfile:
-                spamwriter = csv.writer(csvfile,
-                                        delimiter=';',
-                                        quotechar='"',
-                                        quoting=csv.QUOTE_MINIMAL)
-                for feature in feature_list:
-                    end = start + feature.get_dimension()
-                    # append the data to the feature class
-                    feature.mean = numpy.array(means[start:end])
-                    feature.min = numpy.array(mins[start:end])
-                    feature.max = numpy.array(maxs[start:end])
-                    start = end
-                    for mean, fmax, fmin in zip(feature.mean, feature.max,
-                                                feature.min):
-                        spamwriter.writerow([mean, fmax - fmin])
-        start = 0
-        for feature in feature_list:
-            end = start + feature.get_dimension()
-            # TODO: Should I check if feature normalization is activated?
-            if False:  # Deactivate feature normalization due to bug
-                # For every instance in the dataset: Normalize!
-                for i in range(len(prepared)):
-                    # The 0 is necessary as every element is (x, y)
-                    feature_range = (feature.max - feature.min)
-                    prepared[i][0][start:end] = (prepared[i][0][start:end] -
-                                                 feature.mean) / feature_range
-                start = end
+    if do_normalization:
+        _normalize_features(feature_list, prepared, is_traindata)
     return (prepared, translation)
 
 

@@ -107,7 +107,7 @@ def get_project_root():
         shutil.copy(raw_yml_pkg_src, raw_data_dst)
 
     # Make sure small-baseline folders exists
-    for dirname in ["models/small-baseline", "feature-files/small",
+    for dirname in ["models/small-baseline", "feature-files/small-baseline",
                     "preprocessed/small-baseline"]:
         directory = os.path.join(cfg['root'], dirname)
         if not os.path.exists(directory):

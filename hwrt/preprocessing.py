@@ -105,7 +105,7 @@ class RemoveDuplicateTime(object):
         assert len(times) == len(set(times)), \
             ("The list of all times in RemoveDuplicateTime has %i values, "
              "but the set has %i values: %s --- %s") % \
-            (len(times), len(set(times), pointlist, new_pointlist))
+            (len(times), len(set(times)), pointlist, new_pointlist)
         handwritten_data.set_pointlist(new_pointlist)
 
 

@@ -22,6 +22,7 @@ import hwrt.utils as utils
 import hwrt.preprocessing as preprocessing
 import hwrt.features as features
 import hwrt.data_multiplication as data_multiplication
+import hwrt.create_pfiles as create_pfiles
 
 
 def _fetch_data_from_server(raw_data_id, mysql_cfg):
@@ -160,14 +161,8 @@ def display_data(raw_data_string, raw_data_id, model_folder, show_raw):
         feature_desc['data-multiplication'])
 
     # Multiply traing_set
-    training_set = [recording]
-    for algorithm in mult_queue:
-        new_trning_set = []
-        for recording in training_set:
-            samples = algorithm(recording)
-            for sample in samples:
-                new_trning_set.append(sample)
-        training_set = new_trning_set
+    training_set = create_pfiles.training_set_multiplication([recording],
+                                                             mult_queue)
 
     # Display it
     for recording in training_set:

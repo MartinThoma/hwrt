@@ -5,6 +5,7 @@ import nose
 from nose.plugins.skip import SkipTest
 import shutil
 import os
+import yaml
 
 # hwrt modules
 import hwrt.view as view
@@ -24,7 +25,9 @@ def execution_test():
     view._get_data_from_rawfile(target, 345)  # Is in tiny test set
     view._get_data_from_rawfile(target, 42)  # Is not in tiny test set
     view._list_ids(target)
-    #view._get_description(yaml.read(open()))
+    model_folder = os.path.join(utils.get_project_root(),
+                                'models/small-baseline')
+    view._get_system(model_folder)
     #display_data(raw_data_string, raw_data_id, model_folder, show_raw)
 
 

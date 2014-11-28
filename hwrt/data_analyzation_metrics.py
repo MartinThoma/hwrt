@@ -246,21 +246,14 @@ class TimeBetweenPointsAndStrokes(object):
             # Do the work
             times_between_points, times_between_strokes = [], []
             last_stroke_end = None
-            if len(raw_dataset['handwriting'].get_pointlist()) == 0:
-                logging.warning("%i has no content.",
-                                raw_dataset['handwriting'].raw_data_id)
-                continue
             for stroke in raw_dataset['handwriting'].get_sorted_pointlist():
                 if last_stroke_end is not None:
                     times_between_strokes.append(stroke[-1]['time'] -
                                                  last_stroke_end)
                 last_stroke_end = stroke[-1]['time']
-                last_point_end = None
-                for point in stroke:
-                    if last_point_end is not None:
-                        times_between_points.append(point['time'] -
-                                                    last_point_end)
-                    last_point_end = point['time']
+                for point1, point2 in zip(stroke, stroke[1:]):
+                    delta = point2['time'] - point1['time']
+                    times_between_points.append(delta)
             # The recording might only have one point
             if len(times_between_points) > 0:
                 tmp = times_between_points
@@ -289,9 +282,22 @@ class AnalyzeErrors(object):
     def __str__(self):
         return "AnalyzeErrors"
 
-    def _write_data(self, symbols, err_recs, nr_raw_datasets,
+    def _write_data(self, symbols, err_recs, nr_recordings,
                     total_error_count, percentages, time_max_list):
-        """Write all obtained data to a file."""
+        """Write all obtained data to a file.
+
+        :param symbols: List of all symbols with the count of recordings
+        :type symbols: List of tuples (String, non-negative int)
+        :param err_recs: count of recordings by error type
+        :type err_recs: dictionary
+        :param nr_recordings: number of recordings
+        :type nr_recordings: non-negative int
+        :param total_error_count: Count of all error that have happened by type
+        :type total_error_count: dictionary
+        :param percentages: List of all recordings where removing the dots
+                            changed the size of the bounding box.
+        :param time_max_list: List of all recordings where the recording time
+                              is above a threshold."""
         write_file = open(self.filename, "a")
         s = ""
         for symbol, count in sorted(symbols.items(), key=lambda n: n[0]):
@@ -311,26 +317,26 @@ class AnalyzeErrors(object):
         # Show errors
         print("Recordings with wild points: %i (%0.2f%%)" %
               (err_recs['wild_points'],
-               float(err_recs['wild_points'])/nr_raw_datasets*100),
+               float(err_recs['wild_points'])/nr_recordings*100),
               file=write_file)
         print("wild points: %i" % total_error_count['wild_points'],
               file=write_file)
         print("Recordings with missing stroke: %i (%0.2f%%)" %
               (err_recs['missing_stroke'],
-               float(err_recs['missing_stroke'])/nr_raw_datasets*100),
+               float(err_recs['missing_stroke'])/nr_recordings*100),
               file=write_file)
         print("Recordings with errors: %i (%0.2f%%)" %
               (err_recs['total'],
-               float(err_recs['total'])/nr_raw_datasets*100),
+               float(err_recs['total'])/nr_recordings*100),
               file=write_file)
         print("Recordings with dots: %i (%0.2f%%)" %
               (err_recs['single_dots'],
-               float(err_recs['single_dots'])/nr_raw_datasets*100),
+               float(err_recs['single_dots'])/nr_recordings*100),
               file=write_file)
         print("dots: %i" % total_error_count['single_dots'], file=write_file)
         print("size changing removal: %i (%0.2f%%)" %
               (len(percentages),
-               float(len(percentages))/nr_raw_datasets*100),
+               float(len(percentages))/nr_recordings*100),
               file=write_file)
         print("%i recordings took more than %i ms. That were: " %
               (len(time_max_list), self.time_max_threshold),

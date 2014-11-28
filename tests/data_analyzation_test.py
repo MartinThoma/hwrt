@@ -3,10 +3,12 @@
 
 import os
 import nose
+import shutil
 
 # hwrt modules
 from hwrt.HandwrittenData import HandwrittenData
 import hwrt.data_analyzation_metrics as dam
+import hwrt.utils as utils
 
 
 # Test helper
@@ -82,3 +84,12 @@ def execution_test():
          dam.AnalyzeErrors()]
     for alg in l:
         alg(raw_datasets)
+
+
+def execution_test2():
+    d = os.path.dirname(__file__)
+    raw_datasets = os.path.join(utils.get_project_root(),
+                                'raw-datasets/unittests-tiny-raw.pickle')
+    shutil.copyfile(os.path.join(d, 'data/unittests-tiny-raw.pickle'),
+                    raw_datasets)
+    dam.TimeBetweenPointsAndStrokes(raw_datasets)

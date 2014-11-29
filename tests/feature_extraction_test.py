@@ -82,7 +82,6 @@ def repr_and_str_test():
     l = [features.ConstantPointCoordinates(),
          features.FirstNPoints(),
          features.StrokeCount(),
-         features.Bitmap(),
          features.Ink()
          ]
     for alg in l:
@@ -94,7 +93,6 @@ def dimension_test():
     l = [(features.ConstantPointCoordinates(), 160),
          (features.FirstNPoints(), 162),  # TODO: Check
          (features.StrokeCount(), 1),
-         (features.Bitmap(), 784),
          (features.Ink(), 1)
          ]
     for alg, dimension in l:

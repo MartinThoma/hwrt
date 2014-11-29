@@ -16,6 +16,7 @@ import csv
 import itertools
 from collections import OrderedDict, Callable
 import pkg_resources
+import tempfile
 
 # hwrt modules
 import hwrt.utils as utils
@@ -72,7 +73,7 @@ def get_test_results(model_folder, basename, test_file):
                       basename,
                       model_folder)
     else:
-        model_use = "tmp.json"  # TODO write elsewhere in a temporary folder
+        _, model_use = tempfile.mkstemp(suffix='.json', text=True)
         utils.create_adjusted_model_for_percentages(model_src, model_use)
 
         # Start evaluation
@@ -91,6 +92,7 @@ def get_test_results(model_folder, basename, test_file):
             if ret != 0:
                 logging.error("nntoolkit finished with ret code %s", str(ret))
                 sys.exit()
+        os.remove(model_use)
         return logfile
 
 

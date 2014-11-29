@@ -36,6 +36,7 @@ Preprocessing Plugin Example
 .. code-block:: python
 
     #!/usr/bin/env python
+    # -*- coding: utf-8 -*-
 
     import hwrt.HandwrittenData as HandwrittenData
 
@@ -64,6 +65,7 @@ Feature Plugin Example
 .. code-block:: python
 
     #!/usr/bin/env python
+    # -*- coding: utf-8 -*-
 
     import hwrt.HandwrittenData as HandwrittenData
 

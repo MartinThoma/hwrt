@@ -75,7 +75,7 @@ class Rotate(object):
 
     """Add rotational variants of the recording."""
 
-    def __init__(self, minimum=-30.0, maximum=30.0, num=5.0):
+    def __init__(self, minimum=-30.0, maximum=30.0, num=5):
         self.min = minimum
         self.max = maximum
         self.num = num

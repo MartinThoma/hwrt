@@ -146,7 +146,7 @@ def training_set_multiplication(training_set, mult_queue):
     """ Multiply the training set by all methods listed in mult_queue.
     :param training_set: set of all recordings that will be used for training
     :param mult_queue: list of all algorithms that will take one recording and
-                      generate more than one.
+    generate more than one.
     :returns: mutliple recordings
     """
     logging.info("Multiply data...")
@@ -300,7 +300,7 @@ def make_pfile(dataset_name, feature_count, data,
                output_filename, create_learning_curve):
     """ Create the pfile.
     :param filename: name of the file that pfile_create will use to create the
-                     pfile.
+    pfile.
     :param feature_count: integer, number of features
     :type feature_count: integer
     :param data: data format ('feature_string', 'label')

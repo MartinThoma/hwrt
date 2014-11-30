@@ -72,7 +72,7 @@ def compare_pointlists(a, b, epsilon=0.001):
 
 # Tests
 def get_metrics_test():
-    d = [{'Creator': None}, {'Creator': [{'filename': 'bla'}]}]
+    d = [{'Creator': None}, {'Creator': [{'filename': 'create_test.csv'}]}]
     metrics = dam.get_metrics(d)
     nose.tools.assert_equal(len(metrics), 2)
 

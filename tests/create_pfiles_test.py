@@ -160,7 +160,7 @@ def create_translation_file_test():
     feature_folder = os.path.join(utils.get_project_root(),
                                   "feature-files",
                                   "small-baseline")
-    dataset_name = "testdata"
+    dataset_name = "testtestdata"
     translation = [(133700, '\\alpha', 42)]
     formula_id2index = {42: 1}
     create_pfiles._create_translation_file(feature_folder,

@@ -161,12 +161,16 @@ def display_data(raw_data_string, raw_data_id, model_folder, show_raw):
         feature_desc['data-multiplication'])
 
     # Multiply traing_set
-    training_set = create_pfiles.training_set_multiplication([recording],
+    training_set = [{'id': 42,
+                     'formula_id': 42,
+                     'formula_in_latex': 'None',
+                     'handwriting': recording}]
+    training_set = create_pfiles.training_set_multiplication(training_set,
                                                              mult_queue)
 
     # Display it
     for recording in training_set:
-        recording.show()
+        recording['handwriting'].show()
 
 
 def get_parser():

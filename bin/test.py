@@ -129,8 +129,8 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
             known['confused'] = formula_id  # That's an index!
             wrong.append(known)
     classification_error = (len(wrong) / float(len(wrong) + len(correct)))
-    logging.info("Classification error (n=%i, MER=%r): %0.4f (%i wrong)",
-                 n, merge, classification_error, len(wrong))
+    logging.info("Classification error (n=%i, MER=%r): %0.4f (%i of %i wrong)",
+                 n, merge, classification_error, len(wrong), len(eval_data))
 
     # Get the data
     errors_by_correct_classification = DefaultOrderedDict(list)

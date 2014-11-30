@@ -97,3 +97,4 @@ Current State
     2014-11-27, 3450, 1140, 75%, 9.82, 315/595, 1, hwrt/view.py: refactoring; added test
     2014-11-28, 3443, 1149, 75%, 9.82, 315/595, 1, hwrt/data_analyzation_metrics.py: refactoring to simplify code; added images of rotated recording
     2014-11-29, 3448, 1147, 76%, 9.82, 315/595, 1, bin/test.py: refactored to use temporary file
+    2014-11-30, 3464, 1165, 76%, 9.82, 315/595, 1, hwrt/create_pfiles.py: refactoring for easier testing

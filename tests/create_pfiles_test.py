@@ -41,6 +41,15 @@ def training_set_multiplication_test():
     # nose.tools.assert_equal(len(feature_list), len(correct))
 
 
+def execution_test():
+    formula_id2index = {1337: 1, 12: 2}
+    feature_folder = '.'
+    index2latex = {1: '\\alpha', 2: '\\beta'}
+    create_pfiles._create_index_formula_lookup(formula_id2index,
+                                               feature_folder,
+                                               index2latex)
+
+
 def parser_test():
     create_pfiles.get_parser()
 
@@ -145,3 +154,16 @@ def normalize_features_two_classes_test():
     nose.tools.assert_equal(out, [([-0.295], 1),
                                   ([-0.3525], 1),
                                   ([0.6475], 2)])
+
+
+def create_translation_file_test():
+    feature_folder = os.path.join(utils.get_project_root(),
+                                  "feature-files",
+                                  "small-baseline")
+    dataset_name = "testdata"
+    translation = [(133700, '\\alpha', 42)]
+    formula_id2index = {42: 1}
+    create_pfiles._create_translation_file(feature_folder,
+                                           dataset_name,
+                                           translation,
+                                           formula_id2index)

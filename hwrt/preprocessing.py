@@ -59,8 +59,10 @@ def get_preprocessing_queue(preprocessing_list):
 
 
 def print_preprocessing_list(preprocessing_queue):
-    """Print the preproc_list in a human-readable form.
-    :type preprocessing_queue: List of preprocessing objects
+    """Print the ``preproc_list`` in a human-readable form.
+
+    :param preprocessing_queue: Algorithms that get applied for preprocessing.
+    :type preprocessing_queue: List of preprocessing objects.
     """
     print("## Preprocessing")
     print("```")

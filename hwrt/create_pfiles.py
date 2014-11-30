@@ -28,22 +28,54 @@ from collections import defaultdict
 # hwrt modules
 # HandwrittenData and preprocessing are needed because of pickle
 from . import HandwrittenData  # pylint: disable=W0611
-from . import preprocessing  # pylint: disable=W0611
+from . import preprocessing
 from . import features
 from . import data_multiplication
 from . import utils
 
 
+def _create_index_formula_lookup(formula_id2index,
+                                 feature_folder,
+                                 index2latex):
+    """Create a lookup file where the index is mapped to the formula id
+       and the LaTeX command."""
+    index2formula_id = sorted(formula_id2index.items(), key=lambda n: n[1])
+    index2formula_file = os.path.join(feature_folder, "index2formula_id.csv")
+    with open(index2formula_file, "w") as f:
+        f.write("index,formula_id,latex\n")
+        for formula_id, index in index2formula_id:
+            f.write("%i,%i,%s\n" % (index, formula_id, index2latex[index]))
+
+
+def _create_translation_file(feature_folder,
+                             dataset_name,
+                             translation,
+                             formula_id2index):
+    """Write a loop-up file that contains the direct (record-wise) lookup
+       information.
+
+       :param feature_folder: Path to the feature files.
+       :param dataset_name: 'traindata', 'validdata' or 'testdata'.
+       :param translation: List of triples
+                           (raw data id, formula in latex, formula id)"""
+    translationfilename = "%s/translation-%s.csv" % (feature_folder,
+                                                     dataset_name)
+    with open(translationfilename, "w") as f:
+        f.write("index,raw_data_id,latex,formula_id\n")
+        for el in translation:
+            f.write("%i,%i,%s,%i\n" % (formula_id2index[el[2]],
+                                       el[0], el[1], el[2]))
+
+
 def main(feature_folder, create_learning_curve=False):
     """main function of create_pfiles.py"""
-    project_root = utils.get_project_root()
 
     # Read the feature description file
     with open(os.path.join(feature_folder, "info.yml"), 'r') as ymlfile:
         feature_description = yaml.load(ymlfile)
 
     # Get preprocessed .pickle file from model description file
-    path_to_data = os.path.join(project_root,
+    path_to_data = os.path.join(utils.get_project_root(),
                                 feature_description['data-source'])
     if os.path.isdir(path_to_data):
         path_to_data = os.path.join(path_to_data, "data.pickle")
@@ -54,10 +86,7 @@ def main(feature_folder, create_learning_curve=False):
                     'testdata': os.path.join(feature_folder,
                                              "testdata.pfile")}
 
-    # Get a list of all used features
     feature_list = features.get_features(feature_description['features'])
-
-    # Get the list of data multiplication algorithms
     mult_queue = data_multiplication.get_data_multiplication_queue(
         feature_description['data-multiplication'])
 
@@ -70,16 +99,8 @@ def main(feature_folder, create_learning_curve=False):
     (training_set, validation_set, test_set, formula_id2index,
      preprocessing_queue, index2latex) = get_sets(path_to_data)
 
-    # Multiply traing_set
     training_set = training_set_multiplication(training_set, mult_queue)
-
-    # Write formula_id2index for later lookup
-    index2formula_id = sorted(formula_id2index.items(), key=lambda n: n[1])
-    index2formula_file = os.path.join(feature_folder, "index2formula_id.csv")
-    with open(index2formula_file, "w") as f:
-        f.write("index,formula_id,latex\n")
-        for formula_id, index in index2formula_id:
-            f.write("%i,%i,%s\n" % (index, formula_id, index2latex[index]))
+    _create_index_formula_lookup(formula_id2index, feature_folder, index2latex)
 
     # Output data for documentation
     print("Classes (nr of symbols): %i" % len(formula_id2index))
@@ -109,13 +130,12 @@ def main(feature_folder, create_learning_curve=False):
                    prepared,
                    os.path.join(feature_folder, target_paths[dataset_name]),
                    create_learning_curve)
-        translationfilename = "%s/translation-%s.csv" % (feature_folder,
-                                                         dataset_name)
-        with open(translationfilename, "w") as f:
-            f.write("index,raw_data_id,latex,formula_id\n")
-            for el in translation:
-                f.write("%i,%i,%s,%i\n" % (formula_id2index[el[2]],
-                                           el[0], el[1], el[2]))
+
+        _create_translation_file(feature_folder,
+                                 dataset_name,
+                                 translation,
+                                 formula_id2index)
+
         t1 = time.time() - t0
         logging.info("%s was written. Needed %0.2f seconds", dataset_name, t1)
         gc.collect()

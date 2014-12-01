@@ -1,0 +1,201 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../favicon.ico">
+
+    <title>Classify</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="icon" sizes="196x196" href="../nice-highres.png">
+    <link rel="icon" sizes="128x128" href="../niceicon.png">
+    <link rel="apple-touch-icon" sizes="128x128" href="../niceicon.png">
+    <link rel="apple-touch-icon-precomposed" sizes="128x128" href="../niceicon.png">
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+    <!-- Custom styles for this template -->
+    <link href="../css/style.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+        <script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min.js'></script>
+<script type='text/javascript'>
+    var lines = [];
+
+    window.onload = function() {
+        var canvas = new fabric.Canvas('sheet');
+        canvas.isDrawingMode = true;
+        canvas.freeDrawingBrush.width = 5;
+        canvas.freeDrawingBrush.color = "#ff0000";
+        canvas.on('mouse:down', startRecording);
+
+        function startRecording(event) {
+            // directly add first point
+            var x = event.e.x;
+            var y = event.e.y;
+            var time = new Date().getTime();
+            if (typeof(x) != 'number') {
+                console.log(event);
+                x = event.e.screenX;
+                y = event.e.screenY;
+            }
+            if (typeof(x) != 'number') {
+                x = event.e.touches[0].clientX;
+                y = event.e.touches[0].clientY;
+            }
+            var line = [];
+            line.push({
+                x: x,
+                y: y,
+                time: time
+            });
+            canvas.on("mouse:move", recordMoment);
+            canvas.on("mouse:up", stopRecording);
+
+            function recordMoment(event) {
+                var x = event.e.x;
+                var y = event.e.y;
+                var time = new Date().getTime();
+                if (typeof(x) != 'number') {
+                    x = event.e.screenX;
+                    y = event.e.screenY;
+                }
+                if (typeof(x) != 'number') {
+                    x = event.e.touches[0].clientX;
+                    y = event.e.touches[0].clientY;
+                }
+                line.push({
+                    x: x,
+                    y: y,
+                    time: time
+                });
+            }
+
+            function stopRecording() {
+                lines.push(line);
+                canvas.off("mouse:move", recordMoment);
+                canvas.off("mouse:up", stopRecording);
+            }
+        }
+    }
+
+
+    function addCanvas() {
+        var drawnJSON = document.getElementById('drawnJSON');
+        drawnJSON.value = JSON.stringify(lines);
+        return true;
+    }
+</script>  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="http://write-math.com">Write Math</a>
+        </div>
+        <div class="navbar-collapse collapse">
+                  <ul class="nav navbar-nav navbar-left">
+            <li class="active"><a href="../classify">Classify</a></li>
+            <li   ><a href="../train">Train</a></li>
+            <li ><a href="../gallery">Gallery</a></li>
+            <li ><a href="../ranking">Ranking</a></li>
+            <li   ><a href="../about">About</a></li>
+          </ul>
+                          <form class="navbar-form navbar-right" role="form" method="post" action="../login/index.php">
+            <div class="form-group">
+              <input type="email" required
+                     placeholder="Email"
+                     class="form-control"
+                     name="email" />
+            </div>
+            <div class="form-group">
+              <input type="password" required
+                     placeholder="Password"
+                     class="form-control"
+                     name="password" />
+            </div>
+            <button type="submit" class="btn btn-success">Sign in</button>
+            <a href="../register/" class="btn btn-primary">Register</a>
+          </form>
+                </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="page-header">
+        <h1>Classify</h1>
+      </div>
+                    <div class="alert alert-warning">
+        <h4>Disclaimer</h4>
+        Although you are not logged in, the following information gets stored:
+        <ul>
+            <li>Your handdrawn symbols</li>
+            <li>Votes, flagging actions, answers</li>
+            <li>All other interactions with this site</li>
+            <li>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36</li>
+        </ul>
+
+        By using this service, you agree with that.
+    </div>
+    <div class="alert alert-info">
+        By <a href="../login">logging in</a>, you help me to improve the classifier.
+    </div>
+    {{messagepost}}
+        <form method="post" onsubmit="$('button').prop('disabled', true);return addCanvas();" id="form">
+    <input type="hidden" id="drawnJSON" name="drawnJSON" value="" />
+    <canvas id="sheet" width="400" height="400" style="border:1px solid black;width:400px;height:400px;"></canvas>
+    <button type="submit" class="btn btn-success">Submit</button>
+    <a href="?formula_id=" class="btn btn-danger">Clear</a></h3>
+    </form>
+
+    <div id="results"></div>
+    <script type='text/javascript'>
+        var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+        var height = (window.innerHeight > 0) ? window.innerHeight : screen.height;
+
+        width *= 0.8;
+        height *= 0.8;
+
+        if (width > 400) {
+            width = 400;
+        }
+
+        if (height > 400) {
+            height = 400;
+        }
+
+        var canvas = document.getElementById("sheet");
+        canvas.width = width;
+        canvas.height = height;
+    </script>
+    </div>
+
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+      </body>
+</html>

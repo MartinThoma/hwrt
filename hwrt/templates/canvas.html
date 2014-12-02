@@ -1,4 +1,90 @@
-{% extends "layout.html" %}
-{% block body %}
-    <canvas/>
+{% extends "bootstrap/base.html" %}
+{% block title %}Classify{% endblock %}
+
+{% block navbar %}
+
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+<script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min.js'></script>
+<script>
+    var lines = [];
+
+    window.onload = function() {
+        var canvas = new fabric.Canvas('sheet');
+        canvas.isDrawingMode = true;
+        canvas.freeDrawingBrush.width = 5;
+        canvas.freeDrawingBrush.color = "#ff0000";
+        canvas.on('mouse:down', startRecording);
+
+        function startRecording(event) {
+            // directly add first point
+            var x = event.e.x;
+            var y = event.e.y;
+            var time = new Date().getTime();
+            if (typeof(x) != 'number') {
+                console.log(event);
+                x = event.e.screenX;
+                y = event.e.screenY;
+            }
+            if (typeof(x) != 'number') {
+                x = event.e.touches[0].clientX;
+                y = event.e.touches[0].clientY;
+            }
+            var line = [];
+            line.push({
+                x: x,
+                y: y,
+                time: time
+            });
+            canvas.on("mouse:move", recordMoment);
+            canvas.on("mouse:up", stopRecording);
+
+            function recordMoment(event) {
+                var x = event.e.x;
+                var y = event.e.y;
+                var time = new Date().getTime();
+                if (typeof(x) != 'number') {
+                    x = event.e.screenX;
+                    y = event.e.screenY;
+                }
+                if (typeof(x) != 'number') {
+                    x = event.e.touches[0].clientX;
+                    y = event.e.touches[0].clientY;
+                }
+                line.push({
+                    x: x,
+                    y: y,
+                    time: time
+                });
+            }
+
+            function stopRecording() {
+                lines.push(line);
+                canvas.off("mouse:move", recordMoment);
+                canvas.off("mouse:up", stopRecording);
+            }
+        }
+    }
+
+
+    function addCanvas() {
+        var drawnJSON = document.getElementById('drawnJSON');
+        drawnJSON.value = JSON.stringify(lines);
+        return true;
+    }
+    </script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header"><h1>Classify</h1></div>
+    <form method="post" onsubmit="$('button').prop('disabled', true);return addCanvas();" id="form">
+    <input type="hidden" id="drawnJSON" name="drawnJSON" value="" />
+    <canvas id="sheet" width="400" height="400" style="border:1px solid black;width:400px;height:400px;"></canvas>
+    <button type="submit" class="btn btn-success">Submit</button>
+    <a href="?formula_id=" class="btn btn-danger">Clear</a></h3>
+    </form>
+</div>
 {% endblock %}

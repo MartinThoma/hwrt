@@ -565,7 +565,7 @@ def classify_single_recording(raw_data_json, model_folder, verbose=False):
 
     index2latex = get_index2latex(model_description)
 
-    # Map line to probabilites for latex commands
+    # Map line to probabilites for LaTeX commands
     with open(evaluation_file) as f:
         probabilities = f.read()
     probabilities = map(float, probabilities.split(" "))

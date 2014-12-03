@@ -455,6 +455,38 @@ def get_recognizer_folders(model_folder):
     return folders[::-1]  # Reverse order to get the most "basic one first"
 
 
+def evaluate_model_single_recording(model_folder, recording):
+    """Evaluate a model for a single recording.
+    :param target_folder: Folder where the model is.
+    :param handwriting: The recording.
+    """
+    # Get feature vector
+    from . import preprocess_dataset
+    from . import features
+
+    for target_folder in get_recognizer_folders(model_folder):
+        # The source is later than the target. That means we need to
+        # refresh the target
+        if "preprocessed" in target_folder:
+            t = target_folder
+            _, _, preprocessing_queue = preprocess_dataset.get_parameters(t)
+            handwriting = HandwrittenData.HandwrittenData(recording)
+            handwriting.preprocessing(preprocessing_queue)
+        elif "feature-files" in target_folder:
+            infofile_path = os.path.join(target_folder, "info.yml")
+            with open(infofile_path, 'r') as ymlfile:
+                feature_description = yaml.load(ymlfile)
+            feature_str_list = feature_description['features']
+            feature_list = features.get_features(feature_str_list)
+            x = handwriting.feature_extraction(feature_list)
+
+    # Evaluate model
+    model = os.path.join(model_folder, "model.tar")
+    import nntoolkit.evaluate
+    results = nntoolkit.evaluate.main(model, x, print_results=False)
+    return results
+
+
 def _evaluate_model_single_file(target_folder, test_file):
     """Evaluate a model for a single recording.
     :param target_folder: Folder where the model is
@@ -479,7 +511,7 @@ def _evaluate_model_single_file(target_folder, test_file):
                            "logs/%s-error-evaluation.log" %
                            time_prefix)
     with open(logfile, "w") as log, open(model_use, "r") as modl_src_p:
-        p = subprocess.Popen(['nntoolkit', 'run',
+        p = subprocess.Popen([get_nntoolkit(), 'run',
                               '--batch-size', '1',
                               '-f%0.4f', test_file],
                              stdin=modl_src_p,

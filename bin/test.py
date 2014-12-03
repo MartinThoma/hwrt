@@ -84,7 +84,7 @@ def get_test_results(model_folder, basename, test_file):
                                "logs/%s-error-evaluation.log" %
                                time_prefix)
         with open(logfile, "w") as log, open(model_use, "r") as model_src_p:
-            p = subprocess.Popen(['nntoolkit', 'run',
+            p = subprocess.Popen([utils.get_nntoolkit(), 'run',
                                   '--batch-size', '1', '-f%0.4f', test_file],
                                  stdin=model_src_p,
                                  stdout=log)

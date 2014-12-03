@@ -63,3 +63,5 @@ cover/
 *.bak
 
 *.csv
+*.hdf5
+*.yml

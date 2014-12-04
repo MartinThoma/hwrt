@@ -76,13 +76,13 @@ You can check if it worked by
 .. code:: bash
 
     $ hwrt --version
-    hwrt 0.1.127
+    hwrt 0.1.190
 
 Please send me an email (info@martin-thoma.de) if that didn't work.
 
 
-First steps
------------
+First steps as a developer
+--------------------------
 
 First of all, you should download the raw data. This is done by executing
 ``download.py``.
@@ -98,6 +98,38 @@ with ``~/.hwrtrc``). That will show 3 rotated images of :math:`\pi`.
 
 If you want to see more examples, have a look at
 https://github.com/MartinThoma/hwr-experiments
+
+First steps as a user
+---------------------
+
+The command
+
+.. code:: bash
+
+    $ hwrt record
+
+will open a window. You can draw a symbol there:
+
+.. image:: record-window.png
+    :height: 256px
+    :align: center
+    :alt: Record what you want to draw
+
+Close the window when you're ready. The classification result will be shown in
+the terminal.
+
+Alternatively, you can start
+
+.. code:: bash
+
+    $ hwrt serve
+
+and go to http://127.0.0.1:5000/interactive to see
+
+.. image:: classify.png
+    :height: 350px
+    :align: center
+    :alt: Browser interface
 
 
 nntoolkit

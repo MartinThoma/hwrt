@@ -17,6 +17,7 @@ import shutil
 import csv
 import pkg_resources
 import tempfile
+import tarfile
 
 # hwrt modules
 from . import HandwrittenData
@@ -455,35 +456,41 @@ def get_recognizer_folders(model_folder):
     return folders[::-1]  # Reverse order to get the most "basic one first"
 
 
-def evaluate_model_single_recording(model_folder, recording):
+def evaluate_model_single_recording(model_file, recording):
     """Evaluate a model for a single recording.
-    :param target_folder: Folder where the model is.
+    :param model_file: Model file (.tar)
     :param handwriting: The recording.
     """
     # Get feature vector
-    from . import preprocess_dataset
     from . import features
+    from . import preprocessing
 
-    for target_folder in get_recognizer_folders(model_folder):
-        # The source is later than the target. That means we need to
-        # refresh the target
-        if "preprocessed" in target_folder:
-            t = target_folder
-            _, _, preprocessing_queue = preprocess_dataset.get_parameters(t)
-            handwriting = HandwrittenData.HandwrittenData(recording)
-            handwriting.preprocessing(preprocessing_queue)
-        elif "feature-files" in target_folder:
-            infofile_path = os.path.join(target_folder, "info.yml")
-            with open(infofile_path, 'r') as ymlfile:
-                feature_description = yaml.load(ymlfile)
-            feature_str_list = feature_description['features']
-            feature_list = features.get_features(feature_str_list)
-            x = handwriting.feature_extraction(feature_list)
+    handwriting = HandwrittenData.HandwrittenData(recording)
+
+    # Extract tar
+    tar = tarfile.open(model_file)
+    tar.extractall()
+    tar.close()
+
+    # Get the preprocessing
+    with open(os.path.join("preprocessing.yml"), 'r') as ymlfile:
+        preprocessing_description = yaml.load(ymlfile)
+    tmp = preprocessing_description['queue']
+    preprocessing_queue = preprocessing.get_preprocessing_queue(tmp)
+
+    # Apply preprocessing
+    handwriting.preprocessing(preprocessing_queue)
+
+    # Get the preprocessing
+    with open(os.path.join("features.yml"), 'r') as ymlfile:
+        feature_description = yaml.load(ymlfile)
+    feature_str_list = feature_description['features']
+    feature_list = features.get_features(feature_str_list)
+    x = handwriting.feature_extraction(feature_list)
 
     # Evaluate model
-    model = os.path.join(model_folder, "model.tar")
     import nntoolkit.evaluate
-    results = nntoolkit.evaluate.main(model, x, print_results=False)
+    results = nntoolkit.evaluate.main(model_file, x, print_results=False)
     return results
 
 

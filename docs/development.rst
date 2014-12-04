@@ -101,3 +101,4 @@ Current State
     2014-12-01, 3488, 1165, 76%, 9.82, 315/595, 1, bin/recordflask.py: Added web server draft
     2014-12-02, 3507, 1165, 76%, 9.82, 315/595, 1, bin/recordflask.py: Updated web server
     2014-12-03, 3525, 1165, 76%, 9.78, 316/595, 1, hwrt/utils.py: check configuration file for nntoolkit; formulas can now be recorded and evaluated without non-free software :-)
+    2014-12-04, 3640, 1165, 76%, 9.75, 315/595, 1, hwrt/record.py and hwrt/serve.py: Improved recognizer; added model file to project

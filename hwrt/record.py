@@ -10,6 +10,8 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     stream=sys.stdout)
 import time
 import json
+import pkg_resources
+import os
 
 # GUI
 import Tkinter as tk
@@ -53,12 +55,14 @@ def get_parser():
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
     parser = ArgumentParser(description=__doc__,
                             formatter_class=ArgumentDefaultsHelpFormatter)
+    model_path = pkg_resources.resource_filename('hwrt', 'misc/')
+    model_file = os.path.join(model_path, "model.tar")
     parser.add_argument("-m", "--model",
                         dest="model",
-                        help="where is the model folder (with a info.yml)?",
-                        metavar="FOLDER",
-                        type=lambda x: utils.is_valid_folder(parser, x),
-                        default=utils.default_model())
+                        help="where is the model file (.tar)?",
+                        metavar="FILE",
+                        type=lambda x: utils.is_valid_file(parser, x),
+                        default=model_file)
     parser.add_argument("-v", "--verbose",
                         dest="verbose",
                         help="show recording before and after preprocessing",

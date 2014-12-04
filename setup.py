@@ -5,13 +5,12 @@ except ImportError:
 
 config = {
     'name': 'hwrt',
-    'version': '0.1.183',
+    'version': '0.1.190',
     'author': 'Martin Thoma',
     'author_email': 'info@martin-thoma.de',
     'packages': ['hwrt'],
     'scripts': ['bin/hwrt', 'bin/backup.py',
                 'bin/test.py', 'bin/train.py',
-                'bin/recordflask.py',
                 'bin/create_testset_online_once.py'],
     'package_data': {'hwrt': ['templates/*', 'misc/*']},
     'url': 'https://github.com/MartinThoma/hwrt',

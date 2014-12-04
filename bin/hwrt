@@ -31,6 +31,7 @@ from hwrt import view
 from hwrt import download
 from hwrt import analyze_data
 from hwrt import record
+from hwrt import serve
 
 
 def get_parser():
@@ -72,6 +73,12 @@ def get_parser():
                           parents=[record.get_parser()],
                           help=("Record handwriting with GUI and classify it.")
                           )
+    subparsers.add_parser('serve',
+                          add_help=False,
+                          parents=[serve.get_parser()],
+                          help=("Start a web-server which can classify "
+                                "recordings.")
+                          )
     return parser
 
 
@@ -91,6 +98,8 @@ def main(args):
         create_model.main(args.model, args.override)
     elif args.cmd == 'record':
         record.main(args.model, args.n, args.verbose)
+    elif args.cmd == 'serve':
+        serve.main()
     else:
         logging.error("Command '%s' is not implemented yet.", args.cmd)
 

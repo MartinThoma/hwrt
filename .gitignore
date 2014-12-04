@@ -62,6 +62,7 @@ cover/
 # aspell
 *.bak
 
-*.csv
 *.hdf5
+*.csv
+*.json
 *.yml

@@ -20,3 +20,6 @@ countc:
 
 countt:
 	cloc tests
+
+clean:
+	rm *.hdf5 *.yml *.csv

@@ -8,7 +8,7 @@ python:
 install: 
   - pip install natsort matplotlib coveralls
   - pip install shapely
-  - pip install mysql-python
+  - pip install pymysql
   - pip install future
 script:
   - nosetests --with-coverage

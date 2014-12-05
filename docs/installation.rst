@@ -46,7 +46,7 @@ Python packages
 
 .. code:: bash
 
-    # pip install MySQL-python
+    # pip install pymysql
 
 
 Now you can install the remaining packages:

@@ -28,12 +28,8 @@ import hwrt.create_pfiles as create_pfiles
 def _fetch_data_from_server(raw_data_id, mysql_cfg):
     """Get the data from raw_data_id from the server.
     :returns: The ``data`` if fetching worked, ``None`` if it failed."""
-    try:
-        import MySQLdb
-        import MySQLdb.cursors as cursors
-    except ImportError:
-        import pymysql as MySQLdb
-        import pymysql.cursors as cursors
+    import pymysql
+    import pymysql.cursors
 
     # Import configuration file
     cfg = utils.get_database_configuration()
@@ -41,11 +37,11 @@ def _fetch_data_from_server(raw_data_id, mysql_cfg):
         return None
 
     # Establish database connection
-    connection = MySQLdb.connect(host=cfg[mysql_cfg]['host'],
+    connection = pymysql.connect(host=cfg[mysql_cfg]['host'],
                                  user=cfg[mysql_cfg]['user'],
                                  passwd=cfg[mysql_cfg]['passwd'],
                                  db=cfg[mysql_cfg]['db'],
-                                 cursorclass=cursors.DictCursor)
+                                 cursorclass=pymysql.cursors.DictCursor)
     logging.info("Connection: %s", str(connection))
     cursor = connection.cursor()
 

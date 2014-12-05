@@ -1,6 +1,6 @@
 BeautifulSoup
 Jinja2
-MySQL-python
+pymysql
 PyYAML
 natsort
 coveralls

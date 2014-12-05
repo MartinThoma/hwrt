@@ -61,7 +61,7 @@ def check_python_version():
 def check_python_modules():
     """Check if all necessary / recommended modules are installed."""
     print("\033[1mCheck modules\033[0m")
-    required_modules = ['argparse', 'matplotlib', 'natsort', 'MySQLdb',
+    required_modules = ['argparse', 'matplotlib', 'natsort', 'pymysql',
                         'cPickle', 'theano', 'dropbox', 'yaml',
                         'webbrowser', 'hashlib', 'numpy',
                         'jinja2', 'Tkinter']
@@ -89,10 +89,10 @@ def check_python_modules():
         import natsort
         print("natsort version: %s (3.4.0 tested, 3.4.0 > required)" %
               natsort.__version__)
-    if "MySQLdb" in found:
-        import MySQLdb
-        print("MySQLdb version: %s (1.2.3 tested)" %
-              MySQLdb.__version__)
+    if "pymysql" in found:
+        import pymysql
+        print("pymysql version: %s (0.6.3 tested)" %
+              pymysql.__version__)
     if "theano" in found:
         import theano
         print("theano version: %s (0.6.0 tested)" %

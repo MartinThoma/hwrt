@@ -5,8 +5,8 @@ Add `is_in_testset` to raw_datasets in MySQL database, so that at least 10%
 of the data online has the flag `is_in_testset`.
 """
 
-import MySQLdb
-import MySQLdb.cursors
+import pymysql
+import pymysql.cursors
 import random
 import math
 
@@ -17,11 +17,11 @@ import hwrt.utils as utils
 
 def main(mysql):
     """Add testset flag to recordings in MySQL database."""
-    connection = MySQLdb.connect(host=mysql['host'],
+    connection = pymysql.connect(host=mysql['host'],
                                  user=mysql['user'],
                                  passwd=mysql['passwd'],
                                  db=mysql['db'],
-                                 cursorclass=MySQLdb.cursors.DictCursor)
+                                 cursorclass=pymysql.cursors.DictCursor)
     cursor = connection.cursor()
 
     # Download all datasets

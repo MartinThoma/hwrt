@@ -16,8 +16,8 @@ try:  # Python 2
     import cPickle as pickle
 except ImportError:  # Python 3
     import pickle
-import MySQLdb
-import MySQLdb.cursors
+import pymysql
+import pymysql.cursors
 import dropbox
 import hashlib
 import webbrowser
@@ -157,11 +157,11 @@ def main(destination=os.path.join(utils.get_project_root(),
     logging.info("Data will be written to '%s'", destination_path)
     cfg = utils.get_database_configuration()
     mysql = cfg['mysql_online']
-    connection = MySQLdb.connect(host=mysql['host'],
+    connection = pymysql.connect(host=mysql['host'],
                                  user=mysql['user'],
                                  passwd=mysql['passwd'],
                                  db=mysql['db'],
-                                 cursorclass=MySQLdb.cursors.DictCursor)
+                                 cursorclass=pymysql.cursors.DictCursor)
     cursor = connection.cursor()
 
     # Get all formulas that should get examined

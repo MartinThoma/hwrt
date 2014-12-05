@@ -1,6 +1,10 @@
 language: python
 python:
-  - "3.4"
+  - "pypy"
+  - 3.2
+  - "3.2_with_system_site_packages"
+  - 3.3
+  - 3.4
 install: 
   - pip install natsort matplotlib coveralls
   - pip install shapely
@@ -8,8 +12,6 @@ install:
   - pip install future
 script:
   - nosetests --with-coverage
-virtualenv:
-  system_site_packages: true
 before_install:
   - sudo apt-get install libblas-dev liblapack-dev gfortran
   - sudo apt-get install python-scipy python-numpy

@@ -11,3 +11,4 @@ Pygments
 coverage
 dropbox
 hwrt
+future

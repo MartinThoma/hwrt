@@ -231,7 +231,7 @@ def _calculate_feature_stats(feature_list, prepared, serialization_file):  # pyl
     with open(serialization_file, 'w', newline='') as csvfile:
         spamwriter = csv.writer(csvfile,
                                 delimiter=str(';'),
-                                quotechar='"',
+                                quotechar=str('"'),
                                 quoting=csv.QUOTE_MINIMAL)
         for feature in feature_list:
             end = start + feature.get_dimension()

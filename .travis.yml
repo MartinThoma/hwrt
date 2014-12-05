@@ -1,8 +1,6 @@
 language: python
 python:
-  - "pypy"
-  - 3.2
-  - "3.2_with_system_site_packages"
+  - 2.7
   - 3.3
   - 3.4
 install: 
@@ -10,6 +8,7 @@ install:
   - pip install shapely
   - pip install pymysql
   - pip install future
+  - pip install scipy
 script:
   - nosetests --with-coverage
 before_install:

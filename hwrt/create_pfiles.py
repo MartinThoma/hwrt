@@ -10,7 +10,7 @@ be present in the pfiles and only raw_data that might get used for the
 test-, validation- and training set.
 """
 
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 import logging
 import sys
 import os

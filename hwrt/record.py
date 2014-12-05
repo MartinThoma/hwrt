@@ -14,7 +14,12 @@ import pkg_resources
 import os
 
 # GUI
-import Tkinter as tk
+try:
+    # for Python2
+    import Tkinter as tk
+except ImportError:
+    # for Python3
+    import tkinter as tk
 
 # hwrt modules
 import hwrt.utils as utils

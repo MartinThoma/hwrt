@@ -18,6 +18,7 @@ import yaml
 import csv
 try:  # Python 2
     import cPickle as pickle
+    from future.builtins import open
 except ImportError:  # Python 3
     import pickle
 import time
@@ -227,7 +228,7 @@ def _calculate_feature_stats(feature_list, prepared, serialization_file):  # pyl
     # Calculate, min, max and mean vector for each feature with
     # normalization
     start = 0
-    with open(serialization_file, 'wb') as csvfile:
+    with open(serialization_file, 'w', newline='') as csvfile:
         spamwriter = csv.writer(csvfile,
                                 delimiter=';',
                                 quotechar='"',

@@ -469,11 +469,12 @@ def evaluate_model_single_recording(model_file, recording):
 
     # Extract tar
     tar = tarfile.open(model_file)
-    tar.extractall()
+    tarfolder = tempfile.mkdtemp()
+    tar.extractall(path=tarfolder)
     tar.close()
 
     # Get the preprocessing
-    with open(os.path.join("preprocessing.yml"), 'r') as ymlfile:
+    with open(os.path.join(tarfolder, "preprocessing.yml"), 'r') as ymlfile:
         preprocessing_description = yaml.load(ymlfile)
     tmp = preprocessing_description['queue']
     preprocessing_queue = preprocessing.get_preprocessing_queue(tmp)
@@ -482,7 +483,7 @@ def evaluate_model_single_recording(model_file, recording):
     handwriting.preprocessing(preprocessing_queue)
 
     # Get the preprocessing
-    with open(os.path.join("features.yml"), 'r') as ymlfile:
+    with open(os.path.join(tarfolder, "features.yml"), 'r') as ymlfile:
         feature_description = yaml.load(ymlfile)
     feature_str_list = feature_description['features']
     feature_list = features.get_features(feature_str_list)
@@ -491,6 +492,9 @@ def evaluate_model_single_recording(model_file, recording):
     # Evaluate model
     import nntoolkit.evaluate
     results = nntoolkit.evaluate.main(model_file, x, print_results=False)
+
+    # Cleanup
+    shutil.rmtree(tarfolder)
     return results
 
 

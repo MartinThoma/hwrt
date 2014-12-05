@@ -63,7 +63,7 @@ def create_preprocessed_dataset(path_to_data, outputpath, preprocessing_queue):
         print(raw_dataset_path)
         sys.exit()  # TODO: Update model!
     logging.info("Start loading data...")
-    loaded = pickle.load(open(path_to_data))
+    loaded = pickle.load(open(path_to_data, "rb"))
     raw_datasets = loaded['handwriting_datasets']
     logging.info("Start applying preprocessing methods")
     start_time = time.time()

@@ -28,8 +28,12 @@ import hwrt.create_pfiles as create_pfiles
 def _fetch_data_from_server(raw_data_id, mysql_cfg):
     """Get the data from raw_data_id from the server.
     :returns: The ``data`` if fetching worked, ``None`` if it failed."""
-    import MySQLdb
-    import MySQLdb.cursors
+    try:
+        import MySQLdb
+        import MySQLdb.cursors as cursors
+    except ImportError:
+        import pymysql as MySQLdb
+        import pymysql.cursors as cursors
 
     # Import configuration file
     cfg = utils.get_database_configuration()
@@ -41,7 +45,7 @@ def _fetch_data_from_server(raw_data_id, mysql_cfg):
                                  user=cfg[mysql_cfg]['user'],
                                  passwd=cfg[mysql_cfg]['passwd'],
                                  db=cfg[mysql_cfg]['db'],
-                                 cursorclass=MySQLdb.cursors.DictCursor)
+                                 cursorclass=cursors.DictCursor)
     logging.info("Connection: %s", str(connection))
     cursor = connection.cursor()
 
@@ -57,7 +61,7 @@ def _get_data_from_rawfile(path_to_data, raw_data_id):
        ``path_to_data``.
        :returns: The HandwrittenData object if ``raw_data_id`` is in
                  path_to_data, otherwise ``None``."""
-    loaded = pickle.load(open(path_to_data))
+    loaded = pickle.load(open(path_to_data, "rb"))
     raw_datasets = loaded['handwriting_datasets']
     for raw_dataset in raw_datasets:
         if raw_dataset['handwriting'].raw_data_id == raw_data_id:
@@ -68,7 +72,7 @@ def _get_data_from_rawfile(path_to_data, raw_data_id):
 def _list_ids(path_to_data):
     """List raw data IDs grouped by symbol ID from a pickle file
        ``path_to_data``."""
-    loaded = pickle.load(open(path_to_data))
+    loaded = pickle.load(open(path_to_data, "rb"))
     raw_datasets = loaded['handwriting_datasets']
     raw_ids = {}
     for raw_dataset in raw_datasets:

@@ -60,33 +60,54 @@ def get_class_test():
 
 
 def query_yes_no_test():
-    with mock.patch('__builtin__.raw_input', return_value='y'):
+    try:
+        import __builtin__
+        builtins_str = "__builtin__.raw_input"
+    except ImportError:
+        builtins_str = "builtins.input"
+    with mock.patch('%s' % builtins_str, return_value='y'):
         nose.tools.assert_equal(utils.query_yes_no("bla"), True)
         nose.tools.assert_equal(utils.query_yes_no("bla", None), True)
         nose.tools.assert_equal(utils.query_yes_no("bla", "yes"), True)
         nose.tools.assert_equal(utils.query_yes_no("bla", "no"), True)
-    with mock.patch('__builtin__.raw_input', return_value=''):
+    with mock.patch('%s' % builtins_str, return_value=''):
         nose.tools.assert_equal(utils.query_yes_no("bla", 'yes'), True)
         nose.tools.assert_equal(utils.query_yes_no("bla", 'no'), False)
 
 
 def input_string_test():
-    with mock.patch('__builtin__.raw_input', return_value='y'):
-        nose.tools.assert_equal(utils.input_string("bla"), "y")
+    try:
+        import __builtin__
+        with mock.patch('__builtin__.raw_input', return_value='y'):
+            nose.tools.assert_equal(utils.input_string("bla"), "y")
+    except ImportError:
+        with mock.patch('builtins.input', return_value='y'):
+            nose.tools.assert_equal(utils.input_string("bla"), "y")
 
 
 def input_int_default_test():
-    with mock.patch('__builtin__.raw_input', return_value='yes'):
+    try:
+        import __builtin__
+        builtins_str = "__builtin__.raw_input"
+    except ImportError:
+        builtins_str = "builtins.input"
+    with mock.patch('%s' % builtins_str, return_value='yes'):
         nose.tools.assert_equal(utils.input_int_default("bla"), 0)
         nose.tools.assert_equal(utils.input_int_default("bla", 42), 42)
-    with mock.patch('__builtin__.raw_input', return_value=1337):
+    with mock.patch('%s' % builtins_str, return_value=1337):
         nose.tools.assert_equal(utils.input_int_default("bla"), 1337)
         nose.tools.assert_equal(utils.input_int_default("bla", 42), 1337)
 
 
 @nose.tools.raises(Exception)
 def query_yes_no_exception_test():
-    with mock.patch('__builtin__.raw_input', return_value=''):
+    try:
+        import __builtin__
+        builtins_str = "__builtin__"
+    except ImportError:
+        import builtins
+        builtins_str = "builtins"
+    with mock.patch('%s.raw_input' % builtins_str, return_value=''):
         utils.query_yes_no("bla", "asdf")
 
 
@@ -128,5 +149,10 @@ def get_latest_model_test():
 
 
 def choose_raw_dataset_test():
-    with mock.patch('__builtin__.raw_input', return_value=0):
-        utils.choose_raw_dataset()
+    try:
+        import __builtin__
+        with mock.patch('__builtin__.raw_input', return_value=0):
+            utils.choose_raw_dataset()
+    except ImportError:
+        with mock.patch('builtins.input', return_value=0):
+            utils.choose_raw_dataset()

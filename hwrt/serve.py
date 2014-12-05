@@ -8,10 +8,24 @@ from flask import Flask, request, render_template
 from flask_bootstrap import Bootstrap
 import os
 import json
+import requests
 
 # hwrt modules
 import hwrt
 import hwrt.utils as utils
+
+
+def submit_recording(raw_data_json):
+    """Submit a recording to the database on write-math.com."""
+    url = "http://www.martin-thoma.de/write-math/classify/index.php"
+    headers = {'User-Agent': 'Mozilla/5.0',
+               'Content-Type': 'application/x-www-form-urlencoded'}
+    payload = {'drawnJSON': raw_data_json}
+
+    s = requests.Session()
+    req = requests.Request('POST', url, headers=headers, data=payload)
+    prepared = req.prepare()
+    s.send(prepared)
 
 
 def show_results(results, n=10):
@@ -24,7 +38,6 @@ def show_results(results, n=10):
 DEBUG = True
 
 template_path = pkg_resources.resource_filename('hwrt', 'templates/')
-template_path = "/home/moose/GitHub/hwrt/hwrt/templates/"
 
 # create our little application :)
 app = Flask(__name__, template_folder=template_path)
@@ -33,22 +46,32 @@ app.config.from_object(__name__)
 
 
 @app.route('/', methods=['POST', 'GET'])
-def show_entries():
-    heartbeat = request.args.get('heartbeat', '')
-    return heartbeat
+def heartbeat():
+    """Use heartbeat."""
+    return request.args.get('heartbeat', '')
 
 
 @app.route('/interactive', methods=['POST', 'GET'])
 def interactive():
+    """Interactive classifier."""
     if request.method == 'POST':
         raw_data_json = request.form['drawnJSON']
-        # TODO: Check recording
-        # TODO: Submit recorded json to database
+
+        # Check recording
+        try:
+            json.loads(raw_data_json)
+        except ValueError:
+            return "Invalid JSON string: %s" % raw_data_json
+
+        # Submit recorded json to database
+        submit_recording(raw_data_json)
+
         # Classify
         model_path = pkg_resources.resource_filename('hwrt', 'misc/')
         model = os.path.join(model_path, "model.tar")
         print(model)
         results = utils.evaluate_model_single_recording(model, raw_data_json)
+
         # Show classification page
         page = show_results(results, n=10)
         page += '<a href="../interactive">back</a>'
@@ -59,6 +82,19 @@ def interactive():
 
 
 def get_json_result(results, n=10):
+    """Return the top ``n`` results as a json list.
+    >>> results = [{'symbolnr': 2, \
+                    'probability': 0.65, \
+                    'semantics': '\\alpha'}, \
+                   {'symbolnr': 45, \
+                    'probability': 0.25, \
+                    'semantics': '\\propto'}, \
+                   {'symbolnr': 15, \
+                    'probability': 0.0512, \
+                    'semantics': '\\varpropto'}]
+    >>> get_json_result(results, n=10)
+    [{'\\alpha': 0.65}, {'\\propto': 0.25}, {'\\varpropto': 0.0512}]
+    """
     s = []
     for res in results[:min(len(results), n)]:
         s.append({res['semantics']: res['probability']})
@@ -67,12 +103,19 @@ def get_json_result(results, n=10):
 
 @app.route('/worker', methods=['POST', 'GET'])
 def worker():
-    # Test with
-    # wget --post-data 'classify=%5B%5B%7B%22x%22%3A334%2C%22y%22%3A407%2C%22time%22%3A1417704378719%7D%5D%5D' http://127.0.0.1:5000/worker
+    """Implement a worker for write-math.com."""
     if request.method == 'POST':
         raw_data_json = request.form['classify']
-        # TODO: Check recording
-        # TODO: Submit recorded json to database
+
+        # Check recording
+        try:
+            json.loads(raw_data_json)
+        except ValueError:
+            return "Invalid JSON string: %s" % raw_data_json
+
+        # Submit recorded json to database
+        submit_recording(raw_data_json)
+
         # Classify
         model_path = pkg_resources.resource_filename('hwrt', 'misc/')
         model = os.path.join(model_path, "model.tar")
@@ -92,6 +135,7 @@ def get_parser():
 
 
 def main():
+    """Main function starting the webserver."""
     app.run()
 
 if __name__ == '__main__':

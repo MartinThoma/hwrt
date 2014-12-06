@@ -229,9 +229,11 @@ def _calculate_feature_stats(feature_list, prepared, serialization_file):  # pyl
     # normalization
     start = 0
     mode = 'w'
+    arguments = {'newline': ''}
     if sys.version_info.major < 3:
         mode += 'b'
-    with open(serialization_file, mode, newline='') as csvfile:
+        arguments = {}
+    with open(serialization_file, mode, **arguments) as csvfile:
         spamwriter = csv.writer(csvfile,
                                 delimiter=str(';'),
                                 quotechar=str('"'),

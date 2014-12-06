@@ -228,7 +228,10 @@ def _calculate_feature_stats(feature_list, prepared, serialization_file):  # pyl
     # Calculate, min, max and mean vector for each feature with
     # normalization
     start = 0
-    with open(serialization_file, 'w', newline='') as csvfile:
+    mode = 'w'
+    if sys.version_info.major < 3:
+        mode += 'b'
+    with open(serialization_file, mode, newline='') as csvfile:
         spamwriter = csv.writer(csvfile,
                                 delimiter=str(';'),
                                 quotechar=str('"'),

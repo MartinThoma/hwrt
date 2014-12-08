@@ -103,3 +103,5 @@ Current State
     2014-12-03, 3525, 1165, 76%, 9.78, 316/595, 1, hwrt/utils.py: check configuration file for nntoolkit; formulas can now be recorded and evaluated without non-free software :-)
     2014-12-04, 3640, 1165, 76%, 9.75, 315/595, 1, hwrt/record.py and hwrt/serve.py: Improved recognizer; added model file to project
     2014-12-05, 3669, 1191, 76%, 9.79, 316/595, 1, updated code to work with Python 3
+    2014-12-07, 3674, 1191, 76%, 9.80, 316/595, 1, Python 2.7; 3.3; 3.4 compatbility; added missing packages
+    2014-12-08, 3689, 1191, 75%, 9.81, 317/595, 1, hwrt/selfcheck.py: Added possibility to see templates folder; improved templates

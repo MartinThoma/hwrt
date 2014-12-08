@@ -8,6 +8,7 @@
 {% block scripts %}
 {{super()}}
 <script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min.js'></script>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script>
     var lines = [];
 
@@ -64,6 +65,29 @@
                 lines.push(line);
                 canvas.off("mouse:move", recordMoment);
                 canvas.off("mouse:up", stopRecording);
+                $.ajax({
+                  type: "POST",
+                  url: "../worker",
+                  data: {'classify': JSON.stringify(lines)},
+                  success: function(data)
+                    {
+                         var content = "<table>";
+                         content += "<tr><th>LaTeX</th><th>Probability</th></tr>";
+                         $.each(data, function( index, value ) {
+                             $.each(value,
+                                    function(symbolbla, probability) {
+                                        content += "<tr><td>"+ symbolbla + "</td><td style='text-align:right'>" + parseFloat(probability*100).toFixed(2) + "</td></tr>";
+                                    })
+                         });
+                         content += "</table>";
+                         console.log(content);
+                         document.getElementById('classification-results').innerHTML = content;
+                    },
+                  dataType: "json",
+                  error: function(e) {
+                    console.log(e);
+                  }
+                });
             }
         }
     }
@@ -80,6 +104,10 @@
 {% block content %}
 <div class="container">
     <div class="page-header"><h1>Classify</h1></div>
+
+    <div id="classification-results" style="float:right">
+    </div>
+
     <form method="post" onsubmit="$('button').prop('disabled', true);return addCanvas();" id="form">
     <input type="hidden" id="drawnJSON" name="drawnJSON" value="" />
     <canvas id="sheet" width="400" height="400" style="border:1px solid black;width:400px;height:400px;"></canvas>

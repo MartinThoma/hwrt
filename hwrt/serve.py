@@ -9,6 +9,7 @@ from flask_bootstrap import Bootstrap
 import os
 import json
 import requests
+import logging
 
 # hwrt modules
 import hwrt
@@ -37,7 +38,7 @@ def show_results(results, n=10):
 # configuration
 DEBUG = True
 
-template_path = pkg_resources.resource_filename('hwrt', 'templates/')
+template_path = utils.get_template_folder()
 
 # create our little application :)
 app = Flask(__name__, template_folder=template_path)
@@ -46,14 +47,16 @@ app.config.from_object(__name__)
 
 
 @app.route('/', methods=['POST', 'GET'])
-def heartbeat():
+def index():
     """Use heartbeat."""
-    return request.args.get('heartbeat', '')
+    return '<a href="interactive">interactive</a>'
 
 
 @app.route('/interactive', methods=['POST', 'GET'])
 def interactive():
     """Interactive classifier."""
+    if request.method == 'GET' and request.args.get('heartbeat', '') != "":
+        return request.args.get('heartbeat', '')
     if request.method == 'POST':
         raw_data_json = request.form['drawnJSON']
 
@@ -69,7 +72,7 @@ def interactive():
         # Classify
         model_path = pkg_resources.resource_filename('hwrt', 'misc/')
         model = os.path.join(model_path, "model.tar")
-        print(model)
+        logging.info("Model: %s", model)
         results = utils.evaluate_model_single_recording(model, raw_data_json)
 
         # Show classification page

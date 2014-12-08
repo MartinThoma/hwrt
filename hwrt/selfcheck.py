@@ -8,6 +8,7 @@ import imp
 import sys
 import platform
 import os
+import pkg_resources
 
 # hwrt
 from . import utils
@@ -147,6 +148,9 @@ def main():
     else:
         print("~/.hwrtrc... %sNOT FOUND%s" %
               (bcolors.FAIL, bcolors.ENDC))
+    misc_path = pkg_resources.resource_filename('hwrt', 'misc/')
+    print("misc-path: %s" % misc_path)
+
 
 if __name__ == '__main__':
     main()

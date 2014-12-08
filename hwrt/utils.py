@@ -127,6 +127,19 @@ def get_project_root():
     return cfg['root']
 
 
+def get_template_folder():
+    """Get path to the folder where th HTML templates are."""
+    cfg = get_project_configuration()
+    if 'templates' not in cfg:
+        home = os.path.expanduser("~")
+        rcfile = os.path.join(home, ".hwrtrc")
+        cfg['templates'] = pkg_resources.resource_filename('hwrt',
+                                                           'templates/')
+        with open(rcfile, 'w') as f:
+            yaml.dump(cfg, f, default_flow_style=False)
+    return cfg['templates']
+
+
 def get_nntoolkit():
     """Get the project root folder as a string."""
     cfg = get_project_configuration()
@@ -482,7 +495,7 @@ def evaluate_model_single_recording(model_file, recording):
     # Apply preprocessing
     handwriting.preprocessing(preprocessing_queue)
 
-    # Get the preprocessing
+    # Get the features
     with open(os.path.join(tarfolder, "features.yml"), 'r') as ymlfile:
         feature_description = yaml.load(ymlfile)
     feature_str_list = feature_description['features']

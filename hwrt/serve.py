@@ -16,6 +16,13 @@ import hwrt
 import hwrt.utils as utils
 
 
+# Global variables
+preprocessing_queue = None
+feature_list = None
+model = None
+output_semantics = None
+
+
 def submit_recording(raw_data_json):
     """Submit a recording to the database on write-math.com."""
     url = "http://www.martin-thoma.de/write-math/classify/index.php"
@@ -107,6 +114,7 @@ def get_json_result(results, n=10):
 @app.route('/worker', methods=['POST', 'GET'])
 def worker():
     """Implement a worker for write-math.com."""
+    global preprocessing_queue, feature_list, model, output_semantics
     if request.method == 'POST':
         raw_data_json = request.form['classify']
 
@@ -120,9 +128,12 @@ def worker():
         submit_recording(raw_data_json)
 
         # Classify
-        model_path = pkg_resources.resource_filename('hwrt', 'misc/')
-        model = os.path.join(model_path, "model.tar")
-        results = utils.evaluate_model_single_recording(model, raw_data_json)
+        evaluate = utils.evaluate_model_single_recording_preloaded
+        results = evaluate(preprocessing_queue,
+                           feature_list,
+                           model,
+                           output_semantics,
+                           raw_data_json)
         return get_json_result(results, n=10)
     else:
         # Page where the user can enter a recording
@@ -139,6 +150,13 @@ def get_parser():
 
 def main():
     """Main function starting the webserver."""
+    global preprocessing_queue, feature_list, model, output_semantics
+    logging.info("Start reading model...")
+    model_path = pkg_resources.resource_filename('hwrt', 'misc/')
+    model_file = os.path.join(model_path, "model.tar")
+    (preprocessing_queue, feature_list, model,
+     output_semantics) = utils.load_model(model_file)
+    logging.info("Start webserver...")
     app.run()
 
 if __name__ == '__main__':

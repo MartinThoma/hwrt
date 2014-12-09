@@ -469,22 +469,18 @@ def get_recognizer_folders(model_folder):
     return folders[::-1]  # Reverse order to get the most "basic one first"
 
 
-def evaluate_model_single_recording(model_file, recording):
-    """Evaluate a model for a single recording.
-    :param model_file: Model file (.tar)
-    :param handwriting: The recording.
+def load_model(model_file):
+    """Load a model by its file. This includes the model itself, but also
+       the preprocessing queue, the feature list and the output semantics.
     """
-    # Get feature vector
-    from . import features
-    from . import preprocessing
-
-    handwriting = HandwrittenData.HandwrittenData(recording)
-
     # Extract tar
     tar = tarfile.open(model_file)
     tarfolder = tempfile.mkdtemp()
     tar.extractall(path=tarfolder)
     tar.close()
+
+    from . import features
+    from . import preprocessing
 
     # Get the preprocessing
     with open(os.path.join(tarfolder, "preprocessing.yml"), 'r') as ymlfile:
@@ -492,22 +488,58 @@ def evaluate_model_single_recording(model_file, recording):
     tmp = preprocessing_description['queue']
     preprocessing_queue = preprocessing.get_preprocessing_queue(tmp)
 
-    # Apply preprocessing
-    handwriting.preprocessing(preprocessing_queue)
-
     # Get the features
     with open(os.path.join(tarfolder, "features.yml"), 'r') as ymlfile:
         feature_description = yaml.load(ymlfile)
     feature_str_list = feature_description['features']
     feature_list = features.get_features(feature_str_list)
-    x = handwriting.feature_extraction(feature_list)
 
-    # Evaluate model
+    # Get the model
     import nntoolkit.evaluate
-    results = nntoolkit.evaluate.main(model_file, x, print_results=False)
+    model = nntoolkit.evaluate.get_model(model_file)
+
+    output_semantics_file = os.path.join(tarfolder, 'output_semantics.csv')
+    output_semantics = nntoolkit.evaluate.get_outputs(output_semantics_file)
 
     # Cleanup
     shutil.rmtree(tarfolder)
+
+    return (preprocessing_queue, feature_list, model, output_semantics)
+
+
+def evaluate_model_single_recording_preloaded(preprocessing_queue,
+                                              feature_list,
+                                              model,
+                                              output_semantics,
+                                              recording):
+    """Evaluate a model for a single recording, after everything has been
+       loaded.
+    :param preprocessing_queue: List of all preprocessing objects.
+    :param feature_list: List of all feature objects.
+    :param model: Neural network model.
+    :param output_semantics: List that defines what an output means.
+    :param recording: The handwritten recording in JSON format.
+    """
+    handwriting = HandwrittenData.HandwrittenData(recording)
+    handwriting.preprocessing(preprocessing_queue)
+    x = handwriting.feature_extraction(feature_list)
+    import nntoolkit.evaluate
+    model_output = nntoolkit.evaluate.get_model_output(model, [x])
+    return nntoolkit.evaluate.get_results(model_output, output_semantics)
+
+
+def evaluate_model_single_recording(model_file, recording):
+    """Evaluate a model for a single recording.
+    :param model_file: Model file (.tar)
+    :param recording: The handwritten recording.
+    """
+    (preprocessing_queue, feature_list, model,
+     output_semantics) = load_model(model_file)
+    results = evaluate_model_single_recording_preloaded(preprocessing_queue,
+                                                        feature_list,
+                                                        model,
+                                                        output_semantics,
+                                                        recording)
     return results
 
 

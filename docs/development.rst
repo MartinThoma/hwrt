@@ -105,3 +105,4 @@ Current State
     2014-12-05, 3669, 1191, 76%, 9.79, 316/595, 1, updated code to work with Python 3
     2014-12-07, 3674, 1191, 76%, 9.80, 316/595, 1, Python 2.7; 3.3; 3.4 compatbility; added missing packages
     2014-12-08, 3689, 1191, 75%, 9.81, 317/595, 1, hwrt/selfcheck.py: Added possibility to see templates folder; improved templates
+    2014-12-09, 3723, 1191, 75%, 9.79, 317/595, 1, hwrt/serve.py: Preload model

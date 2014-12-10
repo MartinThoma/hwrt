@@ -23,6 +23,8 @@ import hashlib
 import webbrowser
 import yaml
 import time
+import tempfile
+import tarfile
 
 # hwrt modules
 from hwrt.HandwrittenData import HandwrittenData
@@ -144,7 +146,8 @@ def sync_directory(directory):
 def main(destination=os.path.join(utils.get_project_root(),
                                   "raw-datasets"),
          small_dataset=False,
-         tiny_dataset=False):
+         tiny_dataset=False,
+         renderings=False):
     """Main part of the backup script."""
     time_prefix = time.strftime("%Y-%m-%d-%H-%M")
     if small_dataset:
@@ -226,6 +229,31 @@ def main(destination=os.path.join(utils.get_project_root(),
                 open(destination_path, "wb"),
                 2)
 
+    if renderings:
+        logging.info("Start downloading SVG renderings...")
+        svgfolder = tempfile.mkdtemp()
+        sql = """SELECT t1.formula_id, t1.svg from wm_renderings t1
+                 LEFT JOIN wm_renderings t2 ON t1.formula_id = t2.formula_id
+                 AND t1.creation_time < t2.creation_time
+                 WHERE t2.id is null"""
+        cursor.execute(sql)
+        formulas = cursor.fetchall()
+        logging.info("Create svg...")
+        for formula in formulas:
+            filename = os.path.join(svgfolder,
+                                    "%s.svg" % str(formula['formula_id']))
+            with open(filename, 'wb') as temp_file:
+                temp_file.write(formula['svg'])
+        logging.info("Tar at %s", os.path.abspath("renderings.tar"))
+
+        tar = tarfile.open("renderings.tar.bz2", "w:bz2")
+        for fn in os.listdir(svgfolder):
+            filename = os.path.join(svgfolder, fn)
+            if os.path.isfile(filename):
+                print(filename)
+                tar.add(filename, arcname=os.path.basename(filename))
+        tar.close()
+
 
 def get_parser():
     """Return the parser object for this script."""
@@ -243,6 +271,9 @@ def get_parser():
                         action="store_true", default=False,
                         help=("should only a small dataset (with all capital "
                               "letters) be created?"))
+    parser.add_argument("-r", "--renderings", dest="renderings",
+                        action="store_true", default=False,
+                        help=("should the svg renderings be downloaded?"))
     parser.add_argument("--tiny", dest="tiny",
                         action="store_true", default=False,
                         help=("should only a tiny dataset for unit-testing "
@@ -264,7 +295,7 @@ if __name__ == '__main__':
                       "Please check your '~/.hwrtrc' file.")
     else:
         if not args.onlydropbox:
-            main(args.destination, args.small, args.tiny)
+            main(args.destination, args.small, args.tiny, args.renderings)
         if sync_directory("raw-datasets"):
             logging.info("Successfully uploaded files to Dropbox.")
         else:

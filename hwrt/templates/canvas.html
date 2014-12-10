@@ -72,16 +72,16 @@
                   success: function(data)
                     {
                          var content = "<table>";
-                         content += "<tr><th>LaTeX</th><th>Probability</th></tr>";
+                         content += "<tr><th>Rendered</th><th>LaTeX</th><th>Probability</th></tr>";
                          $.each(data, function( index, value ) {
                              $.each(value,
                                     function(symbolbla, probability) {
-                                        content += "<tr><td>"+ symbolbla + "</td><td style='text-align:right'>" + parseFloat(probability*100).toFixed(2) + "</td></tr>";
+                                        content += "<tr><td>$" + symbolbla + "$</td><td>"+ symbolbla + "</td><td style='text-align:right'>" + parseFloat(probability*100).toFixed(2) + "</td></tr>";
                                     })
                          });
                          content += "</table>";
-                         console.log(content);
                          document.getElementById('classification-results').innerHTML = content;
+                         MathJax.Hub.Typeset();
                     },
                   dataType: "json",
                   error: function(e) {
@@ -99,6 +99,14 @@
         return true;
     }
     </script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
 {% endblock %}
 
 {% block content %}

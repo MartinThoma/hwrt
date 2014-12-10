@@ -21,6 +21,7 @@ preprocessing_queue = None
 feature_list = None
 model = None
 output_semantics = None
+n = 10
 
 
 def submit_recording(raw_data_json):
@@ -62,6 +63,7 @@ def index():
 @app.route('/interactive', methods=['POST', 'GET'])
 def interactive():
     """Interactive classifier."""
+    global n
     if request.method == 'GET' and request.args.get('heartbeat', '') != "":
         return request.args.get('heartbeat', '')
     if request.method == 'POST':
@@ -83,7 +85,7 @@ def interactive():
         results = utils.evaluate_model_single_recording(model, raw_data_json)
 
         # Show classification page
-        page = show_results(results, n=10)
+        page = show_results(results, n=n)
         page += '<a href="../interactive">back</a>'
         return page
     else:
@@ -114,7 +116,7 @@ def get_json_result(results, n=10):
 @app.route('/worker', methods=['POST', 'GET'])
 def worker():
     """Implement a worker for write-math.com."""
-    global preprocessing_queue, feature_list, model, output_semantics
+    global preprocessing_queue, feature_list, model, output_semantics, n
     if request.method == 'POST':
         raw_data_json = request.form['classify']
 
@@ -124,9 +126,6 @@ def worker():
         except ValueError:
             return "Invalid JSON string: %s" % raw_data_json
 
-        # Submit recorded json to database
-        submit_recording(raw_data_json)
-
         # Classify
         evaluate = utils.evaluate_model_single_recording_preloaded
         results = evaluate(preprocessing_queue,
@@ -134,7 +133,7 @@ def worker():
                            model,
                            output_semantics,
                            raw_data_json)
-        return get_json_result(results, n=10)
+        return get_json_result(results, n=n)
     else:
         # Page where the user can enter a recording
         return "Classification Worker (Version %s)" % hwrt.__version__
@@ -145,12 +144,15 @@ def get_parser():
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
     parser = ArgumentParser(description=__doc__,
                             formatter_class=ArgumentDefaultsHelpFormatter)
+    parser.add_argument("-n",
+                        dest="n", default=10, type=int,
+                        help="Show TOP-N results")
     return parser
 
 
 def main():
     """Main function starting the webserver."""
-    global preprocessing_queue, feature_list, model, output_semantics
+    global preprocessing_queue, feature_list, model, output_semantics, n
     logging.info("Start reading model...")
     model_path = pkg_resources.resource_filename('hwrt', 'misc/')
     model_file = os.path.join(model_path, "model.tar")
@@ -160,4 +162,5 @@ def main():
     app.run()
 
 if __name__ == '__main__':
+    n = get_parser().parse_args().n
     main()

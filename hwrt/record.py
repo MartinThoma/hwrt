@@ -3,11 +3,6 @@
 
 """Record new handwritten symbol and classify it."""
 
-import logging
-import sys
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
 import time
 import json
 import pkg_resources
@@ -20,6 +15,8 @@ try:
 except ImportError:
     # for Python3
     import tkinter as tk
+
+import nntoolkit
 
 # hwrt modules
 import hwrt.utils as utils
@@ -68,11 +65,6 @@ def get_parser():
                         metavar="FILE",
                         type=lambda x: utils.is_valid_file(parser, x),
                         default=model_file)
-    parser.add_argument("-v", "--verbose",
-                        dest="verbose",
-                        help="show recording before and after preprocessing",
-                        action='store_true',
-                        default=False)
     parser.add_argument("-n",
                         dest="n", default=10, type=int,
                         help="Show TOP-N results")
@@ -93,21 +85,28 @@ def show_results(results, n=10):
     print("#"*50)
 
 
-def main(model, n, verbose):
-    """Main of record.py"""
+def main(model_file, n):
+    """Main of record.py
+    :param model_file: Path to a file which represents a model (.tar)
+    :param n: Number of guesses which are showed.
+    :type n: int
+    """
     global canvas
+
+    # Define window
     root = tk.Tk()
     canvas = tk.Canvas(root, width=250, height=250)
     canvas.pack()
     root.bind('<B1-Motion>', motion)
     root.bind('<Button-1>', start)
     root.mainloop()
+
+    # When window is closed
     raw_data_json = json.dumps(recording)
-    results = utils.evaluate_model_single_recording(model, raw_data_json)
-    import nntoolkit
+    results = utils.evaluate_model_single_recording(model_file, raw_data_json)
     nntoolkit.evaluate.show_results(results, n)
 
 
 if __name__ == '__main__':
     args = get_parser().parse_args()
-    main(args.model, args.n, args.verbose)
+    main(args.model, args.n)

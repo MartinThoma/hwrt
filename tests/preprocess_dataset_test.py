@@ -4,7 +4,6 @@
 import nose
 import os
 import shutil
-import inspect
 
 # hwrt modules
 import hwrt.preprocess_dataset as preprocess_dataset

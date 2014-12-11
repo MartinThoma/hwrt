@@ -9,9 +9,6 @@ from __future__ import print_function
 import os
 import logging
 import sys
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
 try:  # Python 2
     import cPickle as pickle
 except ImportError:  # Python 3

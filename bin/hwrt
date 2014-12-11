@@ -96,7 +96,7 @@ def main(args):
     elif args.cmd == 'create_model':
         create_model.main(args.model, args.override)
     elif args.cmd == 'record':
-        record.main(args.model, args.n, args.verbose)
+        record.main(args.model, args.n)
     elif args.cmd == 'serve':
         serve.main()
     else:

@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import nose
 from nose.plugins.skip import SkipTest
 import shutil
 import os
-import yaml
 
 # hwrt modules
 import hwrt.view as view

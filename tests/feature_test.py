@@ -4,11 +4,8 @@
 import os
 import nose
 
-from nose.plugins.skip import SkipTest
-
 # hwrt modules
 from hwrt.HandwrittenData import HandwrittenData
-import hwrt.preprocessing as preprocessing
 import hwrt.features as features
 
 

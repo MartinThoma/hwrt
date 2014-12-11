@@ -9,6 +9,7 @@ install:
   - pip install pymysql
   - pip install future
   - pip install scipy
+  - pip install nntoolkit
 script:
   - nosetests --with-coverage
 before_install:

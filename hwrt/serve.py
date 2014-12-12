@@ -10,6 +10,8 @@ import os
 import json
 import requests
 import logging
+import urllib2
+import csv
 
 # hwrt modules
 import hwrt
@@ -137,6 +139,88 @@ def worker():
     else:
         # Page where the user can enter a recording
         return "Classification Worker (Version %s)" % hwrt.__version__
+
+
+def fix_writemath_answer(results):
+    """Bring ``results`` into a format that is accepted by
+       write-math.com
+    """
+    new_results = []
+    # Read csv
+    translate = {}
+    model_path = pkg_resources.resource_filename('hwrt', 'misc/')
+    translation_csv = os.path.join(model_path, 'latex2writemathindex.csv')
+    with open(translation_csv, 'rb') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+        for csvrow in spamreader:
+            if len(csvrow) == 1:
+                writemathid = csvrow[0]
+                latex = ""
+            else:
+                writemathid, latex = csvrow
+            translate[latex] = writemathid
+
+    for i, el in enumerate(results):
+        # el = {'symbolnr': 214,
+        #       'semantics': '\\triangleq',
+        #       'probability': 0.030137155301477141}
+        new_results.append({'symbolnr': el['symbolnr'],
+                            'semantics': translate[el['semantics']],
+                            'probability': el['probability']})
+        if i >= 10 or (i > 0 and el['probability'] < 0.20):
+            break
+    return new_results
+
+
+@app.route('/work', methods=['POST', 'GET'])
+def work():
+    """Implement a worker for write-math.com."""
+    global preprocessing_queue, feature_list, model, output_semantics, n
+    print("Start working!")
+    for i in range(1000):
+        # contact the write-math server and get something to classify
+        url = "http://www.martin-thoma.de/write-math/get_unclassified/"
+        response = urllib2.urlopen(url)
+        page_source = response.read()
+        parsed_json = json.loads(page_source)
+        raw_data_json = parsed_json['recording']
+
+        # Classify
+        # Check recording
+        try:
+            json.loads(raw_data_json)
+        except ValueError:
+            return "Raw Data ID %s; Invalid JSON string: %s" % (parsed_json['id'], raw_data_json)
+
+        print("http://www.martin-thoma.de/write-math/view/?raw_data_id=%s" %
+              str(parsed_json['id']))
+
+        # Classify
+        evaluate = utils.evaluate_model_single_recording_preloaded
+        results = evaluate(preprocessing_queue,
+                           feature_list,
+                           model,
+                           output_semantics,
+                           raw_data_json)
+
+        # TODO: Submit classification
+        results = fix_writemath_answer(results)
+        results_json = get_json_result(results, n=n)
+        headers = {'User-Agent': 'Mozilla/5.0',
+                   'Content-Type': 'application/x-www-form-urlencoded'}
+        payload = {'recording_id': parsed_json['id'],
+                   'results': results_json}
+
+        s = requests.Session()
+        req = requests.Request('POST', url, headers=headers, data=payload)
+        prepared = req.prepare()
+        resp = s.send(prepared)
+
+        # print("Raw Data ID: %s", str(parsed_json['id']))
+        # print("Answer: %s", str(results_json))
+        # print("Resp: %s" % resp.text)
+    print("Done")
+    return "Done"
 
 
 def get_parser():

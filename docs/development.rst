@@ -108,3 +108,4 @@ Current State
     2014-12-09, 3723, 1191, 75%, 9.79, 317/595, 1, hwrt/serve.py: Preload model
     2014-12-10, 3754, 1191, 75%, 9.78, 317/595, 1, bin/backup.py: Added possibility to get renderings from server; hwrt/serve.py: Added command line argument to adjust number of showed symbols and use MathJax to display them
     2014-12-11, 3741, 1211, 75%, 9.79, 317/595, 1, hwrt/analyze_data.py and hwrt/record.py: removed logging.basicConfig; added tests for record.py
+    2014-12-12, 3798, 1211, 75%, 9.76, 317/595, 1, hwrt/serve.py: classify data on write-math.com

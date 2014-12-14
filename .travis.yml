@@ -10,14 +10,13 @@ install:
   - pip install future
   - pip install scipy
   - pip install nntoolkit
-  - pip install h5py
   - pip install flask flask_bootstrap
 script:
   - nosetests --with-coverage
 before_install:
   - sudo apt-get install libblas-dev liblapack-dev gfortran
   - sudo apt-get install python-scipy python-numpy
-  - sudo apt-get install libhdf5-dev
+  - sudo apt-get install python-h5py
 script:
   - nosetests --with-cov --cover-package hwrt --logging-level=INFO
 after_success:

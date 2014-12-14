@@ -12,5 +12,6 @@ coverage
 dropbox
 hwrt
 future
+h5py
 flask
 flask_bootstrap

@@ -10,7 +10,7 @@ install:
   - pip install future
   - pip install scipy
   - pip install nntoolkit
-  - pip install flask
+  - pip install flask flask_bootstrap
 script:
   - nosetests --with-coverage
 before_install:

@@ -474,10 +474,9 @@ def load_model(model_file):
        the preprocessing queue, the feature list and the output semantics.
     """
     # Extract tar
-    tar = tarfile.open(model_file)
-    tarfolder = tempfile.mkdtemp()
-    tar.extractall(path=tarfolder)
-    tar.close()
+    with tarfile.open(model_file) as tar:
+        tarfolder = tempfile.mkdtemp()
+        tar.extractall(path=tarfolder)
 
     from . import features
     from . import preprocessing

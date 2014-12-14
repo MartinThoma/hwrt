@@ -63,13 +63,20 @@ def print_featurelist(feature_list):
         print("* %s" % str(algorithm))
     print("```")
 
+
 # Only feature calculation classes follow
-# Everyone must have a __str__, __repr__, __call__ and get_dimension function
-# where
+
+# Every feature class must have a __str__, __repr__ function so that error
+# messages can help you to find and fix bugs in features.
+# Every feature class must have a __call__ function which is used to get the
+# features value(s) for a given recording.
+# Every feature class must have a get_dimension function so that the total
+# number of features can be calculated and checked for consistency.
+#
 # * __call__ must take exactly one argument of type HandwrittenData
 # * __call__ must return a list of length get_dimension()
 # * get_dimension must return a positive number
-# * have a 'normalize' attribute that is either true or false
+# * have a 'normalize' attribute that is either True or False
 
 
 # Local features
@@ -248,7 +255,7 @@ class StrokeCount(object):
     def __str__(self):
         return "stroke count"
 
-    def get_dimension(self):
+    def get_dimension(self):  # pylint: disable=R0201
         """Get the dimension of the returned feature. This equals the number
            of elements in the returned list of numbers."""
         return 1
@@ -274,7 +281,7 @@ class Ink(object):
     def __str__(self):
         return "ink"
 
-    def get_dimension(self):
+    def get_dimension(self):  # pylint: disable=R0201
         """Get the dimension of the returned feature. This equals the number
            of elements in the returned list of numbers."""
         return 1
@@ -307,7 +314,7 @@ class AspectRatio(object):
     def __str__(self):
         return "Aspect Ratio"
 
-    def get_dimension(self):
+    def get_dimension(self):  # pylint: disable=R0201
         """Get the dimension of the returned feature. This equals the number
            of elements in the returned list of numbers."""
         return 1
@@ -339,7 +346,7 @@ class Width(object):
     def __str__(self):
         return "Width"
 
-    def get_dimension(self):
+    def get_dimension(self):  # pylint: disable=R0201
         """Get the dimension of the returned feature. This equals the number
            of elements in the returned list of numbers."""
         return 1
@@ -369,7 +376,7 @@ class Height(object):
     def __str__(self):
         return "Height"
 
-    def get_dimension(self):
+    def get_dimension(self):  # pylint: disable=R0201
         """Get the dimension of the returned feature. This equals the number
            of elements in the returned list of numbers."""
         return 1
@@ -394,7 +401,7 @@ class Time(object):
     def __str__(self):
         return "Time"
 
-    def get_dimension(self):
+    def get_dimension(self):  # pylint: disable=R0201
         """Get the dimension of the returned feature. This equals the number
            of elements in the returned list of numbers."""
         return 1
@@ -418,7 +425,7 @@ class CenterOfMass(object):
     def __str__(self):
         return "Center of mass"
 
-    def get_dimension(self):
+    def get_dimension(self):  # pylint: disable=R0201
         """Get the dimension of the returned feature. This equals the number
            of elements in the returned list of numbers."""
         return 2

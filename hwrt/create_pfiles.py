@@ -172,7 +172,7 @@ def get_sets(path_to_data):
 
     :param path_to_data: a pickle file that contains a list of datasets.
     """
-    loaded = pickle.load(open(path_to_data))
+    loaded = pickle.load(open(path_to_data, 'rb'))
     datasets = loaded['handwriting_datasets']
 
     training_set, validation_set, test_set = [], [], []

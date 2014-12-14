@@ -7,11 +7,16 @@ import pkg_resources
 from flask import Flask, request, render_template
 from flask_bootstrap import Bootstrap
 import os
+import sys
 import json
 import requests
 import logging
-import urllib2
 import csv
+
+# Python 2 / 3 compatibility
+from six.moves.urllib.request import urlopen
+if sys.version_info[0] == 2:
+    from future.builtins import open  # pylint: disable=W0622
 
 # hwrt modules
 import hwrt
@@ -40,8 +45,11 @@ def submit_recording(raw_data_json):
 
 
 def show_results(results, n=10):
-    """Show the TOP n results of a classification."""
-    import nntoolkit
+    """Show the TOP n results of a classification.
+    >>> results = [{'\\alpha': 0.67}, {'\\propto': 0.25}]
+    >>> show_results(results)
+    """
+    import nntoolkit.evaluate
     classification = nntoolkit.evaluate.show_results(results, n)
     return "<pre>" + classification.replace("\n", "<br/>") + "</pre>"
 
@@ -50,7 +58,6 @@ DEBUG = True
 
 template_path = utils.get_template_folder()
 
-# create our little application :)
 app = Flask(__name__, template_folder=template_path)
 Bootstrap(app)
 app.config.from_object(__name__)
@@ -58,7 +65,7 @@ app.config.from_object(__name__)
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    """Use heartbeat."""
+    """Start page."""
     return '<a href="interactive">interactive</a>'
 
 
@@ -142,15 +149,23 @@ def worker():
 
 
 def fix_writemath_answer(results):
-    """Bring ``results`` into a format that is accepted by
-       write-math.com
+    """Bring ``results`` into a format that is accepted by write-math.com.
+       This means using the ID for the formula that is used by the write-math
+       server.
+
+    >>> results = [{'symbolnr': 214,
+                    'semantics': '\\triangleq',
+                    'probability': 0.03}, ...]
+    >>> fix_writemath_answer(results)
+    [{123: 0.03}, ...]
     """
     new_results = []
     # Read csv
     translate = {}
     model_path = pkg_resources.resource_filename('hwrt', 'misc/')
     translation_csv = os.path.join(model_path, 'latex2writemathindex.csv')
-    with open(translation_csv, 'rb') as csvfile:
+    arguments = {'newline': '', 'encoding': 'utf8'}
+    with open(translation_csv, 'rt', **arguments) as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
         for csvrow in spamreader:
             if len(csvrow) == 1:
@@ -161,9 +176,6 @@ def fix_writemath_answer(results):
             translate[latex] = writemathid
 
     for i, el in enumerate(results):
-        # el = {'symbolnr': 214,
-        #       'semantics': '\\triangleq',
-        #       'probability': 0.030137155301477141}
         new_results.append({'symbolnr': el['symbolnr'],
                             'semantics': translate[el['semantics']],
                             'probability': el['probability']})
@@ -177,10 +189,10 @@ def work():
     """Implement a worker for write-math.com."""
     global preprocessing_queue, feature_list, model, output_semantics, n
     print("Start working!")
-    for i in range(1000):
+    for _ in range(1000):
         # contact the write-math server and get something to classify
         url = "http://www.martin-thoma.de/write-math/get_unclassified/"
-        response = urllib2.urlopen(url)
+        response = urlopen(url)
         page_source = response.read()
         parsed_json = json.loads(page_source)
         raw_data_json = parsed_json['recording']
@@ -190,7 +202,8 @@ def work():
         try:
             json.loads(raw_data_json)
         except ValueError:
-            return "Raw Data ID %s; Invalid JSON string: %s" % (parsed_json['id'], raw_data_json)
+            return ("Raw Data ID %s; Invalid JSON string: %s" %
+                    (parsed_json['id'], raw_data_json))
 
         print("http://www.martin-thoma.de/write-math/view/?raw_data_id=%s" %
               str(parsed_json['id']))
@@ -203,7 +216,7 @@ def work():
                            output_semantics,
                            raw_data_json)
 
-        # TODO: Submit classification
+        # Submit classification to write-math server
         results = fix_writemath_answer(results)
         results_json = get_json_result(results, n=n)
         headers = {'User-Agent': 'Mozilla/5.0',
@@ -214,12 +227,7 @@ def work():
         s = requests.Session()
         req = requests.Request('POST', url, headers=headers, data=payload)
         prepared = req.prepare()
-        resp = s.send(prepared)
-
-        # print("Raw Data ID: %s", str(parsed_json['id']))
-        # print("Answer: %s", str(results_json))
-        # print("Resp: %s" % resp.text)
-    print("Done")
+        s.send(prepared)
     return "Done"
 
 

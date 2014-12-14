@@ -5,7 +5,7 @@ except ImportError:
 
 config = {
     'name': 'hwrt',
-    'version': '0.1.203',
+    'version': '0.1.207',
     'author': 'Martin Thoma',
     'author_email': 'info@martin-thoma.de',
     'packages': ['hwrt'],
@@ -29,7 +29,8 @@ config = {
         "h5py",
         "flask",
         "flask-bootstrap",
-        "requests"
+        "requests",
+        "six"
     ],
     'keywords': ['HWRT', 'recognition', 'handwriting', 'on-line'],
     'download_url': 'https://github.com/MartinThoma/hwrt',

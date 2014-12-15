@@ -10,15 +10,57 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     stream=sys.stdout)
 import os
 import yaml
+import datetime
 
 # hwrt modules
 import hwrt.utils as utils
+import hwrt.preprocess_dataset as preprocess_dataset
+import hwrt.create_pfiles as create_pfiles
+import hwrt.create_model as create_model
+
+
+def update_if_outdated(folder):
+    """Check if the currently watched instance (model, feature or
+        preprocessing) is outdated and update it eventually.
+    """
+
+    folders = []
+    while os.path.isdir(folder):
+        folders.append(folder)
+        # Get info.yml
+        with open(os.path.join(folder, "info.yml")) as ymlfile:
+            content = yaml.load(ymlfile)
+        folder = os.path.join(utils.get_project_root(), content['data-source'])
+    raw_source_file = folder
+    dt = os.path.getmtime(raw_source_file)
+    source_mtime = datetime.datetime.utcfromtimestamp(dt)
+    folders = folders[::-1]  # Reverse order to get the most "basic one first"
+
+    for target_folder in folders:
+        target_mtime = utils.get_latest_successful_run(target_folder)
+        if target_mtime is None or source_mtime > target_mtime:
+            # The source is later than the target. That means we need to
+            # refresh the target
+            if "preprocessed" in target_folder:
+                logging.info("Preprocessed file was outdated. Update...")
+                preprocess_dataset.main(os.path.join(utils.get_project_root(),
+                                                     target_folder))
+            elif "feature-files" in target_folder:
+                logging.info("Feature file was outdated. Update...")
+                create_pfiles.main(target_folder)
+            elif "model" in target_folder:
+                logging.info("Model file was outdated. Update...")
+                create_model.main(target_folder, True)
+            target_mtime = datetime.datetime.utcnow()
+        else:
+            logging.info("'%s' is up-to-date.", target_folder)
+        source_mtime = target_mtime
 
 
 def generate_training_command(model_folder):
     """Generate a string that contains a command with all necessary
        parameters to train the model."""
-    utils.update_if_outdated(model_folder)
+    update_if_outdated(model_folder)
     model_description_file = os.path.join(model_folder, "info.yml")
     # Read the model description file
     with open(model_description_file, 'r') as ymlfile:
@@ -62,10 +104,8 @@ def generate_training_command(model_folder):
     return training
 
 
-def train_model(model_folder, model_description, data):
-    """Train the model in ``model_folder``.
-    :param data: The information where the data (pfiles) is.
-    :type data: dictionary"""
+def train_model(model_folder):
+    """Train the model in ``model_folder``."""
     os.chdir(model_folder)
     training = generate_training_command(model_folder)
     if training is None:
@@ -89,7 +129,7 @@ def main(model_folder):
     data['training'] = os.path.join(model_folder, "traindata.pfile")
     data['testing'] = os.path.join(model_folder, "testdata.pfile")
     data['validating'] = os.path.join(model_folder, "validdata.pfile")
-    train_model(model_folder, model_description, data)
+    train_model(model_folder)
 
 
 def get_parser():

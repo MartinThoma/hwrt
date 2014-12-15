@@ -110,3 +110,4 @@ Current State
     2014-12-11, 3741, 1211, 75%, 9.79, 317/595, 1, hwrt/analyze_data.py and hwrt/record.py: removed logging.basicConfig; added tests for record.py
     2014-12-12, 3798, 1211, 75%, 9.76, 317/595, 1, hwrt/serve.py: classify data on write-math.com
     2014-12-14, 3802, 1235, 74%, 9.77, 317/595, 1, minor adjustments
+    2014-12-15, 3807, 1268, 76%, 9.78, 396/595, 1, hwrt/serve.py: catch problem if no internet connection; updated some docstrings

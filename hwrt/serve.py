@@ -32,7 +32,11 @@ n = 10
 
 
 def submit_recording(raw_data_json):
-    """Submit a recording to the database on write-math.com."""
+    """Submit a recording to the database on write-math.com.
+
+    :raises requests.exceptions.ConnectionError: if the internet connection is
+    lost
+    """
     url = "http://www.martin-thoma.de/write-math/classify/index.php"
     headers = {'User-Agent': 'Mozilla/5.0',
                'Content-Type': 'application/x-www-form-urlencoded'}
@@ -85,7 +89,11 @@ def interactive():
             return "Invalid JSON string: %s" % raw_data_json
 
         # Submit recorded json to database
-        submit_recording(raw_data_json)
+        try:
+            submit_recording(raw_data_json)
+        except requests.exceptions.ConnectionError:
+            return ("Failed to submit this recording to write-math.com. "
+                    "No internet connection?")
 
         # Classify
         model_path = pkg_resources.resource_filename('hwrt', 'misc/')

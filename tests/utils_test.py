@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""Tests for the utility functions."""
+
 import nose
 import mock
 import os
 import argparse
+import pkg_resources
+import json
 
 # hwrt modules
 import hwrt
@@ -13,6 +17,7 @@ import hwrt.utils as utils
 
 # Tests
 def execution_test():
+    """Test if the functions execute at all."""
     utils.get_project_root()
     utils.get_latest_model(".", "model")
     utils.get_latest_working_model(".")
@@ -37,8 +42,8 @@ def execution_test():
 
 
 def parser_test():
+    """Check the parser."""
     from argparse import ArgumentParser
-    import os
     parser = ArgumentParser()
     home = os.path.expanduser("~")
     rcfile = os.path.join(home, ".hwrtrc")
@@ -55,11 +60,17 @@ def parser_test():
 
 
 def get_class_test():
+    """The get_class function returns a class for feature and preprocessing
+       algorithms.
+    """
     utils.get_class('ScaleAndShift', 'preprocessing', hwrt.preprocessing)
     utils.get_class('BongaBonga', 'preprocessing', hwrt.preprocessing)
 
 
 def query_yes_no_test():
+    """This function is used to get a binary decision by the user.
+       Sadly, there are two different ways to use it due to Python 2 / 3.
+    """
     try:
         import __builtin__
         builtins_str = "__builtin__.raw_input"
@@ -76,6 +87,7 @@ def query_yes_no_test():
 
 
 def input_string_test():
+    """Another Python 2/3 input hack."""
     try:
         import __builtin__
         with mock.patch('__builtin__.raw_input', return_value='y'):
@@ -86,6 +98,7 @@ def input_string_test():
 
 
 def input_int_default_test():
+    """Another Python 2/3 input hack."""
     try:
         import __builtin__
         builtins_str = "__builtin__.raw_input"
@@ -101,6 +114,7 @@ def input_int_default_test():
 
 @nose.tools.raises(Exception)
 def query_yes_no_exception_test():
+    """Another Python 2/3 input hack."""
     try:
         import __builtin__
         builtins_str = "__builtin__"
@@ -113,6 +127,7 @@ def query_yes_no_exception_test():
 
 @nose.tools.raises(SystemExit)
 def is_valid_file_test():
+    """Check if a file exists. Do this check within ArgumentParser."""
     parser = argparse.ArgumentParser()
 
     # Does exist
@@ -125,6 +140,7 @@ def is_valid_file_test():
 
 @nose.tools.raises(SystemExit)
 def is_valid_folder_test():
+    """Similiar to is_valid_file."""
     parser = argparse.ArgumentParser()
 
     # Does exist
@@ -135,6 +151,7 @@ def is_valid_folder_test():
 
 
 def create_project_configuration_test():
+    """Test if the creation of the project configuration works."""
     filename = 'projectconftesttmp.txt'
     utils.create_project_configuration(filename)
     if os.path.isfile(filename):
@@ -142,13 +159,18 @@ def create_project_configuration_test():
 
 
 def get_latest_model_test():
+    """Check if get_latest_model works."""
     model_folder = "/etc"
     basename = "model"
     nose.tools.assert_equal(utils.get_latest_model(model_folder, basename),
                             None)
+    small = os.path.join(utils.get_project_root(),
+                         "models/small-baseline")
+    utils.get_latest_model(small, basename)
 
 
 def choose_raw_dataset_test():
+    """Check the interactive function choose_raw_dataset."""
     try:
         import __builtin__
         with mock.patch('__builtin__.raw_input', return_value=0):
@@ -156,3 +178,40 @@ def choose_raw_dataset_test():
     except ImportError:
         with mock.patch('builtins.input', return_value=0):
             utils.choose_raw_dataset()
+
+
+def get_recognizer_folders_test():
+    """Test if all folders are catched."""
+    small = os.path.join(utils.get_project_root(),
+                         "models/small-baseline")
+    folders = utils.get_recognizer_folders(small)
+    wanted_folders = ['preprocessed/small-baseline',
+                      'feature-files/small-baseline',
+                      'models/small-baseline']
+    for folder, wanted_folder in zip(folders, wanted_folders):
+        nose.tools.assert_equal(folder.endswith(wanted_folder),
+                                True)
+
+
+def load_model_test():
+    """Test if the packaged model can be loaded."""
+    model_path = pkg_resources.resource_filename('hwrt', 'misc/')
+    model_file = os.path.join(model_path, "model.tar")
+    utils.load_model(model_file)
+
+
+def evaluate_model_single_recording_preloaded_test():
+    """Test if the packaged model can be used."""
+    model_path = pkg_resources.resource_filename('hwrt', 'misc/')
+    model_file = os.path.join(model_path, "model.tar")
+    recording = [[{'x': 12, 'y': 42, 'time': 123}]]
+    utils.evaluate_model_single_recording(model_file, json.dumps(recording))
+    (pq, fl, model, output_semantics) = utils.load_model(model_file)
+
+    # data = {}
+    # data['recording'] = json.dumps(recording)
+    # data['preprocessing_queue'] = pq
+    # data['feature_list'] = fl
+    # data['model'] = model
+    # data['output_semantics'] = output_semantics
+    # utils.evaluate_model_single_recording_preloaded(**data)

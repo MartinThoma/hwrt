@@ -37,8 +37,6 @@ def create_model(model_folder, model_type, topology, override):
 
 def main(model_folder, override=False):
     """Parse the info.yml from ``model_folder`` and create the model file."""
-    # That would cause an infinite loop:
-    # utils.update_if_outdated(model_folder)
     model_description_file = os.path.join(model_folder, "info.yml")
     # Read the model description file
     with open(model_description_file, 'r') as ymlfile:

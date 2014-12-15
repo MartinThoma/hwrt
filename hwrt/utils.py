@@ -169,7 +169,7 @@ def get_latest_folder(folder):
         logging.error("You don't have any model folder. I suggest you "
                       "have a look at "
                       "https://github.com/MartinThoma/hwr-experiments and "
-                      "http://hwrt.readthedocs.org/")
+                      "http://pythonhosted.org/hwrt/")
         sys.exit(-1)
     else:
         return os.path.abspath(folders[0])
@@ -309,48 +309,6 @@ def create_run_logfile(folder):
         f.write("timestamp: '%s'" % datestring)
 
 
-def update_if_outdated(folder):
-    """Check if the currently watched instance (model, feature or
-        preprocessing) is outdated and update it eventually.
-    """
-
-    from . import preprocess_dataset
-    from . import create_pfiles
-    from . import create_model
-
-    folders = []
-    while os.path.isdir(folder):
-        folders.append(folder)
-        # Get info.yml
-        with open(os.path.join(folder, "info.yml")) as ymlfile:
-            content = yaml.load(ymlfile)
-        folder = os.path.join(get_project_root(), content['data-source'])
-    raw_source_file = folder
-    dt = os.path.getmtime(raw_source_file)
-    source_mtime = datetime.datetime.utcfromtimestamp(dt)
-    folders = folders[::-1]  # Reverse order to get the most "basic one first"
-
-    for target_folder in folders:
-        target_mtime = get_latest_successful_run(target_folder)
-        if target_mtime is None or source_mtime > target_mtime:
-            # The source is later than the target. That means we need to
-            # refresh the target
-            if "preprocessed" in target_folder:
-                logging.info("Preprocessed file was outdated. Update...")
-                preprocess_dataset.main(os.path.join(get_project_root(),
-                                                     target_folder))
-            elif "feature-files" in target_folder:
-                logging.info("Feature file was outdated. Update...")
-                create_pfiles.main(target_folder)
-            elif "model" in target_folder:
-                logging.info("Model file was outdated. Update...")
-                create_model.main(target_folder, True)
-            target_mtime = datetime.datetime.utcnow()
-        else:
-            logging.info("'%s' is up-to-date.", target_folder)
-        source_mtime = target_mtime
-
-
 def choose_raw_dataset(currently=""):
     """Let the user choose a raw dataset. Return the absolute path."""
     folder = os.path.join(get_project_root(), "raw-datasets")
@@ -484,8 +442,8 @@ def load_model(model_file):
     # Get the preprocessing
     with open(os.path.join(tarfolder, "preprocessing.yml"), 'r') as ymlfile:
         preprocessing_description = yaml.load(ymlfile)
-    tmp = preprocessing_description['queue']
-    preprocessing_queue = preprocessing.get_preprocessing_queue(tmp)
+    preprocessing_queue = preprocessing.get_preprocessing_queue(
+        preprocessing_description['queue'])
 
     # Get the features
     with open(os.path.join(tarfolder, "features.yml"), 'r') as ymlfile:
@@ -545,7 +503,7 @@ def evaluate_model_single_recording(model_file, recording):
 def _evaluate_model_single_file(target_folder, test_file):
     """Evaluate a model for a single recording.
     :param target_folder: Folder where the model is
-    :param test_file: The test file
+    :param test_file: The test file (.pfile)
     """
     logging.info("Create running model...")
     model_src = get_latest_model(target_folder, "model")

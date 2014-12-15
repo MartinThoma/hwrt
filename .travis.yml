@@ -11,12 +11,14 @@ install:
   - pip install scipy
   - pip install nntoolkit
   - pip install flask flask_bootstrap
+  - pip install h5py
 script:
   - nosetests --with-coverage
 before_install:
   - sudo apt-get install libblas-dev liblapack-dev gfortran
   - sudo apt-get install python-scipy python-numpy
-  - sudo apt-get install python-h5py
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq libhdf5-serial-dev
 script:
   - nosetests --with-cov --cover-package hwrt --logging-level=INFO
 after_success:

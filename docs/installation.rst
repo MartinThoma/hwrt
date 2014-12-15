@@ -126,7 +126,7 @@ Alternatively, you can start
 
 and go to http://127.0.0.1:5000/interactive to see
 
-.. image:: classify.png
+.. image:: browser-ui.png
     :height: 350px
     :align: center
     :alt: Browser interface

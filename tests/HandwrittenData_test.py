@@ -1,40 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
 import nose.tools
+import tests.testhelper as testhelper
 
 # hwrt modules
 from hwrt.HandwrittenData import HandwrittenData
 
 
-# Test helpers
-def get_all_symbols():
-    current_folder = os.path.dirname(os.path.realpath(__file__))
-    symbol_folder = os.path.join(current_folder, "symbols")
-    symbols = [os.path.join(symbol_folder, f)
-               for f in os.listdir(symbol_folder)
-               if os.path.isfile(os.path.join(symbol_folder, f))]
-    return symbols
-
-
-def get_symbol(raw_data_id):
-    current_folder = os.path.dirname(os.path.realpath(__file__))
-    file_path = os.path.join(current_folder, "symbols/%i.json" % raw_data_id)
-    return file_path
-
-
-def get_symbol_as_handwriting(raw_data_id):
-    symbol_file = get_symbol(raw_data_id)
-    with open(symbol_file) as f:
-        data = f.read()
-    a = HandwrittenData(data)
-    return a
-
-
 # Tests
 def load_symbol_test():
-    for symbol_file in get_all_symbols():
+    for symbol_file in testhelper.get_all_symbols():
         with open(symbol_file) as f:
             data = f.read()
         a = HandwrittenData(data)
@@ -42,13 +18,13 @@ def load_symbol_test():
 
 
 def set_pointlist_test():
-    a = get_symbol_as_handwriting(97705)
+    a = testhelper.get_symbol_as_handwriting(97705)
     a.set_pointlist([[]])
     nose.tools.assert_equal(a.get_pointlist(), [[]])
 
 
 def get_sorted_pointlist_test():
-    a = get_symbol_as_handwriting(97705)
+    a = testhelper.get_symbol_as_handwriting(97705)
     nose.tools.assert_equal(a.get_sorted_pointlist(),
                             [[
                              {'y': 223.125, 'x': 328.5, 'time': 1377173554837},
@@ -119,24 +95,24 @@ def get_sorted_pointlist_test():
 
 
 def count_single_dots_test():
-    a = get_symbol_as_handwriting(97705)
+    a = testhelper.get_symbol_as_handwriting(97705)
     a.set_pointlist([[{'x': 12, 'y': 42, 'time': 100}]])
     nose.tools.assert_equal(a.count_single_dots(), 1)
 
 
 def center_of_mass_test():
-    a = get_symbol_as_handwriting(97705)
+    a = testhelper.get_symbol_as_handwriting(97705)
     nose.tools.assert_equal(a.get_center_of_mass(), (229.21875, 207.265625))
 
 
 def equality_test():
-    a = get_symbol_as_handwriting(97705)
+    a = testhelper.get_symbol_as_handwriting(97705)
     nose.tools.assert_equal(a == a, True)
 
 
 def inequality_test():
-    a = get_symbol_as_handwriting(97705)
-    b = get_symbol_as_handwriting(292934)
+    a = testhelper.get_symbol_as_handwriting(97705)
+    b = testhelper.get_symbol_as_handwriting(292934)
     nose.tools.assert_equal(a == b, False)
     c = []
     nose.tools.assert_equal(a == c, False)
@@ -144,28 +120,28 @@ def inequality_test():
 
 
 def stringification_test():
-    a = get_symbol_as_handwriting(97705)
+    a = testhelper.get_symbol_as_handwriting(97705)
     nose.tools.assert_equal(str(a), "HandwrittenData(raw_data_id=None)")
 
 
 def area_test():
-    a = get_symbol_as_handwriting(97705)
+    a = testhelper.get_symbol_as_handwriting(97705)
     # TODO: Is this really correct?
     nose.tools.assert_equal(a.get_area(), 49368.0)
 
 
 def time_test():
-    a = get_symbol_as_handwriting(97705)
+    a = testhelper.get_symbol_as_handwriting(97705)
     nose.tools.assert_equal(a.get_time(), 1876)
 
 
 def show_test():
-    a = get_symbol_as_handwriting(97705)
+    a = testhelper.get_symbol_as_handwriting(97705)
     #a.show()  # TODO: how? mock?
 
 
 def width_test():
-    with open(get_symbol(97705)) as f:
+    with open(testhelper.get_symbol(97705)) as f:
         data = f.read()
     assert HandwrittenData(data).get_width() == 186, \
         "Got %i" % HandwrittenData(data).get_width()

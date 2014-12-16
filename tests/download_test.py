@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import nose
-from nose.plugins.skip import SkipTest
-import shutil
-import os
-
 # hwrt modules
 import hwrt.download as download
 

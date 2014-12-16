@@ -29,7 +29,6 @@ from hwrt import selfcheck
 from hwrt import view
 from hwrt import download
 from hwrt import analyze_data
-from hwrt import record
 from hwrt import serve
 
 
@@ -67,11 +66,6 @@ def get_parser():
                           add_help=False,
                           parents=[create_model.get_parser()],
                           help=("Create a model file."))
-    subparsers.add_parser('record',
-                          add_help=False,
-                          parents=[record.get_parser()],
-                          help=("Record handwriting with GUI and classify it.")
-                          )
     subparsers.add_parser('serve',
                           add_help=False,
                           parents=[serve.get_parser()],
@@ -95,8 +89,6 @@ def main(args):
         create_pfiles.main(args.folder, args.create_learning_curve)
     elif args.cmd == 'create_model':
         create_model.main(args.model, args.override)
-    elif args.cmd == 'record':
-        record.main(args.model, args.n)
     elif args.cmd == 'serve':
         serve.main()
     else:

@@ -106,25 +106,9 @@ The command
 
 .. code:: bash
 
-    $ hwrt record
-
-will open a window. You can draw a symbol there:
-
-.. image:: record-window.png
-    :height: 256px
-    :align: center
-    :alt: Record what you want to draw
-
-Close the window when you're ready. The classification result will be shown in
-the terminal.
-
-Alternatively, you can start
-
-.. code:: bash
-
     $ hwrt serve
 
-and go to http://127.0.0.1:5000/interactive to see
+will start a web server. Go to http://127.0.0.1:5000/interactive to see
 
 .. image:: browser-ui.png
     :height: 350px

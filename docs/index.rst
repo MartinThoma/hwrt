@@ -40,16 +40,16 @@ Contents:
    plugins
    development
 
-Binaries:
+Commands:
 
 .. toctree::
    :maxdepth: 2
 
+   serve
    download
    analyze_data
    view
    train
-   record
    test
    backup
 

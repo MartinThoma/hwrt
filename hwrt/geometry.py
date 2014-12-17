@@ -26,7 +26,7 @@ class Point(object):
         return "p(%0.2f, %0.2f)" % (self.x, self.y)
 
     def __str__(self):
-        return self.__repr__()
+        return repr(self)
 
 
 class LineSegment(object):
@@ -57,7 +57,7 @@ class LineSegment(object):
         return "line[%s -> %s]" % (str(self.p1), str(self.p2))
 
     def __str__(self):
-        return self.__repr__()
+        return repr(self)
 
 
 class PolygonalChain(object):
@@ -115,7 +115,7 @@ class BoundingBox(object):
         return "BoundingBox[%s, %s]" % (str(self.p1), str(self.p2))
 
     def __str__(self):
-        return self.__repr__()
+        return repr(self)
 
     def get_area(self):
         """Calculate area of bounding box."""

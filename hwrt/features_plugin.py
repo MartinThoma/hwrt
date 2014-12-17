@@ -24,7 +24,7 @@ class Bitmap(object):
         return ("Bitmap (n=%i)\n") % (self.n)
 
     def __str__(self):
-        return self.__repr__()
+        return repr(self)
 
     def get_dimension(self):
         """Get the dimension of the returned feature. This equals the number
@@ -61,5 +61,5 @@ class Bitmap(object):
                 x.append(pix[i, j])
         assert self.get_dimension() == len(x), \
             "Dimension of %s should be %i, but was %i" % \
-            (self.__str__(), self.get_dimension(), len(x))
+            (str(self), self.get_dimension(), len(x))
         return x

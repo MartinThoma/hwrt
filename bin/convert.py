@@ -103,10 +103,9 @@ def main(model_folder):
     with open("model.yml", 'w') as f:
         yaml.dump(model, f, default_flow_style=False)
 
-    tar = tarfile.open("model.tar", "w:")
-    for name in filenames:
-        tar.add(name)
-    tar.close()
+    with tarfile.open("model.tar", "w:") as tar:
+        for name in filenames:
+            tar.add(name)
 
     for filename in filenames:
         os.remove(filename)

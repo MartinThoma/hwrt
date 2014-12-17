@@ -58,7 +58,7 @@ class Multiply(object):
         return "Multiply (%i times)" % self.nr
 
     def __str__(self):
-        return self.__repr__()
+        return repr(self)
 
     def __call__(self, handwritten_data):
         assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
@@ -84,7 +84,7 @@ class Rotate(object):
         return "Rotate (%0.2f, %0.2f, %0.2f)" % (self.min, self.max, self.num)
 
     def __str__(self):
-        return self.__repr__()
+        return repr(self)
 
     def __call__(self, handwritten_data):
         assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \

@@ -113,3 +113,4 @@ Current State
     2014-12-15, 3807, 1268, 76%, 9.78, 396/595, 1, hwrt/serve.py: catch problem if no internet connection; updated some docstrings
     2014-12-16, 3738, 1243, 76%, 9.80, 396/595, 1, hwrt/record.py: removed as the functionality is also in hwrt/serve.py
     2014-12-16, 3738, 1047, 76%, 9.80, 396/595, 1, tests: factored test helpers out in their own module
+    2014-12-17, 3737, 1049, 76%, 9.80, 395/595, 1, code beautification: self.__repr__() -> repr(self); with open

@@ -42,6 +42,8 @@ config = {
                     'Natural Language :: English',
                     'Programming Language :: Python :: 2.7',
                     'Programming Language :: Python :: 3',
+                    'Programming Language :: Python :: 3.3',
+                    'Programming Language :: Python :: 3.4',
                     'Topic :: Scientific/Engineering :: Artificial Intelligence',
                     'Topic :: Software Development',
                     'Topic :: Utilities'],

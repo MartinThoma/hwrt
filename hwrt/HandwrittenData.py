@@ -206,10 +206,8 @@ class HandwrittenData(object):
         return (xsum/counter, ysum/counter)
 
     def __eq__(self, other):
-        if isinstance(other, self.__class__):
-            return self.__dict__ == other.__dict__
-        else:
-            return False
+        return (isinstance(other, self.__class__)
+                and self.__dict__ == other.__dict__)
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -218,4 +216,4 @@ class HandwrittenData(object):
         return "HandwrittenData(raw_data_id=%s)" % str(self.raw_data_id)
 
     def __str__(self):
-        return self.__repr__()
+        return repr(self)

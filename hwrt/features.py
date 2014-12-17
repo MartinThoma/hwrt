@@ -189,7 +189,7 @@ class ConstantPointCoordinates(object):
             x = self._features_without_strokes(handwritten_data)
         assert self.get_dimension() == len(x), \
             "Dimension of %s should be %i, but was %i" % \
-            (self.__str__(), self.get_dimension(), len(x))
+            (str(self), self.get_dimension(), len(x))
         return x
 
 
@@ -237,7 +237,7 @@ class FirstNPoints(object):
                     x.append(point['y'])
         assert self.get_dimension() == len(x), \
             "Dimension of %s should be %i, but was %i" % \
-            (self.__str__(), self.get_dimension(), len(x))
+            (str(self), self.get_dimension(), len(x))
         return x
 
 
@@ -549,7 +549,7 @@ class StrokeIntersections(object):
 
         assert self.get_dimension() == len(x), \
             "Dimension of %s should be %i, but was %i" % \
-            (self.__str__(), self.get_dimension(), len(x))
+            (str(self), self.get_dimension(), len(x))
         return x
 
 
@@ -602,7 +602,7 @@ class ReCurvature(object):
             x.append(0)
         assert self.get_dimension() == len(x), \
             "Dimension of %s should be %i, but was %i" % \
-            (self.__str__(), self.get_dimension(), len(x))
+            (str(self), self.get_dimension(), len(x))
         return x
 
 

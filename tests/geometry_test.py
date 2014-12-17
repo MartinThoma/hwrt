@@ -11,6 +11,7 @@ import hwrt.geometry as geometry
 def object_creation_test():
     p1 = geometry.Point(0, 0)
     p2 = geometry.Point(1, 1)
+    nose.tools.assert_equal(str(p1), "p(0.00, 0.00)")
     geometry.LineSegment(p1, p2)
     geometry.BoundingBox(p1, p2)
     geometry.PolygonalChain([{'x': 0, 'y': 0}, {'x': 10, 'y': 5},

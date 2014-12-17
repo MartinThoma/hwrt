@@ -37,8 +37,8 @@ def repr_and_str_test():
          features.Ink()
          ]
     for alg in l:
-        alg.__str__()
-        alg.__repr__()
+        str(alg)
+        repr(alg)
 
 
 def dimension_test():

@@ -68,10 +68,10 @@ def dropbox_upload(filename, directory, client):
     logging.info("Start uploading '%s' (%s)...",
                  filename,
                  utils.sizeof_fmt(filesize))
-    f = open(local_path, 'rb')
-    uploader = client.get_chunked_uploader(f, filesize)
-    uploader.upload_chunked()
-    uploader.finish(online_path, overwrite=True)
+    with open(local_path, 'rb') as f:
+        uploader = client.get_chunked_uploader(f, filesize)
+        uploader.upload_chunked()
+        uploader.finish(online_path, overwrite=True)
     url = client.share(online_path,
                        short_url=False)['url'].encode('ascii', 'ignore')
     url = url.replace("?dl=0", "?dl=1")

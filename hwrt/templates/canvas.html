@@ -76,7 +76,7 @@
                          $.each(data, function( index, value ) {
                              $.each(value,
                                     function(symbolbla, probability) {
-                                        content += "<tr><td>$" + symbolbla + "$</td><td>"+ symbolbla + "</td><td style='text-align:right'>" + parseFloat(probability*100).toFixed(2) + "</td></tr>";
+                                        content += "<tr><td>$" + symbolbla + "$</td><td><input value='"+ symbolbla + "' /></td><td style='text-align:right'>" + parseFloat(probability*100).toFixed(2) + "</td></tr>";
                                     })
                          });
                          content += "</table>";

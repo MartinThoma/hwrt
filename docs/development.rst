@@ -114,3 +114,4 @@ Current State
     2014-12-16, 3738, 1243, 76%, 9.80, 396/595, 1, hwrt/record.py: removed as the functionality is also in hwrt/serve.py
     2014-12-16, 3738, 1047, 76%, 9.80, 396/595, 1, tests: factored test helpers out in their own module
     2014-12-17, 3737, 1049, 76%, 9.80, 395/595, 1, code beautification: self.__repr__() -> repr(self); with open
+    2014-12-18, 3721, 1086, 77%, 9.80, 395/595, 1, hwrt/features.py: More testing; abc baseclass

@@ -20,6 +20,7 @@ import logging
 import sys
 from itertools import combinations_with_replacement as combinations_wr
 import numpy
+import abc
 
 # hwrt modules
 from . import HandwrittenData
@@ -64,6 +65,25 @@ def print_featurelist(feature_list):
     print("```")
 
 
+class Feature(object):
+
+    """Abstract class which defines which methods to implement for features."""
+
+    __metaclass__ = abc.ABCMeta
+
+    @abc.abstractmethod
+    def __call__(self, handwritten_data):
+        """Get the features value for a given recording ``handwritten_data``.
+        """
+        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
+            "handwritten data is not of type HandwrittenData, but of %r" % \
+            type(handwritten_data)
+
+    @abc.abstractmethod
+    def get_dimension(self):
+        """Return the length of the list which __call__ will return."""
+
+
 # Only feature calculation classes follow
 
 # Every feature class must have a __str__, __repr__ function so that error
@@ -82,7 +102,7 @@ def print_featurelist(feature_list):
 # Local features
 
 
-class ConstantPointCoordinates(object):
+class ConstantPointCoordinates(Feature):
 
     """Take the first ``points_per_stroke=20`` points coordinates of the first
        ``strokes=4`` strokes as features. This leads to
@@ -180,9 +200,7 @@ class ConstantPointCoordinates(object):
         return x
 
     def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
-            "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+        super(self.__class__, self).__call__(handwritten_data)
         if self.strokes > 0:
             x = self._features_with_strokes(handwritten_data)
         else:
@@ -193,7 +211,7 @@ class ConstantPointCoordinates(object):
         return x
 
 
-class FirstNPoints(object):
+class FirstNPoints(Feature):
 
     """Similar to the ``ConstantPointCoordinates`` feature, this feature takes
        the first ``n=81`` point coordinates. It also has the
@@ -221,9 +239,7 @@ class FirstNPoints(object):
         return 2*self.n
 
     def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
-            "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+        super(self.__class__, self).__call__(handwritten_data)
         x = []
         pointlist = handwritten_data.get_pointlist()
         left = self.n
@@ -243,7 +259,7 @@ class FirstNPoints(object):
 
 # Global features
 
-class StrokeCount(object):
+class StrokeCount(Feature):
 
     """Stroke count as a 1 dimensional recording."""
 
@@ -261,13 +277,11 @@ class StrokeCount(object):
         return 1
 
     def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
-            "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+        super(self.__class__, self).__call__(handwritten_data)
         return [len(handwritten_data.get_pointlist())]
 
 
-class Ink(object):
+class Ink(Feature):
 
     """Ink as a 1 dimensional feature. It gives a numeric value for the amount
        of ink this would eventually have consumed.
@@ -287,9 +301,7 @@ class Ink(object):
         return 1
 
     def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
-            "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+        super(self.__class__, self).__call__(handwritten_data)
         ink = 0.
         # calculate ink used for this symbol
         # TODO: What about dots? What about speed?
@@ -302,7 +314,7 @@ class Ink(object):
         return [ink]
 
 
-class AspectRatio(object):
+class AspectRatio(Feature):
 
     """Aspect ratio of a recording as a 1 dimensional feature."""
 
@@ -320,15 +332,13 @@ class AspectRatio(object):
         return 1
 
     def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
-            "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+        super(self.__class__, self).__call__(handwritten_data)
         width = float(handwritten_data.get_width()+0.01)
         height = float(handwritten_data.get_height()+0.01)
         return [width/height]
 
 
-class Width(object):
+class Width(Feature):
 
     """Width of a recording as a 1 dimensional feature.
 
@@ -352,13 +362,11 @@ class Width(object):
         return 1
 
     def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
-            "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+        super(self.__class__, self).__call__(handwritten_data)
         return [float(handwritten_data.get_width())]
 
 
-class Height(object):
+class Height(Feature):
 
     """Height of a recording as a a 1 dimensional feature.
 
@@ -382,13 +390,11 @@ class Height(object):
         return 1
 
     def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
-            "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+        super(self.__class__, self).__call__(handwritten_data)
         return [float(handwritten_data.get_height())]
 
 
-class Time(object):
+class Time(Feature):
 
     """The time in milliseconds it took to create the recording. This is a 1
        dimensional feature."""
@@ -407,13 +413,11 @@ class Time(object):
         return 1
 
     def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
-            "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+        super(self.__class__, self).__call__(handwritten_data)
         return [float(handwritten_data.get_time())]
 
 
-class CenterOfMass(object):
+class CenterOfMass(Feature):
 
     """Center of mass of a recording as a 2 dimensional feature."""
 
@@ -431,9 +435,7 @@ class CenterOfMass(object):
         return 2
 
     def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
-            "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+        super(self.__class__, self).__call__(handwritten_data)
         xs = []
         ys = []
         for stroke in handwritten_data.get_pointlist():
@@ -443,7 +445,7 @@ class CenterOfMass(object):
         return [float(sum(xs))/len(xs), float(sum(ys))/len(ys)]
 
 
-class StrokeCenter(object):
+class StrokeCenter(Feature):
 
     """Get the stroke center of mass coordinates as a 2 dimensional feature."""
 
@@ -464,9 +466,7 @@ class StrokeCenter(object):
         return self.strokes*2
 
     def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
-            "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+        super(self.__class__, self).__call__(handwritten_data)
         feature_vector = []
         for i, stroke in enumerate(handwritten_data.get_pointlist()):
             if i >= self.strokes:
@@ -483,7 +483,7 @@ class StrokeCenter(object):
         return feature_vector
 
 
-class StrokeIntersections(object):
+class StrokeIntersections(Feature):
     """Count the number of intersections which strokes in the recording have
        with each other in form of a symmetrical matrix for the first
        ``stroke=4`` strokes. The feature dimension is
@@ -524,21 +524,17 @@ class StrokeIntersections(object):
         return int(round(float(self.strokes**2)/2 + float(self.strokes)/2))
 
     def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
-            "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+        super(self.__class__, self).__call__(handwritten_data)
 
         pointlist = handwritten_data.get_pointlist()
         polygonalChains = []
 
         # Make sure the dimension is correct
         for i in range(self.strokes):
-            if i >= self.strokes:
-                break
             if i < len(pointlist):
                 polygonalChains.append(geometry.PolygonalChain(pointlist[i]))
             else:
-                polygonalChains.append(None)
+                polygonalChains.append(geometry.PolygonalChain([]))
 
         x = []
         for chainA, chainB in combinations_wr(polygonalChains, 2):
@@ -553,7 +549,7 @@ class StrokeIntersections(object):
         return x
 
 
-class ReCurvature(object):
+class ReCurvature(Feature):
 
     """Re-curvature is a 1 dimensional, stroke-global feature for a recording.
        It is the ratio
@@ -581,9 +577,7 @@ class ReCurvature(object):
         return self.strokes
 
     def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
-            "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+        super(self.__class__, self).__call__(handwritten_data)
         x = []
         for stroke in handwritten_data.get_pointlist():
             stroke_y = [point['y'] for point in stroke]

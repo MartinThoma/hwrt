@@ -7,6 +7,7 @@ import tests.testhelper as testhelper
 # hwrt modules
 from hwrt.HandwrittenData import HandwrittenData
 import hwrt.features as features
+import hwrt.preprocessing as preprocessing
 
 
 # Tests
@@ -22,6 +23,48 @@ def features_detection_test():
     feature_list = features.get_features(feature_queue)
     # TODO: Not only compare lengths of lists but actual contents.
     nose.tools.assert_equal(len(feature_list), len(correct))
+
+
+def print_featurelist_test():
+    feature_list = [features.StrokeCount(),
+                    features.ConstantPointCoordinates(strokes=4,
+                                                      points_per_stroke=20,
+                                                      fill_empty_with=0),
+                    features.ConstantPointCoordinates(strokes=0,
+                                                      points_per_stroke=20,
+                                                      fill_empty_with=0),
+                    features.ConstantPointCoordinates(strokes=0,
+                                                      points_per_stroke=20,
+                                                      pen_down=False),
+                    features.AspectRatio(),
+                    features.Width(),
+                    features.Height(),
+                    features.Time(),
+                    features.CenterOfMass()
+                    ]
+    features.print_featurelist(feature_list)
+
+
+def constant_point_coordinates_test():
+    f = features.ConstantPointCoordinates(strokes=0,
+                                          points_per_stroke=2,
+                                          pen_down=False)
+    g = features.ConstantPointCoordinates(strokes=0,
+                                          points_per_stroke=200,
+                                          pen_down=False)
+    recording = testhelper.get_symbol_as_handwriting(292934)
+    f._features_without_strokes(recording)
+    g._features_without_strokes(recording)
+    space_evenly = preprocessing.SpaceEvenly()
+    space_evenly(recording)
+    f._features_without_strokes(recording)
+
+
+def stroke_intersections_test():
+    f = features.StrokeIntersections(strokes=4)
+    recording = testhelper.get_symbol_as_handwriting(293035)
+    x = f(recording)
+    nose.tools.assert_equal(x, [0, 1, 0, 0, 0, 0, 0, 0, 0, 0])
 
 
 def dimensionality_test():

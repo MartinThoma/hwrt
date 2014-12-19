@@ -7,6 +7,12 @@
 
 import logging
 import json
+
+# prevent the following error:
+# '_tkinter.TclError: no display name and no $DISPLAY environment variable'
+import matplotlib as mpl
+mpl.use('Agg')
+
 import matplotlib.pyplot as plt
 
 

@@ -1,15 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
 import nose
 
 import tests.testhelper as testhelper
 
 # hwrt modules
-from hwrt.HandwrittenData import HandwrittenData
-import hwrt.preprocessing as preprocessing
-import hwrt.features as features
 import hwrt.data_multiplication as data_multiplication
 
 

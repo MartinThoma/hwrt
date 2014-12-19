@@ -3,6 +3,7 @@
 
 import nose.tools
 import tests.testhelper as testhelper
+import mock
 
 # hwrt modules
 from hwrt.HandwrittenData import HandwrittenData
@@ -137,7 +138,8 @@ def time_test():
 
 def show_test():
     a = testhelper.get_symbol_as_handwriting(97705)
-    #a.show()  # TODO: how? mock?
+    with mock.patch('matplotlib.pyplot.show', return_value='yes'):
+        a.show()
 
 
 def width_test():

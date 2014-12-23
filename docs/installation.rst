@@ -24,6 +24,7 @@ For ``scipy``, ``numpy`` and ``matplotlib`` you might need these packages:
     # apt-get install python-scipy python-numpy
     # apt-get install libfreetype6-dev
     # apt-get install libgeos-dev
+    # apt-get install libhdf5-dev
 
 If you want to use MySQL functionality, you will need
 

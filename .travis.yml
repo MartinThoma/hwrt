@@ -6,6 +6,7 @@ python:
 install: 
   - pip install natsort matplotlib coveralls
   - pip install future
+  - pip install Cython
   - pip install h5py
   - pip install scipy
   - pip install shapely

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """Convert an old-style DETL model to a nntoolkit model."""
 
@@ -107,6 +108,7 @@ def main(model_folder):
         for name in filenames:
             tar.add(name)
 
+    # Remove temporary files which are now in tar file
     for filename in filenames:
         os.remove(filename)
 

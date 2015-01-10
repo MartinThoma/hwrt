@@ -15,14 +15,21 @@ Contributions
 Everybody is welcome to contribute to ``hwrt``. You can do so by
 
 * Testing it and giving me feedback / opening issues on GitHub.
+
   * Writing unittests.
+
   * Simply using the software.
+
 * Writing new code and sending it to me as pull requests or as email
   (info@martin-thoma.de). However, before you add new functionality you should
   eventually ask if I really want that in the project.
+
 * Improving existing code.
+
   * Improving the front-end (HTML+CSS+JavaScript)
+
 * Suggesting something else how you can contribute.
+
 
 I suggest reading the issues page https://github.com/MartinThoma/hwrt/issues
 for more ideas how you can contribute.

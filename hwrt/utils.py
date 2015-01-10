@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """Utility functions that can be used in multiple scripts."""
 
@@ -381,6 +382,37 @@ def create_adjusted_model_for_percentages(model_src, model_use):
         f.write(content)
 
 
+def create_hdf5(input_filename, feature_count, output_filename):
+    """
+    :param input_filename: a CSV
+    :type feature_count: int
+    """
+    import h5py
+    new_output_name_x = output_filename.replace(".pfile", "-x.hdf5")
+    new_output_name_y = output_filename.replace(".pfile", "-y.hdf5")
+    x = []
+    y = []
+    with open(input_filename, "r") as f:
+        for line in f:
+            line = line.split(" ")
+            line = list(map(float, line))
+            frame, sentence, rest = line[0], line[1], line[2:]
+            if len(rest) != feature_count + 1:
+                logging.error("got %i features, should be %i",
+                              len(rest),
+                              feature_count+1)
+                sys.exit(-1)
+            features, label = rest[:-1], rest[-1]
+            x.append(features)
+            y.append(int(label))
+    Wfile = h5py.File(new_output_name_x, 'w')
+    Wfile.create_dataset(Wfile.id.name, data=x)
+    Wfile.close()
+    Wfile = h5py.File(new_output_name_y, 'w')
+    Wfile.create_dataset(Wfile.id.name, data=y)
+    Wfile.close()
+
+
 def create_pfile(output_filename, feature_count, data):
     """Create a pfile.
     :param output_filename: name of the pfile that will be created
@@ -406,6 +438,10 @@ def create_pfile(output_filename, feature_count, data):
               (input_filename, feature_count, output_filename)
     logging.info(command)
     return_code = os.system(command)
+
+    # hack: create HDF5 files with pfiles
+    # create_hdf5(input_filename, feature_count, output_filename)
+
     if return_code != 0:
         logging.error("pfile_create failed with return code %i.", return_code)
         sys.exit(-1)
@@ -452,11 +488,11 @@ def load_model(model_file):
     feature_list = features.get_features(feature_str_list)
 
     # Get the model
-    import nntoolkit.evaluate
-    model = nntoolkit.evaluate.get_model(model_file)
+    import nntoolkit.utils
+    model = nntoolkit.utils.get_model(model_file)
 
     output_semantics_file = os.path.join(tarfolder, 'output_semantics.csv')
-    output_semantics = nntoolkit.evaluate.get_outputs(output_semantics_file)
+    output_semantics = nntoolkit.utils.get_outputs(output_semantics_file)
 
     # Cleanup
     shutil.rmtree(tarfolder)

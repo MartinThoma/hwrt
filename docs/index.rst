@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 hwrt documentation
-================================
+==================
 
 hwrt is short for 'handwriting recognition toolkit'. This toolkit allows you
 to download on-line handwritten mathematical symbols, view them, analyze them

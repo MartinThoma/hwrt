@@ -7,7 +7,7 @@ The ``hwrt`` toolkit can be installed via pip:
 
     # pip install hwrt
 
-However, you might have to install some packages first for ``scipy``. 
+However, you might have to install some packages first for ``scipy``.
 
 
 Debian-based systems
@@ -47,17 +47,12 @@ Python packages
 
 .. code:: bash
 
-    # pip install pymysql
-
-
-Now you can install the remaining packages:
-
-.. code:: bash
-
-    # pip install PILLOW
-    # pip install natsort matplotlib coveralls
     # pip install numpy
     # pip install scipy
+    # pip install future
+    # pip install pymysql
+    # pip install PILLOW
+    # pip install natsort matplotlib coveralls
 
 Now you can install `pfile_utils`_. Some explanation of what they
 are can be found at `my blog`_

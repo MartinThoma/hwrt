@@ -5,13 +5,13 @@ python:
   - 3.4
 install: 
   - pip install natsort matplotlib coveralls
+  - pip install future
+  - pip install h5py
+  - pip install scipy
   - pip install shapely
   - pip install pymysql
-  - pip install future
-  - pip install scipy
   - pip install nntoolkit
   - pip install flask flask_bootstrap
-  - pip install h5py
 script:
   - nosetests --with-coverage
 before_install:

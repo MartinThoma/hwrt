@@ -2,7 +2,7 @@ docs:
 	python setup.py upload_docs --upload-dir docs/_build/html
 
 update:
-	python setup.py sdist upload
+	python setup.py sdist upload --sign
 	sudo pip install hwrt --upgrade
 
 test:

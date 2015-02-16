@@ -5,7 +5,7 @@ except ImportError:
 
 config = {
     'name': 'hwrt',
-    'version': '0.1.209',
+    'version': '0.1.211',
     'author': 'Martin Thoma',
     'author_email': 'info@martin-thoma.de',
     'maintainer': 'Martin Thoma',
@@ -19,8 +19,9 @@ config = {
     'url': 'https://github.com/MartinThoma/hwrt',
     'license': 'MIT',
     'description': 'Handwriting Recognition Tools',
-    'long_description': """A tookit for handwriting recognition. It was
-    developed as part of the bachelors thesis of Martin Thoma.""",
+    'long_description': ("A tookit for handwriting recognition. It was "
+                         "developed as part of the bachelors thesis of "
+                         "Martin Thoma."),
     'install_requires': [
         "argparse",
         "theano",

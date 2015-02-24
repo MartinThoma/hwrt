@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """Check if all necessary modules / programs / files for HWRT are there and
    if the version is ok.

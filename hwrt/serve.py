@@ -259,6 +259,7 @@ def main(port=8000):
     logging.info("Start reading model...")
     model_path = pkg_resources.resource_filename('hwrt', 'misc/')
     model_file = os.path.join(model_path, "model.tar")
+    logging.info("Model: %s", model_file)
     (preprocessing_queue, feature_list, model,
      output_semantics) = utils.load_model(model_file)
     logging.info("Start webserver...")

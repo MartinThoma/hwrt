@@ -8,13 +8,6 @@
 import logging
 import json
 
-# prevent the following error:
-# '_tkinter.TclError: no display name and no $DISPLAY environment variable'
-import matplotlib as mpl
-mpl.use('Agg')
-
-import matplotlib.pyplot as plt
-
 
 class HandwrittenData(object):
     """Represents a handwritten symbol."""
@@ -148,6 +141,15 @@ class HandwrittenData(object):
 
     def show(self):
         """Show the data graphically in a new pop-up window."""
+
+        # prevent the following error:
+        # '_tkinter.TclError: no display name and no $DISPLAY environment
+        #    variable'
+        # import matplotlib as mpl
+        # mpl.use('Agg')
+
+        import matplotlib.pyplot as plt
+
         pointlist = self.get_pointlist()
         if 'pen_down' in pointlist[0][0]:
             assert len(pointlist) > 1, \

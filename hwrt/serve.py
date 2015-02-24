@@ -247,10 +247,13 @@ def get_parser():
     parser.add_argument("-n",
                         dest="n", default=10, type=int,
                         help="Show TOP-N results")
+    parser.add_argument("--port",
+                        dest="port", default=5000, type=int,
+                        help="where should the webserver run")
     return parser
 
 
-def main():
+def main(port=8000):
     """Main function starting the webserver."""
     global preprocessing_queue, feature_list, model, output_semantics, n
     logging.info("Start reading model...")
@@ -259,8 +262,9 @@ def main():
     (preprocessing_queue, feature_list, model,
      output_semantics) = utils.load_model(model_file)
     logging.info("Start webserver...")
-    app.run()
+    app.run(port=port)
 
 if __name__ == '__main__':
-    n = get_parser().parse_args().n
-    main()
+    args = get_parser().parse_args()
+    n = args.n
+    main(args.port)

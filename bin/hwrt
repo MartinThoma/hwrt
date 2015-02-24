@@ -90,7 +90,7 @@ def main(args):
     elif args.cmd == 'create_model':
         create_model.main(args.model, args.override)
     elif args.cmd == 'serve':
-        serve.main()
+        serve.main(args.port)
     else:
         logging.error("Command '%s' is not implemented yet.", args.cmd)
 

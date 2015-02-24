@@ -169,6 +169,7 @@ def display_data(raw_data_string, raw_data_id, model_folder, show_raw):
                                                              mult_queue)
 
     # Display it
+    logging.info("Show %i recordings...", len(training_set))
     for recording in training_set:
         recording['handwriting'].show()
 

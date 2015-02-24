@@ -32,6 +32,10 @@ def update_if_outdated(folder):
             content = yaml.load(ymlfile)
         folder = os.path.join(utils.get_project_root(), content['data-source'])
     raw_source_file = folder
+    if not os.path.isfile(raw_source_file):
+        logging.error("File '%s' was not found.", raw_source_file)
+        logging.error("You should eventually execute 'hwrt download'.")
+        sys.exit(-1)
     dt = os.path.getmtime(raw_source_file)
     source_mtime = datetime.datetime.utcfromtimestamp(dt)
     folders = folders[::-1]  # Reverse order to get the most "basic one first"

@@ -174,14 +174,16 @@ def fix_writemath_answer(results):
     translation_csv = os.path.join(model_path, 'latex2writemathindex.csv')
     arguments = {'newline': '', 'encoding': 'utf8'}
     with open(translation_csv, 'rt', **arguments) as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
-        for csvrow in spamreader:
-            if len(csvrow) == 1:
-                writemathid = csvrow[0]
-                latex = ""
-            else:
-                writemathid, latex = csvrow
-            translate[latex] = writemathid
+        contents = csvfile.read()
+    lines = contents.split("\n")
+    for csvrow in lines:
+        csvrow = csvrow.split(',')
+        if len(csvrow) == 1:
+            writemathid = csvrow[0]
+            latex = ""
+        else:
+            writemathid, latex = csvrow
+        translate[latex] = writemathid
 
     for i, el in enumerate(results):
         new_results.append({'symbolnr': el['symbolnr'],
@@ -196,13 +198,20 @@ def fix_writemath_answer(results):
 def work():
     """Implement a worker for write-math.com."""
     global preprocessing_queue, feature_list, model, output_semantics, n
-    print("Start working!")
-    for _ in range(1000):
+
+    cmd = utils.get_project_configuration()
+
+    chunk_size = 1000
+
+    logging.info("Start working!")
+    for _ in range(chunk_size):
         # contact the write-math server and get something to classify
-        url = "http://www.martin-thoma.de/write-math/get_unclassified/"
+        url = "http://www.martin-thoma.de/write-math/api/get_unclassified.php"
         response = urlopen(url)
         page_source = response.read()
         parsed_json = json.loads(page_source)
+        if parsed_json is False:
+            return "Nothing left to classify"
         raw_data_json = parsed_json['recording']
 
         # Classify
@@ -230,13 +239,15 @@ def work():
         headers = {'User-Agent': 'Mozilla/5.0',
                    'Content-Type': 'application/x-www-form-urlencoded'}
         payload = {'recording_id': parsed_json['id'],
-                   'results': results_json}
+                   'results': results_json,
+                   'api_key': cmd['worker_api_key']}
 
         s = requests.Session()
         req = requests.Request('POST', url, headers=headers, data=payload)
         prepared = req.prepare()
-        s.send(prepared)
-    return "Done"
+        t = s.send(prepared)
+        logging.debug(t.text)
+    return "Done - Classified %i recordings" % chunk_size
 
 
 def get_parser():
@@ -262,6 +273,13 @@ def main(port=8000):
     logging.info("Model: %s", model_file)
     (preprocessing_queue, feature_list, model,
      output_semantics) = utils.load_model(model_file)
+
+    # Adjust output semantics for development
+    new_semantics = []
+    for el in output_semantics:
+        new_semantics.append(el.split(";")[1])
+    output_semantics = new_semantics
+
     logging.info("Start webserver...")
     app.run(port=port)
 

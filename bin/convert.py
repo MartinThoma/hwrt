@@ -46,6 +46,37 @@ def _as_ndarray(dct):
     return dct
 
 
+def create_output_semantics(model_folder, outputs):
+    """Create a 'output_semantics.csv' file which contains information what
+       the output of the single output neurons mean.
+
+    @param model_folder: folder where the model description file is
+    @param outputs: number of output neurons
+    @type outputs: int
+    """
+    with open('output_semantics.csv', 'wb') as csvfile:
+        model_description_file = os.path.join(model_folder, "info.yml")
+        with open(model_description_file, 'r') as ymlfile:
+            model_description = yaml.load(ymlfile)
+
+        logging.info("Start fetching translation dict...")
+        translation_dict = utils.get_index2data(model_description)
+        spamwriter = csv.writer(csvfile, delimiter=';',
+                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        for output_index in range(outputs):
+            if output_index in translation_dict:
+                # Add more information:
+                # 1. ID in my system
+                # 2. latex
+                # 3. unicode code point
+                # 4. font
+                # 5. font style
+                spamwriter.writerow(translation_dict[output_index])
+            else:
+                print("No data for %i." % output_index)
+                spamwriter.writerow(["output %i" % output_index])
+
+
 def main(model_folder):
     a = yaml.load(open(utils.get_latest_in_folder(model_folder, ".json")))
 
@@ -62,21 +93,7 @@ def main(model_folder):
 
     # Create output_semantics.csv
     outputs = a['layers'][-1]['_props']['n_hidden']
-
-    with open('output_semantics.csv', 'wb') as csvfile:
-        model_description_file = os.path.join(model_folder, "info.yml")
-        with open(model_description_file, 'r') as ymlfile:
-            model_description = yaml.load(ymlfile)
-
-        translation_dict = utils.get_index2latex(model_description)
-        spamwriter = csv.writer(csvfile, delimiter=';',
-                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        for row in range(outputs):
-            if row in translation_dict:
-                spamwriter.writerow([translation_dict[row]])
-            else:
-                print("No data for %i." % row)
-                spamwriter.writerow(["output %i" % row])
+    create_output_semantics(model_folder, outputs)
 
     # Write layers
     for layer in range(len(a['layers'])):

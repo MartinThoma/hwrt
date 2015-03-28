@@ -186,7 +186,7 @@ def get_recognizer_folders_test():
                          "models/small-baseline")
     folders = utils.get_recognizer_folders(small)
     wanted_folders = ['preprocessed/small-baseline',
-                      'feature-files/small-baseline',
+                      'feature-files/small',
                       'models/small-baseline']
     for folder, wanted_folder in zip(folders, wanted_folders):
         nose.tools.assert_equal(folder.endswith(wanted_folder),

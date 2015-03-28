@@ -28,6 +28,21 @@ class HandwrittenData(object):
                                                       self.get_pointlist())
         assert wild_point_count >= 0
         assert missing_stroke >= 0
+        self.fix_times()
+
+    def fix_times(self):
+        """Some recordings have wrong times. Fix them so that nothing after
+           loading a handwritten recording breaks."""
+        pointlist = self.get_pointlist()
+        times = [point['time'] for stroke in pointlist for point in stroke]
+        times_min = max(min(times), 0)  # Make sure this is not None
+        for i, stroke in enumerate(pointlist):
+            for j, point in enumerate(stroke):
+                if point['time'] is None:
+                    pointlist[i][j]['time'] = times_min
+                else:
+                    times_min = point['time']
+        self.raw_data_json = json.dumps(pointlist)
 
     def get_pointlist(self):
         """Get a list of lists of tuples from JSON raw data string.

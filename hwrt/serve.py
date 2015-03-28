@@ -11,7 +11,6 @@ import sys
 import json
 import requests
 import logging
-import csv
 
 # Python 2 / 3 compatibility
 from six.moves.urllib.request import urlopen
@@ -186,8 +185,12 @@ def fix_writemath_answer(results):
         translate[latex] = writemathid
 
     for i, el in enumerate(results):
+        if el['semantics'] not in translate:
+            writemathid = -1
+        else:
+            writemathid = translate[el['semantics']]
         new_results.append({'symbolnr': el['symbolnr'],
-                            'semantics': translate[el['semantics']],
+                            'semantics': writemathid,
                             'probability': el['probability']})
         if i >= 10 or (i > 0 and el['probability'] < 0.20):
             break
@@ -231,7 +234,8 @@ def work():
                            feature_list,
                            model,
                            output_semantics,
-                           raw_data_json)
+                           raw_data_json,
+                           parsed_json['id'])
 
         # Submit classification to write-math server
         results = fix_writemath_answer(results)

@@ -81,7 +81,8 @@ def create_project_configuration(filename):
               'dropbox_app_key': None,
               'dropbox_app_secret': None,
               'dbconfig': os.path.join(home, "hwrt-config/db.config.yml"),
-              'data_analyzation_queue': [{'Creator': None}]}
+              'data_analyzation_queue': [{'Creator': None}],
+              'worker_api_key': '1234567890abc'}
     with open(filename, 'w') as f:
         yaml.dump(config, f, default_flow_style=False)
 
@@ -504,7 +505,8 @@ def evaluate_model_single_recording_preloaded(preprocessing_queue,
                                               feature_list,
                                               model,
                                               output_semantics,
-                                              recording):
+                                              recording,
+                                              recording_id=None):
     """Evaluate a model for a single recording, after everything has been
        loaded.
     :param preprocessing_queue: List of all preprocessing objects.
@@ -513,12 +515,107 @@ def evaluate_model_single_recording_preloaded(preprocessing_queue,
     :param output_semantics: List that defines what an output means.
     :param recording: The handwritten recording in JSON format.
     """
-    handwriting = HandwrittenData.HandwrittenData(recording)
+    handwriting = HandwrittenData.HandwrittenData(recording,
+                                                  raw_data_id=recording_id)
     handwriting.preprocessing(preprocessing_queue)
     x = handwriting.feature_extraction(feature_list)
     import nntoolkit.evaluate
     model_output = nntoolkit.evaluate.get_model_output(model, [x])
     return nntoolkit.evaluate.get_results(model_output, output_semantics)
+
+
+def get_possible_splits(n):
+    """
+    :param n: n strokes were make
+    """
+    get_bin = lambda x, n: x >= 0 and str(bin(x))[2:].zfill(n) or "-" + str(bin(x))[3:].zfill(n)
+    possible_splits = []
+    for i in range(2**(n-1)):
+        possible_splits.append(get_bin(i, n-1))
+    return possible_splits
+
+
+def segment_by_split(split, recording):
+    """
+    :param split: "010"
+    :type recording: list
+    """
+    segmented = [[recording[0]]]
+    for i in range(len(recording)-1):
+        if split[i] == "1":
+            segmented.append([])
+        segmented[-1].append(recording[i+1])
+    assert split.count("1") + 1 == len(segmented)
+    return segmented
+
+
+def evaluate_model_single_recording_preloaded_multisymbol(preprocessing_queue,
+                                                          feature_list,
+                                                          model,
+                                                          output_semantics,
+                                                          recording):
+    """Evaluate a model for a single recording, after everything has been
+       loaded. Multiple symbols are recognized.
+    :param preprocessing_queue: List of all preprocessing objects.
+    :param feature_list: List of all feature objects.
+    :param model: Neural network model.
+    :param output_semantics: List that defines what an output means.
+    :param recording: The handwritten recording in JSON format.
+    """
+    import json
+    import nntoolkit.evaluate
+    recording = json.loads(recording)
+    logging.info(("## start (%i strokes)" % len(recording)) + "#"*80)
+    hypotheses = []  # [[{'score': 0.123, symbols: [123, 123]}]  # split0
+                     #  []] # Split i...
+    for split in get_possible_splits(len(recording)):
+        recording_segmented = segment_by_split(split, recording)
+        cur_split_results = []
+        for i, symbol in enumerate(recording_segmented):
+            handwriting = HandwrittenData.HandwrittenData(json.dumps(symbol))
+            handwriting.preprocessing(preprocessing_queue)
+            x = handwriting.feature_extraction(feature_list)
+
+            model_output = nntoolkit.evaluate.get_model_output(model, [x])
+            results = nntoolkit.evaluate.get_results(model_output,
+                                                     output_semantics)
+            results = results[:10]
+            cur_split_results.append([el for el in results if el['probability'] >= 0.01])
+            # serve.show_results(results, n=10)
+
+        # Now that I have all symbols of this split, I have to get all
+        # combinations of the hypothesis
+        import itertools
+        for hyp in itertools.product(*cur_split_results):
+            hypotheses.append({'score': reduce(lambda x, y: x*y,
+                                               [s['probability'] for s in hyp])*len(hyp)/len(recording),
+                               'symbols': [s['semantics'] for s in hyp],
+                               'min_part': min([s['probability'] for s in hyp]),
+                               'segmentation': split})
+
+    hypotheses = sorted(hypotheses, key=lambda n: n['min_part'], reverse=True)[:10]
+    for i, hyp in enumerate(hypotheses):
+        if hyp['score'] > 0.001:
+            logging.info("%0.4f: %s (seg: %s)", hyp['score'], hyp['symbols'], hyp['segmentation'])
+    return nntoolkit.evaluate.get_results(model_output, output_semantics)
+
+
+def evaluate_model_single_recording_multisymbol(model_file, recording):
+    """Evaluate a model for a single recording where possibly multiple symbols
+    are.
+    :param model_file: Model file (.tar)
+    :param recording: The handwritten recording.
+    """
+    (preprocessing_queue, feature_list, model,
+     output_semantics) = load_model(model_file)
+    logging.info("multiple symbol mode")
+    logging.info(recording)
+    results = evaluate_model_single_recording_preloaded(preprocessing_queue,
+                                                        feature_list,
+                                                        model,
+                                                        output_semantics,
+                                                        recording)
+    return results
 
 
 def evaluate_model_single_recording(model_file, recording):
@@ -634,6 +731,61 @@ def get_index2latex(model_description):
         for row in csvreader:
             index2latex[int(row['index'])] = row['latex']
     return index2latex
+
+
+def get_index2data(model_description):
+    """Get a dictionary that maps indices to a list of (1) the id in the
+       hwrt symbol database (2) the latex command (3) the unicode code point
+       (4) a font family and (5) a font style.
+
+       Note that this command need a database connection.
+
+    :param model_description: A model description file that points to
+                              a feature folder where an
+                              ``index2formula_id.csv`` has to be.
+    :returns: Dictionary that maps indices to lists of data
+    """
+    index2latex = {}
+    translation_csv = os.path.join(get_project_root(),
+                                   model_description["data-source"],
+                                   "index2formula_id.csv")
+    with open(translation_csv) as csvfile:
+        csvreader = csv.DictReader(csvfile, delimiter=',', quotechar='"')
+        for row in csvreader:
+            database_id = int(row['formula_id'])
+            online_data = get_online_symbol_data(database_id)
+            latex = online_data['formula_in_latex']
+            unicode_code_point = online_data['unicode_dec']
+            font = online_data['font']
+            font_style = online_data['font_style']
+            index2latex[int(row['index'])] = [database_id,
+                                              latex,
+                                              unicode_code_point,
+                                              font,
+                                              font_style]
+    return index2latex
+
+
+def get_online_symbol_data(database_id):
+    """Get from the server."""
+    import pymysql
+    import pymysql.cursors
+    cfg = get_database_configuration()
+    mysql = cfg['mysql_online']
+    connection = pymysql.connect(host=mysql['host'],
+                                 user=mysql['user'],
+                                 passwd=mysql['passwd'],
+                                 db=mysql['db'],
+                                 cursorclass=pymysql.cursors.DictCursor)
+    cursor = connection.cursor()
+    sql = ("SELECT `id`, `formula_in_latex`, `unicode_dec`, `font`, "
+           "`font_style` FROM  `wm_formula` WHERE  `id` =%i") % database_id
+    cursor.execute(sql)
+    datasets = cursor.fetchall()
+    if len(datasets) == 1:
+        return datasets[0]
+    else:
+        return None
 
 
 def classify_single_recording(raw_data_json, model_folder, verbose=False):

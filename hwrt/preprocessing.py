@@ -188,11 +188,11 @@ class ScaleAndShift(object):
             factor_y = self.max_height/height
 
         factor = min(factor_x, factor_y)
-        addx, addy = 0, 0
+        addx, addy = 0.0, 0.0
 
         if self.center:
             # Only one dimension (x or y) has to be centered (the smaller one)
-            add = -(factor/(2*max(factor_x, factor_y)))
+            add = -(factor/(2.0*max(factor_x, factor_y)))
 
             if factor == factor_x:
                 addy = add
@@ -202,7 +202,12 @@ class ScaleAndShift(object):
                 addx = add
                 if self.center_other:
                     addy = -(height*factor/2.0)
-
+        assert factor > 0, "factor > 0 is False. factor = %s" % str(factor)
+        assert isinstance(addx, float), "addx is %s" % str(addx)
+        assert isinstance(addy, float), "addy is %s" % str(addy)
+        assert isinstance(a['minx'], (int, float)), "minx is %s" % str(a['minx'])
+        assert isinstance(a['miny'], (int, float)), "miny is %s" % str(a['miny'])
+        assert isinstance(a['mint'], (int, float)), "mint is %s" % str(a['mint'])
         return {"factor": factor, "addx": addx, "addy": addy,
                 "minx": a['minx'], "miny": a['miny'], "mint": a['mint']}
 

@@ -106,7 +106,8 @@ def dump_structure(mysql_cfg,
 
                     data += ");\n"
                 data += "\n\n"
-
+        pattern = re.compile(",\n\)")
+        data = pattern.sub("\n)", data)
         with open(filename_strucutre, "wb") as f:
             f.write(data.encode("utf-8"))
         with open(filename_constraints, "wb") as f:

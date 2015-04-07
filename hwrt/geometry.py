@@ -2,6 +2,7 @@
 
 """Calculate the distance between line segments."""
 
+import logging
 import math
 import itertools
 
@@ -71,11 +72,20 @@ class PolygonalChain(object):
             point2 = Point(point2['x'], point2['y'])
             self.lineSegments.append(LineSegment(point1, point2))
 
+    def __getitem__(self, key):
+        return self.lineSegments[key]
+
     def __iter__(self):
         return iter(self.lineSegments)
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
+
+    def __str__(self):
+        return str("PolygonalChain[%s]" % self.lineSegments)
+
+    def __repr__(self):
+        return repr("PolygonalChain[%s]" % self.lineSegments)
 
     def count_selfintersections(self):
         """ Get the number of self-intersections of this polygonal chain."""
@@ -163,6 +173,10 @@ def segments_distance(segment1, segment2):
     >>> "%0.2f" % segments_distance(c, e)
     '0.00'
     """
+    assert isinstance(segment1, LineSegment), \
+        "segment1 is not a LineSegment, but a %s" % type(segment1)
+    assert isinstance(segment2, LineSegment), \
+        "segment2 is not a LineSegment, but a %s" % type(segment2)
     if len(get_segments_intersections(segment1, segment2)) >= 1:
         return 0
     # try each of the 4 vertices w/the other segment
@@ -189,7 +203,23 @@ def get_segments_intersections(segment1, segment2):
     if delta == 0:  # parallel segments
         # Line segments could be (partially) identical.
         # In that case this functin should return True.
-        if dx1 == 0:
+        if dx1 == 0 and dy1 == 0:  # segment1 is a point
+            point = segment1.p1
+            if segment2.p1.x == point.x and segment2.p1.y == point.y:
+                return [Point(point.x, point.y)]
+            elif segment2.p2.x == point.x and segment2.p2.y == point.y:
+                return [Point(point.x, point.y)]
+            else:
+                return []
+        elif dx2 == 0 and dy2 == 0:  # segment2 is a point
+            point = segment2.p1
+            if segment1.p1.x == point.x and segment1.p1.y == point.y:
+                return [Point(point.x, point.y)]
+            elif segment1.p2.x == point.x and segment1.p2.y == point.y:
+                return [Point(point.x, point.y)]
+            else:
+                return []
+        elif dx1 == 0:
             # Lines segments are vertical
             if segment1.p1.x == segment2.p1.x:
                 if segment1.p1.y > segment1.p2.y:

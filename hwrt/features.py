@@ -9,9 +9,9 @@ this:
  >>> import features
  >>> a = HandwrittenData(...)
  >>> feature_list = [features.StrokeCount(),
-                    features.ConstantPointCoordinates(strokes=4,
-                                                      points_per_stroke=20,
-                                                      fill_empty_with=0)
+                     features.ConstantPointCoordinates(strokes=4,
+                                                       points_per_stroke=20,
+                                                       fill_empty_with=0)
                     ]
  >>> x = a.feature_extraction(feature_list)
 """

@@ -186,7 +186,9 @@ def fix_writemath_answer(results):
 
     for i, el in enumerate(results):
         if el['semantics'] not in translate:
-            writemathid = -1
+            logging.debug("Could not find '%s' in translate.", el['semantics'])
+            logging.debug("el: %s", el)
+            continue
         else:
             writemathid = translate[el['semantics']]
         new_results.append({'symbolnr': el['symbolnr'],

@@ -66,3 +66,6 @@ cover/
 *.csv
 *.json
 *.yml
+
+*.npy
+*.pickle

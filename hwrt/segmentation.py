@@ -225,7 +225,6 @@ def get_strokes_distance(s1, s2):
         s2 += s2
     stroke1 = geometry.PolygonalChain(s1)
     stroke2 = geometry.PolygonalChain(s2)
-    import itertools
     min_dist = geometry.segments_distance(stroke1[0], stroke2[0])
     for seg1, seg2 in itertools.product(stroke1, stroke2):
         min_dist = min(min_dist, geometry.segments_distance(seg1, seg2))

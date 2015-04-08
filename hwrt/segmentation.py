@@ -124,7 +124,8 @@ def get_nn_classifier(X, y):
     N_CLASSES = 2
 
     # First, construct an input layer.
-    # The shape parameter defines the expected input shape, which is just the shape of our data matrix X.
+    # The shape parameter defines the expected input shape, which is just the
+    # shape of our data matrix X.
     l_in = lasagne.layers.InputLayer(shape=X.shape)
     # A dense layer implements a linear mix (xW + b) followed by a nonlinearity.
     hiddens = [64, 64, 64]  # sollte besser als 0.12 sein (mit [32])
@@ -139,7 +140,8 @@ def get_nn_classifier(X, y):
     # For our output layer, we'll use a dense layer with a softmax nonlinearity.
     l_output = lasagne.layers.DenseLayer(layers[-1], num_units=N_CLASSES,
                                          nonlinearity=lasagne.nonlinearities.softmax)
-    # Now, we can generate the symbolic expression of the network's output given an input variable.
+    # Now, we can generate the symbolic expression of the network's output
+    # given an input variable.
     net_input = T.matrix('net_input')
     net_output = l_output.get_output(net_input)
     # As a loss function, we'll use Theano's categorical_crossentropy function.
@@ -150,22 +152,19 @@ def get_nn_classifier(X, y):
 
     reg = lasagne.regularization.l2(l_output)
     loss = loss + 0.001*reg
-    #NLL_LOSS = -T.sum(T.log(p_y_given_x)[T.arange(y.shape[0]), y])
-    # Retrieving all parameters of the network is done using get_all_params,
-    # which recursively collects the parameters of all layers connected to the provided layer.
+    #NLL_LOSS = -T.sum(T.log(p_y_given_x)[T.arange(y.shape[0]), y]) Retrieving
+    # all parameters of the network is done using get_all_params, which
+    # recursively collects the parameters of all layers connected to the
+    # provided layer.
     all_params = lasagne.layers.get_all_params(l_output)
 
     # Now, we'll generate updates using Lasagne's SGD function
     updates = lasagne.updates.momentum(loss, all_params, learning_rate=0.1)
 
-    # Finally, we can compile Theano functions for training and computing the output.
+    # Finally, we can compile Theano functions for training and computing the
+    # output.
     train = theano.function([net_input, true_output], loss, updates=updates)
     get_output = theano.function([net_input], net_output)
-
-    #from sklearn.preprocessing import StandardScaler
-    #scaler = StandardScaler()
-    #X_train_s = scaler.fit_transform(X_train)
-    #X_test_s = scaler.transform(X_test)
 
     logging.debug("|X|=%i", len(X))
     logging.debug("|y|=%i", len(y))
@@ -265,6 +264,11 @@ def get_segmentation(recording):
     # Pre-segment to 8 strokes
     # TODO: Take first 4 strokes and add strokes within their bounding box
     # TODO: What if that is more then 8 strokes?
+    # -> Geometry
+    #    Build tree structure. A stroke `c` is the child of another stroke `p`,
+    #    if the bounding box of `c` is within the bounding box of `p`.
+    #       Problem: B <-> 13
+    recording = recording[:8]  # Chunk it ... in future, make this more flexible - to NOT ignore strokes!
 
     # Segment after pre-segmentation
     prob = [[1.0 for _ in recording] for _ in recording]
@@ -276,11 +280,23 @@ def get_segmentation(recording):
             X += X_symbol
             X = numpy.array([X], dtype=numpy.float32)
             prob[strokeid1][strokeid2] = stroke_segmented_classifier(X)
-    logging.debug("len(recording)=%i", len(recording))
-    logging.debug("len(prob)=%i", len(prob))
 
     import partitions
     return partitions.get_top_segmentations(prob, 500)
+
+
+def is_out_of_order(seg):
+    last_stroke = -1
+    for symbol in seg:
+        for stroke in seg:
+            if last_stroke > stroke:
+                return True
+            last_stroke = stroke
+    return False
+
+
+def _less_than(l, n):
+    return float(len([1 for el in l if el < n]))
 
 
 if __name__ == '__main__':
@@ -296,16 +312,61 @@ if __name__ == '__main__':
     recordings = get_segmented_raw_data()
     logging.info("Start testing")
     score_place = []
+    out_of_order_count = 0
+    ## Filter recordings
+    new_recordings = []
     for recording in recordings:
-        seg_predict = get_segmentation(json.loads(recording['data']))
-        real_seg = json.loads(recording['segmentation'])
-        print("## %i" % recording['id'])
-        print("Real segmentation:\t\t%s" % real_seg)
+        recording['data'] = json.loads(recording['data'])
+        recording['segmentation'] = json.loads(recording['segmentation'])
+        had_none = False
+        for stroke in recording['data']:
+            for point in stroke:
+                if point['time'] is None:
+                    logging.debug("Had None-time: %i", recording['id'])
+                    had_none = True
+                    break
+            if had_none:
+                break
+        if not had_none:
+            new_recordings.append(recording)
+
+    recordings = new_recordings
+    logging.info("Done filtering")
+
+    for nr, recording in enumerate(recordings):
+        if nr % 100 == 0:
+            print(("## %i " % nr) + "#"*80)
+        seg_predict = get_segmentation(recording['data'])
+        real_seg = recording['segmentation']
         for i, pred in enumerate(seg_predict):
             seg, score = pred
             if i == 0:
-                print("Predict segmentation:\t%s (%0.8f)" % (seg, score))
+                pred_str = "  Predict segmentation:\t%s (%0.8f)" % (seg, score)
             #print("#{0:>3} {1:.8f}: {2}".format(i, score, seg))
             if seg == real_seg:
                 score_place.append(i)
                 break
+        else:
+            i = -1
+        print("## %i" % recording['id'])
+        print("  Real segmentation:\t%s (got at place %i)" % (real_seg, i))
+        print(pred_str)
+        out_of_order_count += is_out_of_order(real_seg)
+    print(score_place)
+    logging.info("mean: %0.2f", numpy.mean(score_place))
+    logging.info("median: %0.2f", numpy.median(score_place))
+    logging.info("TOP-1: %0.2f", _less_than(score_place, 1)/len(recordings))
+    logging.info("TOP-3: %0.2f", _less_than(score_place, 3)/len(recordings))
+    logging.info("TOP-10: %0.2f", _less_than(score_place, 10)/len(recordings))
+    logging.info("TOP-20: %0.2f", _less_than(score_place, 20)/len(recordings))
+    logging.info("TOP-50: %0.2f", _less_than(score_place, 50)/len(recordings))
+    logging.info("Out of order: %i", out_of_order_count)
+
+# Last:
+# 2015-04-08 13:07:23,785 INFO mean: 27.80
+# 2015-04-08 13:07:23,786 INFO median: 4.00
+# 2015-04-08 13:07:23,786 INFO TOP-1: 0.11
+# 2015-04-08 13:07:23,786 INFO TOP-3: 0.32
+# 2015-04-08 13:07:23,786 INFO TOP-10: 0.47
+# 2015-04-08 13:07:23,787 INFO TOP-20: 0.55
+# 2015-04-08 13:07:23,787 INFO TOP-50: 0.62

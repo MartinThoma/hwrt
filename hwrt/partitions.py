@@ -148,6 +148,12 @@ def score_segmentation(segmentation, table):
     return score
 
 
+def normalize_segmentation(segmentation):
+    for i in range(len(segmentation)):
+        segmentation[i] = sorted(segmentation[i])
+    return sorted(segmentation, key=lambda x: x[0])
+
+
 def get_top_segmentations(table, n):
     """
     Parameters
@@ -165,7 +171,7 @@ def get_top_segmentations(table, n):
         topf.push(curr_segmentation, curr_seg_score)
 
     for el, score in topf:
-        yield (el, score)
+        yield (normalize_segmentation(el), score)
 
 
 def main():

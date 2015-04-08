@@ -16,20 +16,19 @@ import hwrt.utils as utils
 
 def generate_file_md5(local_path_file, blocksize=2**20):
     # http://stackoverflow.com/a/1131255/3345926
-    m = hashlib.md5()
+    file_hash = hashlib.md5()
     with open( local_path_file , "rb" ) as f:
         while True:
             buf = f.read(blocksize)
             if not buf:
                 break
-            m.update( buf )
-    return m.hexdigest()
+            file_hash.update(buf)
+    return file_hash.hexdigest()
 
 def is_file_consistent(local_path_file, md5_hash):
     """Check if file is there and if the md5_hash is correct."""
     return os.path.isfile(local_path_file) and \
         generate_file_md5(local_path_file) == md5_hash
-        # hashlib.md5(open(local_path_file, 'rb').read()).hexdigest() == md5_hash
 
 
 def get_parser():

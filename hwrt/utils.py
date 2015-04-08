@@ -25,13 +25,18 @@ from . import HandwrittenData
 
 
 def print_status(total, current, start_time=None):
-    """Show how much work was done / how much work is remaining
-    :param total: The total amount of work
-    :type total: float
-    :param current: The work that has been done so far
-    :type current: float
-    :param start_time: The start time in seconds since 1970 to estimate the
-                       remaining time."""
+    """
+    Show how much work was done / how much work is remaining.
+
+    Parameters
+    ----------
+    total : float
+        The total amount of work
+    current : float
+        The work that has been done so far
+    start_time : int
+        The start time in seconds since 1970 to estimate the remaining time.
+    """
     percentage_done = float(current)/total
     sys.stdout.write("\r%0.2f%% " % (percentage_done*100))
     if start_time is not None:
@@ -329,11 +334,18 @@ def choose_raw_dataset(currently=""):
 
 
 def get_readable_time(t):
-    """ Format the time to a readable format.
-    :param t: Time in ms
-    :returns: string that has the time splitted to highest used time
-            (minutes, hours, ...)
-    :rtype: string
+    """
+    Format the time to a readable format.
+
+    Parameters
+    ----------
+    t :
+        Time in ms
+
+    Returns
+    -------
+    string :
+        The time splitted to highest used time (minutes, hours, ...)
     """
     ms = t % 1000
     t -= ms
@@ -385,8 +397,12 @@ def create_adjusted_model_for_percentages(model_src, model_use):
 
 def create_hdf5(input_filename, feature_count, output_filename):
     """
-    :param input_filename: a CSV
-    :type feature_count: int
+
+    Parameters
+    ----------
+    input_filename :
+        a CSV
+    feature_count : int
     """
     import h5py
     new_output_name_x = output_filename.replace(".pfile", "-x.hdf5")
@@ -415,12 +431,18 @@ def create_hdf5(input_filename, feature_count, output_filename):
 
 
 def create_pfile(output_filename, feature_count, data):
-    """Create a pfile.
-    :param output_filename: name of the pfile that will be created
-    :param feature_count: dimension of all features combined
-    :type feature_count: int
-    :param data: list of (x, y) tuples, where x is the feature vector
-                 of dimension ``feature_count`` and y is a label.
+    """
+    Create a pfile.
+
+    Parameters
+    ----------
+    output_filename :
+        name of the pfile that will be created
+    feature_count : int
+        dimension of all features combined
+    data :
+        list of (x, y) tuples, where x is the feature vector of dimension
+        ``feature_count`` and y is a label.
     """
     f = tempfile.NamedTemporaryFile(delete=False)
     input_filename = f.name
@@ -507,13 +529,21 @@ def evaluate_model_single_recording_preloaded(preprocessing_queue,
                                               output_semantics,
                                               recording,
                                               recording_id=None):
-    """Evaluate a model for a single recording, after everything has been
-       loaded.
-    :param preprocessing_queue: List of all preprocessing objects.
-    :param feature_list: List of all feature objects.
-    :param model: Neural network model.
-    :param output_semantics: List that defines what an output means.
-    :param recording: The handwritten recording in JSON format.
+    """
+    Evaluate a model for a single recording, after everything has been loaded.
+
+    Parameters
+    ----------
+    preprocessing_queue : list
+        List of all preprocessing objects.
+    feature_list : list
+        List of all feature objects.
+    model :
+        Neural network model.
+    output_semantics : list
+        List that defines what an output means.
+    recording : string in JSON format
+        The handwritten recording in JSON format.
     """
     handwriting = HandwrittenData.HandwrittenData(recording,
                                                   raw_data_id=recording_id)
@@ -526,7 +556,10 @@ def evaluate_model_single_recording_preloaded(preprocessing_queue,
 
 def get_possible_splits(n):
     """
-    :param n: n strokes were make
+    Parameters
+    ----------
+    n :
+        n strokes were make
     """
     get_bin = lambda x, n: x >= 0 and str(bin(x))[2:].zfill(n) or "-" + str(bin(x))[3:].zfill(n)
     possible_splits = []
@@ -537,8 +570,13 @@ def get_possible_splits(n):
 
 def segment_by_split(split, recording):
     """
-    :param split: "010"
-    :type recording: list
+
+    Parameters
+    ----------
+    split : String of 0s and 1s
+        For example "010".
+    recording : list
+        A recording of handwritten text.
     """
     segmented = [[recording[0]]]
     for i in range(len(recording)-1):
@@ -554,13 +592,22 @@ def evaluate_model_single_recording_preloaded_multisymbol(preprocessing_queue,
                                                           model,
                                                           output_semantics,
                                                           recording):
-    """Evaluate a model for a single recording, after everything has been
-       loaded. Multiple symbols are recognized.
-    :param preprocessing_queue: List of all preprocessing objects.
-    :param feature_list: List of all feature objects.
-    :param model: Neural network model.
-    :param output_semantics: List that defines what an output means.
-    :param recording: The handwritten recording in JSON format.
+    """
+    Evaluate a model for a single recording, after everything has been loaded.
+    Multiple symbols are recognized.
+
+    Parameters
+    ----------
+    preprocessing_queue : list
+        List of all preprocessing objects.
+    feature_list : list
+        List of all feature objects.
+    model :
+        Neural network model.
+    output_semantics :
+        List that defines what an output means.
+    recording :
+        The handwritten recording in JSON format.
     """
     import json
     import nntoolkit.evaluate
@@ -601,10 +648,16 @@ def evaluate_model_single_recording_preloaded_multisymbol(preprocessing_queue,
 
 
 def evaluate_model_single_recording_multisymbol(model_file, recording):
-    """Evaluate a model for a single recording where possibly multiple symbols
+    """
+    Evaluate a model for a single recording where possibly multiple symbols
     are.
-    :param model_file: Model file (.tar)
-    :param recording: The handwritten recording.
+
+    Parameters
+    ----------
+    model_file :
+        Model file (.tar)
+    recording :
+        The handwritten recording.
     """
     (preprocessing_queue, feature_list, model,
      output_semantics) = load_model(model_file)
@@ -619,9 +672,15 @@ def evaluate_model_single_recording_multisymbol(model_file, recording):
 
 
 def evaluate_model_single_recording(model_file, recording):
-    """Evaluate a model for a single recording.
-    :param model_file: Model file (.tar)
-    :param recording: The handwritten recording.
+    """
+    Evaluate a model for a single recording.
+
+    Parameters
+    ----------
+    model_file :
+        Model file (.tar)
+    recording :
+        The handwritten recording.
     """
     (preprocessing_queue, feature_list, model,
      output_semantics) = load_model(model_file)
@@ -634,9 +693,15 @@ def evaluate_model_single_recording(model_file, recording):
 
 
 def _evaluate_model_single_file(target_folder, test_file):
-    """Evaluate a model for a single recording.
-    :param target_folder: Folder where the model is
-    :param test_file: The test file (.pfile)
+    """
+    Evaluate a model for a single recording.
+
+    Parameters
+    ----------
+    target_folder :
+        Folder where the model is
+    test_file :
+        The test file (.pfile)
     """
     logging.info("Create running model...")
     model_src = get_latest_model(target_folder, "model")
@@ -715,12 +780,19 @@ def evaluate_model(recording, model_folder, verbose=False):
 
 
 def get_index2latex(model_description):
-    """Get a dictionary that maps indices to LaTeX commands.
+    """
+    Get a dictionary that maps indices to LaTeX commands.
 
-    :param model_description: A model description file that points to
-                              a feature folder where an
-                              ``index2formula_id.csv`` has to be.
-    :returns: Dictionary that maps indices to LaTeX commands
+    Parameters
+    ----------
+    model_description :
+        A model description file that points to a feature folder where an
+        `index2formula_id.csv` has to be.
+
+    Returns
+    -------
+    dictionary :
+        Maps indices to LaTeX commands
     """
     index2latex = {}
     translation_csv = os.path.join(get_project_root(),
@@ -734,16 +806,25 @@ def get_index2latex(model_description):
 
 
 def get_index2data(model_description):
-    """Get a dictionary that maps indices to a list of (1) the id in the
-       hwrt symbol database (2) the latex command (3) the unicode code point
-       (4) a font family and (5) a font style.
+    """
+    Get a dictionary that maps indices to a list of (1) the id in the
+    hwrt symbol database (2) the latex command (3) the unicode code point
+    (4) a font family and (5) a font style.
 
-       Note that this command need a database connection.
+    Parameters
+    ----------
+    model_description :
+        A model description file that points to a feature folder where an
+        ``index2formula_id.csv`` has to be.
 
-    :param model_description: A model description file that points to
-                              a feature folder where an
-                              ``index2formula_id.csv`` has to be.
-    :returns: Dictionary that maps indices to lists of data
+    Returns
+    -------
+    dictionary :
+        that maps indices to lists of data
+
+    Notes
+    -----
+    This command need a database connection.
     """
     index2latex = {}
     translation_csv = os.path.join(get_project_root(),
@@ -810,12 +891,20 @@ def classify_single_recording(raw_data_json, model_folder, verbose=False):
 
 
 def get_objectlist(description, config_key, module):
-    """Take a description and return a list of classes.
-    :param description: list of dictionaries, where each dictionary has only
-                        one entry. The key is the name of a class.
-                        The value of that entry is a list of
-                        dictionaries again. Those dictionaries are paramters.
-    :returns: List of objects."""
+    """
+    Take a description and return a list of classes.
+
+    Parameters
+    ----------
+    description : list of dictionaries
+        Each dictionary has only one entry. The key is the name of a class. The
+        value of that entry is a list of dictionaries again. Those dictionaries
+        are paramters.
+
+    Returns
+    -------
+    List of objects.
+    """
     object_list = []
     for feature in description:
         for feat, params in feature.items():

@@ -55,13 +55,19 @@ def check_dropbox():
 
 
 def dropbox_upload(filename, directory, client):
-    """Upload the data to DropBox.
-    :param filename: Name of the file that gets uploaded.
-    :type filename: string
-    :param directory: Name of the directory in which the file is that gets
-                      uploaded (relativ to the project root)
-    :type directory: string
-    :param client: a DropBox client object"""
+    """
+    Upload the data to DropBox.
+
+    Parameters
+    ----------
+    filename : string
+        Name of the file that gets uploaded.
+    directory : string
+        Name of the directory in which the file is that gets uploaded (relativ
+        to the project root)
+    client :
+        a DropBox client object
+    """
     local_path = os.path.join(utils.get_project_root(), directory, filename)
     online_path = os.path.join(directory, filename)
     filesize = os.path.getsize(local_path)

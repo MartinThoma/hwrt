@@ -6,24 +6,24 @@
 Each algorithm works on a set of handwritings. They have to be applied like
 this:
 
- >>> import data_analyzation_metrics
- >>> a = [{'is_in_testset': 0,
-           'formula_id': 31L,
-           'handwriting': HandwrittenData(raw_data_id=2953),
-           'formula_in_latex': 'A',
-           'id': 2953L},
-          {'is_in_testset': 0,
-           'formula_id': 31L,
-           'handwriting': HandwrittenData(raw_data_id=4037),
-           'formula_in_latex': 'A',
-           'id': 4037L},
-          {'is_in_testset': 0,
-           'formula_id': 31L,
-           'handwriting': HandwrittenData(raw_data_id=4056),
-           'formula_in_latex': 'A',
-           'id': 4056L}]
- >>> creator_metric = Creator('creator.csv')
- >>> creator_metric(a)
+>>> import data_analyzation_metrics
+>>> a = [{'is_in_testset': 0,
+...    'formula_id': 31L,
+...    'handwriting': HandwrittenData(raw_data_id=2953),
+...    'formula_in_latex': 'A',
+...    'id': 2953L},
+...   {'is_in_testset': 0,
+...    'formula_id': 31L,
+...    'handwriting': HandwrittenData(raw_data_id=4037),
+...    'formula_in_latex': 'A',
+...    'id': 4037L},
+...   {'is_in_testset': 0,
+...    'formula_id': 31L,
+...    'handwriting': HandwrittenData(raw_data_id=4056),
+...    'formula_in_latex': 'A',
+...    'id': 4056L}]
+>>> creator_metric = Creator('creator.csv')
+>>> creator_metric(a)
 """
 from __future__ import print_function
 import os
@@ -61,23 +61,35 @@ def prepare_file(filename):
 
 
 def sort_by_formula_id(raw_datasets):
-    """The parameter ``raw_datasets`` has to be of the format
+    """
+    Sort a list of formulas by `id`, where `id` represents the accepted
+    formula id.
 
-        [{'is_in_testset': 0,
-          'formula_id': 31L,
-          'handwriting': HandwrittenData(raw_data_id=2953),
-          'formula_in_latex': 'A',
-          'id': 2953L},
-         {'is_in_testset': 0,
-          'formula_id': 31L,
-          'handwriting': HandwrittenData(raw_data_id=4037),
-          'formula_in_latex': 'A',
-          'id': 4037L},
-         {'is_in_testset': 0,
-          'formula_id': 31L,
-          'handwriting': HandwrittenData(raw_data_id=4056),
-          'formula_in_latex': 'A',
-          'id': 4056L}]
+    Parameters
+    ----------
+    raw_datasets : list of dictionaries
+        A list of raw datasets.
+
+    Examples
+    --------
+    The parameter `raw_datasets` has to be of the format
+
+    >>> rd = [{'is_in_testset': 0,
+    ...        'formula_id': 31,
+    ...        'handwriting': HandwrittenData(raw_data_id=2953),
+    ...        'formula_in_latex': 'A',
+    ...        'id': 2953},
+    ...       {'is_in_testset': 0,
+    ...        'formula_id': 31,
+    ...        'handwriting': HandwrittenData(raw_data_id=4037),
+    ...        'formula_in_latex': 'A',
+    ...        'id': 4037},
+    ...       {'is_in_testset': 0,
+    ...        'formula_id': 31,
+    ...        'handwriting': HandwrittenData(raw_data_id=4056),
+    ...        'formula_in_latex': 'A',
+    ...        'id': 4056}]
+    >>> sort_by_formula_id(rd)
     """
     by_formula_id = defaultdict(list)
     for el in raw_datasets:
@@ -286,18 +298,23 @@ class AnalyzeErrors(object):
                     total_error_count, percentages, time_max_list):
         """Write all obtained data to a file.
 
-        :param symbols: List of all symbols with the count of recordings
-        :type symbols: List of tuples (String, non-negative int)
-        :param err_recs: count of recordings by error type
-        :type err_recs: dictionary
-        :param nr_recordings: number of recordings
-        :type nr_recordings: non-negative int
-        :param total_error_count: Count of all error that have happened by type
-        :type total_error_count: dictionary
-        :param percentages: List of all recordings where removing the dots
-                            changed the size of the bounding box.
-        :param time_max_list: List of all recordings where the recording time
-                              is above a threshold."""
+        Parameters
+        ----------
+        symbols : list of tuples (String, non-negative int)
+            List of all symbols with the count of recordings
+        err_recs : dictionary
+            count of recordings by error type
+        nr_recordings : non-negative int
+            number of recordings
+        total_error_count : dictionary
+            Count of all error that have happened by type
+        percentages : list
+            List of all recordings where removing the dots changed the size of
+            the bounding box.
+        time_max_list : list
+            List of all recordings where the recording time is above a
+            threshold.
+        """
         write_file = open(self.filename, "a")
         s = ""
         for symbol, count in sorted(symbols.items(), key=lambda n: n[0]):

@@ -24,6 +24,7 @@ import numpy
 import os
 
 import pickle
+import pkg_resources
 
 # hwrt modules
 # from . import HandwrittenData
@@ -232,13 +233,21 @@ def get_strokes_distance(s1, s2):
     return min_dist
 
 
-def get_segmentation(recording):
+def get_segmentation(recording, single_clf):
     """
-    :param recording: A list of lists, where each sublist represents a stroke
-    :returns: A list of segmentations together with their probabilities. Each
-              probability has to be positive and the sum may not be bigger than
-              1.0.
 
+    Parameters
+    ----------
+    recording : A list of lists
+        Each sublist represents a stroke
+
+    Returns
+    -------
+    A list of segmentations together with their probabilities. Each probability
+    has to be positive and the sum may not be bigger than 1.0.
+
+    Examples
+    --------
     >> segment([stroke1, stroke2, stroke3])
     [
       ([[0, 1], [2]], 0.8),
@@ -282,13 +291,21 @@ def get_segmentation(recording):
             prob[strokeid1][strokeid2] = stroke_segmented_classifier(X)
 
     import partitions
-    return partitions.get_top_segmentations(prob, 500)
+    top_segmentations = list(partitions.get_top_segmentations(prob, 500))
+    for i, segmentation in enumerate(top_segmentations):
+        symbols = apply_segmentation(recording, segmentation)
+        min_top2 = partitions.TopFinder(1, find_min=True)
+        for i, symbol in enumerate(symbols):
+            predictions = single_clf.predict(symbol)
+            min_top2.push("value-%i" % i, predictions[0]['probability'] + predictions[1]['probability'])
+        top_segmentations[i][1] *= list(min_top2)[0][1]
+    return top_segmentations
 
 
 def is_out_of_order(seg):
     last_stroke = -1
     for symbol in seg:
-        for stroke in seg:
+        for stroke in symbol:
             if last_stroke > stroke:
                 return True
             last_stroke = stroke
@@ -297,6 +314,41 @@ def is_out_of_order(seg):
 
 def _less_than(l, n):
     return float(len([1 for el in l if el < n]))
+
+
+class single_classificer(object):
+    def __init__(self):
+        logging.info("Start reading model...")
+        model_path = pkg_resources.resource_filename('hwrt', 'misc/')
+        model_file = os.path.join(model_path, "model.tar")
+        logging.info("Model: %s", model_file)
+        (preprocessing_queue, feature_list, model,
+         output_semantics) = utils.load_model(model_file)
+        self.preprocessing_queue = preprocessing_queue
+        self.feature_list = feature_list
+        self.model = model
+        self.output_semantics = output_semantics
+
+    def predict(self, parsed_json):
+        evaluate = utils.evaluate_model_single_recording_preloaded
+        results = evaluate(self.preprocessing_queue,
+                           self.feature_list,
+                           self.model,
+                           self.output_semantics,
+                           json.dumps(parsed_json['data']),
+                           parsed_json['id'])
+        return results
+
+
+def apply_segmentation(recording, segmentation):
+    symbols = []
+    seg, prob = segmentation
+    for symbol_indices in seg:
+        symbol = []
+        for index in symbol_indices:
+            symbol.append(recording[index])
+        symbols.append({'data': symbol, 'id': 'symbol-%i' % index})
+    return symbols
 
 
 if __name__ == '__main__':
@@ -308,6 +360,10 @@ if __name__ == '__main__':
     logging.info("Start doctest")
     import doctest
     doctest.testmod()
+
+    logging.info("Get single classifier")
+    single_clf = single_classificer()
+
     logging.info("Get segmented raw data")
     recordings = get_segmented_raw_data()
     logging.info("Start testing")
@@ -336,7 +392,7 @@ if __name__ == '__main__':
     for nr, recording in enumerate(recordings):
         if nr % 100 == 0:
             print(("## %i " % nr) + "#"*80)
-        seg_predict = get_segmentation(recording['data'])
+        seg_predict = get_segmentation(recording['data'], single_clf)
         real_seg = recording['segmentation']
         for i, pred in enumerate(seg_predict):
             seg, score = pred
@@ -361,6 +417,7 @@ if __name__ == '__main__':
     logging.info("TOP-20: %0.2f", _less_than(score_place, 20)/len(recordings))
     logging.info("TOP-50: %0.2f", _less_than(score_place, 50)/len(recordings))
     logging.info("Out of order: %i", out_of_order_count)
+    logging.info("Total: %i", len(recordings))
 
 # Last:
 # 2015-04-08 13:07:23,785 INFO mean: 27.80
@@ -370,3 +427,13 @@ if __name__ == '__main__':
 # 2015-04-08 13:07:23,786 INFO TOP-10: 0.47
 # 2015-04-08 13:07:23,787 INFO TOP-20: 0.55
 # 2015-04-08 13:07:23,787 INFO TOP-50: 0.62
+#
+# 2015-04-08 14:16:29,358 INFO mean: 32.66
+# 2015-04-08 14:16:29,358 INFO median: 3.00
+# 2015-04-08 14:16:29,358 INFO TOP-1: 0.17
+# 2015-04-08 14:16:29,359 INFO TOP-3: 0.34
+# 2015-04-08 14:16:29,359 INFO TOP-10: 0.51
+# 2015-04-08 14:16:29,359 INFO TOP-20: 0.57
+# 2015-04-08 14:16:29,359 INFO TOP-50: 0.63
+# 2015-04-08 14:16:29,359 INFO Out of order: 921
+# 2015-04-08 14:16:29,359 INFO Total: 943

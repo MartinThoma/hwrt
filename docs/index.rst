@@ -53,6 +53,13 @@ Commands:
    test
    backup
 
+Development
+
+.. toctree::
+   :maxdepth: 2
+
+   utils
+
 
 Indices and tables
 ==================

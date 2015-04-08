@@ -31,8 +31,10 @@ class HandwrittenData(object):
         self.fix_times()
 
     def fix_times(self):
-        """Some recordings have wrong times. Fix them so that nothing after
-           loading a handwritten recording breaks."""
+        """
+        Some recordings have wrong times. Fix them so that nothing after
+        loading a handwritten recording breaks.
+        """
         pointlist = self.get_pointlist()
         times = [point['time'] for stroke in pointlist for point in stroke]
         times_min = max(min(times), 0)  # Make sure this is not None
@@ -45,11 +47,15 @@ class HandwrittenData(object):
         self.raw_data_json = json.dumps(pointlist)
 
     def get_pointlist(self):
-        """Get a list of lists of tuples from JSON raw data string.
-           Those lists represent strokes with control points.
+        """
+        Get a list of lists of tuples from JSON raw data string. Those lists
+        represent strokes with control points.
 
-           Every point is a dictionary:
-           {'x': 123, 'y': 42, 'time': 1337}
+        Returns
+        -------
+        list :
+            A list of strokes. Each stroke is a dictionary
+            {'x': 123, 'y': 42, 'time': 1337}
         """
         try:
             pointlist = json.loads(self.raw_data_json)
@@ -74,10 +80,12 @@ class HandwrittenData(object):
 
     def set_pointlist(self, pointlist):
         """Overwrite pointlist.
-        :param pointlist: The inner lists represent strokes. Every stroke
-            consists of points. Every point is a dictinary with 'x', 'y',
-            'time'.
-        :type pointlist: list of lists
+
+        Parameters
+        ----------
+        pointlist : a list of strokes; each stroke is a list of points
+            The inner lists represent strokes. Every stroke consists of points.
+            Every point is a dictinary with 'x', 'y', 'time'.
         """
         assert type(pointlist) is list, \
             "pointlist is not of type list, but %r" % type(pointlist)
@@ -126,14 +134,22 @@ class HandwrittenData(object):
     def preprocessing(self, algorithms):
         """Apply preprocessing algorithms.
 
+        Parameters
+        ----------
+        algorithms : a list objects
+            Preprocessing allgorithms which get applied in order.
+
+        Examples
+        --------
+        >>> import preprocessing
         >>> a = HandwrittenData(...)
-        >>> preprocessing_queue = [(preprocessing.scale_and_shift, []), \
-                                   (preprocessing.connect_strokes, []), \
-                                   (preprocessing.douglas_peucker, \
-                                    {'EPSILON': 0.2}), \
-                                   (preprocessing.space_evenly, \
-                                    {'number': 100, \
-                                     'KIND': 'cubic'})]
+        >>> preprocessing_queue = [(preprocessing.scale_and_shift, []),
+        ...                        (preprocessing.connect_strokes, []),
+        ...                        (preprocessing.douglas_peucker,
+        ...                         {'EPSILON': 0.2}),
+        ...                        (preprocessing.space_evenly,
+        ...                         {'number': 100,
+        ...                          'KIND': 'cubic'})]
         >>> a.preprocessing(preprocessing_queue)
         """
         assert type(algorithms) is list
@@ -216,9 +232,10 @@ class HandwrittenData(object):
         return single_dots
 
     def get_center_of_mass(self):
-        """Get a tuple (x,y) that is the center of mass. The center of mass
-           is not necessarily the same as the center of the bounding box.
-           Imagine a black square and a single dot wide outside of the square.
+        """
+        Get a tuple (x,y) that is the center of mass. The center of mass is not
+        necessarily the same as the center of the bounding box. Imagine a black
+        square and a single dot wide outside of the square.
         """
         xsum, ysum, counter = 0., 0., 0
         for stroke in self.get_pointlist():

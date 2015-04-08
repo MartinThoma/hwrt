@@ -52,13 +52,19 @@ def _create_translation_file(feature_folder,
                              dataset_name,
                              translation,
                              formula_id2index):
-    """Write a loop-up file that contains the direct (record-wise) lookup
-       information.
+    """
+    Write a loop-up file that contains the direct (record-wise) lookup
+    information.
 
-       :param feature_folder: Path to the feature files.
-       :param dataset_name: 'traindata', 'validdata' or 'testdata'.
-       :param translation: List of triples
-                           (raw data id, formula in latex, formula id)"""
+    Parameters
+    ----------
+    feature_folder :
+        Path to the feature files.
+    dataset_name :
+        'traindata', 'validdata' or 'testdata'.
+    translation : list of triples
+        (raw data id, formula in latex, formula id)
+    """
     translationfilename = "%s/translation-%s.csv" % (feature_folder,
                                                      dataset_name)
     with open(translationfilename, "w") as f:
@@ -144,11 +150,20 @@ def main(feature_folder, create_learning_curve=False):
 
 
 def training_set_multiplication(training_set, mult_queue):
-    """ Multiply the training set by all methods listed in mult_queue.
-    :param training_set: set of all recordings that will be used for training
-    :param mult_queue: list of all algorithms that will take one recording and
-    generate more than one.
-    :returns: mutliple recordings
+    """
+    Multiply the training set by all methods listed in mult_queue.
+
+    Parameters
+    ----------
+    training_set :
+        set of all recordings that will be used for training
+    mult_queue :
+        list of all algorithms that will take one recording and generate more
+        than one.
+
+    Returns
+    -------
+    mutliple recordings
     """
     logging.info("Multiply data...")
     for algorithm in mult_queue:
@@ -167,10 +182,14 @@ def training_set_multiplication(training_set, mult_queue):
 
 
 def get_sets(path_to_data):
-    """Get a training, validation and a testset as well as a dictionary that
-    maps each formula_id to an index (0...nr_of_formulas).
+    """
+    Get a training, validation and a testset as well as a dictionary that maps
+    each formula_id to an index (0...nr_of_formulas).
 
-    :param path_to_data: a pickle file that contains a list of datasets.
+    Parameters
+    ----------
+    path_to_data :
+        a pickle file that contains a list of datasets
     """
     loaded = pickle.load(open(path_to_data, 'rb'))
     datasets = loaded['handwriting_datasets']
@@ -304,13 +323,17 @@ def prepare_dataset(dataset,
 
 def make_pfile(dataset_name, feature_count, data,
                output_filename, create_learning_curve):
-    """ Create the pfile.
-    :param filename: name of the file that pfile_create will use to create the
-    pfile.
-    :param feature_count: integer, number of features
-    :type feature_count: integer
-    :param data: data format ('feature_string', 'label')
-    :type data: list of tuples
+    """
+    Create the pfile.
+
+    Parameters
+    ----------
+    filename :
+        name of the file that pfile_create will use to create the pfile.
+    feature_count : integer
+        number of features
+    data : list of tuples
+         data format ('feature_string', 'label')
     """
     # create raw data file for pfile_create
     if dataset_name == "traindata" and create_learning_curve:

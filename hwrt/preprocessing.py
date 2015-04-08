@@ -59,10 +59,13 @@ def get_preprocessing_queue(preprocessing_list):
 
 
 def print_preprocessing_list(preprocessing_queue):
-    """Print the ``preproc_list`` in a human-readable form.
+    """
+    Print the ``preproc_list`` in a human-readable form.
 
-    :param preprocessing_queue: Algorithms that get applied for preprocessing.
-    :type preprocessing_queue: List of preprocessing objects.
+    Parameters
+    ----------
+    preprocessing_queue : list of preprocessing objects
+        Algorithms that get applied for preprocessing.
     """
     print("## Preprocessing")
     print("```")
@@ -554,8 +557,9 @@ class StrokeConnect(object):
 
 
 class DotReduction(object):
-    """Reduce strokes where the maximum distance between points is below a
-       `threshold` to a single dot.
+    """
+    Reduce strokes where the maximum distance between points is below a
+    `threshold` to a single dot.
     """
     def __init__(self, threshold=5):
         self.threshold = threshold
@@ -574,11 +578,18 @@ class DotReduction(object):
             type(handwritten_data)
 
         def _get_max_distance(L):
-            """Find the maximum distance between two points in a list of points
-            :param L: list of points
-            :type L: list
-            :returns: maximum distance bewtween two points
-            :rtype: float
+            """
+            Find the maximum distance between two points in a list of points
+
+            Parameters
+            ----------
+            L : list
+                list of points
+
+            Returns
+            -------
+            float
+                maximum distance bewtween two points
             """
             if len(L) <= 1:
                 return -1
@@ -591,11 +602,18 @@ class DotReduction(object):
                 return max_dist
 
         def _get_average_point(pointlist):
-            """Calculate the average point.
-            :param pointlist: list of points
-            :type pointlist: list
-            :returns: a single point
-            :rtype: dict
+            """
+            Calculate the average point.
+
+            Parameters
+            ----------
+            pointlist : list
+                list of points
+
+            Returns
+            -------
+            dict :
+                a single point
             """
             x, y, t = 0, 0, 0
             for point in pointlist:

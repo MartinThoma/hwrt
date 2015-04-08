@@ -54,8 +54,13 @@ def get_features(model_description_features):
 
 
 def print_featurelist(feature_list):
-    """Print the feature_list in a human-readable form.
-    :type feature_list: List of feature objects
+    """
+    Print the feature_list in a human-readable form.
+
+    Parameters
+    ----------
+    feature_list : list
+        feature objects
     """
     input_features = sum(map(lambda n: n.get_dimension(), feature_list))
     print("## Features (%i)" % input_features)

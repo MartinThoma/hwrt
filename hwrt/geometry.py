@@ -338,12 +338,15 @@ def perpendicular_distance(p3, p1, p2):
     """
     Calculate the distance from p3 to the stroke defined by p1 and p2.
     The distance is the length of the perpendicular from p3 on p1.
-    :param p1: start of stroke
-    :type p1: dictionary with "x" and "y"
-    :param p2: end of stroke
-    :type p2: dictionary with "x" and "y"
-    :param p3: point
-    :type p3: dictionary with "x" and "y"
+
+    Parameters
+    ----------
+    p1 : dictionary with "x" and "y"
+        start of stroke
+    p2 : dictionary with "x" and "y"
+        end of stroke
+    p3 : dictionary with "x" and "y"
+        point
     """
     px = p2['x']-p1['x']
     py = p2['y']-p1['y']

@@ -1,7 +1,7 @@
 Analyze Data
 ============
 
-This tool helps to analyze data by features. 
+This tool helps to analyze data by features.
 
 
 General usage

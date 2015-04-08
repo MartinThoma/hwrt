@@ -113,9 +113,10 @@ def q(segmentation, s1, s2):
 
 class TopFinder(object):
     """Utility datastructure to find the top n elements."""
-    def __init__(self, n):
+    def __init__(self, n, find_min=False):
         self.n = n
         self.tops = []
+        self.find_min = find_min
 
     def push(self, element, value):
         """Push an ``element`` into the datastrucutre together with its value
@@ -125,9 +126,11 @@ class TopFinder(object):
         """
         insert_pos = 0
         for index, el in enumerate(self.tops):
-            if el[1] >= value:
+            if not self.find_min and el[1] >= value:
                 insert_pos = index+1
-        self.tops.insert(insert_pos, (element, value))
+            elif self.find_min and el[1] <= value:
+                insert_pos = index+1
+        self.tops.insert(insert_pos, [element, value])
         self.tops = self.tops[:self.n]
 
     def __iter__(self):
@@ -171,7 +174,7 @@ def get_top_segmentations(table, n):
         topf.push(curr_segmentation, curr_seg_score)
 
     for el, score in topf:
-        yield (normalize_segmentation(el), score)
+        yield [normalize_segmentation(el), score]
 
 
 def main():

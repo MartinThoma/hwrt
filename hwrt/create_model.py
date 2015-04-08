@@ -12,15 +12,22 @@ from . import features
 
 
 def create_model(model_folder, model_type, topology, override):
-    """Create a model if it doesn't exist already.
-    :param model_folder: The path to the folder where the model is described
-                         with an ``info.yml``
-    :param model_type: MLP
-    :param topology: Something like 160:500:369 - that means the first layer
-                     has 160 neurons, the second layer has 500 neurons and the
-                     last layer has 369 neurons.
-    :param override: If a model exists, override it.
-    :type override: boolean"""
+    """
+    Create a model if it doesn't exist already.
+
+    Parameters
+    ----------
+    model_folder :
+        The path to the folder where the model is described with an `info.yml`
+    model_type :
+        MLP
+    topology :
+        Something like 160:500:369 - that means the first layer has 160
+        neurons, the second layer has 500 neurons and the last layer has 369
+        neurons.
+    override : boolean
+        If a model exists, override it.
+    """
     latest_model = utils.get_latest_in_folder(model_folder, ".json")
     if (latest_model == "") or override:
         logging.info("Create a base model...")

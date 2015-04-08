@@ -43,10 +43,20 @@ def filter_label(label, replace_by_similar=True):
 
 
 def analyze_feature(raw_datasets, feature, basename="aspect_ratios"):
-    """Apply ``feature`` to all recordings in ``raw_datasets``. Store the
-       results in two files. One file stores the raw result, the other one
-       groups the results by symbols and stores the mean, standard deviation
-       and the name of the symbol as a csv file.
+    """
+    Apply ``feature`` to all recordings in ``raw_datasets``. Store the results
+    in two files. One file stores the raw result, the other one groups the
+    results by symbols and stores the mean, standard deviation and the name of
+    the symbol as a csv file.
+
+    Parameters
+    ----------
+    raw_datasets : List of dictionaries
+        Each dictionary is a raw_dataset.
+    feature : An instance of the feature class type
+        The `feature` which gets analyzed on `raw_datasets`.
+    basename : string
+        Name for the file in which the data gets written.
     """
 
     # Prepare files

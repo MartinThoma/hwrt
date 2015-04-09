@@ -22,7 +22,7 @@ from hwrt.HandwrittenData import HandwrittenData
 import hwrt.utils as utils
 
 
-def main(destination):
+def main(destination_folder):
     """Main part of the backup script."""
     cfg = utils.get_database_configuration()
     mysql = cfg['mysql_online']
@@ -128,9 +128,10 @@ def main(destination):
 
     time_prefix = time.strftime("%Y-%m-%d-%H-%M")
     archive_filename = "%s-data.tar" % time_prefix
+    archive_dest = os.path.join(destination_folder, archive_filename)
     filenames = ['symbols.csv', 'test-data.csv', 'train-data.csv']
     # Create tar file
-    with tarfile.open(archive_filename, "w:bz2") as tar:
+    with tarfile.open(archive_dest, "w:bz2") as tar:
         for name in filenames:
             tar.add(name)
 
@@ -149,7 +150,7 @@ def get_parser():
     parser.add_argument("-d", "--destination", dest="destination",
                         default=archive_path,
                         help="where do write the handwriting_dataset.pickle",
-                        type=lambda x: utils.is_valid_file(parser, x),
+                        type=lambda x: utils.is_valid_folder(parser, x),
                         metavar="FOLDER")
     return parser
 

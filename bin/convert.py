@@ -12,6 +12,7 @@ import h5py
 import tarfile
 import os
 import csv
+import logging
 
 # hwrt modules
 import hwrt.utils as utils

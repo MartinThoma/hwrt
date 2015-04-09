@@ -11,19 +11,10 @@ import os
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.INFO,
                     stream=sys.stdout)
-try:  # Python 2
-    import cPickle as pickle
-except ImportError:  # Python 3
-    import pickle
 import pymysql
 import pymysql.cursors
 import csv
-import dropbox
-import hashlib
-import webbrowser
-import yaml
 import time
-import tempfile
 import tarfile
 
 # hwrt modules
@@ -33,10 +24,6 @@ import hwrt.utils as utils
 
 def main(destination):
     """Main part of the backup script."""
-    time_prefix = time.strftime("%Y-%m-%d-%H-%M")
-    filename = "%s-handwriting_datasets-raw.pickle" % time_prefix
-    destination_path = os.path.join(destination, filename)
-    logging.info("Data will be written to '%s'", destination_path)  #TODO: obsolete
     cfg = utils.get_database_configuration()
     mysql = cfg['mysql_online']
     connection = pymysql.connect(host=mysql['host'],
@@ -139,6 +126,7 @@ def main(destination):
                                  data['training_samples'],
                                  data['test_samples']])
 
+    time_prefix = time.strftime("%Y-%m-%d-%H-%M")
     archive_filename = "%s-data.tar" % time_prefix
     filenames = ['symbols.csv', 'test-data.csv', 'train-data.csv']
     # Create tar file

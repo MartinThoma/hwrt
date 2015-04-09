@@ -229,7 +229,7 @@ def get_strokes_distance(s1, s2):
         s2 += s2
     stroke1 = geometry.PolygonalChain(s1)
     stroke2 = geometry.PolygonalChain(s2)
-    import itertools
+
     min_dist = geometry.segments_distance(stroke1[0], stroke2[0])
     for seg1, seg2 in itertools.product(stroke1, stroke2):
         min_dist = min(min_dist, geometry.segments_distance(seg1, seg2))
@@ -314,8 +314,8 @@ def get_segmentation(recording, single_clf):
 
         # Segment after pre-segmentation
         prob = [[1.0 for _ in chunk] for _ in chunk]
-        for strokeid1, stroke1 in enumerate(chunk):
-            for strokeid2, stroke2 in enumerate(chunk):
+        for strokeid1 in range(len(chunk)):
+            for strokeid2 in range(len(chunk)):
                 if strokeid1 == strokeid2:
                     continue
                 X = get_stroke_features(chunk, strokeid1, strokeid2)

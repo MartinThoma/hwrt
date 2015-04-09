@@ -41,7 +41,7 @@ def main(mysql):
         raw_datasets = cursor.fetchall()
         is_in_testset = 0
         raw_candidate_ids = []
-        for j, raw_data in enumerate(raw_datasets):
+        for raw_data in raw_datasets:
             if raw_data['is_in_testset'] == 1:
                 is_in_testset += 1
             else:

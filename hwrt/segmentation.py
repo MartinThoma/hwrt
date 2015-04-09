@@ -26,12 +26,15 @@ import os
 import pickle
 import pkg_resources
 
+import math
+
 # hwrt modules
 # from . import HandwrittenData
 from hwrt import utils
 from hwrt.HandwrittenData import HandwrittenData
 from hwrt import features
 from hwrt import geometry
+from hwrt import partitions
 
 stroke_segmented_classifier = None
 
@@ -233,6 +236,30 @@ def get_strokes_distance(s1, s2):
     return min_dist
 
 
+def merge_segmentations(segs1, segs2):
+    """
+    Parameters
+    ----------
+    segs1 : a list of tuples
+        Each tuple is a segmentation with its score
+    segs2 : a list of tuples
+        Each tuple is a segmentation with its score
+
+    Returns
+    -------
+    list of tuples :
+        Segmentations with their score, combined from segs1 and segs2
+    """
+    topf = partitions.TopFinder(500)
+    for s1, s2 in itertools.product(segs1, segs2):
+        topf.push(s1[0]+s2[0], s1[1]*s2[1])
+    return list(topf)
+
+
+def update_segmentation_data(segmentation, add):
+    return [[el + add for el in symbol] for symbol in segmentation]
+
+
 def get_segmentation(recording, single_clf):
     """
 
@@ -243,12 +270,16 @@ def get_segmentation(recording, single_clf):
 
     Returns
     -------
-    A list of segmentations together with their probabilities. Each probability
-    has to be positive and the sum may not be bigger than 1.0.
+    list of tuples :
+        Segmentations together with their probabilities. Each probability
+        has to be positive and the sum may not be bigger than 1.0.
 
     Examples
     --------
-    >> segment([stroke1, stroke2, stroke3])
+    >>> stroke1 = [{'x': 0, 'y': 0, 'time': 0}, {'x': 12, 'y': 12, 'time': 1}]
+    >>> stroke2 = [{'x': 0, 'y': 10, 'time': 2}, {'x': 12, 'y': 0, 'time': 3}]
+    >>> stroke3 = [{'x': 14, 'y': 0, 'time': 5}, {'x': 14, 'y': 12, 'time': 6}]
+    >>> #get_segmentation([stroke1, stroke2, stroke3], single_clf)
     [
       ([[0, 1], [2]], 0.8),
       ([[0], [1,2]], 0.1),
@@ -277,34 +308,51 @@ def get_segmentation(recording, single_clf):
     #    Build tree structure. A stroke `c` is the child of another stroke `p`,
     #    if the bounding box of `c` is within the bounding box of `p`.
     #       Problem: B <-> 13
-    recording = recording[:8]  # Chunk it ... in future, make this more flexible - to NOT ignore strokes!
+    top_segmentations_global = [([], 1.0)]
+    for chunk_part in range(int(math.ceil(float(len(recording))/8))):
+        chunk = recording[8*chunk_part:8*(chunk_part+1)]
 
-    # Segment after pre-segmentation
-    prob = [[1.0 for _ in recording] for _ in recording]
-    for strokeid1, stroke1 in enumerate(recording):
-        for strokeid2, stroke2 in enumerate(recording):
-            if strokeid1 == strokeid2:
-                continue
-            X = get_stroke_features(recording, strokeid1, strokeid2)
-            X += X_symbol
-            X = numpy.array([X], dtype=numpy.float32)
-            prob[strokeid1][strokeid2] = stroke_segmented_classifier(X)
+        # Segment after pre-segmentation
+        prob = [[1.0 for _ in chunk] for _ in chunk]
+        for strokeid1, stroke1 in enumerate(chunk):
+            for strokeid2, stroke2 in enumerate(chunk):
+                if strokeid1 == strokeid2:
+                    continue
+                X = get_stroke_features(chunk, strokeid1, strokeid2)
+                X += X_symbol
+                X = numpy.array([X], dtype=numpy.float32)
+                prob[strokeid1][strokeid2] = stroke_segmented_classifier(X)
 
-    import partitions
-    top_segmentations = list(partitions.get_top_segmentations(prob, 500))
-    for i, segmentation in enumerate(top_segmentations):
-        symbols = apply_segmentation(recording, segmentation)
-        min_top2 = partitions.TopFinder(1, find_min=True)
-        for i, symbol in enumerate(symbols):
-            predictions = single_clf.predict(symbol)
-            min_top2.push("value-%i" % i, predictions[0]['probability'] + predictions[1]['probability'])
-        top_segmentations[i][1] *= list(min_top2)[0][1]
-    return top_segmentations
+        top_segmentations = list(partitions.get_top_segmentations(prob, 500))
+        for i, segmentation in enumerate(top_segmentations):
+            symbols = apply_segmentation(chunk, segmentation)
+            min_top2 = partitions.TopFinder(1, find_min=True)
+            for i, symbol in enumerate(symbols):
+                predictions = single_clf.predict(symbol)
+                min_top2.push("value-%i" % i,
+                              predictions[0]['probability'] + predictions[1]['probability'])
+            top_segmentations[i][1] *= list(min_top2)[0][1]
+        for i, segmentation in enumerate(top_segmentations):
+            top_segmentations[i][0] = update_segmentation_data(top_segmentations[i][0], 8*chunk_part)
+        top_segmentations_global = merge_segmentations(top_segmentations_global, top_segmentations)
+    return top_segmentations_global
 
 
-def is_out_of_order(seg):
+def _is_out_of_order(segmentation):
+    """
+    Check if a given segmentation is out of order.
+
+    Examples
+    --------
+    >>> _is_out_of_order([[0, 1, 2, 3]])
+    False
+    >>> _is_out_of_order([[0, 1], [2, 3]])
+    False
+    >>> _is_out_of_order([[0, 1, 3], [2]])
+    True
+    """
     last_stroke = -1
-    for symbol in seg:
+    for symbol in segmentation:
         for stroke in symbol:
             if last_stroke > stroke:
                 return True
@@ -394,6 +442,7 @@ if __name__ == '__main__':
             print(("## %i " % nr) + "#"*80)
         seg_predict = get_segmentation(recording['data'], single_clf)
         real_seg = recording['segmentation']
+        pred_str = ""
         for i, pred in enumerate(seg_predict):
             seg, score = pred
             if i == 0:
@@ -407,7 +456,7 @@ if __name__ == '__main__':
         print("## %i" % recording['id'])
         print("  Real segmentation:\t%s (got at place %i)" % (real_seg, i))
         print(pred_str)
-        out_of_order_count += is_out_of_order(real_seg)
+        out_of_order_count += _is_out_of_order(real_seg)
     print(score_place)
     logging.info("mean: %0.2f", numpy.mean(score_place))
     logging.info("median: %0.2f", numpy.median(score_place))
@@ -418,22 +467,3 @@ if __name__ == '__main__':
     logging.info("TOP-50: %0.2f", _less_than(score_place, 50)/len(recordings))
     logging.info("Out of order: %i", out_of_order_count)
     logging.info("Total: %i", len(recordings))
-
-# Last:
-# 2015-04-08 13:07:23,785 INFO mean: 27.80
-# 2015-04-08 13:07:23,786 INFO median: 4.00
-# 2015-04-08 13:07:23,786 INFO TOP-1: 0.11
-# 2015-04-08 13:07:23,786 INFO TOP-3: 0.32
-# 2015-04-08 13:07:23,786 INFO TOP-10: 0.47
-# 2015-04-08 13:07:23,787 INFO TOP-20: 0.55
-# 2015-04-08 13:07:23,787 INFO TOP-50: 0.62
-#
-# 2015-04-08 14:16:29,358 INFO mean: 32.66
-# 2015-04-08 14:16:29,358 INFO median: 3.00
-# 2015-04-08 14:16:29,358 INFO TOP-1: 0.17
-# 2015-04-08 14:16:29,359 INFO TOP-3: 0.34
-# 2015-04-08 14:16:29,359 INFO TOP-10: 0.51
-# 2015-04-08 14:16:29,359 INFO TOP-20: 0.57
-# 2015-04-08 14:16:29,359 INFO TOP-50: 0.63
-# 2015-04-08 14:16:29,359 INFO Out of order: 921
-# 2015-04-08 14:16:29,359 INFO Total: 943

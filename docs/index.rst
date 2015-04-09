@@ -58,6 +58,7 @@ Development
 .. toctree::
    :maxdepth: 2
 
+   segmentation
    utils
 
 

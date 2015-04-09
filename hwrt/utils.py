@@ -870,8 +870,9 @@ def get_online_symbol_data(database_id):
 
 
 def classify_single_recording(raw_data_json, model_folder, verbose=False):
-    """Get the classification as a list of tuples. The first value is the
-       LaTeX code, the second value is the probability.
+    """
+    Get the classification as a list of tuples. The first value is the LaTeX
+    code, the second value is the probability.
     """
     evaluation_file = evaluate_model(raw_data_json, model_folder, verbose)
     with open(os.path.join(model_folder, "info.yml")) as ymlfile:

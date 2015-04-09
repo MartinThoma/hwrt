@@ -21,6 +21,7 @@ class HandwrittenData(object):
         self.wild_point_count = wild_point_count
         self.missing_stroke = missing_stroke
         self.user_id = user_id
+        self.segmentation = None
         assert type(json.loads(self.raw_data_json)) is list, \
             "raw_data_json is not JSON: %r" % self.raw_data_json
         assert len(self.get_pointlist()) >= 1, \
@@ -176,8 +177,8 @@ class HandwrittenData(object):
         # prevent the following error:
         # '_tkinter.TclError: no display name and no $DISPLAY environment
         #    variable'
-        # import matplotlib as mpl
-        # mpl.use('Agg')
+        # import matplotlib
+        # matplotlib.use('GTK3Agg', warn=False)
 
         import matplotlib.pyplot as plt
 

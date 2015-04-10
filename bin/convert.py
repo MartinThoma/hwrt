@@ -82,7 +82,8 @@ def main(model_folder):
     a = yaml.load(open(utils.get_latest_in_folder(model_folder, ".json")))
 
     layers = []
-    filenames = ["model.yml", "input_semantics.csv", "output_semantics.csv"]
+    filenames = ["model.yml", "input_semantics.csv", "output_semantics.csv",
+                 "preprocessing.yml", "features.yml"]
 
     # Create input_semantics.csv
     inputs = a['layers'][0]['_props']['n_visible']
@@ -121,6 +122,32 @@ def main(model_folder):
 
     with open("model.yml", 'w') as f:
         yaml.dump(model, f, default_flow_style=False)
+
+    logging.info("Get preprocessing.yml")
+    # Get model folder
+    model_description_file = os.path.join(model_folder, "info.yml")
+    with open(model_description_file, 'r') as ymlfile:
+        model_description = yaml.load(ymlfile)
+
+    # Get feature folder
+    feature_description_file = os.path.join(utils.get_project_root(),
+                                            model_description["data-source"],
+                                            "info.yml")
+    with open(feature_description_file, 'r') as ymlfile:
+        feature_description = yaml.load(ymlfile)
+
+    with open("features.yml", 'w') as f:
+        yaml.dump(feature_description, f, default_flow_style=False)
+
+    # Get preprocessing folder
+    preprocessing_description_file = os.path.join(utils.get_project_root(),
+                                                  feature_description["data-source"],
+                                                  "info.yml")
+    with open(preprocessing_description_file, 'r') as ymlfile:
+        preprocessing_description = yaml.load(ymlfile)
+
+    with open("preprocessing.yml", 'w') as f:
+        yaml.dump(preprocessing_description, f, default_flow_style=False)
 
     with tarfile.open("model.tar", "w:") as tar:
         for name in filenames:

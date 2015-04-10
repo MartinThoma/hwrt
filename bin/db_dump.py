@@ -13,15 +13,10 @@ if not PY3:
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.INFO,
                     stream=sys.stdout)
-try:  # Python 2
-    import cPickle as pickle
-except ImportError:  # Python 3
-    import pickle
 
 import pymysql
 import re
 from natsort import natsorted
-import os
 import binascii
 
 # hwrt modules
@@ -49,14 +44,33 @@ def dump_structure(mysql_cfg,
                    fetch_data=False,
                    filename_strucutre=None,
                    filename_constraints=None):
+    """Dump the structure (including constraints) of the database.
+
+    Parameters
+    ----------
+    mysql_cfg : dict
+        Database credentials
+    prefix : str, optional
+        Only make a backup of tables with this prefix
+    fetch_data : boolean, optional
+        Make a backup of the data, too
+    filename_strucutre : str, optional
+        Name of the file which will contain the structure of the database
+    filename_constraints : str, optional
+        Name of the file which will contain the constraints
+
+    Returns
+    -------
+    list
+        Names of the tables
+    """
+    import datetime
+    now = datetime.datetime.now()
+    formatted_time = now.strftime("%Y-%m-%d_%H-%M")
     if filename_strucutre is None:
-        import datetime
-        now = datetime.datetime.now()
-        filename_strucutre = "backup_structure_%s.sql" % now.strftime("%Y-%m-%d_%H-%M")
+        filename_strucutre = "backup_structure_%s.sql" % formatted_time
     if filename_constraints is None:
-        import datetime
-        now = datetime.datetime.now()
-        filename_constraints = "backup_constraints_%s.sql" % now.strftime("%Y-%m-%d_%H-%M")
+        filename_constraints = "backup_constraints_%s.sql" % formatted_time
     connection = pymysql.connect(host=mysql_cfg['host'],
                                  user=mysql_cfg['user'],
                                  passwd=mysql_cfg['passwd'],

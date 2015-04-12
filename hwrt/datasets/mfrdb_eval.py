@@ -42,6 +42,18 @@ def elementtree_to_dict(element):
 
 
 def _less_than(l, n):
+    """Get number of symbols in list `l` which have a value less than `n`.
+
+    Parameters
+    ----------
+    l : list
+        List of numbers
+    n : int
+
+    Returns
+    -------
+    float (with int values)
+    """
     return float(len([1 for el in l if el < n]))
 
 
@@ -60,8 +72,8 @@ def main(directory):
 
         name = root['Name']['text']
 
-        skip = ['frac', 'dt', 'dx', 'arcsin', 'cotg', '(', ')', 'tg', 'cross',
-                '\cos', '\sin', '\ln', '=', '\lim', '!', "'",
+        skip = ['frac', 'dt', 'dx', 'arcsin', 'cotg', 'tg', 'cross',
+                '\cos', '\sin', '\ln', '\lim', "'",
                 '\log', ',']
         if name in skip:
             continue
@@ -193,12 +205,14 @@ if __name__ == '__main__':
                      _less_than(score_place_symbol, 50)/len(symbol_recording),
                      len(symbol_recording)))
 
-    logging.info("mean place of correct classification: %0.2f", numpy.mean(score_place))
-    logging.info("median place of correct classification: %0.2f", numpy.median(score_place))
-    logging.info("TOP-1: %0.2f correct", _less_than(score_place, 1)/len([1 for l, symb in recordings for el in symb]))
-    logging.info("TOP-3: %0.2f correct", _less_than(score_place, 3)/len([1 for l, symb in recordings for el in symb]))
-    logging.info("TOP-10: %0.2f correct", _less_than(score_place, 10)/len([1 for l, symb in recordings for el in symb]))
-    logging.info("TOP-20: %0.2f correct", _less_than(score_place, 20)/len([1 for l, symb in recordings for el in symb]))
-    logging.info("TOP-50: %0.2f correct", _less_than(score_place, 50)/len([1 for l, symb in recordings for el in symb]))
+    total_recordings = len([1 for l, symb in recordings for el in symb])
+    logging.info("mean place of correct classification: %0.2f",
+                 numpy.mean(score_place))
+    logging.info("median place of correct classification: %0.2f",
+                 numpy.median(score_place))
+    for i in [1, 3, 10, 20, 50]:
+        logging.info("TOP-%i: %0.2f correct",
+                     i,
+                     _less_than(score_place, i)/total_recordings)
     #logging.info("Out of order: %i", out_of_order_count)
-    logging.info("Total: %i", len(recordings))
+    logging.info("Total: %i", total_recordings)

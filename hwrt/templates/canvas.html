@@ -71,17 +71,36 @@
                   data: {'classify': JSON.stringify(lines)},
                   success: function(data)
                     {
-                         var content = "<table>";
-                         content += "<tr><th>Rendered</th><th>LaTeX</th><th>Probability</th></tr>";
+                        $('#resultlink').removeClass('invisible');
+                         var content = "<table class='table' role='table' name='resulttable' id='resulttable'>";
+                         content += "<thead><tr><th>&alpha;</th><th>LaTeX</th><th>%</th></tr></thead><tbody>";
                          $.each(data, function( index, value ) {
                              $.each(value,
                                     function(symbolbla, probability) {
-                                        content += "<tr><td>$" + symbolbla + "$</td><td><input value='"+ symbolbla + "' /></td><td style='text-align:right'>" + parseFloat(probability*100).toFixed(2) + "</td></tr>";
+                                        var arr = symbolbla.split(";");
+                                        var system_id = arr[0];
+                                        var latex = arr[1];
+                                        var unicode_code_point = arr[2];
+                                        var font = arr[3];
+                                        var font_style = arr[4];
+                                        content += "<tr><td><a href='../symbol/?id="+system_id+"' style='font-family:"+font+";font-style:"+font_style+"'>&#" + unicode_code_point + ";</a></td><td><input id=\"inptxt"+system_id+"\" class=\"form-control\" value='"+ latex + "' disabled/></td><td style='text-align:right'>" + parseFloat(probability*100).toFixed(2) + "</td></tr>";
                                     })
                          });
-                         content += "</table>";
+                         content += "</tbody></table>";
                          document.getElementById('classification-results').innerHTML = content;
-                         MathJax.Hub.Typeset();
+
+
+                         $.each(data, function( index, value ) {
+                             $.each(value,
+                                    function(symbolbla, probability) {
+                                        var arr = symbolbla.split(";");
+                                        var system_id = arr[0];
+                                        var latex = arr[1];
+                                        var unicode_code_point = arr[2];
+                                        var font = arr[3];
+                                        var font_style = arr[4];
+                                    })
+                         });
                     },
                   dataType: "json",
                   error: function(e) {
@@ -99,15 +118,6 @@
         return true;
     }
     </script>
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
-  TeX: {noUndefined: { disabled: true }}
-});
-</script>
-<script type="text/javascript"
-  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
 {% endblock %}
 
 {% block content %}
@@ -120,8 +130,7 @@ MathJax.Hub.Config({
     <form method="post" onsubmit="$('button').prop('disabled', true);return addCanvas();" id="form">
     <input type="hidden" id="drawnJSON" name="drawnJSON" value="" />
     <canvas id="sheet" width="400" height="400" style="border:1px solid black;width:400px;height:400px;"></canvas>
-    <button type="submit" class="btn btn-success">Submit</button>
-    <a href="?formula_id=" class="btn btn-danger">Clear</a></h3>
+    <a href="?formula_id=" class="btn btn-danger">Clear</a>
     </form>
 </div>
 {% endblock %}

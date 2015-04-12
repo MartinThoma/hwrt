@@ -69,7 +69,7 @@ app.config.from_object(__name__)
 @app.route('/', methods=['POST', 'GET'])
 def index():
     """Start page."""
-    return '<a href="interactive">interactive</a>'
+    return '<a href="interactive">interactive</a> - <a href="work">Classify stuff on write-math.com</a>'
 
 
 @app.route('/interactive', methods=['POST', 'GET'])
@@ -185,12 +185,13 @@ def fix_writemath_answer(results):
         translate[latex] = writemathid
 
     for i, el in enumerate(results):
-        if el['semantics'] not in translate:
-            logging.debug("Could not find '%s' in translate.", el['semantics'])
+        semantics = el['semantics'].split(";")[1]
+        if semantics not in translate:
+            logging.debug("Could not find '%s' in translate.", semantics)
             logging.debug("el: %s", el)
             continue
         else:
-            writemathid = translate[el['semantics']]
+            writemathid = translate[semantics]
         new_results.append({'symbolnr': el['symbolnr'],
                             'semantics': writemathid,
                             'probability': el['probability']})
@@ -270,9 +271,10 @@ def get_parser():
     return parser
 
 
-def main(port=8000):
+def main(port=8000, n_output=10):
     """Main function starting the webserver."""
     global preprocessing_queue, feature_list, model, output_semantics, n
+    n = n_output
     logging.info("Start reading model...")
     model_path = pkg_resources.resource_filename('hwrt', 'misc/')
     model_file = os.path.join(model_path, "model.tar")
@@ -281,15 +283,16 @@ def main(port=8000):
      output_semantics) = utils.load_model(model_file)
 
     # Adjust output semantics for development
-    new_semantics = []
-    for el in output_semantics:
-        new_semantics.append(el.split(";")[1])
-    output_semantics = new_semantics
+    # new_semantics = []
+    # for el in output_semantics:
+    #     new_semantics.append(el.split(";")[1])
+    # output_semantics = new_semantics
 
     logging.info("Start webserver...")
     app.run(port=port)
 
 if __name__ == '__main__':
+    global n
     args = get_parser().parse_args()
     n = args.n
     main(args.port)

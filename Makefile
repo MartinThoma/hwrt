@@ -3,7 +3,7 @@ docs:
 
 update:
 	python setup.py sdist upload --sign
-	sudo pip install hwrt --upgrade
+	sudo -H pip install hwrt --upgrade
 
 test:
 	nosetests --with-coverage --cover-erase --cover-package hwrt --logging-level=INFO --cover-html

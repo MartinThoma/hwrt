@@ -110,6 +110,8 @@ def main(model_folder):
         bfile.close()
 
         activation = a['layers'][layer]['_props']['activation']
+        activation = activation.replace('sigmoid', 'Sigmoid')
+        activation = activation.replace('softmax', 'Softmax')
         layers.append({'W': {'size': list(W.shape),
                              'filename': 'W%i.hdf5' % layer},
                        'b': {'size': list(b.shape),

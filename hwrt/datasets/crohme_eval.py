@@ -4,6 +4,9 @@
 
 import glob
 
+# HWRT modules
+from hwrt.datasets import inkml
+
 
 def evaluate_dir(sample_dir):
     """Evaluate all recordings in `sample_dir`.
@@ -20,12 +23,12 @@ def evaluate_dir(sample_dir):
         'results' itself is a list of dictionaries. Each of the results has
         the keys 'latex' and 'probability'
     """
+    results = []
     if sample_dir[-1] == "/":
         sample_dir = sample_dir[:-1]
     for filename in glob.glob("%s/*.inkml" % sample_dir):
-        print(filename)
-    # TODO
-    return []
+        results.append(evaluate_inkml(filename))
+    return results
 
 
 def evaluate_inkml(inkml_file_path):
@@ -33,10 +36,21 @@ def evaluate_inkml(inkml_file_path):
 
     Parameters
     ----------
-    TODO
+    inkml_file_path : string
+        path to an InkML file
+
+    Returns
+    -------
+    dictionary
+        The dictionary contains the keys 'filename' and 'results', where
+        'results' itself is a list of dictionaries. Each of the results has
+        the keys 'latex' and 'probability'
     """
-    # TODO
-    return []
+    ret = {'filename': inkml_file_path}
+    hw = inkml.read(inkml_file_path)
+    hw.show()
+    sys.exit(-1)
+    return ret
 
 
 def generate_output_csv(evaluation_results, filename='results.csv'):

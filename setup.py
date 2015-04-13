@@ -1,16 +1,14 @@
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from setuptools import find_packages
+from setuptools import setup
 
 config = {
     'name': 'hwrt',
-    'version': '0.1.217',
+    'version': '0.1.218',
     'author': 'Martin Thoma',
     'author_email': 'info@martin-thoma.de',
     'maintainer': 'Martin Thoma',
     'maintainer_email': 'info@martin-thoma.de',
-    'packages': ['hwrt'],
+    'packages': find_packages(),
     'scripts': ['bin/hwrt', 'bin/backup.py',
                 'bin/test.py', 'bin/train.py',
                 'bin/create_testset_online_once.py'],

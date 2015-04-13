@@ -147,3 +147,4 @@ Current State
     2014-12-17, 3737, 1049, 76%, 9.80, 395/595, 1, code beautification: self.__repr__() -> repr(self); with open
     2014-12-18, 3721, 1086, 77%, 9.80, 395/595, 1, hwrt/features.py: More testing; abc baseclass
     2014-12-19, 3721, 1085, 77%, 9.80, 395/595, 1, hwrt/HandwrittenData.py: test show() method; removed unnecessary lines
+    2015-04-13, 5999, 1085, 73%, 9.55, 443/595, 1, many updates

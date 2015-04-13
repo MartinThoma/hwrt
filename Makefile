@@ -23,3 +23,5 @@ countt:
 
 clean:
 	rm *.hdf5 *.yml *.csv
+	find . -name "*.pyc" -exec rm -rf {} \;
+	find . -type d -name "__pycache__" -delete

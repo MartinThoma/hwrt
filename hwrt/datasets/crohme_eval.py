@@ -4,8 +4,17 @@
 
 import glob
 
+import json
+import logging
+import sys
+
+logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
+                    level=logging.DEBUG,
+                    stream=sys.stdout)
+
 # HWRT modules
 from hwrt.datasets import inkml
+from hwrt.classify import classify_segmented_recording as evaluate
 
 
 def evaluate_dir(sample_dir):
@@ -43,13 +52,15 @@ def evaluate_inkml(inkml_file_path):
     -------
     dictionary
         The dictionary contains the keys 'filename' and 'results', where
-        'results' itself is a list of dictionaries. Each of the results has
-        the keys 'latex' and 'probability'
+        'results' itself is a list of dictionaries. Each of the results has the
+        keys 'semantics' (which contains the latex command) and 'probability'
     """
+    logging.info("Start evaluating '%s'...", inkml_file_path)
     ret = {'filename': inkml_file_path}
-    hw = inkml.read(inkml_file_path)
-    hw.show()
-    sys.exit(-1)
+    recording = inkml.read(inkml_file_path)
+    results = evaluate(json.dumps(recording.get_sorted_pointlist()),
+                       result_format='LaTeX')
+    ret['results'] = results
     return ret
 
 
@@ -73,13 +84,13 @@ def generate_output_csv(evaluation_results, filename='results.csv'):
     with open(filename, 'w') as f:
         for result in evaluation_results:
             for i, entry in enumerate(result['results']):
-                if entry['latex'] == ',':
-                    result['results']['latex'] = 'COMMA'
+                if entry['semantics'] == ',':
+                    result['results']['semantics'] = 'COMMA'
             f.write("%s, " % result['filename'])
-            f.write(", ".join([entry['latex'] for entry in result['results']]))
+            f.write(", ".join([entry['semantics'] for entry in result['results']]))
             f.write("\n")
             f.write("%s, " % "scores")
-            f.write(", ".join([entry['latex'] for entry in result['results']]))
+            f.write(", ".join([str(entry['probability']) for entry in result['results']]))
             f.write("\n")
 
 

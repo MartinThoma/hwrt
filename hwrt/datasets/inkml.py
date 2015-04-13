@@ -55,25 +55,25 @@ def read(filepath):
                                          formula_in_latex=formula_in_latex)
 
     # Get segmentation
-    segmentation = []
-    traceGroups = root.findall('{http://www.w3.org/2003/InkML}traceGroup')
-    if len(traceGroups) != 1:
-        raise Exception('Malformed InkML',
-                        'Exactly 1 top level traceGroup expected, found %i.' %
-                        len(traceGroups))
-    traceGroup = traceGroups[0]
-    for tg in traceGroup.findall('{http://www.w3.org/2003/InkML}traceGroup'):
-        traceViews = tg.findall('{http://www.w3.org/2003/InkML}traceView')
-        symbol = []
-        for traceView in traceViews:
-            symbol.append(int(traceView.attrib['traceDataRef']))
-        segmentation.append(symbol)
-    hw.segmentation = segmentation
-    _flat_seg = [stroke for symbol in segmentation for stroke in symbol]
-    assert len(_flat_seg) == len(recording), \
-        ("Segmentation had length %i, but recording has %i strokes" %
-         (len(_flat_seg), len(recording)))
-    assert set(_flat_seg) == set(range(len(_flat_seg)))
+    # segmentation = []
+    # traceGroups = root.findall('{http://www.w3.org/2003/InkML}traceGroup')
+    # if len(traceGroups) != 1:
+    #     raise Exception('Malformed InkML',
+    #                     'Exactly 1 top level traceGroup expected, found %i.' %
+    #                     len(traceGroups))
+    # traceGroup = traceGroups[0]
+    # for tg in traceGroup.findall('{http://www.w3.org/2003/InkML}traceGroup'):
+    #     traceViews = tg.findall('{http://www.w3.org/2003/InkML}traceView')
+    #     symbol = []
+    #     for traceView in traceViews:
+    #         symbol.append(int(traceView.attrib['traceDataRef']))
+    #     segmentation.append(symbol)
+    # hw.segmentation = segmentation
+    # _flat_seg = [stroke for symbol in segmentation for stroke in symbol]
+    # assert len(_flat_seg) == len(recording), \
+    #     ("Segmentation had length %i, but recording has %i strokes" %
+    #      (len(_flat_seg), len(recording)))
+    # assert set(_flat_seg) == set(range(len(_flat_seg)))
 
     return hw
 

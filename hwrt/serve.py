@@ -20,21 +20,20 @@ if sys.version_info[0] == 2:
 # hwrt modules
 import hwrt
 import hwrt.utils as utils
+import hwrt.classify as classify
 
 
 # Global variables
-preprocessing_queue = None
-feature_list = None
-model = None
-output_semantics = None
 n = 10
 
 
 def submit_recording(raw_data_json):
     """Submit a recording to the database on write-math.com.
 
-    :raises requests.exceptions.ConnectionError: if the internet connection is
-    lost
+    Raises
+    ------
+    requests.exceptions.ConnectionError
+        If the internet connection is lost.
     """
     url = "http://www.martin-thoma.de/write-math/classify/index.php"
     headers = {'User-Agent': 'Mozilla/5.0',
@@ -95,10 +94,7 @@ def interactive():
                     "No internet connection?")
 
         # Classify
-        model_path = pkg_resources.resource_filename('hwrt', 'misc/')
-        model = os.path.join(model_path, "model.tar")
-        logging.info("Model: %s", model)
-        results = utils.evaluate_model_single_recording(model, raw_data_json)
+        results = classify.classify_segmented_recording(raw_data_json)
 
         # Show classification page
         page = show_results(results, n=n)
@@ -110,16 +106,16 @@ def interactive():
 
 
 def get_json_result(results, n=10):
-    """Return the top ``n`` results as a json list.
-    >>> results = [{'symbolnr': 2, \
-                    'probability': 0.65, \
-                    'semantics': '\\alpha'}, \
-                   {'symbolnr': 45, \
-                    'probability': 0.25, \
-                    'semantics': '\\propto'}, \
-                   {'symbolnr': 15, \
-                    'probability': 0.0512, \
-                    'semantics': '\\varpropto'}]
+    """Return the top `n` results as a JSON list.
+    >>> results = [{'symbolnr': 2,
+    ...             'probability': 0.65,
+    ...             'semantics': '\\alpha'},
+    ...            {'symbolnr': 45,
+    ...             'probability': 0.25,
+    ...             'semantics': '\\propto'},
+    ...            {'symbolnr': 15,
+    ...             'probability': 0.0512,
+    ...             'semantics': '\\varpropto'}]
     >>> get_json_result(results, n=10)
     [{'\\alpha': 0.65}, {'\\propto': 0.25}, {'\\varpropto': 0.0512}]
     """
@@ -132,7 +128,7 @@ def get_json_result(results, n=10):
 @app.route('/worker', methods=['POST', 'GET'])
 def worker():
     """Implement a worker for write-math.com."""
-    global preprocessing_queue, feature_list, model, output_semantics, n
+    global n
     if request.method == 'POST':
         raw_data_json = request.form['classify']
 
@@ -143,12 +139,7 @@ def worker():
             return "Invalid JSON string: %s" % raw_data_json
 
         # Classify
-        evaluate = utils.evaluate_model_single_recording_preloaded
-        results = evaluate(preprocessing_queue,
-                           feature_list,
-                           model,
-                           output_semantics,
-                           raw_data_json)
+        results = classify.classify_segmented_recording(raw_data_json)
         return get_json_result(results, n=n)
     else:
         # Page where the user can enter a recording
@@ -161,8 +152,8 @@ def fix_writemath_answer(results):
        server.
 
     >>> results = [{'symbolnr': 214,
-                    'semantics': '\\triangleq',
-                    'probability': 0.03}, ...]
+    ...             'semantics': '\\triangleq',
+    ...             'probability': 0.03}, ...]
     >>> fix_writemath_answer(results)
     [{123: 0.03}, ...]
     """
@@ -203,7 +194,7 @@ def fix_writemath_answer(results):
 @app.route('/work', methods=['POST', 'GET'])
 def work():
     """Implement a worker for write-math.com."""
-    global preprocessing_queue, feature_list, model, output_semantics, n
+    global n
 
     cmd = utils.get_project_configuration()
 
@@ -232,13 +223,7 @@ def work():
               str(parsed_json['id']))
 
         # Classify
-        evaluate = utils.evaluate_model_single_recording_preloaded
-        results = evaluate(preprocessing_queue,
-                           feature_list,
-                           model,
-                           output_semantics,
-                           raw_data_json,
-                           parsed_json['id'])
+        results = classify.classify_segmented_recording(raw_data_json)
 
         # Submit classification to write-math server
         results = fix_writemath_answer(results)
@@ -273,21 +258,8 @@ def get_parser():
 
 def main(port=8000, n_output=10):
     """Main function starting the webserver."""
-    global preprocessing_queue, feature_list, model, output_semantics, n
+    global n
     n = n_output
-    logging.info("Start reading model...")
-    model_path = pkg_resources.resource_filename('hwrt', 'misc/')
-    model_file = os.path.join(model_path, "model.tar")
-    logging.info("Model: %s", model_file)
-    (preprocessing_queue, feature_list, model,
-     output_semantics) = utils.load_model(model_file)
-
-    # Adjust output semantics for development
-    # new_semantics = []
-    # for el in output_semantics:
-    #     new_semantics.append(el.split(";")[1])
-    # output_semantics = new_semantics
-
     logging.info("Start webserver...")
     app.run(port=port)
 

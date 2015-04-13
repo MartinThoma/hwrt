@@ -16,7 +16,7 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
 
 # hwrt modules
 from hwrt import HandwrittenData
-from hwrt import utils
+from hwrt.classify import classify_segmented_recording as evaluate
 
 
 def elementtree_to_dict(element):
@@ -151,34 +151,16 @@ def main(directory):
 
 
 if __name__ == '__main__':
-    logging.info("Start reading model...")
-    model_path = pkg_resources.resource_filename('hwrt', 'misc/')
-    model_file = os.path.join(model_path, "model.tar")
-    logging.info("Model: %s", model_file)
-    (preprocessing_queue, feature_list, model,
-     output_semantics) = utils.load_model(model_file)
-
-    # Adjust output semantics for development
-    new_semantics = []
-    for el in output_semantics:
-        new_semantics.append(el.split(";")[1])
-    output_semantics = new_semantics
-
     recordings = main("/home/moose/Downloads/MfrDB_Symbols_v1.0")
     print(len(recordings))
-
-    evaluate = utils.evaluate_model_single_recording_preloaded
 
     score_place = []
     symbols_showed = []
     for latex, symbol_recording in recordings:
         score_place_symbol = []
         for recording in symbol_recording:
-            results = evaluate(preprocessing_queue,
-                               feature_list,
-                               model,
-                               output_semantics,
-                               json.dumps(recording.get_sorted_pointlist()))
+            results = evaluate(json.dumps(recording.get_sorted_pointlist()),
+                               result_format='LaTeX')
             for i, result in enumerate(results):
                 if result['semantics'] == recording.formula_in_latex:
                     # if i > 5:

@@ -37,13 +37,18 @@ def read(filepath):
     for stroke in strokes:
         stroke = stroke.text.strip().split(',')
         stroke = [point.strip().split(' ') for point in stroke]
-        stroke = [{'x': float(x), 'y': float(y)} for x, y in stroke]
-        new_stroke = []
-        for p in stroke:
-            new_stroke.append({'x': p['x'], 'y': p['y'], 'time': time})
-            time += 20
-        recording.append(new_stroke)
-        time += 200
+        if len(stroke[0]) == 3:
+            stroke = [{'x': float(x), 'y': float(y), 'time': float(t)}
+                      for x, y, t in stroke]
+        else:
+            stroke = [{'x': float(x), 'y': float(y)} for x, y in stroke]
+            new_stroke = []
+            for p in stroke:
+                new_stroke.append({'x': p['x'], 'y': p['y'], 'time': time})
+                time += 20
+            stroke = new_stroke
+            time += 200
+        recording.append(stroke)
 
     # Get LaTeX
     formula_in_latex = None
@@ -53,38 +58,55 @@ def read(filepath):
             formula_in_latex = annotation.text
     hw = HandwrittenData.HandwrittenData(json.dumps(recording),
                                          formula_in_latex=formula_in_latex)
+    for annotation in annotations:
+        if annotation.attrib['type'] == 'writer':
+            hw.writer = annotation.text
+        elif annotation.attrib['type'] == 'category':
+            hw.category = annotation.text
+        elif annotation.attrib['type'] == 'expression':
+            hw.expression = annotation.text
 
     # Get segmentation
-    # segmentation = []
-    # traceGroups = root.findall('{http://www.w3.org/2003/InkML}traceGroup')
-    # if len(traceGroups) != 1:
-    #     raise Exception('Malformed InkML',
-    #                     'Exactly 1 top level traceGroup expected, found %i.' %
-    #                     len(traceGroups))
-    # traceGroup = traceGroups[0]
-    # for tg in traceGroup.findall('{http://www.w3.org/2003/InkML}traceGroup'):
-    #     traceViews = tg.findall('{http://www.w3.org/2003/InkML}traceView')
-    #     symbol = []
-    #     for traceView in traceViews:
-    #         symbol.append(int(traceView.attrib['traceDataRef']))
-    #     segmentation.append(symbol)
-    # hw.segmentation = segmentation
-    # _flat_seg = [stroke for symbol in segmentation for stroke in symbol]
-    # assert len(_flat_seg) == len(recording), \
-    #     ("Segmentation had length %i, but recording has %i strokes" %
-    #      (len(_flat_seg), len(recording)))
-    # assert set(_flat_seg) == set(range(len(_flat_seg)))
+    segmentation = []
+    traceGroups = root.findall('{http://www.w3.org/2003/InkML}traceGroup')
+    if len(traceGroups) != 1:
+        raise Exception('Malformed InkML',
+                        'Exactly 1 top level traceGroup expected, found %i.' %
+                        len(traceGroups))
+    traceGroup = traceGroups[0]
+    for tg in traceGroup.findall('{http://www.w3.org/2003/InkML}traceGroup'):
+        traceViews = tg.findall('{http://www.w3.org/2003/InkML}traceView')
+        symbol = []
+        for traceView in traceViews:
+            symbol.append(int(traceView.attrib['traceDataRef']))
+        segmentation.append(symbol)
+    hw.segmentation = segmentation
+    _flat_seg = [stroke for symbol in segmentation for stroke in symbol]
+    assert len(_flat_seg) == len(recording), \
+        ("Segmentation had length %i, but recording has %i strokes" %
+         (len(_flat_seg), len(recording)))
+    assert set(_flat_seg) == set(range(len(_flat_seg)))
 
     return hw
 
 
 def read_folder(folder):
     import glob
+    recordings = []
     for filename in glob.glob("%s/*.inkml" % folder):
         logging.info(filename)
         hw = read(filename)
-        logging.info(hw.formula_in_latex)
-        #hw.show()
+        if hw.formula_in_latex is not None:
+            hw.formula_in_latex = hw.formula_in_latex.strip()
+        if hw.formula_in_latex is None or not hw.formula_in_latex.startswith('$') or not hw.formula_in_latex.endswith('$'):
+            if hw.formula_in_latex is not None:
+                logging.info("Starts with: %s", str(hw.formula_in_latex.startswith('$')))
+                logging.info("ends with: %s", str(hw.formula_in_latex.endswith('$')))
+            logging.info(hw.formula_in_latex)
+            logging.info(hw.segmentation)
+            hw.show()
+        recordings.append(hw)
+    return recordings
 
 
 def main():

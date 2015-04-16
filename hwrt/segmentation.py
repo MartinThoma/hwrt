@@ -27,6 +27,7 @@ import pickle
 import pkg_resources
 
 import math
+import scipy.sparse.csgraph
 
 # hwrt modules
 # from . import HandwrittenData
@@ -397,6 +398,106 @@ def apply_segmentation(recording, segmentation):
             symbol.append(recording[index])
         symbols.append({'data': symbol, 'id': 'symbol-%i' % index})
     return symbols
+
+
+class Graph(object):
+    def __init__(self):
+        self.nodes = []
+
+    def add_node(self, payload):
+        """
+        Returns
+        -------
+        int
+            Identifier for the inserted node.
+        """
+        self.nodes.append(Node(len(self.nodes), payload))
+        return len(self.nodes) - 1
+
+    def add_edge(self, node_i, node_j):
+        self.nodes[node_i].neighbors.append(self.nodes[node_j])
+        self.nodes[node_j].neighbors.append(self.nodes[node_i])
+
+    def get_connected_nodes(self):
+        remaining_graph_nodes = list(range(len(self.nodes)))
+        segments = []
+        while len(remaining_graph_nodes) > 0:
+            node_nr = remaining_graph_nodes.pop()
+            segment = []
+            queued = [node_nr]
+            while len(queued) > 0:
+                current = queued.pop()
+                segment.append(current)
+                remaining_graph_nodes.remove(current)
+                queued = [n.identifier for n in self.nodes[current].neighbors
+                          if n.identifier in remaining_graph_nodes]
+            segments.append(segment)
+        return segments
+
+    def generate_euclidean_edges(self):
+        n = len(self.nodes)
+        self.w = numpy.zeros(shape=(n, n))
+        for i in range(n):
+            for j in range(n):
+                self.w[i][j] = self.nodes[i].get().dist_to(self.nodes[j].get())
+
+
+class Node(object):
+    def __init__(self, identifier, payload):
+        self.neighbors = []
+        self.payload = payload
+        self.identifier = identifier
+
+    def add_neighbor(self, neighbor_node):
+        self.neighbors.append(neighbor_node)
+
+    def get(self):
+        return self.payload
+
+
+def get_segmentation_from_mst(mst, number):
+    """Get a segmentation from a MST
+
+    If the MST has 5 strokes and a spanning tree like
+    1-\
+       3-4-5
+    2-/
+    the number 3 (0011) would mean that the 0th edge
+    and the 1st edge get cut. Lets say that the edge 0 is next to node 1 and
+    edge 1 is next to node 2. Then the resulting segmentation would be
+    [[1], [2], [3, 4, 5]]
+
+    Parameters
+    ----------
+    mst :
+        Minimum spanning tree
+    number : int (0..edges in MST)
+        The number of the segmentation.
+    """
+    pass
+
+
+def get_mst(points):
+    """
+    Parameters
+    ----------
+    points : list of points (geometry.Point)
+        The first element of the list is the center of the bounding box of the
+        first stroke, the second one belongs to the seconds stroke, ...
+
+    Returns
+    -------
+    mst : square matrix
+        0 nodes the edges are not connected, > 0 means they are connected
+        Please note that the returned matrix is not symmetrical!
+    """
+    graph = Graph()
+    for point in points:
+        graph.add_node(point)
+    graph.generate_euclidean_edges()
+    print(graph.w)
+    matrix = scipy.sparse.csgraph.minimum_spanning_tree(graph.w)
+    return matrix.toarray().astype(int)
 
 
 if __name__ == '__main__':

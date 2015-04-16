@@ -339,12 +339,12 @@ def get_readable_time(t):
 
     Parameters
     ----------
-    t :
+    t : int
         Time in ms
 
     Returns
     -------
-    string :
+    string
         The time splitted to highest used time (minutes, hours, ...)
     """
     ms = t % 1000
@@ -436,11 +436,11 @@ def create_pfile(output_filename, feature_count, data):
 
     Parameters
     ----------
-    output_filename :
+    output_filename : string
         name of the pfile that will be created
     feature_count : int
         dimension of all features combined
-    data :
+    data : list of tuples
         list of (x, y) tuples, where x is the feature vector of dimension
         ``feature_count`` and y is a label.
     """
@@ -538,7 +538,7 @@ def evaluate_model_single_recording_preloaded(preprocessing_queue,
         List of all preprocessing objects.
     feature_list : list
         List of all feature objects.
-    model :
+    model : dict
         Neural network model.
     output_semantics : list
         List that defines what an output means.
@@ -558,7 +558,7 @@ def get_possible_splits(n):
     """
     Parameters
     ----------
-    n :
+    n : int
         n strokes were make
     """
     get_bin = lambda x, n: x >= 0 and str(bin(x))[2:].zfill(n) or "-" + str(bin(x))[3:].zfill(n)
@@ -602,7 +602,7 @@ def evaluate_model_single_recording_preloaded_multisymbol(preprocessing_queue,
         List of all preprocessing objects.
     feature_list : list
         List of all feature objects.
-    model :
+    model : dict
         Neural network model.
     output_semantics :
         List that defines what an output means.
@@ -654,7 +654,7 @@ def evaluate_model_single_recording_multisymbol(model_file, recording):
 
     Parameters
     ----------
-    model_file :
+    model_file : string
         Model file (.tar)
     recording :
         The handwritten recording.
@@ -677,7 +677,7 @@ def evaluate_model_single_recording(model_file, recording):
 
     Parameters
     ----------
-    model_file :
+    model_file : string
         Model file (.tar)
     recording :
         The handwritten recording.
@@ -698,9 +698,9 @@ def _evaluate_model_single_file(target_folder, test_file):
 
     Parameters
     ----------
-    target_folder :
+    target_folder : string
         Folder where the model is
-    test_file :
+    test_file : string
         The test file (.pfile)
     """
     logging.info("Create running model...")
@@ -785,7 +785,7 @@ def get_index2latex(model_description):
 
     Parameters
     ----------
-    model_description :
+    model_description : string
         A model description file that points to a feature folder where an
         `index2formula_id.csv` has to be.
 
@@ -813,13 +813,13 @@ def get_index2data(model_description):
 
     Parameters
     ----------
-    model_description :
+    model_description : string
         A model description file that points to a feature folder where an
         ``index2formula_id.csv`` has to be.
 
     Returns
     -------
-    dictionary :
+    dictionary
         that maps indices to lists of data
 
     Notes

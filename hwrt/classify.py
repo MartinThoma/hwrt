@@ -12,12 +12,9 @@ from hwrt import utils
 single_symbol_classifier = None
 
 
-def load_classifier():
-    global single_symbol_classifier
-    single_symbol_classifier = single_classificer()
-
-
 class single_classificer(object):
+    """Classifier for single (and hence perfectly segmented) symbols."""
+
     def __init__(self):
         logging.info("Start reading model...")
         model_path = pkg_resources.resource_filename('hwrt', 'misc/')
@@ -78,5 +75,5 @@ def classify_segmented_recording(recording, result_format=None):
     """
     global single_symbol_classifier
     if single_symbol_classifier is None:
-        load_classifier()
+        single_symbol_classifier = single_classificer()
     return single_symbol_classifier.predict(recording, result_format)

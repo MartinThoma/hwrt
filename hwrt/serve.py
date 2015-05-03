@@ -237,8 +237,7 @@ def work():
         s = requests.Session()
         req = requests.Request('POST', url, headers=headers, data=payload)
         prepared = req.prepare()
-        t = s.send(prepared)
-        logging.debug(t.text)
+        s.send(prepared)  # Returns: t.text = What was classified
     return "Done - Classified %i recordings" % chunk_size
 
 

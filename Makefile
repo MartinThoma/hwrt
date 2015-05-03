@@ -1,6 +1,9 @@
 docs:
 	python setup.py upload_docs --upload-dir docs/_build/html
 
+localinstall:
+	sudo -H python setup.py install
+
 update:
 	python setup.py sdist upload --sign
 	sudo -H pip install hwrt --upgrade

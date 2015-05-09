@@ -105,6 +105,20 @@ def make_all(tuplelist):
 
 
 def create_report(true_data, eval_data, index2latex, n, merge=True):
+    """
+    Parameters
+    ----------
+    true_data : list
+        Labels
+    eval_data : list
+        Predicted labels
+    index2latex : dict
+        Maps the output neurons index to LaTeX
+    n : TODO?
+    merge : bool
+        If set to True, some symbols like \sum and \Sigma will not be count as
+        errors when confused.
+    """
     # Gather data
     correct = []
     wrong = []
@@ -116,15 +130,52 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
     confusing = make_all(merge_data)
     if not merge:
         confusing = []
+
+    # Get false/true negative/positive for each symbol
+    statistical = {}
+    possible_keys = []
+
     for known, evaluated in zip(true_data, eval_data):
         evaluated_t1 = evaluated.keys()[0]
+        if known['index'] not in statistical:
+            statistical[known['index']] = {'FP': 0,
+                                           'TP': 0,
+                                           'FN': 0,
+                                           'TN': 0,
+                                           'latex': index2latex[known['index']]
+                                           }
+            possible_keys.append(known['index'])
+        for key in evaluated.keys():
+            if key not in statistical:
+                statistical[key] = {'FP': 0,
+                                    'TP': 0,
+                                    'FN': 0,
+                                    'TN': 0,
+                                    'latex': index2latex[key]}
+                possible_keys.append(key)
         if known['index'] in evaluated.keys()[:n]:
+            statistical[known['index']]['TP'] += 1
             correct.append(known)
+            for key in possible_keys:
+                if key != known['index']:
+                    statistical[key]['TN'] += 1
         elif (index2latex[known['index']],
               index2latex[evaluated_t1]) in confusing:
             # Some confusions are ok!
+            statistical[known['index']]['TP'] += 1
             correct.append(known)
+            for key in possible_keys:
+                if key != known['index']:
+                    statistical[key]['TN'] += 1
         else:
+            for key in possible_keys:
+                if key != known['index']:
+                    if key not in evaluated.keys()[:n]:
+                        statistical[key]['TN'] += 1
+                    else:
+                        statistical[key]['FP'] += 1
+                else:
+                    statistical[key]['FN'] += 1
             formula_id = index2latex[evaluated_t1]
             known['confused'] = formula_id  # That's an index!
             wrong.append(known)
@@ -185,13 +236,29 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
                         errors_by_correct_classification=
                         errors_by_correct_classification,
                         errors_by_wrong_classification=
-                        errors_by_wrong_classification)
+                        errors_by_wrong_classification,
+                        statistical=statistical)
     with open(target, "w") as f:
         f.write(rendered)
 
 
 def analyze_results(translation_csv, what_evaluated_file, evaluation_file, n,
                     merge=True):
+    """
+    Parameters
+    ----------
+    translation_csv : string
+        Path to a CSV file which translates the output neuron into semantics.
+    what_evaluated_file : string
+        Path to a CSV file which translates testing data to LaTeX labels
+        (and more?)
+    evaluation_file : string
+        Path to a file which has the test data.
+    n : ?
+    merge : bool
+        If set to True, some symbols like \sum and \Sigma will not be count as
+        errors when confused.
+    """
     index2latex = {}
     with open(translation_csv) as csvfile:
         spamreader = csv.DictReader(csvfile, delimiter=',', quotechar='"')

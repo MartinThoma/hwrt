@@ -13,6 +13,36 @@
         <li><a href="#by_wrong">by wrong classification</a></li>
     </ul>
 
+    <h2>Rates</h2>
+    <table class="table tablesorter" id="statistical">
+        <thead>
+        <tr>
+            <th>Symbol</th>
+            <th>TP</th>
+            <th>TN</th>
+            <th>FP</th>
+            <th>FN</th>
+            <th>Prec</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for index, rates in statistical.items() %}
+        <tr>
+            <th>{{rates['latex']}}</th> <!-- <a href="http://write-math.com/symbol/?id={{index}}"></a>-->
+            <td>{{rates['TP']}}</td>
+            <td>{{rates['TN']}}</td>
+            <td>{{rates['FP']}}</td>
+            <td>{{rates['FN']}}</td>
+            {% if rates['TP']+rates['FP'] > 0 %}
+            <td>{{(0.0+rates['TP'])/(rates['TP']+rates['FP'])}}</td>
+            {% else %}
+            <td>-</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
     <h2><a name="by_correct"></a>Errors by correct classification</h2>
 
     {% for correct, wrongs_datasets in errors_by_correct_classification.items() %}
@@ -34,4 +64,25 @@
         {% endfor %}
         </ul>
     {% endfor %}
+{% endblock %}
+
+{% block header %}
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
+  
+<!-- jQuery -->
+<script type="text/javascript" charset="utf8" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+  
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.7/js/jquery.dataTables.js"></script>
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript" id="js">
+$(document).ready(function() 
+    { 
+        $("#statistical").DataTable();
+    } 
+); 
+</script>
 {% endblock %}

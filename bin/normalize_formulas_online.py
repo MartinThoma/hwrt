@@ -24,9 +24,7 @@ def main(mysql):
     cursor = connection.cursor()
 
     # Download all formula_in_latex
-    sql = ("SELECT `id`, `formula_in_latex` FROM `wm_formula` "
-           #"WHERE  `formula_in_latex` LIKE  '%https://%'"
-           )
+    sql = "SELECT `id`, `formula_in_latex` FROM `wm_formula` "
     cursor.execute(sql)
     datasets = cursor.fetchall()
 
@@ -38,8 +36,6 @@ def main(mysql):
         latex2id[formula_in_latex] = fid
 
     for i, data in enumerate(datasets, start=1433):
-        # with open("spamtexts/spam-%s.txt" % (str(i).zfill(5)), 'w+') as f:
-        #     f.write(data['formula_in_latex'])
         fid, formula_in_latex = data['id'], data['formula_in_latex']
         latex2id[formula_in_latex] = fid
         if latex.normalize(formula_in_latex) in latex2id:

@@ -145,9 +145,46 @@ class BoundingBox(object):
         """
         return self.p2.y - self.p1.y
 
+    def get_center(self):
+        """
+        Get the center point of this bounding box.
+        """
+        return Point((self.p1.x+self.p2.x)/2.0, (self.p1.y+self.p2.y)/2.0)
+
     def get_largest_dimension(self):
         """Get the larger dimension of the bounding box."""
         return max(self.get_height(), self.get_width())
+
+    def grow(self, percent=0.05):
+        width = (self.p2.x-self.p1.x)*percent
+        height = (self.p2.y-self.p1.y)*percent
+        self.p1.x -= width/2.0
+        self.p2.x += width/2.0
+        self.p1.y -= height/2.0
+        self.p2.y += height/2.0
+        return self
+
+
+def get_bounding_box(points):
+    """Get the bounding box of a list of points.
+
+    Parameters
+    ----------
+    points : list of points
+
+    Returns
+    -------
+    BoundingBox
+    """
+    assert len(points) > 0, "At least one point has to be given."
+    min_x, max_x = points[0]['x'], points[0]['x']
+    min_y, max_y = points[0]['y'], points[0]['y']
+    for point in points:
+        min_x, max_x = min(min_x, point['x']), max(max_x, point['x'])
+        min_y, max_y = min(min_y, point['y']), max(max_y, point['y'])
+    p1 = Point(min_x, min_y)
+    p2 = Point(max_x, max_y)
+    return BoundingBox(p1, p2)
 
 
 def do_bb_intersect(a, b):
@@ -265,7 +302,13 @@ def get_segments_intersections(segment1, segment2):
 
     m1, t1 = segment1.get_slope(), segment1.get_offset()
     m2, t2 = segment2.get_slope(), segment2.get_offset()
-    x = (t2-t1)/(m1-m2)
+    try:
+        x = (t2-t1)/(m1-m2)
+    except Exception as inst:
+        logging.debug(inst)
+        logging.debug("m1=%s", repr(m1))
+        logging.debug("m2=%s", repr(m2))
+        return []
     if segment1.p1.x > segment1.p2.x:
         segment1.p1, segment1.p2 = segment1.p2, segment1.p1
     if segment2.p1.x > segment2.p2.x:

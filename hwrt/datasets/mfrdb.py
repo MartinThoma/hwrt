@@ -16,6 +16,7 @@ import unicodedata
 # hwrt modules
 from hwrt import HandwrittenData
 from hwrt import utils
+from hwrt import datasets
 
 replacements = [('int', r'\int'),
                 ('cross', r'\times'),
@@ -63,9 +64,6 @@ skip = ['cotg']
 # skip = ['frac', 'dt', 'dx', 'arcsin',  'tg', 'cross', "'", ',']
 # '\sin', '\cos', '\lim', '\log', '\ln'
 
-__formula_to_dbid_cache = None
-username2id = {}
-
 
 def elementtree_to_dict(element):
     """Convert an xml ElementTree to a dictionary."""
@@ -96,79 +94,9 @@ def strip_end(text, suffix):
     return text[:len(text)-len(suffix)]
 
 
-def formula_to_dbid(formula_str):
-    global __formula_to_dbid_cache
-    if __formula_to_dbid_cache is None:
-        cfg = utils.get_database_configuration()
-        mysql = cfg['mysql_online']
-        connection = pymysql.connect(host=mysql['host'],
-                                     user=mysql['user'],
-                                     passwd=mysql['passwd'],
-                                     db=mysql['db'],
-                                     charset='utf8mb4',
-                                     cursorclass=pymysql.cursors.DictCursor)
-        cursor = connection.cursor()
-
-        # Get all formulas that should get examined
-        sql = ("SELECT `id`, `formula_in_latex` FROM `wm_formula` ")
-        cursor.execute(sql)
-        formulas = cursor.fetchall()
-        __formula_to_dbid_cache = {}
-        for fm in formulas:
-            __formula_to_dbid_cache[fm['formula_in_latex']] = fm['id']
-    if formula_str in __formula_to_dbid_cache:
-        return __formula_to_dbid_cache[formula_str]
-    else:
-        return None
-
-
 def remove_accents(input_str):
     nkfd_form = unicodedata.normalize('NFKD', input_str)
     return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
-
-
-def getuserid(username):
-    global username2id
-    if username not in username2id:
-        cfg = utils.get_database_configuration()
-        mysql = cfg['mysql_online']
-        connection = pymysql.connect(host=mysql['host'],
-                                     user=mysql['user'],
-                                     passwd=mysql['passwd'],
-                                     db=mysql['db'],
-                                     charset='utf8mb4',
-                                     cursorclass=pymysql.cursors.DictCursor)
-        cursor = connection.cursor()
-
-        sql = ("INSERT IGNORE INTO  `wm_users` ("
-               "`display_name` , "
-               "`password` ,"
-               "`account_type` ,"
-               "`confirmation_code` ,"
-               "`status` ,"
-               "`description`"
-               ") "
-               "VALUES ("
-               "%s, '',  'Regular User',  '',  'activated', "
-               "'This dataset was contributed by MfrDB. You can download "
-               "their complete dataset at [mfr.felk.cvut.cz/Database.html]"
-               "(http://mfr.felk.cvut.cz/Database.html)'"
-               ");")
-        cursor.execute(sql, username)
-        connection.commit()
-
-        # Get the id
-        try:
-            sql = ("SELECT  `id` FROM  `wm_users` "
-                   "WHERE  `display_name` =  %s LIMIT 1")
-            cursor.execute(sql, username)
-            uid = cursor.fetchone()['id']
-        except Exception as inst:
-            logging.debug("username not found: %s", username)
-            print(inst)
-        logging.info("%s: %s", username, uid)
-        username2id[username] = uid
-    return username2id[username]
 
 
 def get_recordings(directory):
@@ -230,13 +158,18 @@ def get_recordings(directory):
                 info['username'] = info['username'].replace(u"\u0437\u0438\u0438", "Zeii")
             else:
                 info['username'] = 'MfrDB::unknown'
-            info['userid'] = getuserid(info['username'])
+            copyright_str = ("This dataset was contributed by MfrDB. You can "
+                             "download their complete dataset at "
+                             "[mfr.felk.cvut.cz/Database.html]"
+                             "(http://mfr.felk.cvut.cz/Database.html)")
+            info['userid'] = datasets.getuserid(info['username'],
+                                                copyright_str)
             import uuid
             info['secret'] = str(uuid.uuid4())
             info['ip'] = example['FormulaInputInfo']['Address']['text']
             import IPy
             info['ip'] = IPy.IP(info['ip']).int()
-            info['accepted_formula_id'] = formula_to_dbid(name)
+            info['accepted_formula_id'] = datasets.formula_to_dbid(name)
             info['client'] = example['FormulaInputInfo']['Client']['text']
             from dateutil.parser import parse
             info['creation_date'] = parse(example['FormulaInputInfo']['Time']['text'])

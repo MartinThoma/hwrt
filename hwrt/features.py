@@ -32,6 +32,12 @@ from . import geometry
 def get_features(model_description_features):
     """Get features from a list of dictionaries
 
+    Parameters
+    ----------
+    model_description_features : list of dictionaries
+
+    Examples
+    --------
     >>> l = [{'StrokeCount': None}, \
              {'ConstantPointCoordinates': \
               [{'strokes': 4}, \

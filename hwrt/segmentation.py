@@ -26,6 +26,8 @@ import os
 import pickle
 import pkg_resources
 
+import time
+
 import math
 import scipy.sparse.csgraph
 
@@ -37,13 +39,22 @@ from hwrt import features
 from hwrt import geometry
 from hwrt import partitions
 
-stroke_segmented_classifier = None
-
 
 def _get_symbol_index(stroke_id_needle, segmentation):
     """
-    :returns: The symbol index in which stroke_id_needle occurs
+    Parameters
+    ----------
+    stroke_id_needle : int
+        Identifier for the stroke of which the symbol should get found.
+    segmentation : list of lists of integers
+        An ordered segmentation of strokes to symbols.
 
+    Returns
+    -------
+    The symbol index in which stroke_id_needle occurs
+
+    Examples
+    --------
     >>> _get_symbol_index(3, [[0, 1, 2], [3, 4, 5], [6, 7]])
     1
     >>> _get_symbol_index(6, [[0, 1, 2], [3, 4, 5], [6, 7]])
@@ -60,7 +71,7 @@ def _get_symbol_index(stroke_id_needle, segmentation):
 def get_segmented_raw_data():
     import pymysql.cursors
     cfg = utils.get_database_configuration()
-    mysql = cfg['mysql_dev']
+    mysql = cfg['mysql_online']
     connection = pymysql.connect(host=mysql['host'],
                                  user=mysql['user'],
                                  passwd=mysql['passwd'],
@@ -76,15 +87,40 @@ def get_segmented_raw_data():
     return datasets
 
 
+def filter_recordings(recordings):
+    new_recordings = []
+    for recording in recordings:
+        recording['data'] = json.loads(recording['data'])
+        recording['segmentation'] = normalize_segmentation(json.loads(recording['segmentation']))
+        had_none = False
+        for stroke in recording['data']:
+            for point in stroke:
+                if point['time'] is None:
+                    logging.debug("Had None-time: %i", recording['id'])
+                    had_none = True
+                    break
+            if had_none:
+                break
+        if not had_none:
+            new_recordings.append(recording)
+
+    recordings = new_recordings
+    logging.info("Done filtering")
+    return recordings
+
+
 def get_dataset():
     """Create a dataset for machine learning.
 
-    :returns: (X, y) where X is a list of tuples. Each tuple is a feature. y
-              is a list of labels
-              (0 for 'not in one symbol' and 1 for 'in symbol')
+    Returns
+    -------
+    tuple :
+        (X, y) where X is a list of tuples. Each tuple is a feature. y
+        is a list of labels (0 for 'not in one symbol' and 1 for 'in symbol')
     """
     seg_data = "segmentation-X.npy"
     seg_labels = "segmentation-y.npy"
+    #seg_ids = "segmentation-ids.npy"
     if os.path.isfile(seg_data) and os.path.isfile(seg_labels):
         X = numpy.load(seg_data)
         y = numpy.load(seg_labels)
@@ -117,6 +153,7 @@ def get_dataset():
     y = numpy.array(y, dtype=numpy.int32)
     numpy.save(seg_data, X)
     numpy.save(seg_labels, y)
+    datasets = filter_recordings(datasets)
     with open('datasets.pickle', 'wb') as f:
         pickle.dump(datasets, f, protocol=pickle.HIGHEST_PROTOCOL)
     return (X, y, datasets)
@@ -132,15 +169,16 @@ def get_nn_classifier(X, y):
     # The shape parameter defines the expected input shape, which is just the
     # shape of our data matrix X.
     l_in = lasagne.layers.InputLayer(shape=X.shape)
-    # A dense layer implements a linear mix (xW + b) followed by a nonlinearity.
+    # A dense layer implements a linear mix (xW + b) followed by a nonlinear
+    # function.
     hiddens = [64, 64, 64]  # sollte besser als 0.12 sein (mit [32])
     layers = [l_in]
 
     for n_units in hiddens:
         l_hidden_1 = lasagne.layers.DenseLayer(
             layers[-1],  # The first argument is the input to this layer
-            num_units=n_units,  # This defines the layer's output dimensionality
-            nonlinearity=lasagne.nonlinearities.tanh)  # Various nonlinearities are available such as relu
+            num_units=n_units,  # the layer's output dimensionality
+            nonlinearity=lasagne.nonlinearities.tanh)
         layers.append(l_hidden_1)
     # For our output layer, we'll use a dense layer with a softmax nonlinearity.
     l_output = lasagne.layers.DenseLayer(layers[-1], num_units=N_CLASSES,
@@ -237,7 +275,7 @@ def get_strokes_distance(s1, s2):
     return min_dist
 
 
-def merge_segmentations(segs1, segs2):
+def merge_segmentations(segs1, segs2, strokes=None):
     """
     Parameters
     ----------
@@ -245,15 +283,26 @@ def merge_segmentations(segs1, segs2):
         Each tuple is a segmentation with its score
     segs2 : a list of tuples
         Each tuple is a segmentation with its score
+    strokes : list of stroke names for segs2
 
     Returns
     -------
     list of tuples :
         Segmentations with their score, combined from segs1 and segs2
     """
+    def translate(segmentation, strokes):
+        t = []
+        for symbol in segmentation:
+            symbol_new = []
+            for stroke in symbol:
+                symbol_new.append(strokes[stroke])
+            t.append(symbol_new)
+        return t
+    if strokes is None:
+        strokes = [i for i in range(len(segs2[0][0]))]
     topf = partitions.TopFinder(500)
     for s1, s2 in itertools.product(segs1, segs2):
-        topf.push(s1[0]+s2[0], s1[1]*s2[1])
+        topf.push(s1[0]+translate(s2[0], strokes), s1[1]*s2[1])
     return list(topf)
 
 
@@ -261,13 +310,23 @@ def update_segmentation_data(segmentation, add):
     return [[el + add for el in symbol] for symbol in segmentation]
 
 
-def get_segmentation(recording, single_clf):
-    """
+def get_segmentation(recording,
+                     single_clf,
+                     single_stroke_clf,
+                     stroke_segmented_classifier):
+    """Get a list of segmentations of recording with the probability of the
+    segmentation being correct.
 
     Parameters
     ----------
     recording : A list of lists
         Each sublist represents a stroke
+    single_clf : object
+        A classifier for single symbols
+    single_stroke_clf : object
+        A classifier which decides if a single stroke is a complete symbol
+    stroke_segmented_classifier : object
+        Classifier which decides if two strokes belong to one symbol or not
 
     Returns
     -------
@@ -287,20 +346,45 @@ def get_segmentation(recording, single_clf):
       ([[0,2], [1]], 0.05)
     ]
     """
-    global stroke_segmented_classifier
+
+    # TODO: Use it
+    points = get_points(recording)
+    mst = get_mst(points)
+    mst_wood = [{'mst': mst, 'strokes': list(range(len(mst)))}]
+    # TODO: break mst into wood of msts wherever possible by recognizing single
+    # symbols by stroke
+
+    bbintersections = get_bb_intersections(recording)
+    for i, stroke in enumerate(recording):  # TODO
+        predictions = single_clf.predict({'id': 0, 'data': [stroke]})
+        prob_sum = sum([p['probability'] for p in predictions[:3]])
+        # dots cannot be segmented into single symbols at this point
+        if prob_sum > 0.95 and not any([el for el in bbintersections[i]]) and len(stroke) > 2 and predictions[0]['semantics'].split(';')[1] != '-':
+            # Split mst here
+            split_mst_index, split_node_i = find_split_node(mst_wood, i)
+            mst_wood_tmp = break_mst(mst_wood[split_mst_index],
+                                     split_node_i)
+            del mst_wood[split_mst_index]
+            for mst in mst_wood_tmp:
+                mst_wood.append(mst)
+            for mst in mst_wood:
+                if i in mst['strokes']:
+                    mst['pred'] = predictions[0]['semantics'].split(';')[1]
+
+    # if any([True for mst in mst_wood if len(mst['strokes']) >= 8]):
+    #     logging.debug([mst['pred'] for mst in mst_wood if 'pred' in mst])
+    #     HandwrittenData(json.dumps(recording)).show()
+    return [(normalize_segmentation([mst['strokes'] for mst in mst_wood]), 1.0)]
+
+    # HandwrittenData(json.dumps(recording)).show()
+    # return [([[i for i in range(len(recording))]], 1.0)]
+    ##mst_wood = break_mst(mst, recording)  # TODO
+
+    # for i in range(0, 2**len(points)):
+    #     segmentation = get_segmentation_from_mst(mst, i)
+    # TODO
+
     X_symbol = [get_median_stroke_distance(recording)]
-    if stroke_segmented_classifier is None:
-        logging.info("Start creation of training set")
-        X, y, datasets = get_dataset()
-        logging.info("Start training")
-        nn = get_nn_classifier(X, y)
-        stroke_segmented_classifier = lambda X: nn(X)[0][1]
-        #import pprint
-        #pp = pprint.PrettyPrinter(indent=4)
-        y_predicted = numpy.argmax(nn(X), axis=1)
-        classification = [yi == yip for yi, yip in zip(y, y_predicted)]
-        err = float(sum([not i for i in classification]))/len(classification)
-        logging.info("Error: %0.2f (for %i training examples)", err, len(y))
 
     # Pre-segment to 8 strokes
     # TODO: Take first 4 strokes and add strokes within their bounding box
@@ -310,8 +394,9 @@ def get_segmentation(recording, single_clf):
     #    if the bounding box of `c` is within the bounding box of `p`.
     #       Problem: B <-> 13
     top_segmentations_global = [([], 1.0)]
-    for chunk_part in range(int(math.ceil(float(len(recording))/8))):
-        chunk = recording[8*chunk_part:8*(chunk_part+1)]
+    for chunk_part in mst_wood:  # range(int(math.ceil(float(len(recording))/8))):
+        #chunk = recording[8*chunk_part:8*(chunk_part+1)]
+        chunk = [recording[stroke] for stroke in chunk_part['strokes']]
 
         # Segment after pre-segmentation
         prob = [[1.0 for _ in chunk] for _ in chunk]
@@ -333,10 +418,121 @@ def get_segmentation(recording, single_clf):
                 min_top2.push("value-%i" % i,
                               predictions[0]['probability'] + predictions[1]['probability'])
             top_segmentations[i][1] *= list(min_top2)[0][1]
-        for i, segmentation in enumerate(top_segmentations):
-            top_segmentations[i][0] = update_segmentation_data(top_segmentations[i][0], 8*chunk_part)
-        top_segmentations_global = merge_segmentations(top_segmentations_global, top_segmentations)
-    return top_segmentations_global
+        # for i, segmentation in enumerate(top_segmentations):
+        #     top_segmentations[i][0] = update_segmentation_data(top_segmentations[i][0], 8*chunk_part)
+        top_segmentations_global = merge_segmentations(top_segmentations_global, top_segmentations, chunk_part['strokes'])
+    return [(normalize_segmentation(seg), prob) for seg, prob in top_segmentations_global]
+
+
+def has_missing_break(real_seg, pred_seg):
+    """
+    Parameters
+    ----------
+    real_seg : list of integers
+        The segmentation as it should be.
+    pred_seg : list of integers
+        The predicted segmentation.
+
+    Returns
+    -------
+    bool :
+        True, if strokes of two different symbols are put in the same symbol.
+    """
+    for symbol_pred in pred_seg:
+        for symbol_real in real_seg:
+            if symbol_pred[0] in symbol_real:
+                for stroke in symbol_pred:
+                    if stroke not in symbol_real:
+                        return True
+    return False
+
+
+def has_wrong_break(real_seg, pred_seg):
+    """
+    Parameters
+    ----------
+    real_seg : list of integers
+        The segmentation as it should be.
+    pred_seg : list of integers
+        The predicted segmentation.
+
+    Returns
+    -------
+    bool :
+        True, if strokes of one symbol were segmented to be in different
+        symbols.
+    """
+    for symbol_real in real_seg:
+        for symbol_pred in pred_seg:
+            if symbol_real[0] in symbol_pred:
+                for stroke in symbol_real:
+                    if stroke not in symbol_pred:
+                        return True
+    return False
+
+
+def find_split_node(mst_wood, i):
+    """
+    Parameters
+    ----------
+    mst_wood : list of dictionarys
+    i : int
+        Number of the stroke where one mst gets split
+
+    Returns
+    -------
+    tuple :
+        (mst index, node index)
+    """
+    for mst_index, mst in enumerate(mst_wood):
+        if i in mst['strokes']:
+            return (mst_index, mst['strokes'].index(i))
+    raise ValueError('%i was not found as stroke index.' % i)
+
+
+def break_mst(mst, i):
+    """Break mst into multiple MSTs by removing one node i.
+
+    Parameters
+    ----------
+    mst : symmetrical square matrix
+    i : index of the mst where to break
+
+    Returns
+    -------
+    list of dictionarys ('mst' and 'strokes' are the keys)
+    """
+    for j in range(len(mst['mst'])):
+        mst['mst'][i][j] = 0
+        mst['mst'][j][i] = 0
+    _, components = scipy.sparse.csgraph.connected_components(mst['mst'])
+    comp_indices = {}
+    for el in set(components):
+        comp_indices[el] = {'strokes': [], 'strokes_i': []}
+    for i, comp_nr in enumerate(components):
+        comp_indices[comp_nr]['strokes'].append(mst['strokes'][i])
+        comp_indices[comp_nr]['strokes_i'].append(i)
+
+    mst_wood = []
+
+    for key in comp_indices:
+        matrix = []
+        for i, line in enumerate(mst['mst']):
+            line_add = []
+            if i not in comp_indices[key]['strokes_i']:
+                continue
+            for j, el in enumerate(line):
+                if j in comp_indices[key]['strokes_i']:
+                    line_add.append(el)
+            matrix.append(line_add)
+        assert len(matrix) > 0, "len(matrix) == 0 (strokes: %s, mst=%s, i=%i)" % (comp_indices[key]['strokes'], mst, i)
+        assert len(matrix) == len(matrix[0]), \
+            "matrix was %i x %i, but should be square" % (len(matrix), len(matrix[0]))
+        assert len(matrix) == len(comp_indices[key]['strokes']), \
+            "stroke length was not equal to matrix length (strokes=%s, len(matrix)=%i)" % (comp_indices[key]['strokes'], len(matrix))
+        mst_wood.append({'mst': matrix,
+                         'strokes': comp_indices[key]['strokes']})
+    return mst_wood
 
 
 def _is_out_of_order(segmentation):
@@ -365,11 +561,37 @@ def _less_than(l, n):
     return float(len([1 for el in l if el < n]))
 
 
-class single_classificer(object):
+class single_classifier(object):
+    """Classifier for single symbols."""
     def __init__(self):
         logging.info("Start reading model...")
         model_path = pkg_resources.resource_filename('hwrt', 'misc/')
         model_file = os.path.join(model_path, "model.tar")
+        logging.info("Model: %s", model_file)
+        (preprocessing_queue, feature_list, model,
+         output_semantics) = utils.load_model(model_file)
+        self.preprocessing_queue = preprocessing_queue
+        self.feature_list = feature_list
+        self.model = model
+        self.output_semantics = output_semantics
+
+    def predict(self, parsed_json):
+        evaluate = utils.evaluate_model_single_recording_preloaded
+        results = evaluate(self.preprocessing_queue,
+                           self.feature_list,
+                           self.model,
+                           self.output_semantics,
+                           json.dumps(parsed_json['data']),
+                           parsed_json['id'])
+        return results
+
+
+class single_symbol_stroke_classifier(object):
+    """Classifier which decides if a single stroke is a single symbol."""
+    def __init__(self):
+        logging.info("Start reading model...")
+        model_path = pkg_resources.resource_filename('hwrt', 'misc/')
+        model_file = os.path.join(model_path, "model-single-stroke.tar")  # TODO
         logging.info("Model: %s", model_file)
         (preprocessing_queue, feature_list, model,
          output_semantics) = utils.load_model(model_file)
@@ -471,10 +693,52 @@ def get_segmentation_from_mst(mst, number):
     ----------
     mst :
         Minimum spanning tree
-    number : int (0..edges in MST)
+    number : int ({0, ..., 2^(edges in MST)-1})
         The number of the segmentation.
     """
     pass
+
+
+def get_points(recording):
+    """Get one point for each stroke in a recording. The point represents the
+    strokes spacial position (e.g. the center of the bounding box).
+
+    Parameters
+    ----------
+    recording : list of strokes
+
+    Returns
+    -------
+    list :
+        points
+    """
+    points = []
+    for stroke in recording:
+        point = geometry.get_bounding_box(stroke).get_center()
+        points.append(point)
+    return points
+
+
+def get_bb_intersections(recording):
+    """Get all intersections of the bounding boxes of strokes.
+
+    Parameters
+    ----------
+    recording : list of lists of integers
+
+    Returns
+    -------
+    A symmetrical matrix which indicates if two bounding boxes intersect.
+    """
+    intersections = numpy.zeros((len(recording), len(recording)),
+                                dtype=bool)
+    for i in range(len(recording)-1):
+        a = geometry.get_bounding_box(recording[i]).grow(0.2)
+        for j in range(i+1, len(recording)):
+            b = geometry.get_bounding_box(recording[j]).grow(0.2)
+            intersections[i][j] = geometry.do_bb_intersect(a, b)
+            intersections[j][i] = intersections[i][j]
+    return intersections
 
 
 def get_mst(points):
@@ -489,15 +753,25 @@ def get_mst(points):
     -------
     mst : square matrix
         0 nodes the edges are not connected, > 0 means they are connected
-        Please note that the returned matrix is not symmetrical!
     """
     graph = Graph()
     for point in points:
         graph.add_node(point)
     graph.generate_euclidean_edges()
-    print(graph.w)
     matrix = scipy.sparse.csgraph.minimum_spanning_tree(graph.w)
-    return matrix.toarray().astype(int)
+    mst = matrix.toarray().astype(int)
+    # returned matrix is not symmetrical! make it symmetrical
+    for i in range(len(mst)):
+        for j in range(len(mst)):
+            if mst[i][j] > 0:
+                mst[j][i] = mst[i][j]
+            if mst[j][i] > 0:
+                mst[i][j] = mst[j][i]
+    return mst
+
+
+def normalize_segmentation(seg):
+    return sorted([sorted(el) for el in seg])
 
 
 if __name__ == '__main__':
@@ -511,38 +785,54 @@ if __name__ == '__main__':
     doctest.testmod()
 
     logging.info("Get single classifier")
-    single_clf = single_classificer()
+    single_clf = single_classifier()
 
-    logging.info("Get segmented raw data")
-    recordings = get_segmented_raw_data()
+    logging.info("Get stroke_segmented_classifier "
+                 "(decided if two strokes are in one symbol)")
+    logging.info("Start creation of training set")
+    X, y, recordings = get_dataset()
+    logging.info("Start training")
+    nn = get_nn_classifier(X, y)
+    stroke_segmented_classifier = lambda X: nn(X)[0][1]
+    #import pprint
+    #pp = pprint.PrettyPrinter(indent=4)
+    y_predicted = numpy.argmax(nn(X), axis=1)
+    classification = [yi == yip for yi, yip in zip(y, y_predicted)]
+    err = float(sum([not i for i in classification]))/len(classification)
+    logging.info("Error: %0.2f (for %i training examples)", err, len(y))
+
+    logging.info("Get single stroke classifier")
+    single_stroke_clf = None  # single_symbol_stroke_classifier()
+
+    #logging.info("Get segmented raw data")
+    #recordings = get_segmented_raw_data()
     logging.info("Start testing")
     score_place = []
     out_of_order_count = 0
     ## Filter recordings
-    new_recordings = []
-    for recording in recordings:
-        recording['data'] = json.loads(recording['data'])
-        recording['segmentation'] = json.loads(recording['segmentation'])
-        had_none = False
-        for stroke in recording['data']:
-            for point in stroke:
-                if point['time'] is None:
-                    logging.debug("Had None-time: %i", recording['id'])
-                    had_none = True
-                    break
-            if had_none:
-                break
-        if not had_none:
-            new_recordings.append(recording)
-
-    recordings = new_recordings
-    logging.info("Done filtering")
+    #recordings = filter_recordings(recordings)
+    over_segmented_symbols = 0
+    under_segmented_symbols = 0
+    overunder_segmented_symbols = 0
 
     for nr, recording in enumerate(recordings):
         if nr % 100 == 0:
             print(("## %i " % nr) + "#"*80)
-        seg_predict = get_segmentation(recording['data'], single_clf)
+
+        t0 = time.time()
+        seg_predict = get_segmentation(recording['data'],
+                                       single_clf,
+                                       single_stroke_clf,
+                                       stroke_segmented_classifier)
+        t1 = time.time()
         real_seg = recording['segmentation']
+        if all([has_wrong_break(real_seg, seg) for seg, score in seg_predict]):
+            over_segmented_symbols += 1
+        if all([has_missing_break(real_seg, seg) for seg, score in seg_predict]):
+            under_segmented_symbols += 1
+        if all([has_wrong_break(real_seg, seg) for seg, score in seg_predict]) \
+           and all([has_missing_break(real_seg, seg) for seg, score in seg_predict]):
+           overunder_segmented_symbols += 1
         pred_str = ""
         for i, pred in enumerate(seg_predict):
             seg, score = pred
@@ -554,11 +844,16 @@ if __name__ == '__main__':
                 break
         else:
             i = -1
-        print("## %i" % recording['id'])
-        print("  Real segmentation:\t%s (got at place %i)" % (real_seg, i))
-        print(pred_str)
+        if all([has_wrong_break(real_seg, seg) for seg, score in seg_predict]):
+            print("## %i" % recording['id'])
+            print("  Real segmentation:\t%s (got at place %i)" % (real_seg, i))
+            print(pred_str)
+            print("  Segmentation took %0.4f seconds." % (t1-t0))
+            if has_wrong_break(real_seg, seg_predict[0][0]):
+                print("  over-segmented")
+            if has_missing_break(real_seg, seg_predict[0][0]):
+                print("  under-segmented")
         out_of_order_count += _is_out_of_order(real_seg)
-    print(score_place)
     logging.info("mean: %0.2f", numpy.mean(score_place))
     logging.info("median: %0.2f", numpy.median(score_place))
     logging.info("TOP-1: %0.2f", _less_than(score_place, 1)/len(recordings))
@@ -566,5 +861,8 @@ if __name__ == '__main__':
     logging.info("TOP-10: %0.2f", _less_than(score_place, 10)/len(recordings))
     logging.info("TOP-20: %0.2f", _less_than(score_place, 20)/len(recordings))
     logging.info("TOP-50: %0.2f", _less_than(score_place, 50)/len(recordings))
+    logging.info("Over-segmented: %0.2f", float(over_segmented_symbols)/len(recordings))
+    logging.info("Under-segmented: %0.2f", float(under_segmented_symbols)/len(recordings))
+    logging.info("overUnder-segmented: %0.2f", float(overunder_segmented_symbols)/len(recordings))
     logging.info("Out of order: %i", out_of_order_count)
     logging.info("Total: %i", len(recordings))

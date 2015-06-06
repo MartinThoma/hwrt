@@ -17,13 +17,16 @@ __formula_to_dbid_cache = None
 username2id = {}
 
 
-def formula_to_dbid(formula_str):
+def formula_to_dbid(formula_str, backslash_fix=False):
     """Convert a LaTeX formula to the database index.
 
     Parameters
     ----------
     formula_str : string
         The formula as LaTeX code.
+    backslash_fix : boolean
+        If this is set to true, then it will be checked if the same formula
+        exists with a preceeding backslash.
 
     Returns
     -------
@@ -51,6 +54,8 @@ def formula_to_dbid(formula_str):
             __formula_to_dbid_cache[fm['formula_in_latex']] = fm['id']
     if formula_str in __formula_to_dbid_cache:
         return __formula_to_dbid_cache[formula_str]
+    elif backslash_fix and ('\\%s' % formula_str) in __formula_to_dbid_cache:
+        return __formula_to_dbid_cache['\\%s' % formula_str]
     else:
         cfg = utils.get_database_configuration()
         mysql = cfg['mysql_dev']
@@ -66,7 +71,8 @@ def formula_to_dbid(formula_str):
                "`mode`, `package`, "
                "`is_important`) VALUES ("
                "'10', %s, %s, 'bothmodes', NULL, '0');")
-        logging.info("Insert %s.", formula_str)
+        if len(formula_str) < 20:
+            logging.info("Insert formula %s.", formula_str)
         cursor.execute(sql, (formula_str, formula_str))
         connection.commit()
         __formula_to_dbid_cache[formula_str] = connection.insert_id()
@@ -159,7 +165,7 @@ def insert_recording(hw):
                 hw.raw_data_json,
                 getattr(hw, 'creation_date', None),
                 getattr(hw, 'device_type', ''),
-                getattr(hw, 'accepted_formula_id', None),
+                getattr(hw, 'formula_id', None),
                 getattr(hw, 'secret', ''),
                 getattr(hw, 'ip', None),
                 str(getattr(hw, 'segmentation', '')),
@@ -193,9 +199,9 @@ def insert_symbol_mapping(raw_data_id, symbol_id, user_id, strokes):
                                  charset='utf8mb4',
                                  cursorclass=pymysql.cursors.DictCursor)
     cursor = connection.cursor()
-    sql = ("INSERT INTO `writemath`.`wm_strokes_to_symbol` "
-           "(`raw_data_id`, `symbol_id`, `strokes`, `user_id`) "
-           "VALUES (%s, %s, %s, %s);")
+    sql = ("INSERT INTO `wm_partial_answer` "
+           "(`recording_id`, `symbol_id`, `strokes`, `user_id`, `is_accepted`) "
+           "VALUES (%s, %s, %s, %s, 1);")
     data = (raw_data_id,
             symbol_id,
             ",".join([str(stroke) for stroke in strokes]),

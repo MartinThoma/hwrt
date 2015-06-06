@@ -23,7 +23,44 @@ missing_stroke_segmentation = []
 double_segmentation = []
 
 
+def mathbrush_formula_fix(latex):
+    fixit = [('lparen', '('),
+             ('rparen', ')'),
+             ('lbracket', '['),
+             ('rbracket', ']'),
+             ('eq', '='),
+             ('gt', '>'),
+             ('lt', '<'),
+             ('plus', '+'),
+             ('Integral', '\\int'),
+             ('sqrt', '\\sqrt{}'),
+             ('infin', '\\infty')]
+    for search, replace in fixit:
+        if latex == search:
+            return replace
+    return latex
+
+
 def remove_matching_braces(latex):
+    """
+    If `latex` is surrounded by matching braces, remove them. They are not
+    necessary.
+
+    Parameters
+    ----------
+    latex : string
+
+    Returns
+    -------
+    string
+
+    Examples
+    --------
+    >>> remove_matching_braces('{2+2}')
+    '2+2'
+    >>> remove_matching_braces('{2+2')
+    '{2+2'
+    """
     if latex.startswith('{') and latex.endswith('}'):
         opened = 1
         matches = True
@@ -68,36 +105,47 @@ def get_latex(ink_filename):
 
 
 def get_segmentation(recording, annotations, internal_id=None):
+    """
+    Parameters
+    ----------
+    recording :
+        A HandwrittenData object
+    annotations : list of strings
+    internal_id : string
+        An identifier for the dataset, e.g. 'user1/200922-947-111.ink'.
+
+    Returns
+    -------
+    tuple : segmentation and list of symbol ids (of write-math.com)
+    """
     global missing_stroke_segmentation, double_segmentation
     segmentation = []
+    symbol_stream = []
     needed = list(range(len(recording)))
     annotations = filter(lambda n: n.startswith('SYMBOL '), annotations)
     for line in annotations:
         tmp = line.split("<")[1]
-        tmp = tmp.split(">")[0]
+        tmp, symbol_string = tmp.split(">")
+        symbol_string = symbol_string.strip()
         strokes = [int(stroke) for stroke in tmp.split(",")
                    if int(stroke) < len(recording)]
         for el in strokes:
             if el not in needed:
                 double_segmentation.append(internal_id)
-                # hw = HandwrittenData.HandwrittenData(json.dumps(recording))
-                # hw.show()
                 strokes.remove(el)
                 logging.debug("invalid segmentation by annotation: %s",
                               annotations)
             else:
                 needed.remove(el)
         segmentation.append(strokes)
+        symbol_stream.append(datasets.formula_to_dbid(mathbrush_formula_fix(symbol_string), True))
+
     if len(needed) > 0:
         # hw = HandwrittenData.HandwrittenData(json.dumps(recording))
         # hw.show()
-        # print(annotations)
-        # print(needed)
         missing_stroke_segmentation.append(internal_id)
-        logging.debug(("invalid segmentation by annotation: %s "
-                       "(needed: %s)"), annotations, needed)
         segmentation.append(needed)
-    return segmentation
+    return segmentation, symbol_stream
 
 
 def parse_scg_ink_file(filename):
@@ -181,28 +229,37 @@ def parse_scg_ink_file(filename):
                 current_stroke = []
     hw = HandwrittenData.HandwrittenData(json.dumps(recording),
                                          formula_in_latex=formula_in_latex,
-                                         formula_id=datasets.formula_to_dbid(formula_in_latex))
+                                         formula_id=datasets.formula_to_dbid(mathbrush_formula_fix(formula_in_latex)))
     hw.internal_id = "/".join(filename.split("/")[-2:])
-    hw.segmentation = get_segmentation(recording, annotations, hw.internal_id)
+    hw.segmentation, hw.symbol_stream = get_segmentation(recording,
+                                                         annotations,
+                                                         hw.internal_id)
     hw.description = "\n".join(annotations)
     hw.username = "MathBrush::%s" % os.path.basename(os.path.dirname(filename))
     copyright_str = ("This dataset was contributed by MathBrush. You can "
                      "download their complete dataset by contacting them. See "
                      "[www.scg.uwaterloo.ca/mathbrush/]"
-                     "(https://www.scg.uwaterloo.ca/mathbrush/corpus.shtml)")
+                     "(https://www.scg.uwaterloo.ca/mathbrush/publications/corpus.pdf)")
     hw.user_id = datasets.getuserid(hw.username, copyright_str)
-    #logging.info("'%s' by '%s'", hw.formula_in_latex, hw.username)
-    #hw.show()
     return hw
 
 
 def read_folder(folder):
     """Read all files of `folder` and return a list of HandwrittenData
     objects.
+
+    Parameters
+    ----------
+    folder : string
+        Path to a folder
+
+    Returns
+    -------
+    list :
+        A list of all .ink files in the given folder.
     """
     recordings = []
     for filename in glob.glob(os.path.join(folder, '*.ink')):
-        #print(filename)
         recording = parse_scg_ink_file(filename)
         recordings.append(recording)
     return recordings
@@ -215,8 +272,6 @@ def main(directory):
         user_dir = os.path.join(directory, user_dir)
         logging.info("Start getting data from %s...", user_dir)
         recordings += read_folder(user_dir)
-        # for el in recordings:
-        #     print(el)
     logging.info("Got %i recordings.", len(recordings))
     logging.info("Double segmented strokes: %i (%0.2f%%)",
                  len(double_segmentation),
@@ -228,4 +283,6 @@ def main(directory):
         datasets.insert_recording(recording)
 
 if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
     main("/home/moose/Downloads/mathbrush/mathdata")

@@ -51,7 +51,7 @@ def get_metrics(metrics_description):
 
 
 def prepare_file(filename):
-    """Trunkate the file and return the filename."""
+    """Truncate the file and return the filename."""
     directory = os.path.join(utils.get_project_root(), "analyzation/")
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -286,7 +286,7 @@ class AnalyzeErrors(object):
         self.filename = prepare_file(filename)
         self.time_max_threshold = time_max_threshold  # in ms
         self.dot_symbols = ['i', 'j', '\cdot', '\div', '\\because',
-                            '\\therefore']
+                            '\\therefore']  # TODO: Use the tags!
 
     def __repr__(self):
         return "AnalyzeErrors"

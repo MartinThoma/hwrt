@@ -68,7 +68,8 @@ app.config.from_object(__name__)
 @app.route('/', methods=['POST', 'GET'])
 def index():
     """Start page."""
-    return '<a href="interactive">interactive</a> - <a href="work">Classify stuff on write-math.com</a>'
+    return ('<a href="interactive">interactive</a> - '
+            '<a href="work">Classify stuff on write-math.com</a>')
 
 
 @app.route('/interactive', methods=['POST', 'GET'])

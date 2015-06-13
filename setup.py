@@ -3,7 +3,7 @@ from setuptools import setup
 
 config = {
     'name': 'hwrt',
-    'version': '0.1.219',
+    'version': '0.1.220',
     'author': 'Martin Thoma',
     'author_email': 'info@martin-thoma.de',
     'maintainer': 'Martin Thoma',

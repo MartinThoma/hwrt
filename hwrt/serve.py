@@ -152,6 +152,8 @@ def fix_writemath_answer(results):
        This means using the ID for the formula that is used by the write-math
        server.
 
+    Examples
+    --------
     >>> results = [{'symbolnr': 214,
     ...             'semantics': '\\triangleq',
     ...             'probability': 0.03}, ...]
@@ -173,7 +175,8 @@ def fix_writemath_answer(results):
             writemathid = csvrow[0]
             latex = ""
         else:
-            writemathid, latex = csvrow
+            writemathid, latex = csvrow[0], csvrow[1:]
+            latex = ','.join(latex)
         translate[latex] = writemathid
 
     for i, el in enumerate(results):

@@ -3,15 +3,13 @@ from setuptools import setup
 
 config = {
     'name': 'hwrt',
-    'version': '0.1.220',
+    'version': '0.1.221',
     'author': 'Martin Thoma',
     'author_email': 'info@martin-thoma.de',
     'maintainer': 'Martin Thoma',
     'maintainer_email': 'info@martin-thoma.de',
     'packages': find_packages(),
-    'scripts': ['bin/hwrt', 'bin/backup.py',
-                'bin/test.py', 'bin/train.py',
-                'bin/create_testset_online_once.py'],
+    'scripts': ['bin/hwrt', 'bin/test.py', 'bin/train.py'],
     'package_data': {'hwrt': ['templates/*', 'misc/*']},
     'platforms': ['Linux', 'MacOS X', 'Windows'],
     'url': 'https://github.com/MartinThoma/hwrt',

@@ -28,7 +28,6 @@ import pkg_resources
 
 import time
 
-import math
 import scipy.sparse.csgraph
 
 # hwrt modules
@@ -40,73 +39,111 @@ from hwrt import geometry
 from hwrt import partitions
 
 
-def _get_symbol_index(stroke_id_needle, segmentation):
-    """
-    Parameters
-    ----------
-    stroke_id_needle : int
-        Identifier for the stroke of which the symbol should get found.
-    segmentation : list of lists of integers
-        An ordered segmentation of strokes to symbols.
+def main():
+    logging.info("Get single classifier")
+    single_clf = single_classifier()
 
-    Returns
-    -------
-    The symbol index in which stroke_id_needle occurs
+    logging.info("Get stroke_segmented_classifier "
+                 "(decided if two strokes are in one symbol)")
+    logging.info("Start creation of training set")
+    X, y, recordings = get_dataset()
+    logging.info("Start training")
+    nn = get_nn_classifier(X, y)
+    stroke_segmented_classifier = lambda X: nn(X)[0][1]
+    y_predicted = numpy.argmax(nn(X), axis=1)
+    classification = [yi == yip for yi, yip in zip(y, y_predicted)]
+    err = float(sum([not i for i in classification]))/len(classification)
+    logging.info("Error: %0.2f (for %i training examples)", err, len(y))
 
-    Examples
-    --------
-    >>> _get_symbol_index(3, [[0, 1, 2], [3, 4, 5], [6, 7]])
-    1
-    >>> _get_symbol_index(6, [[0, 1, 2], [3, 4, 5], [6, 7]])
-    2
-    >>> _get_symbol_index(7, [[0, 1, 2], [3, 4, 5], [6, 7]])
-    2
-    """
-    for symbol_index, symbol in enumerate(segmentation):
-        if stroke_id_needle in symbol:
-            return symbol_index
-    return None
+    logging.info("Get single stroke classifier")
+    single_stroke_clf = None  # single_symbol_stroke_classifier()
 
+    logging.info("Start testing")
+    score_place = []
+    out_of_order_count = 0
+    ## Filter recordings
+    #recordings = filter_recordings(recordings)
+    over_segmented_symbols = 0
+    under_segmented_symbols = 0
+    overunder_segmented_symbols = 0
 
-def get_segmented_raw_data():
-    import pymysql.cursors
-    cfg = utils.get_database_configuration()
-    mysql = cfg['mysql_online']
-    connection = pymysql.connect(host=mysql['host'],
-                                 user=mysql['user'],
-                                 passwd=mysql['passwd'],
-                                 db=mysql['db'],
-                                 cursorclass=pymysql.cursors.DictCursor)
-    cursor = connection.cursor()
-    sql = ("SELECT `id`, `data`, `segmentation` "
-           "FROM `wm_raw_draw_data` WHERE `segmentation` "
-           "IS NOT NULL AND `wild_point_count` = 0 "
-           "ORDER BY `id` LIMIT 0, 4000")
-    cursor.execute(sql)
-    datasets = cursor.fetchall()
-    return datasets
+    for nr, recording in enumerate(recordings):
+        if nr % 100 == 0:
+            print(("## %i " % nr) + "#"*80)
 
-
-def filter_recordings(recordings):
-    new_recordings = []
-    for recording in recordings:
-        recording['data'] = json.loads(recording['data'])
-        recording['segmentation'] = normalize_segmentation(json.loads(recording['segmentation']))
-        had_none = False
-        for stroke in recording['data']:
-            for point in stroke:
-                if point['time'] is None:
-                    logging.debug("Had None-time: %i", recording['id'])
-                    had_none = True
-                    break
-            if had_none:
+        t0 = time.time()
+        seg_predict = get_segmentation(recording['data'],
+                                       single_clf,
+                                       single_stroke_clf,
+                                       stroke_segmented_classifier)
+        t1 = time.time()
+        real_seg = recording['segmentation']
+        if all([has_wrong_break(real_seg, seg) for seg, score in seg_predict]):
+            over_segmented_symbols += 1
+        if all([has_missing_break(real_seg, seg) for seg, score in seg_predict]):
+            under_segmented_symbols += 1
+        if all([has_wrong_break(real_seg, seg) for seg, score in seg_predict]) \
+           and all([has_missing_break(real_seg, seg) for seg, score in seg_predict]):
+           overunder_segmented_symbols += 1
+        pred_str = ""
+        for i, pred in enumerate(seg_predict):
+            seg, score = pred
+            if i == 0:
+                pred_str = "  Predict segmentation:\t%s (%0.8f)" % (seg, score)
+            #print("#{0:>3} {1:.8f}: {2}".format(i, score, seg))
+            if seg == real_seg:
+                score_place.append(i)
                 break
-        if not had_none:
-            new_recordings.append(recording)
+        else:
+            i = -1
+            score_place.append(10**6)
+        if all([has_wrong_break(real_seg, seg) for seg, score in seg_predict]):
+            print("## %i" % recording['id'])
+            print("  Real segmentation:\t%s (got at place %i)" % (real_seg, i))
+            print(pred_str)
+            print("  Segmentation took %0.4f seconds." % (t1-t0))
+            if has_wrong_break(real_seg, seg_predict[0][0]):
+                print("  over-segmented")
+            if has_missing_break(real_seg, seg_predict[0][0]):
+                print("  under-segmented")
+        out_of_order_count += _is_out_of_order(real_seg)
+    logging.info("mean: %0.2f", numpy.mean(score_place))
+    logging.info("median: %0.2f", numpy.median(score_place))
+    logging.info("TOP-1: %0.2f", _less_than(score_place, 1)/len(recordings))
+    logging.info("TOP-3: %0.2f", _less_than(score_place, 3)/len(recordings))
+    logging.info("TOP-10: %0.2f", _less_than(score_place, 10)/len(recordings))
+    logging.info("TOP-20: %0.2f", _less_than(score_place, 20)/len(recordings))
+    logging.info("TOP-50: %0.2f", _less_than(score_place, 50)/len(recordings))
+    logging.info("Over-segmented: %0.2f", float(over_segmented_symbols)/len(recordings))
+    logging.info("Under-segmented: %0.2f", float(under_segmented_symbols)/len(recordings))
+    logging.info("overUnder-segmented: %0.2f", float(overunder_segmented_symbols)/len(recordings))
+    logging.info("Out of order: %i", out_of_order_count)
+    logging.info("Total: %i", len(recordings))
 
-    recordings = new_recordings
-    logging.info("Done filtering")
-    return recordings
+
+class single_classifier(object):
+    """Classifier for single symbols."""
+    def __init__(self):
+        logging.info("Start reading model...")
+        model_path = pkg_resources.resource_filename('hwrt', 'misc/')
+        model_file = os.path.join(model_path, "model.tar")
+        logging.info("Model: %s", model_file)
+        (preprocessing_queue, feature_list, model,
+         output_semantics) = utils.load_model(model_file)
+        self.preprocessing_queue = preprocessing_queue
+        self.feature_list = feature_list
+        self.model = model
+        self.output_semantics = output_semantics
+
+    def predict(self, parsed_json):
+        evaluate = utils.evaluate_model_single_recording_preloaded
+        results = evaluate(self.preprocessing_queue,
+                           self.feature_list,
+                           self.model,
+                           self.output_semantics,
+                           json.dumps(parsed_json['data']),
+                           parsed_json['id'])
+        return results
 
 
 def get_dataset():
@@ -159,64 +196,167 @@ def get_dataset():
     return (X, y, datasets)
 
 
+def _get_symbol_index(stroke_id_needle, segmentation):
+    """
+    Parameters
+    ----------
+    stroke_id_needle : int
+        Identifier for the stroke of which the symbol should get found.
+    segmentation : list of lists of integers
+        An ordered segmentation of strokes to symbols.
+
+    Returns
+    -------
+    The symbol index in which stroke_id_needle occurs
+
+    Examples
+    --------
+    >>> _get_symbol_index(3, [[0, 1, 2], [3, 4, 5], [6, 7]])
+    1
+    >>> _get_symbol_index(6, [[0, 1, 2], [3, 4, 5], [6, 7]])
+    2
+    >>> _get_symbol_index(7, [[0, 1, 2], [3, 4, 5], [6, 7]])
+    2
+    """
+    for symbol_index, symbol in enumerate(segmentation):
+        if stroke_id_needle in symbol:
+            return symbol_index
+    return None
+
+
+def get_segmented_raw_data():
+    """Fetch data from the server."""
+    import pymysql.cursors
+    cfg = utils.get_database_configuration()
+    mysql = cfg['mysql_online']
+    connection = pymysql.connect(host=mysql['host'],
+                                 user=mysql['user'],
+                                 passwd=mysql['passwd'],
+                                 db=mysql['db'],
+                                 cursorclass=pymysql.cursors.DictCursor)
+    cursor = connection.cursor()
+    sql = ("SELECT `id`, `data`, `segmentation` "
+           "FROM `wm_raw_draw_data` WHERE `segmentation` "
+           "IS NOT NULL AND `wild_point_count` = 0 "
+           "ORDER BY `id` LIMIT 0, 4000")
+    cursor.execute(sql)
+    datasets = cursor.fetchall()
+    return datasets
+
+
+def filter_recordings(recordings):
+    """Remove all recordings which have points without time.
+    Parameters
+    ----------
+    recordings : list of dicts
+        Each dictionary has the keys 'data' and 'segmentation'
+
+    Returns
+    -------
+    list of dicts :
+        Only recordings where all points have time values.
+    """
+    new_recordings = []
+    for recording in recordings:
+        recording['data'] = json.loads(recording['data'])
+        tmp = json.loads(recording['segmentation'])
+        recording['segmentation'] = normalize_segmentation(tmp)
+        had_none = False
+        for stroke in recording['data']:
+            for point in stroke:
+                if point['time'] is None:
+                    logging.debug("Had None-time: %i", recording['id'])
+                    had_none = True
+                    break
+            if had_none:
+                break
+        if not had_none:
+            new_recordings.append(recording)
+
+    recordings = new_recordings
+    logging.info("Done filtering")
+    return recordings
+
+
 def get_nn_classifier(X, y):
+    """Train a neural network classifier.
+
+    Parameters
+    ----------
+    X : numpy array
+        A list of feature vectors
+    y : numpy array
+        A list of labels
+
+    Returns
+    -------
+    Theano expression :
+        The trained neural network
+    """
     import lasagne
     import theano
     import theano.tensor as T
     N_CLASSES = 2
 
-    # First, construct an input layer.
-    # The shape parameter defines the expected input shape, which is just the
-    # shape of our data matrix X.
-    l_in = lasagne.layers.InputLayer(shape=X.shape)
-    # A dense layer implements a linear mix (xW + b) followed by a nonlinear
-    # function.
-    hiddens = [64, 64, 64]  # sollte besser als 0.12 sein (mit [32])
-    layers = [l_in]
+    nn_pickled_filename = 'is_one_symbol_classifier.pickle'
+    if os.path.isfile(nn_pickled_filename):
+        with open(nn_pickled_filename, 'rb') as handle:
+            get_output = pickle.load(handle)
+    else:
+        # First, construct an input layer. The shape parameter defines the
+        # expected input shape, which is just the shape of our data matrix X.
+        l_in = lasagne.layers.InputLayer(shape=X.shape)
+        # A dense layer implements a linear mix (xW + b) followed by a
+        # nonlinear function.
+        hiddens = [64, 64, 64]  # sollte besser als 0.12 sein (mit [32])
+        layers = [l_in]
 
-    for n_units in hiddens:
-        l_hidden_1 = lasagne.layers.DenseLayer(
-            layers[-1],  # The first argument is the input to this layer
-            num_units=n_units,  # the layer's output dimensionality
-            nonlinearity=lasagne.nonlinearities.tanh)
-        layers.append(l_hidden_1)
-    # For our output layer, we'll use a dense layer with a softmax nonlinearity.
-    l_output = lasagne.layers.DenseLayer(layers[-1], num_units=N_CLASSES,
-                                         nonlinearity=lasagne.nonlinearities.softmax)
-    # Now, we can generate the symbolic expression of the network's output
-    # given an input variable.
-    net_input = T.matrix('net_input')
-    net_output = l_output.get_output(net_input)
-    # As a loss function, we'll use Theano's categorical_crossentropy function.
-    # This allows for the network output to be class probabilities,
-    # but the target output to be class labels.
-    true_output = T.ivector('true_output')
-    loss = T.mean(T.nnet.categorical_crossentropy(net_output, true_output))
+        for n_units in hiddens:
+            l_hidden_1 = lasagne.layers.DenseLayer(
+                layers[-1],  # The first argument is the input to this layer
+                num_units=n_units,  # the layer's output dimensionality
+                nonlinearity=lasagne.nonlinearities.tanh)
+            layers.append(l_hidden_1)
+        # For our output layer, we'll use a dense layer with a softmax
+        # nonlinearity.
+        l_output = lasagne.layers.DenseLayer(layers[-1], num_units=N_CLASSES,
+                                             nonlinearity=lasagne.nonlinearities.softmax)
+        # Now, we can generate the symbolic expression of the network's output
+        # given an input variable.
+        net_input = T.matrix('net_input')
+        net_output = l_output.get_output(net_input)
+        # As a loss function, we'll use Theano's categorical_crossentropy
+        # function. This allows for the network output to be class
+        # probabilities, but the target output to be class labels.
+        true_output = T.ivector('true_output')
+        loss = T.mean(T.nnet.categorical_crossentropy(net_output, true_output))
 
-    reg = lasagne.regularization.l2(l_output)
-    loss = loss + 0.001*reg
-    #NLL_LOSS = -T.sum(T.log(p_y_given_x)[T.arange(y.shape[0]), y]) Retrieving
-    # all parameters of the network is done using get_all_params, which
-    # recursively collects the parameters of all layers connected to the
-    # provided layer.
-    all_params = lasagne.layers.get_all_params(l_output)
+        reg = lasagne.regularization.l2(l_output)
+        loss = loss + 0.001*reg
+        #NLL_LOSS = -T.sum(T.log(p_y_given_x)[T.arange(y.shape[0]), y])
+        # Retrieving all parameters of the network is done using
+        # get_all_params, which recursively collects the parameters of all
+        # layers connected to the provided layer.
+        all_params = lasagne.layers.get_all_params(l_output)
 
-    # Now, we'll generate updates using Lasagne's SGD function
-    updates = lasagne.updates.momentum(loss, all_params, learning_rate=0.1)
+        # Now, we'll generate updates using Lasagne's SGD function
+        updates = lasagne.updates.momentum(loss, all_params, learning_rate=0.1)
 
-    # Finally, we can compile Theano functions for training and computing the
-    # output.
-    train = theano.function([net_input, true_output], loss, updates=updates)
-    get_output = theano.function([net_input], net_output)
+        # Finally, we can compile Theano functions for training and computing
+        # the output.
+        train = theano.function([net_input, true_output], loss, updates=updates)
+        get_output = theano.function([net_input], net_output)
 
-    logging.debug("|X|=%i", len(X))
-    logging.debug("|y|=%i", len(y))
-    logging.debug("|X[0]|=%i", len(X[0]))
+        logging.debug("|X|=%i", len(X))
+        logging.debug("|y|=%i", len(y))
+        logging.debug("|X[0]|=%i", len(X[0]))
 
-    # Train
-    epochs = 20
-    for n in range(epochs):
-        train(X, y)
+        # Train
+        epochs = 20
+        for n in range(epochs):
+            train(X, y)
+        with open(nn_pickled_filename, 'wb') as handle:
+            pickle.dump(get_output, handle, protocol=pickle.HIGHEST_PROTOCOL)
     return get_output
 
 
@@ -224,7 +364,18 @@ def get_stroke_features(recording, strokeid1, strokeid2):
     """Get the features used to decide if two strokes belong to the same symbol
     or not.
 
-    * Distance of bounding boxes
+    Parameters
+    ----------
+    recording : list
+        A list of strokes
+    strokeid1 : int
+    strokeid2 : int
+
+    Returns
+    -------
+    list :
+        A list of features which could be useful to decide if stroke1 and
+        stroke2 belong to the same symbol.
     """
     stroke1 = recording[strokeid1]
     stroke2 = recording[strokeid2]
@@ -241,6 +392,7 @@ def get_stroke_features(recording, strokeid1, strokeid2):
     X_i += [get_strokes_distance(stroke1, stroke2)]  # Distance of strokes
     X_i += [get_time_distance(stroke1, stroke2)]  # Time in between
     X_i += [abs(strokeid2-strokeid1)]  # Strokes in between
+    # X_i += [get_black_percentage()]
     return X_i
 
 
@@ -347,7 +499,7 @@ def get_segmentation(recording,
     ]
     """
 
-    # TODO: Use it
+    # TODO: Use the mst
     points = get_points(recording)
     mst = get_mst(points)
     mst_wood = [{'mst': mst, 'strokes': list(range(len(mst)))}]
@@ -357,7 +509,7 @@ def get_segmentation(recording,
     bbintersections = get_bb_intersections(recording)
     for i, stroke in enumerate(recording):  # TODO
         predictions = single_clf.predict({'id': 0, 'data': [stroke]})
-        prob_sum = sum([p['probability'] for p in predictions[:3]])
+        prob_sum = sum([p['probability'] for p in predictions])  # TODO predictions[:20]
         # dots cannot be segmented into single symbols at this point
         if prob_sum > 0.95 and not any([el for el in bbintersections[i]]) and len(stroke) > 2 and predictions[0]['semantics'].split(';')[1] != '-':
             # Split mst here
@@ -416,7 +568,8 @@ def get_segmentation(recording,
             for i, symbol in enumerate(symbols):
                 predictions = single_clf.predict(symbol)
                 min_top2.push("value-%i" % i,
-                              predictions[0]['probability'] + predictions[1]['probability'])
+                              predictions[0]['probability'] +
+                              predictions[1]['probability'])
             top_segmentations[i][1] *= list(min_top2)[0][1]
         # for i, segmentation in enumerate(top_segmentations):
         #     top_segmentations[i][0] = update_segmentation_data(top_segmentations[i][0], 8*chunk_part)
@@ -525,11 +678,16 @@ def break_mst(mst, i):
                 if j in comp_indices[key]['strokes_i']:
                     line_add.append(el)
             matrix.append(line_add)
-        assert len(matrix) > 0, "len(matrix) == 0 (strokes: %s, mst=%s, i=%i)" % (comp_indices[key]['strokes'], mst, i)
+        assert len(matrix) > 0, \
+            ("len(matrix) == 0 (strokes: %s, mst=%s, i=%i)" %
+             (comp_indices[key]['strokes'], mst, i))
         assert len(matrix) == len(matrix[0]), \
-            "matrix was %i x %i, but should be square" % (len(matrix), len(matrix[0]))
+            ("matrix was %i x %i, but should be square" %
+             (len(matrix), len(matrix[0])))
         assert len(matrix) == len(comp_indices[key]['strokes']), \
-            "stroke length was not equal to matrix length (strokes=%s, len(matrix)=%i)" % (comp_indices[key]['strokes'], len(matrix))
+            (("stroke length was not equal to matrix length "
+              "(strokes=%s, len(matrix)=%i)") %
+             (comp_indices[key]['strokes'], len(matrix)))
         mst_wood.append({'mst': matrix,
                          'strokes': comp_indices[key]['strokes']})
     return mst_wood
@@ -559,31 +717,6 @@ def _is_out_of_order(segmentation):
 
 def _less_than(l, n):
     return float(len([1 for el in l if el < n]))
-
-
-class single_classifier(object):
-    """Classifier for single symbols."""
-    def __init__(self):
-        logging.info("Start reading model...")
-        model_path = pkg_resources.resource_filename('hwrt', 'misc/')
-        model_file = os.path.join(model_path, "model.tar")
-        logging.info("Model: %s", model_file)
-        (preprocessing_queue, feature_list, model,
-         output_semantics) = utils.load_model(model_file)
-        self.preprocessing_queue = preprocessing_queue
-        self.feature_list = feature_list
-        self.model = model
-        self.output_semantics = output_semantics
-
-    def predict(self, parsed_json):
-        evaluate = utils.evaluate_model_single_recording_preloaded
-        results = evaluate(self.preprocessing_queue,
-                           self.feature_list,
-                           self.model,
-                           self.output_semantics,
-                           json.dumps(parsed_json['data']),
-                           parsed_json['id'])
-        return results
 
 
 class single_symbol_stroke_classifier(object):
@@ -771,6 +904,21 @@ def get_mst(points):
 
 
 def normalize_segmentation(seg):
+    """Bring the segmentation into order.
+
+    Parameters
+    ----------
+    seg : list of lists of ints
+
+    Returns
+    -------
+    seg : list of lists of ints
+
+    Examples
+    --------
+    >>> normalize_segmentation([[5, 2], [1, 4, 3]])
+    [[1, 3, 4], [2, 5]]
+    """
     return sorted([sorted(el) for el in seg])
 
 
@@ -784,85 +932,4 @@ if __name__ == '__main__':
     import doctest
     doctest.testmod()
 
-    logging.info("Get single classifier")
-    single_clf = single_classifier()
-
-    logging.info("Get stroke_segmented_classifier "
-                 "(decided if two strokes are in one symbol)")
-    logging.info("Start creation of training set")
-    X, y, recordings = get_dataset()
-    logging.info("Start training")
-    nn = get_nn_classifier(X, y)
-    stroke_segmented_classifier = lambda X: nn(X)[0][1]
-    #import pprint
-    #pp = pprint.PrettyPrinter(indent=4)
-    y_predicted = numpy.argmax(nn(X), axis=1)
-    classification = [yi == yip for yi, yip in zip(y, y_predicted)]
-    err = float(sum([not i for i in classification]))/len(classification)
-    logging.info("Error: %0.2f (for %i training examples)", err, len(y))
-
-    logging.info("Get single stroke classifier")
-    single_stroke_clf = None  # single_symbol_stroke_classifier()
-
-    #logging.info("Get segmented raw data")
-    #recordings = get_segmented_raw_data()
-    logging.info("Start testing")
-    score_place = []
-    out_of_order_count = 0
-    ## Filter recordings
-    #recordings = filter_recordings(recordings)
-    over_segmented_symbols = 0
-    under_segmented_symbols = 0
-    overunder_segmented_symbols = 0
-
-    for nr, recording in enumerate(recordings):
-        if nr % 100 == 0:
-            print(("## %i " % nr) + "#"*80)
-
-        t0 = time.time()
-        seg_predict = get_segmentation(recording['data'],
-                                       single_clf,
-                                       single_stroke_clf,
-                                       stroke_segmented_classifier)
-        t1 = time.time()
-        real_seg = recording['segmentation']
-        if all([has_wrong_break(real_seg, seg) for seg, score in seg_predict]):
-            over_segmented_symbols += 1
-        if all([has_missing_break(real_seg, seg) for seg, score in seg_predict]):
-            under_segmented_symbols += 1
-        if all([has_wrong_break(real_seg, seg) for seg, score in seg_predict]) \
-           and all([has_missing_break(real_seg, seg) for seg, score in seg_predict]):
-           overunder_segmented_symbols += 1
-        pred_str = ""
-        for i, pred in enumerate(seg_predict):
-            seg, score = pred
-            if i == 0:
-                pred_str = "  Predict segmentation:\t%s (%0.8f)" % (seg, score)
-            #print("#{0:>3} {1:.8f}: {2}".format(i, score, seg))
-            if seg == real_seg:
-                score_place.append(i)
-                break
-        else:
-            i = -1
-        if all([has_wrong_break(real_seg, seg) for seg, score in seg_predict]):
-            print("## %i" % recording['id'])
-            print("  Real segmentation:\t%s (got at place %i)" % (real_seg, i))
-            print(pred_str)
-            print("  Segmentation took %0.4f seconds." % (t1-t0))
-            if has_wrong_break(real_seg, seg_predict[0][0]):
-                print("  over-segmented")
-            if has_missing_break(real_seg, seg_predict[0][0]):
-                print("  under-segmented")
-        out_of_order_count += _is_out_of_order(real_seg)
-    logging.info("mean: %0.2f", numpy.mean(score_place))
-    logging.info("median: %0.2f", numpy.median(score_place))
-    logging.info("TOP-1: %0.2f", _less_than(score_place, 1)/len(recordings))
-    logging.info("TOP-3: %0.2f", _less_than(score_place, 3)/len(recordings))
-    logging.info("TOP-10: %0.2f", _less_than(score_place, 10)/len(recordings))
-    logging.info("TOP-20: %0.2f", _less_than(score_place, 20)/len(recordings))
-    logging.info("TOP-50: %0.2f", _less_than(score_place, 50)/len(recordings))
-    logging.info("Over-segmented: %0.2f", float(over_segmented_symbols)/len(recordings))
-    logging.info("Under-segmented: %0.2f", float(under_segmented_symbols)/len(recordings))
-    logging.info("overUnder-segmented: %0.2f", float(overunder_segmented_symbols)/len(recordings))
-    logging.info("Out of order: %i", out_of_order_count)
-    logging.info("Total: %i", len(recordings))
+    main()

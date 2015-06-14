@@ -509,7 +509,7 @@ def get_segmentation(recording,
     bbintersections = get_bb_intersections(recording)
     for i, stroke in enumerate(recording):  # TODO
         predictions = single_clf.predict({'id': 0, 'data': [stroke]})
-        prob_sum = sum([p['probability'] for p in predictions])  # TODO predictions[:20]
+        prob_sum = sum([p['probability'] for p in predictions[:1]])  # TODO predictions[:20]
         # dots cannot be segmented into single symbols at this point
         if prob_sum > 0.95 and not any([el for el in bbintersections[i]]) and len(stroke) > 2 and predictions[0]['semantics'].split(';')[1] != '-':
             # Split mst here

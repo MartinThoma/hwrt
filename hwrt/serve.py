@@ -252,7 +252,11 @@ def work():
         req = requests.Request('POST', url, headers=headers, data=payload)
         prepared = req.prepare()
         response = s.send(prepared)
-        response = json.loads(response.text)
+        try:
+            response = json.loads(response.text)
+        except ValueError:
+            return "Invalid JSON response: %s" % response.text
+
         if 'error' in response:
             logging.info(response)
             return str(response)

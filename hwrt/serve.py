@@ -21,6 +21,7 @@ if sys.version_info[0] == 2:
 import hwrt
 import hwrt.utils as utils
 import hwrt.classify as classify
+import hwrt.segment as segment
 
 
 # Global variables
@@ -79,28 +80,8 @@ def interactive():
     if request.method == 'GET' and request.args.get('heartbeat', '') != "":
         return request.args.get('heartbeat', '')
     if request.method == 'POST':
-        raw_data_json = request.form['drawnJSON']
-
-        # Check recording
-        try:
-            json.loads(raw_data_json)
-        except ValueError:
-            return "Invalid JSON string: %s" % raw_data_json
-
-        # Submit recorded json to database
-        try:
-            submit_recording(raw_data_json)
-        except requests.exceptions.ConnectionError:
-            return ("Failed to submit this recording to write-math.com. "
-                    "No internet connection?")
-
-        # Classify
-        results = classify.classify_segmented_recording(raw_data_json)
-
-        # Show classification page
-        page = show_results(results, n=n)
-        page += '<a href="../interactive">back</a>'
-        return page
+        logging.warning('POST to /interactive is deprecated. '
+                        'Use /worker instead')
     else:
         # Page where the user can enter a recording
         return render_template('canvas.html')
@@ -140,11 +121,38 @@ def worker():
             return "Invalid JSON string: %s" % raw_data_json
 
         # Classify
-        results = classify.classify_segmented_recording(raw_data_json)
+        segmentation = segment.segment_recording(raw_data_json)
+        logging.info("Found Segmentation: %s", segmentation)
+        parsed = json.loads(raw_data_json)
+        result_list = []
+        for strokes in segmentation[0][0]:
+            part = json.dumps(_get_part(parsed, strokes))
+            results = classify.classify_segmented_recording(part)
+            result_list.append(results[:1])
+        logging.info(result_list)
         return get_json_result(results, n=n)
     else:
         # Page where the user can enter a recording
         return "Classification Worker (Version %s)" % hwrt.__version__
+
+
+def _get_part(pointlist, strokes):
+    """Get some strokes of pointlist
+
+    Parameters
+    ----------
+    pointlist : list of lists of dicts
+    strokes : list of integers
+
+    Returns
+    -------
+    list of lists of dicts
+    """
+    result = []
+    strokes = sorted(strokes)
+    for stroke_index in strokes:
+        result.append(pointlist[stroke_index])
+    return result
 
 
 def fix_writemath_answer(results):
@@ -201,6 +209,8 @@ def work():
     global n
 
     cmd = utils.get_project_configuration()
+    if 'worker_api_key' not in cmd:
+        return ("You need to define a 'worker_api_key' in your ~/")
 
     chunk_size = 1000
 
@@ -241,7 +251,11 @@ def work():
         s = requests.Session()
         req = requests.Request('POST', url, headers=headers, data=payload)
         prepared = req.prepare()
-        s.send(prepared)  # Returns: t.text = What was classified
+        response = s.send(prepared)
+        response = json.loads(response.text)
+        if 'error' in response:
+            logging.info(response)
+            return str(response)
     return "Done - Classified %i recordings" % chunk_size
 
 

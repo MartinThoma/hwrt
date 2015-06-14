@@ -147,7 +147,7 @@ class single_classifier(object):
 
 
 def get_dataset():
-    """Create a dataset for machine learning.
+    """Create a dataset for machine learning of segmentations.
 
     Returns
     -------
@@ -161,6 +161,7 @@ def get_dataset():
     if os.path.isfile(seg_data) and os.path.isfile(seg_labels):
         X = numpy.load(seg_data)
         y = numpy.load(seg_labels)
+
         with open('datasets.pickle', 'rb') as f:
             datasets = pickle.load(f)
         return (X, y, datasets)
@@ -168,7 +169,7 @@ def get_dataset():
     X, y = [], []
     for i, data in enumerate(datasets):
         if i % 10 == 0:
-            logging.info("i=%i", i)
+            logging.info("[Create Dataset] i=%i", i)
         # logging.info("Start looking at dataset %i", i)
         segmentation = json.loads(data['segmentation'])
         # logging.info(segmentation)
@@ -236,11 +237,22 @@ def get_segmented_raw_data():
                                  cursorclass=pymysql.cursors.DictCursor)
     cursor = connection.cursor()
     sql = ("SELECT `id`, `data`, `segmentation` "
-           "FROM `wm_raw_draw_data` WHERE `segmentation` "
-           "IS NOT NULL AND `wild_point_count` = 0 "
-           "ORDER BY `id` LIMIT 0, 4000")
+           "FROM `wm_raw_draw_data` WHERE "
+           "(`segmentation` IS NOT NULL OR `accepted_formula_id` IS NOT NULL) "
+           "AND `wild_point_count` = 0 "
+           "AND `stroke_segmentable` = 1 "
+           "ORDER BY `id` LIMIT 0, 10000")
+    logging.info(sql)
     cursor.execute(sql)
     datasets = cursor.fetchall()
+    logging.info("Fetched %i recordings. Add missing segmentations.",
+                 len(datasets))
+    for i in range(len(datasets)):
+        if datasets[i]['segmentation'] is None:
+            stroke_count = len(json.loads(datasets[i]['data']))
+            if stroke_count > 10:
+                print("Massive stroke count! %i" % stroke_count)
+            datasets[i]['segmentation'] = str([[s for s in range(stroke_count)]])
     return datasets
 
 
@@ -293,70 +305,101 @@ def get_nn_classifier(X, y):
     Theano expression :
         The trained neural network
     """
-    import lasagne
-    import theano
-    import theano.tensor as T
-    N_CLASSES = 2
+    assert type(X) is numpy.ndarray
+    assert type(y) is numpy.ndarray
+    assert len(X) == len(y)
+    assert X.dtype == 'float32'
+    assert y.dtype == 'int32'
 
     nn_pickled_filename = 'is_one_symbol_classifier.pickle'
     if os.path.isfile(nn_pickled_filename):
         with open(nn_pickled_filename, 'rb') as handle:
             get_output = pickle.load(handle)
     else:
-        # First, construct an input layer. The shape parameter defines the
-        # expected input shape, which is just the shape of our data matrix X.
-        l_in = lasagne.layers.InputLayer(shape=X.shape)
-        # A dense layer implements a linear mix (xW + b) followed by a
-        # nonlinear function.
-        hiddens = [64, 64, 64]  # sollte besser als 0.12 sein (mit [32])
-        layers = [l_in]
-
-        for n_units in hiddens:
-            l_hidden_1 = lasagne.layers.DenseLayer(
-                layers[-1],  # The first argument is the input to this layer
-                num_units=n_units,  # the layer's output dimensionality
-                nonlinearity=lasagne.nonlinearities.tanh)
-            layers.append(l_hidden_1)
-        # For our output layer, we'll use a dense layer with a softmax
-        # nonlinearity.
-        l_output = lasagne.layers.DenseLayer(layers[-1], num_units=N_CLASSES,
-                                             nonlinearity=lasagne.nonlinearities.softmax)
-        # Now, we can generate the symbolic expression of the network's output
-        # given an input variable.
-        net_input = T.matrix('net_input')
-        net_output = l_output.get_output(net_input)
-        # As a loss function, we'll use Theano's categorical_crossentropy
-        # function. This allows for the network output to be class
-        # probabilities, but the target output to be class labels.
-        true_output = T.ivector('true_output')
-        loss = T.mean(T.nnet.categorical_crossentropy(net_output, true_output))
-
-        reg = lasagne.regularization.l2(l_output)
-        loss = loss + 0.001*reg
-        #NLL_LOSS = -T.sum(T.log(p_y_given_x)[T.arange(y.shape[0]), y])
-        # Retrieving all parameters of the network is done using
-        # get_all_params, which recursively collects the parameters of all
-        # layers connected to the provided layer.
-        all_params = lasagne.layers.get_all_params(l_output)
-
-        # Now, we'll generate updates using Lasagne's SGD function
-        updates = lasagne.updates.momentum(loss, all_params, learning_rate=0.1)
-
-        # Finally, we can compile Theano functions for training and computing
-        # the output.
-        train = theano.function([net_input, true_output], loss, updates=updates)
-        get_output = theano.function([net_input], net_output)
-
-        logging.debug("|X|=%i", len(X))
-        logging.debug("|y|=%i", len(y))
-        logging.debug("|X[0]|=%i", len(X[0]))
-
-        # Train
-        epochs = 20
-        for n in range(epochs):
-            train(X, y)
+        get_output = train_nn_segmentation_classifier(X, y)
         with open(nn_pickled_filename, 'wb') as handle:
             pickle.dump(get_output, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    return get_output
+
+
+def train_nn_segmentation_classifier(X, y):
+    """Train a neural network classifier.
+
+    Parameters
+    ----------
+    X : numpy array
+        A list of feature vectors
+    y : numpy array
+        A list of labels
+
+    Returns
+    -------
+    Theano expression :
+        The trained neural network
+    """
+    import lasagne
+    import theano
+    import theano.tensor as T
+    N_CLASSES = 2
+    # First, construct an input layer. The shape parameter defines the
+    # expected input shape, which is just the shape of our data matrix X.
+    l_in = lasagne.layers.InputLayer(shape=X.shape)
+    # A dense layer implements a linear mix (xW + b) followed by a
+    # nonlinear function.
+    hiddens = [64, 64, 64]  # sollte besser als 0.12 sein (mit [32])
+    layers = [l_in]
+
+    for n_units in hiddens:
+        l_hidden_1 = lasagne.layers.DenseLayer(
+            layers[-1],  # The first argument is the input to this layer
+            num_units=n_units,  # the layer's output dimensionality
+            nonlinearity=lasagne.nonlinearities.tanh)
+        layers.append(l_hidden_1)
+    # For our output layer, we'll use a dense layer with a softmax
+    # nonlinearity.
+    l_output = lasagne.layers.DenseLayer(layers[-1], num_units=N_CLASSES,
+                                         nonlinearity=lasagne.nonlinearities.softmax)
+    # Now, we can generate the symbolic expression of the network's output
+    # given an input variable.
+    # net_input = T.matrix('net_input')
+    net_output = lasagne.layers.get_output(l_output)
+    # As a loss function, we'll use Theano's categorical_crossentropy
+    # function. This allows for the network output to be class
+    # probabilities, but the target output to be class labels.
+    true_output = T.ivector('true_output')
+    objective = lasagne.objectives.Objective(
+            l_output,
+            # categorical_crossentropy computes the cross-entropy loss where the network
+            # output is class probabilities and the target value is an integer denoting the class.
+            loss_function=lasagne.objectives.categorical_crossentropy)
+    loss = objective.get_loss(target=true_output)
+
+    reg = lasagne.regularization.l2(l_output)
+    loss = loss + 0.001*reg
+    #NLL_LOSS = -T.sum(T.log(p_y_given_x)[T.arange(y.shape[0]), y])
+    # Retrieving all parameters of the network is done using
+    # get_all_params, which recursively collects the parameters of all
+    # layers connected to the provided layer.
+    all_params = lasagne.layers.get_all_params(l_output)
+
+    # Now, we'll generate updates using Lasagne's SGD function
+    updates = lasagne.updates.momentum(loss, all_params, learning_rate=0.1)
+
+    # Finally, we can compile Theano functions for training and computing
+    # the output.
+    train = theano.function([l_in.input_var, true_output],
+                            loss,
+                            updates=updates)
+    get_output = theano.function([l_in.input_var], net_output)
+
+    logging.debug("|X|=%i", len(X))
+    logging.debug("|y|=%i", len(y))
+    logging.debug("|X[0]|=%i", len(X[0]))
+
+    # Train
+    epochs = 20
+    for n in range(epochs):
+        train(X, y)
     return get_output
 
 

@@ -83,6 +83,7 @@ def get_test_results(model_folder, basename, test_file):
         logfile = os.path.join(project_root,
                                "logs/%s-error-evaluation.log" %
                                time_prefix)
+        logging.info('Write log to %s...', logfile)
         with open(logfile, "w") as log, open(model_use, "r") as model_src_p:
             p = subprocess.Popen([utils.get_nntoolkit(), 'run',
                                   '--batch-size', '1', '-f%0.4f', test_file],

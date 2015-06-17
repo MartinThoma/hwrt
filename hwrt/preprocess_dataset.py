@@ -24,7 +24,18 @@ sys.modules['HandwrittenData'] = HandwrittenData
 
 
 def get_parameters(folder):
-    """Get the parameters of the preprocessing done within ``folder``."""
+    """Get the parameters of the preprocessing done within `folder`.
+
+    Parameters
+    ----------
+    folder : string
+
+    Returns
+    -------
+    tuple : (path of raw data,
+             path where preprocessed data gets stored,
+             list of preprocessing algorithms)
+    """
 
     # Read the model description file
     with open(os.path.join(folder, "info.yml"), 'r') as ymlfile:
@@ -43,8 +54,8 @@ def get_parameters(folder):
 
 
 def create_preprocessed_dataset(path_to_data, outputpath, preprocessing_queue):
-    """Create a preprocessed dataset file by applying ``preprocessing_queue``
-       to ``path_to_data``. The result will be stored in ``outputpath``."""
+    """Create a preprocessed dataset file by applying `preprocessing_queue`
+       to `path_to_data`. The result will be stored in `outputpath`."""
     # Log everything
     logging.info("Data soure %s", path_to_data)
     logging.info("Output will be stored in %s", outputpath)

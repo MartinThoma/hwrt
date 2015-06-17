@@ -1,5 +1,6 @@
 id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 1,TRASH,TRASH,128465,WASTEBASKET,single symbol
+2,::UNKNOWN::,::UNKNOWN::,0,::UNKNOWN::,single symbol
 31,A,A,65,LATIN CAPITAL LETTER A,single symbol
 32,B,B,66,LATIN CAPITAL LETTER B,single symbol
 33,C,C,67,LATIN CAPITAL LETTER C,single symbol

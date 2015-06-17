@@ -30,6 +30,7 @@ from hwrt import view
 from hwrt import download
 from hwrt import analyze_data
 from hwrt import serve
+from hwrt import filter_dataset
 
 
 def get_parser():
@@ -72,6 +73,11 @@ def get_parser():
                           help=("Start a web-server which can classify "
                                 "recordings.")
                           )
+    subparsers.add_parser('filter_dataset',
+                          add_help=False,
+                          parents=[filter_dataset.get_parser()],
+                          help=("Filter a raw dataset.")
+                          )
     return parser
 
 
@@ -91,6 +97,8 @@ def main(args):
         create_model.main(args.model, args.override)
     elif args.cmd == 'serve':
         serve.main(args.port, args.n)
+    elif args.cmd == 'filter_dataset':
+        filter_dataset.main(args.filename)
     else:
         logging.error("Command '%s' is not implemented yet.", args.cmd)
 

@@ -92,7 +92,7 @@ def get_test_results(model_folder, basename, test_file):
             ret = p.wait()
             if ret != 0:
                 logging.error("nntoolkit finished with ret code %s", str(ret))
-                sys.exit()
+                sys.exit(-1)
         os.remove(model_use)
         return logfile
 
@@ -136,6 +136,10 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
     statistical = {}
     possible_keys = []
 
+    assert len(true_data) > 0, "true_data was empty"
+    assert len(true_data) == len(eval_data), \
+        ("len(true_data)=%i, len(eval_data)=%i" %
+         (len(true_data), len(eval_data)))
     for known, evaluated in zip(true_data, eval_data):
         evaluated_t1 = evaluated.keys()[0]
         if known['index'] not in statistical:

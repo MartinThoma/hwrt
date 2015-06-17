@@ -161,6 +161,7 @@ def get_latest_in_folder(folder, ending="", default=""):
     for my_file in natsort.natsorted(os.listdir(folder), reverse=True):
         if my_file.endswith(ending):
             latest = os.path.join(folder, my_file)
+            return latest
     return latest
 
 

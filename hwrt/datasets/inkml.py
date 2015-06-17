@@ -12,8 +12,8 @@ from natsort import natsorted
 from xml.dom.minidom import parseString
 
 # hwrt modules
-from hwrt import HandwrittenData
-from hwrt.datasets import formula_to_dbid
+from .. import HandwrittenData
+from ..datasets import formula_to_dbid
 
 
 def beautify_xml(path):

@@ -16,13 +16,13 @@ except ImportError:  # Python 3
 
 # hwrt modules
 import hwrt
-from hwrt import HandwrittenData
+from . import HandwrittenData
 sys.modules['HandwrittenData'] = HandwrittenData
-import hwrt.utils as utils
-import hwrt.preprocessing as preprocessing
-import hwrt.features as features
-import hwrt.data_multiplication as data_multiplication
-import hwrt.create_pfiles as create_pfiles
+from . import utils
+from . import preprocessing
+from . import features
+from . import data_multiplication
+from . import create_pfiles
 
 
 def _fetch_data_from_server(raw_data_id, mysql_cfg):

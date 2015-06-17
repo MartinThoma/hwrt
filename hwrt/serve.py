@@ -19,9 +19,9 @@ if sys.version_info[0] == 2:
 
 # hwrt modules
 import hwrt
-import hwrt.utils as utils
-import hwrt.classify as classify
-import hwrt.segment as segment
+from . import utils
+from . import classify
+from . import segment
 
 
 # Global variables

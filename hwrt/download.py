@@ -12,7 +12,7 @@ import hashlib
 import urllib
 
 # hwrt modules
-import hwrt.utils as utils
+from . import utils
 
 
 def is_file_consistent(local_path_file, md5_hash):

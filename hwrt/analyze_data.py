@@ -17,11 +17,11 @@ import numpy
 
 # hwrt modules
 # HandwrittenData is necessary because of pickle
-from hwrt import HandwrittenData
+from . import HandwrittenData
 sys.modules['HandwrittenData'] = HandwrittenData
-import hwrt.features as features
-import hwrt.utils as utils
-import hwrt.data_analyzation_metrics as dam
+from . import features
+from . import utils
+from . import data_analyzation_metrics as dam
 
 
 def filter_label(label, replace_by_similar=True):

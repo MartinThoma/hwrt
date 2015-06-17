@@ -10,8 +10,8 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
 
 import os
 
-from hwrt.datasets import inkml
-from hwrt.datasets import getuserid, insert_recording
+from . import inkml
+from . import getuserid, insert_recording
 
 
 def main(directory):
@@ -20,9 +20,7 @@ def main(directory):
         hw.creation_date = datetime.datetime.fromtimestamp(hw.get_sorted_pointlist()[0][0]['time']/1000.0)
         hw.internal_id = hw.filepath
         # username
-        username = os.path.basename(hw.filepath)
-        username = username.split('_')[1]
-        username = username.split('.')[0]
+        username = get_writemath_username(hw.filepath)
         hw.username = "expressmatch::%s" % username
         print(hw.username)
         # insert user
@@ -37,6 +35,13 @@ def main(directory):
         print(hw.symbol_stream)
         print(hw.segmentation)
         #hw.show()
+
+
+def get_writemath_username(filepath):
+    username = os.path.basename(filepath)
+    username = username.split('_')[1]
+    username = username.split('.')[0]
+    return username
 
 
 if __name__ == '__main__':

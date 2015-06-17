@@ -21,8 +21,8 @@ import math
 from copy import deepcopy
 
 # hwrt modules
-from hwrt import HandwrittenData
-from hwrt import utils
+from . import HandwrittenData
+from . import utils
 
 
 def get_data_multiplication_queue(model_description_multiply):

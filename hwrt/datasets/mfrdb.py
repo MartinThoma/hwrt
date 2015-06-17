@@ -14,9 +14,9 @@ import pymysql.cursors
 import unicodedata
 
 # hwrt modules
-from hwrt import HandwrittenData
-from hwrt import utils
-from hwrt import datasets
+from .. import HandwrittenData
+from .. import utils
+from .. import datasets
 
 replacements = [('int', r'\int'),
                 ('cross', r'\times'),

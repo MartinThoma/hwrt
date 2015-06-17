@@ -12,8 +12,8 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     stream=sys.stdout)
 
 # hwrt modules
-from hwrt.classify import classify_segmented_recording as evaluate
-from hwrt.datasets import mfrdb
+from ..classify import classify_segmented_recording as evaluate
+from ..datasets import mfrdb
 
 
 def _less_than(l, n):

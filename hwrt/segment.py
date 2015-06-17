@@ -9,7 +9,7 @@ import pickle
 import json
 
 # hwrt modules
-from hwrt import segmentation
+from . import segmentation
 
 nn = None
 stroke_segmented_classifier = None

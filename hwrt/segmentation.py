@@ -31,12 +31,11 @@ import time
 import scipy.sparse.csgraph
 
 # hwrt modules
-# from . import HandwrittenData
-from hwrt import utils
-from hwrt.HandwrittenData import HandwrittenData
-from hwrt import features
-from hwrt import geometry
-from hwrt import partitions
+from . import utils
+from .HandwrittenData import HandwrittenData
+from . import features
+from . import geometry
+from . import partitions
 
 
 def main():

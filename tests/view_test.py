@@ -11,6 +11,7 @@ import hwrt.utils as utils
 
 
 # Tests
+@SkipTest
 def execution_test():
     view.get_parser()
     view._fetch_data_from_server(31, 'mysql_online')

@@ -16,8 +16,8 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     stream=sys.stdout)
 
 # hwrt modules
-from hwrt import HandwrittenData
-from hwrt import datasets
+from .. import HandwrittenData
+from .. import datasets
 
 missing_stroke_segmentation = []
 double_segmentation = []

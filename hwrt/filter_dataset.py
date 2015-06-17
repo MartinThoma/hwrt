@@ -15,8 +15,8 @@ import sys
 import logging
 from natsort import natsorted
 
-# mine
-from hwrt import utils
+# hwrt modules
+from . import utils
 
 
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',

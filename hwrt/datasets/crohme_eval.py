@@ -13,8 +13,8 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     stream=sys.stdout)
 
 # HWRT modules
-from hwrt.datasets import inkml
-from hwrt.classify import classify_segmented_recording as evaluate
+from . import inkml
+from ..classify import classify_segmented_recording as evaluate
 
 
 def evaluate_dir(sample_dir):

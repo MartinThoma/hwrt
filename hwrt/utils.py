@@ -272,14 +272,14 @@ def query_yes_no(question, default="yes"):
 
 def get_latest_model(model_folder, basename):
     """Get the latest model (determined by the name of the model in
-       natural sorted order) which begins with ``basename``."""
+       natural sorted order) which begins with `basename`."""
     models = filter(lambda n: n.endswith(".json"), os.listdir(model_folder))
     models = filter(lambda n: n.startswith(basename), models)
     models = natsort.natsorted(models, reverse=True)
     if len(models) == 0:
         return None
     else:
-        return os.path.join(model_folder, models[-1])
+        return os.path.join(model_folder, models[0])
 
 
 def get_latest_working_model(model_folder):

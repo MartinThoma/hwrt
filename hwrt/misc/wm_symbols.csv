@@ -1,0 +1,1515 @@
+id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
+1,TRASH,TRASH,128465,WASTEBASKET,single symbol
+31,A,A,65,LATIN CAPITAL LETTER A,single symbol
+32,B,B,66,LATIN CAPITAL LETTER B,single symbol
+33,C,C,67,LATIN CAPITAL LETTER C,single symbol
+34,D,D,68,LATIN CAPITAL LETTER D,single symbol
+35,E,E,69,LATIN CAPITAL LETTER E,single symbol
+36,F,F,70,LATIN CAPITAL LETTER F,single symbol
+37,G,G,71,LATIN CAPITAL LETTER G,single symbol
+38,H,H,72,LATIN CAPITAL LETTER H,single symbol
+39,I,I,73,LATIN CAPITAL LETTER I,single symbol
+40,J,J,74,LATIN CAPITAL LETTER J,single symbol
+41,K,K,75,LATIN CAPITAL LETTER K,single symbol
+42,L,L,76,LATIN CAPITAL LETTER L,single symbol
+43,M,M,924,GREEK CAPITAL LETTER MU,single symbol
+44,N,N,120558,MATHEMATICAL ITALIC CAPITAL NU,single symbol
+45,O,O,79,MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL OMICRON,single symbol
+46,P,P,80,LATIN CAPITAL LETTER P,single symbol
+47,Q,Q,81,LATIN CAPITAL LETTER Q,single symbol
+48,R,R,82,LATIN CAPITAL LETTER R,single symbol
+49,S,S,83,LATIN CAPITAL LETTER S,single symbol
+50,T,T,84,LATIN CAPITAL LETTER T,single symbol
+51,U,U,85,LATIN CAPITAL LETTER U,single symbol
+52,V,V,86,LATIN CAPITAL LETTER V,single symbol
+53,W,W,87,LATIN CAPITAL LETTER W,single symbol
+54,X,X,88,LATIN CAPITAL LETTER X,single symbol
+55,Y,Y,89,LATIN CAPITAL LETTER Y,single symbol
+56,Z,Z,90,LATIN CAPITAL LETTER Z,single symbol
+59,rightarrow,\rightarrow,8594,RIGHTWARDS ARROW,single symbol
+70,0,0,48,DIGIT ZERO,single symbol
+71,1,1,49,DIGIT ONE,single symbol
+72,2,2,50,DIGIT TWO,single symbol
+73,3,3,51,DIGIT THREE,single symbol
+74,4,4,52,DIGIT FOUR,single symbol
+75,5,5,53,DIGIT FIVE,single symbol
+76,6,6,54,DIGIT SIX,single symbol
+77,7,7,55,DIGIT SEVEN,single symbol
+78,8,8,56,DIGIT EIGHT,single symbol
+79,9,9,57,DIGIT NINE,single symbol
+81,pi,\pi,960,GREEK SMALL LETTER PI,single symbol
+82,alpha,\alpha,945,GREEK SMALL LETTER ALPHA,single symbol
+87,beta,\beta,946,GREEK SMALL LETTER BETA,single symbol
+88,sum,\sum,8721,N-ARY SUMMATION,single symbol
+89,sigma,\sigma,963,GREEK SMALL LETTER SIGMA,single symbol
+90,a,a,97,LATIN SMALL LETTER A,single symbol
+91,b,b,98,LATIN SMALL LETTER B,single symbol
+92,c,c,99,LATIN SMALL LETTER C,single symbol
+93,d,d,100,LATIN SMALL LETTER D,single symbol
+94,e,e,101,LATIN SMALL LETTER E,single symbol
+95,f,f,102,LATIN SMALL LETTER F WITH HOOK,single symbol
+96,g,g,609,LATIN SMALL LETTER SCRIPT G,single symbol
+97,h,h,104,LATIN SMALL LETTER H,single symbol
+98,i,i,105,LATIN SMALL LETTER I,single symbol
+99,j,j,106,LATIN SMALL LETTER J,single symbol
+100,k,k,107,LATIN SMALL LETTER K,single symbol
+101,l,l,108,LATIN SMALL LETTER L,single symbol
+102,m,m,109,LATIN SMALL LETTER M,single symbol
+103,n,n,110,LATIN SMALL LETTER N,single symbol
+104,o,o,959,GREEK SMALL LETTER OMICRON,single symbol
+105,p,p,112,LATIN SMALL LETTER P,single symbol
+106,q,q,113,LATIN SMALL LETTER Q,single symbol
+107,r,r,114,LATIN SMALL LETTER R,single symbol
+108,s,s,115,LATIN SMALL LETTER S,single symbol
+109,t,t,116,LATIN SMALL LETTER T,single symbol
+110,u,u,117,LATIN SMALL LETTER U,single symbol
+111,v,v,118,LATIN SMALL LETTER V,single symbol
+112,w,w,119,LATIN SMALL LETTER W,single symbol
+113,x,x,120,LATIN SMALL LETTER X,single symbol
+114,y,y,121,LATIN SMALL LETTER Y,single symbol
+115,z,z,122,LATIN SMALL LETTER Z,single symbol
+116,Sigma,\Sigma,931,GREEK CAPITAL LETTER SIGMA,single symbol
+117,gamma,\gamma,947,GREEK SMALL LETTER GAMMA,single symbol
+150,Gamma,\Gamma,915,GREEK CAPITAL LETTER GAMMA,single symbol
+151,delta,\delta,948,GREEK SMALL LETTER DELTA,single symbol
+152,Delta,\Delta,916,GREEK CAPITAL LETTER DELTA,single symbol
+153,\zeta,\zeta,950,GREEK SMALL LETTER ZETA,single symbol
+154,\eta,\eta,951,GREEK SMALL LETTER ETA,single symbol
+155,theta,\theta,952,GREEK SMALL LETTER THETA,single symbol
+156,Theta,\Theta,920,GREEK CAPITAL LETTER THETA,single symbol
+157,epsilon (lunate),\epsilon,1013,GREEK SMALL LETTER EPSILON,single symbol
+158,epsilon (variant),\varepsilon,603,LATIN SMALL LETTER OPEN E,single symbol
+159,iota,\iota,953,GREEK SMALL LETTER IOTA,single symbol
+160,kappa,\kappa,954,GREEK SMALL LETTER KAPPA,single symbol
+161,kappa (variant),\varkappa,1008,GREEK KAPPA SYMBOL,single symbol
+162,lambda,\lambda,955,GREEK SMALL LETTER LAMDA,single symbol
+163,\Lambda,\Lambda,923,GREEK CAPITAL LETTER LAMDA,single symbol
+164,\mu,\mu,956,GREEK SMALL LETTER MU,single symbol
+165,\nu,\nu,957,GREEK SMALL LETTER NU,single symbol
+166,xi,\xi,958,GREEK SMALL LETTER XI,single symbol
+167,Xi,\Xi,926,GREEK CAPITAL LETTER XI,single symbol
+168,Pi,\Pi,928,GREEK CAPITAL LETTER PI,single symbol
+169,rho,\rho,961,GREEK SMALL LETTER RHO,single symbol
+170,rho (variant),\varrho,1009,GREEK RHO SYMBOL,single symbol
+171,tau,\tau,964,GREEK SMALL LETTER TAU,single symbol
+172,\upsilon,\upsilon,965,GREEK SMALL LETTER UPSILON,single symbol
+173,\Upsilon,\Upsilon,978,GREEK UPSILON WITH HOOK SYMBOL,single symbol
+174,\phi,\phi,981,GREEK PHI SYMBOL,single symbol
+175,Phi,\Phi,934,GREEK CAPITAL LETTER PHI,single symbol
+176,\varphi,\varphi,966,GREEK SMALL LETTER PHI,single symbol
+177,\chi,\chi,967,GREEK SMALL LETTER CHI,single symbol
+178,psi,\psi,968,GREEK SMALL LETTER PSI,single symbol
+179,\Psi,\Psi,936,GREEK CAPITAL LETTER PSI,single symbol
+180,omega,\omega,969,GREEK SMALL LETTER OMEGA,single symbol
+181,\Omega,\Omega,8486,OHM SIGN,single symbol
+182,\partial,\partial,120771,MATHEMATICAL SANS-SERIF BOLD ITALIC PARTIAL DIFFERENTIAL,single symbol
+183,\int,\int,8747,INTEGRAL,single symbol
+184,\cdot,\cdot,8901,DOT OPERATOR,single symbol
+185,\leq,\leq,8804,LESS-THAN OR EQUAL TO,single symbol
+186,\geq,\geq,8805,GREATER-THAN OR EQUAL TO,single symbol
+187,<,<,60,LESS-THAN SIGN,single symbol
+188,>,>,62,GREATER-THAN SIGN,single symbol
+189,\subset,\subset,8834,SUBSET OF,single symbol
+190,\supset,\supset,8835,SUPERSET OF,single symbol
+191,\subseteq,\subseteq,8838,SUBSET OF OR EQUAL TO,single symbol
+192,\supseteq,\supseteq,8839,SUPERSET OF OR EQUAL TO,single symbol
+193,\cong,\cong,8773,APPROXIMATELY EQUAL TO,single symbol
+194,\propto,\propto,8733,PROPORTIONAL TO,single symbol
+195,-,-,8722,MINUS SIGN,single symbol
+196,+,+,43,PLUS SIGN,single symbol
+197,Set of real numbers,\mathbb{R},8477,DOUBLE-STRUCK CAPITAL R,single symbol
+254,\$,\$,36,DOLLAR SIGN,single symbol
+255,\_,\_,95,LOW LINE,single symbol
+256,\ddag,\ddag,8225,DOUBLE DAGGER,single symbol
+257,\{,\{,123,LEFT CURLY BRACKET,single symbol
+258,\P,\P,182,PILCROW SIGN,single symbol
+259,\copyright,\copyright,169,COPYRIGHT SIGN,single symbol
+260,\dots,\dots,8230,HORIZONTAL ELLIPSIS,single symbol
+261,\},\},125,RIGHT CURLY BRACKET,single symbol
+262,\S,\S,167,SECTION SIGN,single symbol
+263,\dag,\dag,8224,DAGGER,single symbol
+264,Pound sign,\pounds,163,POUND SIGN,single symbol
+265,\&,\&,38,AMPERSAND,single symbol
+266,\#,\#,35,NUMBER SIGN,single symbol
+267,\%,\%,37,PERCENT SIGN,single symbol
+268,\checkmark,\checkmark,10003,CHECK MARK,single symbol
+269,\circledR,\circledR,174,REGISTERED SIGN,single symbol
+270,\maltese,\maltese,10016,MALTESE CROSS,single symbol
+271,\textbabygamma,\textbabygamma,0,,single symbol
+272,\textglotstop,\textglotstop,0,,single symbol
+273,\textrtailn,\textrtailn,0,,single symbol
+274,\textbarb,\textbarb,0,,single symbol
+275,\texthalflength,\texthalflength,0,,single symbol
+276,\textrtailr,\textrtailr,0,,single symbol
+277,\textbarc,\textbarc,0,,single symbol
+278,\texthardsign,\texthardsign,0,,single symbol
+279,\textrtails,\textrtails,0,,single symbol
+280,\textbard,\textbard,0,,single symbol
+281,\texthooktop,\texthooktop,0,,single symbol
+282,\textrtailt,\textrtailt,0,,single symbol
+283,\textbardotlessj,\textbardotlessj,0,,single symbol
+284,\texthtb,\texthtb,0,,single symbol
+285,\textrtailz,\textrtailz,0,,single symbol
+286,\textbarg,\textbarg,0,,single symbol
+287,\texthtbardotlessj,\texthtbardotlessj,0,,single symbol
+288,\textrthook,\textrthook,0,,single symbol
+289,\textbarglotstop,\textbarglotstop,0,,single symbol
+290,\texthtc,\texthtc,0,,single symbol
+291,\textsca,\textsca,0,,single symbol
+292,\textbari,\textbari,0,,single symbol
+293,\texthtd,\texthtd,0,,single symbol
+294,\textscb,\textscb,0,,single symbol
+295,\textbarl,\textbarl,0,,single symbol
+296,\texthtg,\texthtg,0,,single symbol
+297,\textsce,\textsce,0,,single symbol
+298,\textbaro,\textbaro,0,,single symbol
+299,\texthth,\texthth,0,,single symbol
+300,\textscg,\textscg,0,,single symbol
+301,\textbarrevglotstop,\textbarrevglotstop,0,,single symbol
+302,\texththeng,\texththeng,0,,single symbol
+303,\textsch,\textsch,0,,single symbol
+304,\textbaru,\textbaru,0,,single symbol
+305,\texthtk,\texthtk,0,,single symbol
+306,\textschwa,\textschwa,0,,single symbol
+307,\textbeltl,\textbeltl,0,,single symbol
+308,\texthtp,\texthtp,0,,single symbol
+309,\textsci,\textsci,0,,single symbol
+310,\textbeta,\textbeta,0,,single symbol
+311,\texthtq,\texthtq,0,,single symbol
+312,\textscj,\textscj,0,,single symbol
+313,\textbullseye,\textbullseye,0,,single symbol
+314,\texthtrtaild,\texthtrtaild,0,,single symbol
+315,\textscl,\textscl,0,,single symbol
+316,\textceltpal,\textceltpal,0,,single symbol
+317,\texthtscg,\texthtscg,0,,single symbol
+318,\textscn,\textscn,0,,single symbol
+319,\textchi,\textchi,0,,single symbol
+320,\texthtt,\texthtt,0,,single symbol
+321,\textscoelig,\textscoelig,0,,single symbol
+322,epsilon (closed variant),\textcloseepsilon,0,,single symbol
+323,\texthvlig,\texthvlig,405,LATIN SMALL LETTER HV,single symbol
+324,\textscomega,\textscomega,0,,single symbol
+325,\textcloseomega,\textcloseomega,0,,single symbol
+326,\textinvglotstop,\textinvglotstop,0,,single symbol
+327,\textscr,\textscr,0,,single symbol
+328,epsilon (closed and reversed variant),\textcloserevepsilon,0,,single symbol
+329,\textinvscr,\textinvscr,0,,single symbol
+330,\textscripta,\textscripta,0,,single symbol
+331,\textcommatailz,\textcommatailz,0,,single symbol
+332,\textiota,\textiota,0,,single symbol
+333,\textscriptg,\textscriptg,0,,single symbol
+334,\textcorner,\textcorner,0,,single symbol
+335,\textlambda,\textlambda,0,,single symbol
+336,\textscriptv,\textscriptv,0,,single symbol
+337,\textcrb,\textcrb,0,,single symbol
+338,\textlengthmark,\textlengthmark,0,,single symbol
+339,\textscu,\textscu,0,,single symbol
+340,\textcrd,\textcrd,0,,single symbol
+341,\textlhookt,\textlhookt,0,,single symbol
+342,\textscy,\textscy,0,,single symbol
+343,\textcrg,\textcrg,0,,single symbol
+344,\textlhtlongi,\textlhtlongi,0,,single symbol
+345,\textsecstress,\textsecstress,0,,single symbol
+346,\textcrh,\textcrh,0,,single symbol
+347,\textlhtlongy,\textlhtlongy,0,,single symbol
+348,\textsoftsign,\textsoftsign,0,,single symbol
+349,\textcrinvglotstop,\textcrinvglotstop,0,,single symbol
+350,\textlonglegr,\textlonglegr,0,,single symbol
+351,\textstretchc,\textstretchc,0,,single symbol
+352,\textcrlambda,\textcrlambda,0,,single symbol
+353,\textlptr,\textlptr,0,,single symbol
+354,\texttctclig,\texttctclig,0,,single symbol
+355,\textcrtwo,\textcrtwo,0,,single symbol
+356,\textltailm,\textltailm,0,,single symbol
+357,\textteshlig,\textteshlig,0,,single symbol
+358,\textctc,\textctc,0,,single symbol
+359,\textltailn,\textltailn,0,,single symbol
+360,\texttheta,\texttheta,952,GREEK SMALL LETTER THETA,single symbol
+361,\textctd,\textctd,0,,single symbol
+362,\textltilde,\textltilde,0,,single symbol
+363,\textthorn,\textthorn,0,,single symbol
+364,\textctdctzlig,\textctdctzlig,0,,single symbol
+365,\textlyoghlig,\textlyoghlig,0,,single symbol
+366,\texttoneletterstem,\texttoneletterstem,0,,single symbol
+367,\textctesh,\textctesh,0,,single symbol
+368,\textObardotlessj,\textObardotlessj,0,,single symbol
+369,\texttslig,\texttslig,0,,single symbol
+370,\textctj,\textctj,0,,single symbol
+371,\textOlyoghlig,\textOlyoghlig,0,,single symbol
+372,\textturna,\textturna,0,,single symbol
+373,\textctn,\textctn,0,,single symbol
+374,omega (variant),\textomega,969,,single symbol
+375,\textturncelig,\textturncelig,0,,single symbol
+376,\textctt,\textctt,0,,single symbol
+377,\textopencorner,\textopencorner,0,,single symbol
+378,\textturnh,\textturnh,0,,single symbol
+379,\textcttctclig,\textcttctclig,0,,single symbol
+380,\textopeno,\textopeno,0,,single symbol
+381,\textturnk,\textturnk,670,LATIN SMALL LETTER TURNED K,single symbol
+382,\textctyogh,\textctyogh,0,,single symbol
+383,\textpalhook,\textpalhook,0,,single symbol
+384,\textturnlonglegr,\textturnlonglegr,0,,single symbol
+385,\textctz,\textctz,0,,single symbol
+386,\textphi,\textphi,632,LATIN SMALL LETTER PHI,single symbol
+387,\textturnm,\textturnm,0,,single symbol
+388,\textdctzlig,\textdctzlig,0,,single symbol
+389,\textpipe,\textpipe,0,,single symbol
+390,\textturnmrleg,\textturnmrleg,0,,single symbol
+391,\textdoublebaresh,\textdoublebaresh,0,,single symbol
+392,\textprimstress,\textprimstress,0,,single symbol
+393,\textturnr,\textturnr,0,,single symbol
+394,\textdoublebarpipe,\textdoublebarpipe,0,,single symbol
+395,\textraiseglotstop,\textraiseglotstop,0,,single symbol
+396,\textturnrrtail,\textturnrrtail,0,,single symbol
+397,\textdoublebarslash,\textdoublebarslash,0,,single symbol
+398,\textraisevibyi,\textraisevibyi,0,,single symbol
+399,\textturnscripta,\textturnscripta,0,,single symbol
+400,\textdoublepipe,\textdoublepipe,0,LATIN LETTER ALVEOLAR CLICK,single symbol
+401,\textramshorns,\textramshorns,0,,single symbol
+402,\textturnt,\textturnt,0,,single symbol
+403,\textdoublevertline,\textdoublevertline,0,,single symbol
+404,\textrevapostrophe,\textrevapostrophe,0,,single symbol
+405,\textturnv,\textturnv,0,,single symbol
+406,\textdownstep,\textdownstep,0,,single symbol
+407,\textreve,\textreve,0,,single symbol
+408,\textturnw,\textturnw,0,,single symbol
+409,\textdyoghlig,\textdyoghlig,0,,single symbol
+410,epsilon (reversed variant),\textrevepsilon,0,,single symbol
+411,\textturny,\textturny,0,,single symbol
+412,\textdzlig,\textdzlig,0,,single symbol
+413,\textrevglotstop,\textrevglotstop,0,,single symbol
+414,\textupsilon,\textupsilon,0,,single symbol
+415,epsilon,\textepsilon,949,,single symbol
+416,\textrevyogh,\textrevyogh,0,,single symbol
+417,\textupstep,\textupstep,0,,single symbol
+418,\textesh,\textesh,0,,single symbol
+419,epsilon with hook,\textrhookrevepsilon,0,,single symbol
+420,\textvertline,\textvertline,0,,single symbol
+421,\textfishhookr,\textfishhookr,0,,single symbol
+422,\textrhookschwa,\textrhookschwa,0,,single symbol
+423,\textvibyi,\textvibyi,0,,single symbol
+424,\textg,\textg,0,,single symbol
+425,\textrhoticity,\textrhoticity,0,,single symbol
+426,\textvibyy,\textvibyy,0,,single symbol
+427,\textgamma,\textgamma,0,,single symbol
+428,\textrptr,\textrptr,0,,single symbol
+429,\textwynn,\textwynn,0,,single symbol
+430,\textglobfall,\textglobfall,0,,single symbol
+431,\textrtaild,\textrtaild,0,,single symbol
+432,\textyogh,\textyogh,0,,single symbol
+433,\textglobrise,\textglobrise,0,,single symbol
+434,\textrtaill,\textrtaill,0,,single symbol
+435,\textbaht,\textbaht,3647,,single symbol
+436,\textdollar,\textdollar,36,DOLLAR SIGN,single symbol
+437,\textguarani,\textguarani,0,,single symbol
+438,\textwon,\textwon,0,,single symbol
+439,\textcent,\textcent,162,CENT SIGN,single symbol
+440,\textdollaroldstyle,\textdollaroldstyle,0,,single symbol
+441,\textlira,\textlira,0,,single symbol
+442,yen,\textyen,165,YEN SIGN,single symbol
+443,\textcentoldstyle,\textcentoldstyle,0,,single symbol
+444,\textdong,\textdong,8363,,single symbol
+445,\textnaira,\textnaira,8358,,single symbol
+446,\textcolonmonetary,\textcolonmonetary,0,,single symbol
+447,\texteuro,\texteuro,8364,EURO SIGN,single symbol
+448,\textpeso,\textpeso,8369,,single symbol
+449,\textcurrency,\textcurrency,164,CURRENCY SIGN,single symbol
+450,\textflorin,\textflorin,0,,single symbol
+451,"Pound sign (sterling, upright variant)",\textsterling,163,POUND SIGN,single symbol
+452,\Denarius,\Denarius,0,,single symbol
+453,\EUR,\EUR,0,,single symbol
+454,\EURdig,\EURdig,0,,single symbol
+455,\EURtm,\EURtm,0,,single symbol
+456,\Pfund,\Pfund,0,,single symbol
+457,\Ecommerce,\Ecommerce,0,,single symbol
+458,\EURcr,\EURcr,0,,single symbol
+459,\EURhv,\EURhv,0,,single symbol
+460,\EyesDollar,\EyesDollar,0,,single symbol
+461,\Shilling,\Shilling,0,,single symbol
+462,\cent,\cent,0,,single symbol
+463,\currency,\currency,0,,single symbol
+464,\textcircledP,\textcircledP,0,,single symbol
+465,\textcopyright,\textcopyright,169,COPYRIGHT SIGN,single symbol
+466,\textservicemark,\textservicemark,0,,single symbol
+467,\textcopyleft,\textcopyleft,0,,single symbol
+468,\textregistered,\textregistered,174,REGISTERED SIGN,single symbol
+469,\texttrademark,\texttrademark,8482,TRADE MARK SIGN,single symbol
+470,\textasteriskcentered,\textasteriskcentered,0,,single symbol
+471,\textordfeminine,\textordfeminine,170,FEMININE ORDINAL INDICATOR,single symbol
+472,\textbardbl,\textbardbl,0,,single symbol
+473,\textordmasculine,\textordmasculine,186,MASCULINE ORDINAL INDICATOR,single symbol
+474,\textbigcircle,\textbigcircle,0,,single symbol
+475,\textparagraph,\textparagraph,182,PILCROW SIGN,single symbol
+476,\textblank,\textblank,0,,single symbol
+477,\textperiodcentered,\textperiodcentered,729,DOT ABOVE,single symbol
+478,\textbrokenbar,\textbrokenbar,166,BROKEN BAR,single symbol
+479,\textpertenthousand,\textpertenthousand,8241,PER TEN THOUSAND SIGN,single symbol
+480,\textbullet,\textbullet,8226,BULLET,single symbol
+481,\textperthousand,\textperthousand,8240,PER MILLE SIGN,single symbol
+482,\textdagger,\textdagger,8224,DAGGER,single symbol
+483,\textpilcrow,\textpilcrow,0,,single symbol
+484,\textdaggerdbl,\textdaggerdbl,8225,DOUBLE DAGGER,single symbol
+485,\textquotesingle,\textquotesingle,39,APOSTROPHE,single symbol
+486,\textdblhyphen,\textdblhyphen,0,,single symbol
+487,\textquotestraightbase,\textquotestraightbase,0,,single symbol
+488,\textdblhyphenchar,\textdblhyphenchar,0,,single symbol
+489,\textquotestraightdblbase,\textquotestraightdblbase,0,,single symbol
+490,\textdiscount,\textdiscount,0,,single symbol
+491,\textrecipe,\textrecipe,0,,single symbol
+492,\textestimated,\textestimated,0,,single symbol
+493,\textreferencemark,\textreferencemark,0,,single symbol
+494,\textinterrobang,\textinterrobang,8253,,single symbol
+495,\textsection,\textsection,167,SECTION SIGN,single symbol
+496,\textinterrobangdown,\textinterrobangdown,0,,single symbol
+497,\textthreequartersemdash,\textthreequartersemdash,0,,single symbol
+498,\textmusicalnote,\textmusicalnote,0,,single symbol
+499,\texttildelow,\texttildelow,732,SMALL TILDE,single symbol
+500,\textnumero,\textnumero,0,,single symbol
+501,\texttwelveudash,\texttwelveudash,0,,single symbol
+502,\textopenbullet,\textopenbullet,0,,single symbol
+503,\permil,\permil,0,,single symbol
+504,\mathdollar,\mathdollar,36,DOLLAR SIGN,single symbol
+505,\mathparagraph,\mathparagraph,0,,single symbol
+506,"Pound sign (sterling, thin)",\mathsterling,163,POUND SIGN,single symbol
+507,\mathellipsis,\mathellipsis,0,,single symbol
+508,\mathsection,\mathsection,167,,single symbol
+509,\mathunderscore,\mathunderscore,0,,single symbol
+510,\amalg,\amalg,10815,AMALGAMATION OR COPRODUCT,single symbol
+511,\cup,\cup,8746,UNION,single symbol
+512,\oplus,\oplus,8853,CIRCLED PLUS,single symbol
+513,\times,\times,215,MULTIPLICATION SIGN,single symbol
+514,\ast,\ast,8727,ASTERISK OPERATOR,single symbol
+515,\dagger,\dagger,8224,DAGGER,single symbol
+516,\oslash,\oslash,8856,CIRCLED DIVISION SLASH,single symbol
+517,\triangleleft,\triangleleft,9667,WHITE LEFT-POINTING SMALL TRIANGLE,single symbol
+518,\bigcirc,\bigcirc,9711,LARGE CIRCLE,single symbol
+519,\ddagger,\ddagger,8225,DOUBLE DAGGER,single symbol
+520,\otimes,\otimes,8855,CIRCLED TIMES,single symbol
+521,\triangleright,\triangleright,9657,WHITE RIGHT-POINTING SMALL TRIANGLE,single symbol
+522,\bigtriangledown,\bigtriangledown,9661,WHITE DOWN-POINTING TRIANGLE,single symbol
+523,\diamond,\diamond,9826,WHITE DIAMOND SUIT,single symbol
+524,&pm;,\pm,177,PLUS-MINUS SIGN,single symbol
+525,\bigtriangleup,\bigtriangleup,9651,WHITE UP-POINTING TRIANGLE,single symbol
+526,\div,\div,247,DIVISION SIGN,single symbol
+527,\bullet,\bullet,8729,BULLET OPERATOR,single symbol
+528,\setminus,\setminus,10741,REVERSE SOLIDUS OPERATOR,single symbol
+529,\uplus,\uplus,8846,MULTISET UNION,single symbol
+530,\cap,\cap,8745,INTERSECTION,single symbol
+531,\mp,\mp,8723,MINUS-OR-PLUS SIGN,single symbol
+532,\sqcap,\sqcap,8851,SQUARE CAP,single symbol
+533,\vee,\vee,8744,LOGICAL OR,single symbol
+534,\odot,\odot,8857,CIRCLED DOT OPERATOR,single symbol
+535,\sqcup,\sqcup,8852,SQUARE CUP,single symbol
+536,\wedge,\wedge,8743,LOGICAL AND,single symbol
+537,\circ,\circ,8728,RING OPERATOR,single symbol
+538,\ominus,\ominus,8854,CIRCLED MINUS,single symbol
+539,\star,\star,8902,STAR OPERATOR,single symbol
+540,\wr,\wr,8768,WREATH PRODUCT,single symbol
+541,\barwedge,\barwedge,8965,PROJECTIVE,single symbol
+542,\circledcirc,\circledcirc,8858,CIRCLED RING OPERATOR,single symbol
+543,\intercal,\intercal,8890,INTERCALATE,single symbol
+544,\boxdot,\boxdot,8865,SQUARED DOT OPERATOR,single symbol
+545,\circleddash,\circleddash,8861,CIRCLED DASH,single symbol
+546,\leftthreetimes,\leftthreetimes,8907,LEFT SEMIDIRECT PRODUCT,single symbol
+547,\boxminus,\boxminus,8863,SQUARED MINUS,single symbol
+548,\Cup,\Cup,8915,DOUBLE UNION,single symbol
+549,\ltimes,\ltimes,8905,LEFT NORMAL FACTOR SEMIDIRECT PRODUCT,single symbol
+550,\boxplus,\boxplus,8862,SQUARED PLUS,single symbol
+551,\curlyvee,\curlyvee,8910,CURLY LOGICAL OR,single symbol
+552,\rightthreetimes,\rightthreetimes,8908,RIGHT SEMIDIRECT PRODUCT,single symbol
+553,\boxtimes,\boxtimes,8864,SQUARED TIMES,single symbol
+554,\curlywedge,\curlywedge,8911,CURLY LOGICAL AND,single symbol
+555,\rtimes,\rtimes,8906,RIGHT NORMAL FACTOR SEMIDIRECT PRODUCT,single symbol
+556,\Cap,\Cap,8914,DOUBLE INTERSECTION,single symbol
+557,\divideontimes,\divideontimes,8903,DIVISION TIMES,single symbol
+558,\smallsetminus,\smallsetminus,8726,SET MINUS,single symbol
+559,\centerdot,\centerdot,0,,single symbol
+560,\dotplus,\dotplus,8724,DOT PLUS,single symbol
+561,\veebar,\veebar,8891,XOR,single symbol
+562,\circledast,\circledast,8859,CIRCLED ASTERISK OPERATOR,single symbol
+563,\doublebarwedge,\doublebarwedge,10846,LOGICAL AND WITH DOUBLE OVERBAR,single symbol
+564,\lhd,\lhd,9665,,single symbol
+565,\ocircle,\ocircle,0,,single symbol
+566,\RHD,\RHD,0,,single symbol
+567,\unrhd,\unrhd,0,,single symbol
+568,\LHD,\LHD,0,,single symbol
+569,\rhd,\rhd,0,,single symbol
+570,\unlhd,\unlhd,0,,single symbol
+571,\bigcap,\bigcap,8898,N-ARY INTERSECTION,single symbol
+572,\bigotimes,\bigotimes,10754,N-ARY CIRCLED TIMES OPERATOR,single symbol
+573,\bigwedge,\bigwedge,8896,N-ARY LOGICAL AND,single symbol
+574,\prod,\prod,8719,N-ARY PRODUCT,single symbol
+575,\bigcup,\bigcup,8899,N-ARY UNION,single symbol
+576,\bigsqcup,\bigsqcup,10758,N-ARY SQUARE UNION OPERATOR,single symbol
+577,\coprod,\coprod,8720,N-ARY COPRODUCT,single symbol
+578,\bigodot,\bigodot,10752,N-ARY CIRCLED DOT OPERATOR,single symbol
+579,\biguplus,\biguplus,10756,N-ARY UNION OPERATOR WITH PLUS,single symbol
+580,\bigoplus,\bigoplus,10753,N-ARY CIRCLED PLUS OPERATOR,single symbol
+581,\bigvee,\bigvee,8897,N-ARY LOGICAL OR,single symbol
+582,\oint,\oint,8750,CONTOUR INTEGRAL,single symbol
+583,\parr,\parr,8523,,single symbol
+584,\with,\with,38,,single symbol
+585,\iint,\iint,8748,DOUBLE INTEGRAL,single symbol
+586,\iiint,\iiint,8749,TRIPLE INTEGRAL,single symbol
+587,\iiiint,\iiiint,10764,QUADRUPLE INTEGRAL OPERATOR,single symbol
+588,\idotsint,\idotsint,0,,single symbol
+589,\dotsint,\dotsint,0,,single symbol
+590,\ointclockwise,\ointclockwise,8754,,single symbol
+591,\fint,\fint,10767,INTEGRAL AVERAGE WITH SLASH,single symbol
+592,\ointctrclockwise,\ointctrclockwise,8755,ANTICLOCKWISE CONTOUR INTEGRAL,single symbol
+593,\sqiint,\sqiint,0,,single symbol
+594,\sqint,\sqint,10774,QUATERNION INTEGRAL OPERATOR,single symbol
+595,\varoiint,\varoiint,8751,,single symbol
+596,\landdownint,\landdownint,0,,single symbol
+597,\varointclockwise,\varointclockwise,8754,CLOCKWISE CONTOUR INTEGRAL,single symbol
+598,\landupint,\landupint,0,,single symbol
+599,\varointctrclockwise,\varointctrclockwise,8755,,single symbol
+600,\oiint,\oiint,8751,SURFACE INTEGRAL,single symbol
+601,\approx,\approx,8776,ALMOST EQUAL TO,single symbol
+602,\not\approx,\not\approx,8777,NOT ALMOST EQUAL TO,single symbol
+603,\equiv,\equiv,8801,IDENTICAL TO,single symbol
+604,\not\equiv,\not\equiv,8802,NOT IDENTICAL TO,single symbol
+605,\perp,\perp,10178,PERPENDICULAR,single symbol
+606,\smile,\smile,8995,SMILE,single symbol
+607,\asymp,\asymp,8781,EQUIVALENT TO,single symbol
+608,\frown,\frown,8994,FROWN,single symbol
+609,\prec,\prec,8826,PRECEDES,single symbol
+610,\succ,\succ,8827,SUCCEEDS,single symbol
+611,\bowtie,\bowtie,8904,BOWTIE,single symbol
+612,\preceq,\preceq,10927,PRECEDES ABOVE SINGLE-LINE EQUALS SIGN,single symbol
+613,\succeq,\succeq,10928,SUCCEEDS ABOVE SINGLE-LINE EQUALS SIGN,single symbol
+614,\mid,\mid,8739,DIVIDES,single symbol
+615,\vdash,\vdash,8866,RIGHT TACK,single symbol
+616,\dashv,\dashv,8867,LEFT TACK,single symbol
+617,\models,\models,8871,MODELS,single symbol
+618,\sim,\sim,8764,TILDE OPERATOR,single symbol
+619,\not\sim,\not\sim,8769,NOT TILDE,single symbol
+620,\doteq,\doteq,8784,APPROACHES THE LIMIT,single symbol
+621,\parallel,\parallel,8741,PARALLEL TO,single symbol
+622,\simeq,\simeq,8771,ASYMPTOTICALLY EQUAL TO,single symbol
+623,\not\simeq,\not\simeq,8772,NOT ASYMPTOTICALLY EQUAL TO,single symbol
+624,\approxeq,\approxeq,8778,ALMOST EQUAL OR EQUAL TO,single symbol
+625,\eqcirc,\eqcirc,8790,RING IN EQUAL TO,single symbol
+626,\succapprox,\succapprox,10936,SUCCEEDS ABOVE ALMOST EQUAL TO,single symbol
+627,\backepsilon,\backepsilon,1014,GREEK REVERSED LUNATE EPSILON SYMBOL,single symbol
+628,\fallingdotseq,\fallingdotseq,8786,APPROXIMATELY EQUAL TO OR THE IMAGE OF,single symbol
+629,\succcurlyeq,\succcurlyeq,8829,SUCCEEDS OR EQUAL TO,single symbol
+630,\backsim,\backsim,8765,REVERSED TILDE,single symbol
+631,\multimap,\multimap,8888,MULTIMAP,single symbol
+632,\succsim,\succsim,8831,SUCCEEDS OR EQUIVALENT TO,single symbol
+633,\backsimeq,\backsimeq,8909,REVERSED TILDE EQUALS,single symbol
+634,\pitchfork,\pitchfork,8916,PITCHFORK,single symbol
+635,\therefore,\therefore,8756,THEREFORE,single symbol
+636,\because,\because,8757,BECAUSE,single symbol
+637,\precapprox,\precapprox,10935,PRECEDES ABOVE ALMOST EQUAL TO,single symbol
+638,\thickapprox,\thickapprox,0,,single symbol
+639,\between,\between,8812,BETWEEN,single symbol
+640,\preccurlyeq,\preccurlyeq,8828,PRECEDES OR EQUAL TO,single symbol
+641,\thicksim,\thicksim,0,,single symbol
+642,\Bumpeq,\Bumpeq,8782,GEOMETRICALLY EQUIVALENT TO,single symbol
+643,\precsim,\precsim,8830,PRECEDES OR EQUIVALENT TO,single symbol
+644,\varpropto,\varpropto,8733,,single symbol
+645,\bumpeq,\bumpeq,8783,DIFFERENCE BETWEEN,single symbol
+646,\risingdotseq,\risingdotseq,8787,IMAGE OF OR APPROXIMATELY EQUAL TO,single symbol
+647,\Vdash,\Vdash,8873,FORCES,single symbol
+648,\circeq,\circeq,8791,RING EQUAL TO,single symbol
+649,\shortmid,\shortmid,0,,single symbol
+650,\vDash,\vDash,8872,TRUE,single symbol
+651,\curlyeqprec,\curlyeqprec,8926,EQUAL TO OR PRECEDES,single symbol
+652,\shortparallel,\shortparallel,0,,single symbol
+653,\Vvdash,\Vvdash,8874,TRIPLE VERTICAL BAR RIGHT TURNSTILE,single symbol
+654,\curlyeqsucc,\curlyeqsucc,8927,EQUAL TO OR SUCCEEDS,single symbol
+655,\smallfrown,\smallfrown,0,,single symbol
+656,\doteqdot,\doteqdot,8785,GEOMETRICALLY EQUAL TO,single symbol
+657,\smallsmile,\smallsmile,0,,single symbol
+658,\ncong,\ncong,8775,NEITHER APPROXIMATELY NOR ACTUALLY EQUAL TO,single symbol
+659,\nshortparallel,\nshortparallel,0,,single symbol
+660,\nVDash,\nVDash,8879,NEGATED DOUBLE VERTICAL BAR DOUBLE RIGHT TURNSTILE,single symbol
+661,\nmid,\nmid,8740,DOES NOT DIVIDE,single symbol
+662,\nsim,\nsim,8769,NOT TILDE,single symbol
+663,\precnapprox,\precnapprox,10937,PRECEDES ABOVE NOT ALMOST EQUAL TO,single symbol
+664,\nparallel,\nparallel,8742,NOT PARALLEL TO,single symbol
+665,\nsucc,\nsucc,8833,DOES NOT SUCCEED,single symbol
+666,\precnsim,\precnsim,8936,PRECEDES BUT NOT EQUIVALENT TO,single symbol
+667,\nprec,\nprec,8832,DOES NOT PRECEDE,single symbol
+668,\nsucceq,\nsucceq,0,,single symbol
+669,\succnapprox,\succnapprox,10938,SUCCEEDS ABOVE NOT ALMOST EQUAL TO,single symbol
+670,\npreceq,\npreceq,0,,single symbol
+671,\nvDash,\nvDash,8877,NOT TRUE,single symbol
+672,\succnsim,\succnsim,8937,SUCCEEDS BUT NOT EQUIVALENT TO,single symbol
+673,\nshortmid,\nshortmid,0,,single symbol
+674,\nvdash,\nvdash,8876,DOES NOT PROVE,single symbol
+675,\inplus,\inplus,0,,single symbol
+676,\niplus,\niplus,0,,single symbol
+677,\sqsupseteq,\sqsupseteq,8850,SQUARE ORIGINAL OF OR EQUAL TO,single symbol
+678,\sqsubseteq,\sqsubseteq,8849,SQUARE IMAGE OF OR EQUAL TO,single symbol
+679,\nsubseteq,\nsubseteq,8840,NEITHER A SUBSET OF NOR EQUAL TO,single symbol
+680,\subseteqq,\subseteqq,10949,SUBSET OF ABOVE EQUALS SIGN,single symbol
+681,\supsetneqq,\supsetneqq,10956,SUPERSET OF ABOVE NOT EQUAL TO,single symbol
+682,\nsupseteq,\nsupseteq,8841,NEITHER A SUPERSET OF NOR EQUAL TO,single symbol
+683,\subsetneq,\subsetneq,8842,SUBSET OF WITH NOT EQUAL TO,single symbol
+684,\varsubsetneq,\varsubsetneq,8842,,single symbol
+685,\nsupseteqq,\nsupseteqq,0,,single symbol
+686,\subsetneqq,\subsetneqq,10955,SUBSET OF ABOVE NOT EQUAL TO,single symbol
+687,\varsubsetneqq,\varsubsetneqq,10955,,single symbol
+688,\sqsubset,\sqsubset,8847,SQUARE IMAGE OF,single symbol
+689,\Supset,\Supset,8913,DOUBLE SUPERSET,single symbol
+690,\varsupsetneq,\varsupsetneq,8843,,single symbol
+691,\sqsupset,\sqsupset,8848,SQUARE ORIGINAL OF,single symbol
+692,\supseteqq,\supseteqq,10950,SUPERSET OF ABOVE EQUALS SIGN,single symbol
+693,\varsupsetneqq,\varsupsetneqq,10956,,single symbol
+694,\Subset,\Subset,8912,DOUBLE SUBSET,single symbol
+695,\supsetneq,\supsetneq,8843,SUPERSET OF WITH NOT EQUAL TO,single symbol
+696,\gg,\gg,8811,MUCH GREATER-THAN,single symbol
+697,\ll,\ll,8810,MUCH LESS-THAN,single symbol
+698,\neq,\neq,8800,,single symbol
+699,\eqslantgtr,\eqslantgtr,10902,SLANTED EQUAL TO OR GREATER-THAN,single symbol
+700,\gtrdot,\gtrdot,8919,GREATER-THAN WITH DOT,single symbol
+701,\lesseqgtr,\lesseqgtr,8922,LESS-THAN EQUAL TO OR GREATER-THAN,single symbol
+702,\ngeq,\ngeq,8817,NEITHER GREATER-THAN NOR EQUAL TO,single symbol
+703,\eqslantless,\eqslantless,10901,SLANTED EQUAL TO OR LESS-THAN,single symbol
+704,\gtreqless,\gtreqless,8923,GREATER-THAN EQUAL TO OR LESS-THAN,single symbol
+705,\lesseqqgtr,\lesseqqgtr,10891,LESS-THAN ABOVE DOUBLE-LINE EQUAL ABOVE GREATER-THAN,single symbol
+706,\ngeqq,\ngeqq,0,,single symbol
+707,\geqq,\geqq,8807,GREATER-THAN OVER EQUAL TO,single symbol
+708,\gtreqqless,\gtreqqless,10892,GREATER-THAN ABOVE DOUBLE-LINE EQUAL ABOVE LESS-THAN,single symbol
+709,\lessgtr,\lessgtr,8822,LESS-THAN OR GREATER-THAN,single symbol
+710,\ngeqslant,\ngeqslant,0,,single symbol
+711,\geqslant,\geqslant,10878,GREATER-THAN OR SLANTED EQUAL TO,single symbol
+712,\gtrless,\gtrless,8823,GREATER-THAN OR LESS-THAN,single symbol
+713,\lesssim,\lesssim,8818,LESS-THAN OR EQUIVALENT TO,single symbol
+714,\ngtr,\ngtr,8815,NOT GREATER-THAN,single symbol
+715,\ggg,\ggg,8921,VERY MUCH GREATER-THAN,single symbol
+716,\gtrsim,\gtrsim,8819,GREATER-THAN OR EQUIVALENT TO,single symbol
+717,\lll,\lll,8920,VERY MUCH LESS-THAN,single symbol
+718,\nleq,\nleq,8816,NEITHER LESS-THAN NOR EQUAL TO,single symbol
+719,\gnapprox,\gnapprox,10890,GREATER-THAN AND NOT APPROXIMATE,single symbol
+720,\gvertneqq,\gvertneqq,0,,single symbol
+721,\lnapprox,\lnapprox,10889,LESS-THAN AND NOT APPROXIMATE,single symbol
+722,\nleqq,\nleqq,0,,single symbol
+723,\gneq,\gneq,10888,GREATER-THAN AND SINGLE-LINE NOT EQUAL TO,single symbol
+724,\leqq,\leqq,8806,LESS-THAN OVER EQUAL TO,single symbol
+725,\lneq,\lneq,10887,LESS-THAN AND SINGLE-LINE NOT EQUAL TO,single symbol
+726,\nleqslant,\nleqslant,0,,single symbol
+727,\gneqq,\gneqq,8809,GREATER-THAN BUT NOT EQUAL TO,single symbol
+728,\leqslant,\leqslant,10877,LESS-THAN OR SLANTED EQUAL TO,single symbol
+729,\lneqq,\lneqq,8808,LESS-THAN BUT NOT EQUAL TO,single symbol
+730,\nless,\nless,8814,NOT LESS-THAN,single symbol
+731,\gnsim,\gnsim,8935,GREATER-THAN BUT NOT EQUIVALENT TO,single symbol
+732,\lessapprox,\lessapprox,10885,LESS-THAN OR APPROXIMATE,single symbol
+733,\lnsim,\lnsim,8934,LESS-THAN BUT NOT EQUIVALENT TO,single symbol
+734,\gtrapprox,\gtrapprox,10886,GREATER-THAN OR APPROXIMATE,single symbol
+735,\lessdot,\lessdot,8918,LESS-THAN WITH DOT,single symbol
+736,\lvertneqq,\lvertneqq,0,,single symbol
+737,\blacktriangleleft,\blacktriangleleft,9666,BLACK LEFT-POINTING SMALL TRIANGLE,single symbol
+738,\ntrianglelefteq,\ntrianglelefteq,8940,NOT NORMAL SUBGROUP OF OR EQUAL TO,single symbol
+739,\trianglelefteq,\trianglelefteq,8884,NORMAL SUBGROUP OF OR EQUAL TO,single symbol
+740,\vartriangleleft,\vartriangleleft,8882,NORMAL SUBGROUP OF,single symbol
+741,\blacktriangleright,\blacktriangleright,9656,BLACK RIGHT-POINTING SMALL TRIANGLE,single symbol
+742,\ntriangleright,\ntriangleright,8939,DOES NOT CONTAIN AS NORMAL SUBGROUP,single symbol
+743,\triangleq,\triangleq,8796,DELTA EQUAL TO,single symbol
+744,\vartriangleright,\vartriangleright,8883,CONTAINS AS NORMAL SUBGROUP,single symbol
+745,\ntriangleleft,\ntriangleleft,8938,NOT NORMAL SUBGROUP OF,single symbol
+746,\ntrianglerighteq,\ntrianglerighteq,8941,DOES NOT CONTAIN AS NORMAL SUBGROUP OR EQUAL,single symbol
+747,\trianglerighteq,\trianglerighteq,8885,CONTAINS AS NORMAL SUBGROUP OR EQUAL TO,single symbol
+748,\Downarrow,\Downarrow,8659,DOWNWARDS DOUBLE ARROW,single symbol
+749,\longleftarrow,\longleftarrow,10229,LONG LEFTWARDS ARROW,single symbol
+750,\nwarrow,\nwarrow,8598,NORTH WEST ARROW,single symbol
+751,\downarrow,\downarrow,8595,DOWNWARDS ARROW,single symbol
+752,\Longleftarrow,\Longleftarrow,10232,LONG LEFTWARDS DOUBLE ARROW,single symbol
+753,\Rightarrow,\Rightarrow,8658,RIGHTWARDS DOUBLE ARROW,single symbol
+754,\hookleftarrow,\hookleftarrow,8617,LEFTWARDS ARROW WITH HOOK,single symbol
+755,\longleftrightarrow,\longleftrightarrow,10231,LONG LEFT RIGHT ARROW,single symbol
+756,\hookrightarrow,\hookrightarrow,8618,RIGHTWARDS ARROW WITH HOOK,single symbol
+757,\Longleftrightarrow,\Longleftrightarrow,10234,LONG LEFT RIGHT DOUBLE ARROW,single symbol
+758,SOUTH EAST ARROW,\searrow,8600,SOUTH EAST ARROW,single symbol
+759,\longmapsto,\longmapsto,10236,LONG RIGHTWARDS ARROW FROM BAR,single symbol
+760,SOUTH WEST ARROW,\swarrow,8601,SOUTH WEST ARROW,single symbol
+761,\leftarrow,\leftarrow,8592,LEFTWARDS ARROW,single symbol
+762,\Longrightarrow,\Longrightarrow,10233,LONG RIGHTWARDS DOUBLE ARROW,single symbol
+763,\uparrow,\uparrow,8593,UPWARDS ARROW,single symbol
+764,\Leftarrow,\Leftarrow,8656,LEFTWARDS DOUBLE ARROW,single symbol
+765,\longrightarrow,\longrightarrow,10230,LONG RIGHTWARDS ARROW,single symbol
+766,double upwards arrow,\Uparrow,8657,UPWARDS DOUBLE ARROW,single symbol
+767,\Leftrightarrow,\Leftrightarrow,8660,LEFT RIGHT DOUBLE ARROW,single symbol
+768,\mapsto,\mapsto,8614,RIGHTWARDS ARROW FROM BAR,single symbol
+769,\updownarrow,\updownarrow,8597,UP DOWN ARROW,single symbol
+770,\leftrightarrow,\leftrightarrow,8596,LEFT RIGHT ARROW,single symbol
+771,\nearrow,\nearrow,8599,NORTH EAST ARROW,single symbol
+772,\Updownarrow,\Updownarrow,8661,UP DOWN DOUBLE ARROW,single symbol
+773,\leftharpoondown,\leftharpoondown,8637,LEFTWARDS HARPOON WITH BARB DOWNWARDS,single symbol
+774,\rightharpoondown,\rightharpoondown,8641,RIGHTWARDS HARPOON WITH BARB DOWNWARDS,single symbol
+775,\rightleftharpoons,\rightleftharpoons,8652,RIGHTWARDS HARPOON OVER LEFTWARDS HARPOON,single symbol
+776,\leftharpoonup,\leftharpoonup,8636,LEFTWARDS HARPOON WITH BARB UPWARDS,single symbol
+777,\rightharpoonup,\rightharpoonup,8640,RIGHTWARDS HARPOON WITH BARB UPWARDS,single symbol
+778,\leadsto,\leadsto,8605,,single symbol
+779,\textdownarrow,\textdownarrow,0,,single symbol
+780,\textrightarrow,\textrightarrow,0,,single symbol
+781,\textleftarrow,\textleftarrow,0,,single symbol
+782,\textuparrow,\textuparrow,8593,,single symbol
+783,Anticlockwise Open Circle Arrow,\circlearrowleft,8634,ANTICLOCKWISE OPEN CIRCLE ARROW,single symbol
+784,\leftleftarrows,\leftleftarrows,8647,LEFTWARDS PAIRED ARROWS,single symbol
+785,\rightleftarrows,\rightleftarrows,8644,RIGHTWARDS ARROW OVER LEFTWARDS ARROW,single symbol
+786,\circlearrowright,\circlearrowright,8635,CLOCKWISE OPEN CIRCLE ARROW,single symbol
+787,\leftrightarrows,\leftrightarrows,8646,LEFTWARDS ARROW OVER RIGHTWARDS ARROW,single symbol
+788,\rightrightarrows,\rightrightarrows,8649,RIGHTWARDS PAIRED ARROWS,single symbol
+789,\curvearrowleft,\curvearrowleft,8630,ANTICLOCKWISE TOP SEMICIRCLE ARROW,single symbol
+790,\leftrightsquigarrow,\leftrightsquigarrow,8621,LEFT RIGHT WAVE ARROW,single symbol
+791,\rightsquigarrow,\rightsquigarrow,8669,RIGHTWARDS SQUIGGLE ARROW,single symbol
+792,\curvearrowright,\curvearrowright,8631,CLOCKWISE TOP SEMICIRCLE ARROW,single symbol
+793,\Lleftarrow,\Lleftarrow,8666,LEFTWARDS TRIPLE ARROW,single symbol
+794,\Rrightarrow,\Rrightarrow,8667,RIGHTWARDS TRIPLE ARROW,single symbol
+795,Upwards Arrow With Tip Rightwards,\Rsh,8625,UPWARDS ARROW WITH TIP RIGHTWARDS,single symbol
+796,\dashleftarrow,\dashleftarrow,0,,single symbol
+797,\looparrowleft,\looparrowleft,8619,LEFTWARDS ARROW WITH LOOP,single symbol
+798,\twoheadleftarrow,\twoheadleftarrow,8606,LEFTWARDS TWO HEADED ARROW,single symbol
+799,\dashrightarrow,\dashrightarrow,0,,single symbol
+800,\looparrowright,\looparrowright,8620,RIGHTWARDS ARROW WITH LOOP,single symbol
+801,\twoheadrightarrow,\twoheadrightarrow,8608,RIGHTWARDS TWO HEADED ARROW,single symbol
+802,\downdownarrows,\downdownarrows,8650,DOWNWARDS PAIRED ARROWS,single symbol
+803,Upwards Arrow With Tip Leftwards,\Lsh,8624,UPWARDS ARROW WITH TIP LEFTWARDS,single symbol
+804,\upuparrows,\upuparrows,8648,UPWARDS PAIRED ARROWS,single symbol
+805,\leftarrowtail,\leftarrowtail,8610,LEFTWARDS ARROW WITH TAIL,single symbol
+806,\rightarrowtail,\rightarrowtail,8611,RIGHTWARDS ARROW WITH TAIL,single symbol
+807,\nLeftarrow,\nLeftarrow,8653,LEFTWARDS DOUBLE ARROW WITH STROKE,single symbol
+808,\nLeftrightarrow,\nLeftrightarrow,8654,LEFT RIGHT DOUBLE ARROW WITH STROKE,single symbol
+809,\nRightarrow,\nRightarrow,8655,RIGHTWARDS DOUBLE ARROW WITH STROKE,single symbol
+810,\nleftarrow,\nleftarrow,8602,LEFTWARDS ARROW WITH STROKE,single symbol
+811,\nleftrightarrow,\nleftrightarrow,8622,LEFT RIGHT ARROW WITH STROKE,single symbol
+812,\nrightarrow,\nrightarrow,8603,RIGHTWARDS ARROW WITH STROKE,single symbol
+813,\downharpoonleft,\downharpoonleft,8643,DOWNWARDS HARPOON WITH BARB LEFTWARDS,single symbol
+814,\leftrightharpoons,\leftrightharpoons,8651,LEFTWARDS HARPOON OVER RIGHTWARDS HARPOON,single symbol
+815,\upharpoonleft,\upharpoonleft,8639,UPWARDS HARPOON WITH BARB LEFTWARDS,single symbol
+816,\downharpoonright,\downharpoonright,8642,DOWNWARDS HARPOON WITH BARB RIGHTWARDS,single symbol
+817,\upharpoonright,\upharpoonright,8638,UPWARDS HARPOON WITH BARB RIGHTWARDS,single symbol
+818,\leftarrowtriangle,\leftarrowtriangle,8701,LEFTWARDS OPEN-HEADED ARROW,single symbol
+819,\Mapsfrom,\Mapsfrom,10502,LEFTWARDS DOUBLE ARROW FROM BAR,single symbol
+820,\shortleftarrow,\shortleftarrow,0,,single symbol
+821,\leftrightarroweq,\leftrightarroweq,0,,single symbol
+822,\mapsfrom,\mapsfrom,8612,LEFTWARDS ARROW FROM BAR,single symbol
+823,\shortrightarrow,\shortrightarrow,8594,,single symbol
+824,\leftrightarrowtriangle,\leftrightarrowtriangle,8703,LEFT RIGHT OPEN-HEADED ARROW,single symbol
+825,\Mapsto,\Mapsto,10503,RIGHTWARDS DOUBLE ARROW FROM BAR,single symbol
+826,Short upwards arrow,\shortuparrow,0,,single symbol
+827,\lightning,\lightning,8623,,single symbol
+828,NORTH NORTH EAST ARROW,\nnearrow,0,,single symbol
+829,South South east arrow,\ssearrow,0,,single symbol
+830,\Longmapsfrom,\Longmapsfrom,10237,LONG LEFTWARDS DOUBLE ARROW FROM BAR,single symbol
+831,NORTH NORTH WEST ARROW,\nnwarrow,0,,single symbol
+832,South South west arrow,\sswarrow,0,,single symbol
+833,\longmapsfrom,\longmapsfrom,10235,LONG LEFTWARDS ARROW FROM BAR,single symbol
+834,\rightarrowtriangle,\rightarrowtriangle,8702,RIGHTWARDS OPEN-HEADED ARROW,single symbol
+835,\Longmapsto,\Longmapsto,10238,LONG RIGHTWARDS DOUBLE ARROW FROM BAR,single symbol
+836,\shortdownarrow,\shortdownarrow,0,,single symbol
+837,\vartheta,\vartheta,977,GREEK THETA SYMBOL,single symbol
+838,\varpi,\varpi,982,GREEK PI SYMBOL,single symbol
+839,\varsigma,\varsigma,962,GREEK SMALL LETTER FINAL SIGMA,single symbol
+840,\digamma,\digamma,989,GREEK SMALL LETTER DIGAMMA,single symbol
+841,\upphi,\upphi,981,GREEK PHI SYMBOL,single symbol
+842,\upvarphi,\upvarphi,966,GREEK SMALL LETTER PHI,single symbol
+843,\upchi,\upchi,967,GREEK SMALL LETTER CHI,single symbol
+844,\uppsi,\uppsi,968,GREEK SMALL LETTER PSI,single symbol
+845,\upomega,\upomega,969,GREEK SMALL LETTER OMEGA,single symbol
+846,\Uppsi,\Uppsi,0,,single symbol
+847,\Upomega,\Upomega,0,,single symbol
+848,\upalpha,\upalpha,945,GREEK SMALL LETTER ALPHA,single symbol
+849,\upbeta,\upbeta,946,GREEK SMALL LETTER BETA,single symbol
+850,\upgamma,\upgamma,947,GREEK SMALL LETTER GAMMA,single symbol
+851,\updelta,\updelta,948,GREEK SMALL LETTER DELTA,single symbol
+852,\upepsilon,\upepsilon,949,GREEK SMALL LETTER EPSILON,single symbol
+853,epsilon (upright variant),\upvarepsilon,1013,GREEK LUNATE EPSILON SYMBOL,single symbol
+854,\upzeta,\upzeta,950,GREEK SMALL LETTER ZETA,single symbol
+855,\upeta,\upeta,951,GREEK SMALL LETTER ETA,single symbol
+856,\Upgamma,\Upgamma,0,,single symbol
+857,\Updelta,\Updelta,0,,single symbol
+858,\Uptheta,\Uptheta,0,,single symbol
+859,\uptheta,\uptheta,952,GREEK SMALL LETTER THETA,single symbol
+860,\upvartheta,\upvartheta,977,GREEK THETA SYMBOL,single symbol
+861,\upiota,\upiota,953,GREEK SMALL LETTER IOTA,single symbol
+862,kappa (upright variant),\upkappa,954,GREEK SMALL LETTER KAPPA,single symbol
+863,\uplambda,\uplambda,955,GREEK SMALL LETTER LAMDA,single symbol
+864,\upmu,\upmu,956,GREEK SMALL LETTER MU,single symbol
+865,\upnu,\upnu,957,GREEK SMALL LETTER NU,single symbol
+866,\upxi,\upxi,958,GREEK SMALL LETTER XI,single symbol
+867,\Uplambda,\Uplambda,0,,single symbol
+868,\Upxi,\Upxi,0,,single symbol
+869,Pi (upright variant),\Uppi,0,,single symbol
+870,\uppi,\uppi,960,GREEK SMALL LETTER PI,single symbol
+871,\upvarpi,\upvarpi,982,GREEK PI SYMBOL,single symbol
+872,\uprho,\uprho,961,GREEK SMALL LETTER RHO,single symbol
+873,\upvarrho,\upvarrho,1009,GREEK RHO SYMBOL,single symbol
+874,\upsigma,\upsigma,963,GREEK SMALL LETTER SIGMA,single symbol
+875,\upvarsigma,\upvarsigma,962,GREEK SMALL LETTER FINAL SIGMA,single symbol
+876,\uptau,\uptau,964,GREEK SMALL LETTER TAU,single symbol
+877,\upupsilon,\upupsilon,965,GREEK SMALL LETTER UPSILON,single symbol
+878,\Upsigma,\Upsigma,0,,single symbol
+879,\Upupsilon,\Upupsilon,0,,single symbol
+880,\Upphi,\Upphi,0,,single symbol
+881,\bot,\bot,8869,UP TACK,single symbol
+882,\forall,\forall,8704,FOR ALL,single symbol
+883,\imath,\imath,120484,MATHEMATICAL ITALIC SMALL DOTLESS I,single symbol
+884,\ni,\ni,8715,CONTAINS AS MEMBER,single symbol
+885,\top,\top,8868,DOWN TACK,single symbol
+886,\ell,\ell,8467,SCRIPT SMALL L,single symbol
+887,\hbar,\hbar,295,HORIZONTAL BAR,single symbol
+888,\in,\in,8712,MATHEMATICAL SANS-SERIF BOLD ITALIC EPSILON SYMBOL,single symbol
+889,\notin,\notin,8713,NOT AN ELEMENT OF,single symbol
+890,\wp,\wp,8472,SCRIPT CAPITAL P,single symbol
+891,\exists,\exists,8707,THERE EXISTS,single symbol
+892,\Im,\Im,8465,BLACK-LETTER CAPITAL I,single symbol
+893,\jmath,\jmath,120485,MATHEMATICAL ITALIC SMALL DOTLESS J,single symbol
+894,\Re,\Re,8476,BLACK-LETTER CAPITAL R,single symbol
+895,\Bbbk,\Bbbk,120156,MATHEMATICAL DOUBLE-STRUCK SMALL K,single symbol
+896,\complement,\complement,8705,COMPLEMENT,single symbol
+897,\Finv,\Finv,8498,TURNED CAPITAL F,single symbol
+898,\hslash,\hslash,8463,PLANCK CONSTANT OVER TWO PI,single symbol
+899,\circledS,\circledS,9416,CIRCLED LATIN CAPITAL LETTER S,single symbol
+900,\Game,\Game,8513,TURNED SANS-SERIF CAPITAL G,single symbol
+901,\nexists,\nexists,8708,THERE DOES NOT EXIST,single symbol
+902,\Lbag,\Lbag,0,,single symbol
+903,\Rbag,\Rbag,0,,single symbol
+904,\lbag,\lbag,10181,LEFT S-SHAPED BAG DELIMITER,single symbol
+905,\rbag,\rbag,10182,RIGHT S-SHAPED BAG DELIMITER,single symbol
+906,\llceil,\llceil,0,,single symbol
+907,\rrceil,\rrceil,0,,single symbol
+908,\llfloor,\llfloor,0,,single symbol
+909,\rrfloor,\rrfloor,0,,single symbol
+910,\llparenthesis,\llparenthesis,10631,Z NOTATION LEFT IMAGE BRACKET,single symbol
+911,\rrparenthesis,\rrparenthesis,10632,Z NOTATION RIGHT IMAGE BRACKET,single symbol
+912,\langle,\langle,10216,MATHEMATICAL LEFT ANGLE BRACKET,single symbol
+913,\rangle,\rangle,10217,MATHEMATICAL RIGHT ANGLE BRACKET,single symbol
+914,\lceil,\lceil,8968,LEFT CEILING,single symbol
+915,\rceil,\rceil,8969,RIGHT CEILING,single symbol
+916,\lfloor,\lfloor,8970,LEFT FLOOR,single symbol
+917,\rfloor,\rfloor,8971,RIGHT FLOOR,single symbol
+918,[,[,91,LEFT SQUARE BRACKET,single symbol
+919,],],93,RIGHT SQUARE BRACKET,single symbol
+920,|,|,124,,single symbol
+921,\|,\|,8741,,single symbol
+922,/,/,47,SOLIDUS,single symbol
+923,\llbracket,\llbracket,10214,,single symbol
+924,\rrbracket,\rrbracket,10215,,single symbol
+925,left angle,\textlangle,0,,single symbol
+926,\textrangle,\textrangle,0,,single symbol
+927,\textlbrackdbl,\textlbrackdbl,0,,single symbol
+928,\textrbrackdbl,\textrbrackdbl,0,,single symbol
+929,\textlquill,\textlquill,0,,single symbol
+930,\textrquill,\textrquill,0,,single symbol
+931,\cdotp,\cdotp,183,MIDDLE DOT,single symbol
+932,\colon,\colon,0,,single symbol
+933,\ldotp,\ldotp,0,,single symbol
+934,\vdots,\vdots,8942,VERTICAL ELLIPSIS,single symbol
+935,\cdots,\cdots,8943,MIDLINE HORIZONTAL ELLIPSIS,single symbol
+936,\ddots,\ddots,8945,DOWN RIGHT DIAGONAL ELLIPSIS,single symbol
+937,\ldots,\ldots,8230,HORIZONTAL ELLIPSIS,single symbol
+938,\dotsi,\dotsi,0,,single symbol
+939,\dotsb,\dotsb,0,,single symbol
+940,\dotsm,\dotsm,0,,single symbol
+941,\dotsc,\dotsc,8230,,single symbol
+942,\dotso,\dotso,0,,single symbol
+943,\aleph,\aleph,8501,ALEF SYMBOL,single symbol
+944,\infty,\infty,8734,INFINITY,single symbol
+945,\prime,\prime,8242,PRIME,single symbol
+946,\angle,\angle,8736,ANGLE,single symbol
+947,\diamondsuit,\diamondsuit,9826,WHITE DIAMOND SUIT,single symbol
+948,\sharp,\sharp,9839,MUSIC SHARP SIGN,single symbol
+949,\backslash,\backslash,92,REVERSE SOLIDUS,single symbol
+950,\emptyset,\emptyset,8709,EMPTY SET,single symbol
+951,\nabla,\nabla,8711,NABLA,single symbol
+952,\spadesuit,\spadesuit,9824,,drawing
+953,\flat,\flat,9837,MUSIC FLAT SIGN,single symbol
+954,\natural,\natural,9838,MUSIC NATURAL SIGN,single symbol
+955,\surd,\surd,8730,SQUARE ROOT,single symbol
+956,\clubsuit,\clubsuit,9827,BLACK CLUB SUIT,single symbol
+957,\heartsuit,\heartsuit,9825,WHITE HEART SUIT,single symbol
+958,\neg,\neg,172,NOT SIGN,single symbol
+959,\triangle,\triangle,9653,,single symbol
+960,\sqrt{},\sqrt{},8730,,nesting symbol
+961,\blacktriangledown,\blacktriangledown,9662,BLACK DOWN-POINTING SMALL TRIANGLE,single symbol
+962,\mho,\mho,8487,INVERTED OHM SIGN,single symbol
+963,\backprime,\backprime,8245,REVERSED PRIME,single symbol
+964,\diagdown,\diagdown,0,,single symbol
+965,\sphericalangle,\sphericalangle,8738,SPHERICAL ANGLE,single symbol
+966,\bigstar,\bigstar,9733,BLACK STAR,single symbol
+967,\diagup,\diagup,9585,BOX DRAWINGS LIGHT DIAGONAL UPPER RIGHT TO LOWER LEFT,single symbol
+968,\square,\square,9633,WHITE SQUARE,single symbol
+969,\blacklozenge,\blacklozenge,10731,BLACK LOZENGE,single symbol
+970,\eth,\eth,426,LATIN LETTER REVERSED ESH LOOP,single symbol
+971,\triangledown,\triangledown,9663,WHITE DOWN-POINTING SMALL TRIANGLE,single symbol
+972,\blacksquare,\blacksquare,9642,BLACK SMALL SQUARE,single symbol
+973,\lozenge,\lozenge,9674,LOZENGE,single symbol
+974,\varnothing,\varnothing,8709,EMPTY SET,single symbol
+975,\blacktriangle,\blacktriangle,9652,BLACK UP-POINTING SMALL TRIANGLE,single symbol
+976,\measuredangle,\measuredangle,8737,MEASURED ANGLE,single symbol
+977,\vartriangle,\vartriangle,9653,WHITE UP-POINTING SMALL TRIANGLE,single symbol
+978,\textdegree,\textdegree,176,DEGREE SIGN,single symbol
+979,\textonehalf,\textonehalf,189,VULGAR FRACTION ONE HALF,single symbol
+980,\textthreequarters,\textthreequarters,190,VULGAR FRACTION THREE QUARTERS,single symbol
+981,\textdiv,\textdiv,0,,single symbol
+982,\textonequarter,\textonequarter,188,VULGAR FRACTION ONE QUARTER,single symbol
+983,\textthreesuperior,\textthreesuperior,179,,single symbol
+984,\textfractionsolidus,\textfractionsolidus,0,,single symbol
+985,\textonesuperior,\textonesuperior,185,,single symbol
+986,\texttimes,\texttimes,215,MULTIPLICATION SIGN,single symbol
+987,\textlnot,\textlnot,0,,single symbol
+988,\textpm,\textpm,0,,single symbol
+989,\texttwosuperior,\texttwosuperior,178,,single symbol
+990,\textminus,\textminus,0,,single symbol
+991,\textsurd,\textsurd,0,,single symbol
+992,\iddots,\iddots,8944,,single symbol
+993,\mathcal{A},\mathcal{A},57901,,single symbol
+994,\mathcal{B},\mathcal{B},57902,,single symbol
+995,\mathcal{C},\mathcal{C},57903,,single symbol
+996,\mathcal{D},\mathcal{D},57904,,single symbol
+997,\mathcal{E},\mathcal{E},57905,,single symbol
+998,\mathcal{F},\mathcal{F},57906,,single symbol
+999,\mathcal{G},\mathcal{G},57907,,single symbol
+1000,\mathcal{H},\mathcal{H},57908,,single symbol
+1001,\mathcal{I},\mathcal{I},0,,single symbol
+1002,\mathcal{J},\mathcal{J},0,,single symbol
+1003,\mathcal{K},\mathcal{K},0,,single symbol
+1004,\mathcal{L},\mathcal{L},57912,,single symbol
+1005,\mathcal{M},\mathcal{M},57913,,single symbol
+1006,\mathcal{N},\mathcal{N},57914,,single symbol
+1007,\mathcal{O},\mathcal{O},57915,,single symbol
+1008,\mathcal{P},\mathcal{P},57916,,single symbol
+1009,\mathcal{Q},\mathcal{Q},0,,single symbol
+1010,\mathcal{R},\mathcal{R},57918,,single symbol
+1011,\mathcal{S},\mathcal{S},57919,,single symbol
+1012,\mathcal{T},\mathcal{T},57920,,single symbol
+1013,\mathcal{U},\mathcal{U},57921,,single symbol
+1014,\mathcal{V},\mathcal{V},0,,single symbol
+1015,\mathcal{W},\mathcal{W},0,,single symbol
+1016,\mathcal{X},\mathcal{X},57924,,single symbol
+1017,\mathcal{Y},\mathcal{Y},0,,single symbol
+1018,\mathcal{Z},\mathcal{Z},57926,,single symbol
+1019,\mathfrak{A},\mathfrak{A},120068,MATHEMATICAL FRAKTUR CAPITAL A,single symbol
+1020,\mathfrak{B},\mathfrak{B},120069,MATHEMATICAL FRAKTUR CAPITAL B,single symbol
+1021,\mathfrak{C},\mathfrak{C},8493,BLACK-LETTER CAPITAL C,single symbol
+1022,\mathfrak{D},\mathfrak{D},120071,MATHEMATICAL FRAKTUR CAPITAL D,single symbol
+1023,\mathfrak{E},\mathfrak{E},120072,MATHEMATICAL FRAKTUR CAPITAL E,single symbol
+1024,\mathfrak{F},\mathfrak{F},120073,MATHEMATICAL FRAKTUR CAPITAL F,single symbol
+1025,\mathfrak{G},\mathfrak{G},120074,MATHEMATICAL FRAKTUR CAPITAL G,single symbol
+1026,\mathfrak{H},\mathfrak{H},8460,BLACK-LETTER CAPITAL H,single symbol
+1027,\mathfrak{I},\mathfrak{I},8465,BLACK-LETTER CAPITAL I,single symbol
+1028,\mathfrak{J},\mathfrak{J},120077,MATHEMATICAL FRAKTUR CAPITAL J,single symbol
+1029,\mathfrak{K},\mathfrak{K},120078,MATHEMATICAL FRAKTUR CAPITAL K,single symbol
+1030,\mathfrak{L},\mathfrak{L},120079,MATHEMATICAL FRAKTUR CAPITAL L,single symbol
+1031,\mathfrak{M},\mathfrak{M},120080,MATHEMATICAL FRAKTUR CAPITAL M,single symbol
+1032,\mathfrak{N},\mathfrak{N},120081,MATHEMATICAL FRAKTUR CAPITAL N,single symbol
+1033,\mathfrak{O},\mathfrak{O},120082,MATHEMATICAL FRAKTUR CAPITAL O,single symbol
+1034,\mathfrak{P},\mathfrak{P},120083,MATHEMATICAL FRAKTUR CAPITAL P,single symbol
+1035,\mathfrak{Q},\mathfrak{Q},120084,MATHEMATICAL FRAKTUR CAPITAL Q,single symbol
+1036,\mathfrak{R},\mathfrak{R},8476,BLACK-LETTER CAPITAL R,single symbol
+1037,\mathfrak{S},\mathfrak{S},120086,MATHEMATICAL FRAKTUR CAPITAL S,single symbol
+1038,\mathfrak{T},\mathfrak{T},120087,MATHEMATICAL FRAKTUR CAPITAL T,single symbol
+1039,\mathfrak{U},\mathfrak{U},120088,MATHEMATICAL FRAKTUR CAPITAL U,single symbol
+1040,\mathfrak{V},\mathfrak{V},120089,MATHEMATICAL FRAKTUR CAPITAL V,single symbol
+1041,\mathfrak{W},\mathfrak{W},120090,MATHEMATICAL FRAKTUR CAPITAL W,single symbol
+1042,\mathfrak{X},\mathfrak{X},120091,MATHEMATICAL FRAKTUR CAPITAL X,single symbol
+1043,\mathfrak{Y},\mathfrak{Y},120092,MATHEMATICAL FRAKTUR CAPITAL Y,single symbol
+1044,\mathfrak{Z},\mathfrak{Z},8488,BLACK-LETTER CAPITAL Z,single symbol
+1045,\mathbb{1},\mathbb{1},120793,MATHEMATICAL DOUBLE-STRUCK DIGIT ONE,single symbol
+1046,\mathds{1},\mathds{1},49,,single symbol
+1047,\mathds{h},\mathds{h},0,,single symbol
+1048,\mathds{k},\mathds{k},0,,single symbol
+1049,\mathds{A},\mathds{A},0,,single symbol
+1050,\mathds{B},\mathds{B},0,,single symbol
+1051,\mathds{C},\mathds{C},67,,single symbol
+1052,\mathds{D},\mathds{D},0,,single symbol
+1053,\mathds{E},\mathds{E},69,,single symbol
+1054,\mathds{F},\mathds{F},0,,single symbol
+1055,\mathds{G},\mathds{G},0,,single symbol
+1056,\mathds{H},\mathds{H},0,,single symbol
+1057,\mathds{I},\mathds{I},0,,single symbol
+1058,\mathds{J},\mathds{J},0,,single symbol
+1059,\mathds{K},\mathds{K},0,,single symbol
+1060,\mathds{L},\mathds{L},0,,single symbol
+1061,\mathds{M},\mathds{M},0,,single symbol
+1062,\mathds{N},\mathds{N},78,,single symbol
+1063,\mathds{O},\mathds{O},0,,single symbol
+1064,\mathds{P},\mathds{P},80,,single symbol
+1065,\mathds{Q},\mathds{Q},81,,single symbol
+1066,\mathds{R},\mathds{R},82,,single symbol
+1067,\mathds{S},\mathds{S},0,,single symbol
+1068,\mathds{T},\mathds{T},0,,single symbol
+1069,\mathds{U},\mathds{U},0,,single symbol
+1070,\mathds{V},\mathds{V},0,,single symbol
+1071,\mathds{W},\mathds{W},0,,single symbol
+1072,\mathds{X},\mathds{X},0,,single symbol
+1073,\mathds{Y},\mathds{Y},0,,single symbol
+1074,\mathds{Z},\mathds{Z},90,,single symbol
+1075,\mathscr{A},\mathscr{A},119964,MATHEMATICAL SCRIPT CAPITAL A,single symbol
+1076,\mathscr{B},\mathscr{B},8492,SCRIPT CAPITAL B,single symbol
+1077,\mathscr{C},\mathscr{C},119966,MATHEMATICAL SCRIPT CAPITAL C,single symbol
+1078,\mathscr{D},\mathscr{D},119967,MATHEMATICAL SCRIPT CAPITAL D,single symbol
+1079,\mathscr{E},\mathscr{E},8496,SCRIPT CAPITAL E,single symbol
+1080,\mathscr{F},\mathscr{F},8497,SCRIPT CAPITAL F,single symbol
+1081,\mathscr{G},\mathscr{G},119970,MATHEMATICAL SCRIPT CAPITAL G,single symbol
+1082,\mathscr{H},\mathscr{H},8459,SCRIPT CAPITAL H,single symbol
+1083,\mathscr{I},\mathscr{I},8464,SCRIPT CAPITAL I,single symbol
+1084,\mathscr{J},\mathscr{J},119973,MATHEMATICAL SCRIPT CAPITAL J,single symbol
+1085,\mathscr{K},\mathscr{K},119974,MATHEMATICAL SCRIPT CAPITAL K,single symbol
+1086,\mathscr{L},\mathscr{L},8466,SCRIPT CAPITAL L,single symbol
+1087,\mathscr{M},\mathscr{M},8499,SCRIPT CAPITAL M,single symbol
+1088,\mathscr{N},\mathscr{N},119977,MATHEMATICAL SCRIPT CAPITAL N,single symbol
+1089,\mathscr{O},\mathscr{O},119978,MATHEMATICAL SCRIPT CAPITAL O,single symbol
+1090,\mathscr{P},\mathscr{P},119979,MATHEMATICAL SCRIPT CAPITAL P,single symbol
+1091,\mathscr{Q},\mathscr{Q},119980,MATHEMATICAL SCRIPT CAPITAL Q,single symbol
+1092,\mathscr{R},\mathscr{R},8475,SCRIPT CAPITAL R,single symbol
+1093,\mathscr{S},\mathscr{S},119982,MATHEMATICAL SCRIPT CAPITAL S,single symbol
+1094,\mathscr{T},\mathscr{T},119983,MATHEMATICAL SCRIPT CAPITAL T,single symbol
+1095,\mathscr{U},\mathscr{U},119984,MATHEMATICAL SCRIPT CAPITAL U,single symbol
+1096,\mathscr{V},\mathscr{V},119985,MATHEMATICAL SCRIPT CAPITAL V,single symbol
+1097,\mathscr{W},\mathscr{W},119986,MATHEMATICAL SCRIPT CAPITAL W,single symbol
+1098,\mathscr{X},\mathscr{X},119987,MATHEMATICAL SCRIPT CAPITAL X,single symbol
+1099,\mathscr{Y},\mathscr{Y},119988,MATHEMATICAL SCRIPT CAPITAL Y,single symbol
+1100,\mathscr{Z},\mathscr{Z},119989,MATHEMATICAL SCRIPT CAPITAL Z,single symbol
+1101,\celsius,\celsius,8451,,single symbol
+1102,\degree,\degree,176,,single symbol
+1103,ohm,\ohm,937,,single symbol
+1104,\conjunction,\conjunction,0,,single symbol
+1105,\opposition,\opposition,0,,single symbol
+1106,Mercury,\mercury,9791,MERCURY,single symbol
+1107,Earth,\earth,9793,,single symbol
+1108,Jupiter,\jupiter,9795,JUPITER,single symbol
+1109,Uranus,\uranus,9954,URANUS,single symbol
+1110,Pluto,\pluto,9799,PLUTO,single symbol
+1111,Venus,\venus,9792,FEMALE SIGN,single symbol
+1112,Mars,\mars,9794,,single symbol
+1113,Saturn,\saturn,9796,SATURN,single symbol
+1114,Neptune,\neptune,0,NEPTUNE,single symbol
+1115,\astrosun,\astrosun,9737,SUN,single symbol
+1116,\fullmoon,\fullmoon,9675,,single symbol
+1117,\leftmoon,\leftmoon,9790,LAST QUARTER MOON,single symbol
+1118,\newmoon,\newmoon,0,,single symbol
+1119,\rightmoon,\rightmoon,9789,LAST QUARTER MOON,single symbol
+1120,\aries,\aries,9800,ARIES,single symbol
+1121,\cancer,\cancer,9803,CANCER,single symbol
+1122,\libra,\libra,9806,LIBRA,single symbol
+1123,\aquarius,\aquarius,9810,AQUARIUS,single symbol
+1124,\taurus,\taurus,9801,TAURUS,single symbol
+1125,\leo,\leo,9804,LEO,single symbol
+1126,\scorpio,\scorpio,9807,SCORPIUS,single symbol
+1127,\capricornus,\capricornus,9809,CAPRICORN,single symbol
+1128,\gemini,\gemini,9802,GEMINI,single symbol
+1129,\virgo,\virgo,9805,VIRGO,single symbol
+1130,\sagittarius,\sagittarius,9808,SAGITTARIUS,single symbol
+1131,\pisces,\pisces,9811,PISCES,single symbol
+1132,\ascnode,\ascnode,0,,single symbol
+1133,\descnode,\descnode,0,,single symbol
+1134,\vernal,\vernal,0,,single symbol
+1135,Mercury (calligraphic),\Mercury,9791,,single symbol
+1136,Earth (caligraphic),\Earth,0,,single symbol
+1137,Jupiter (calligraphic),\Jupiter,9795,,single symbol
+1138,Uranus (calligraphic),\Uranus,9797,,single symbol
+1139,Pluto (calligraphic),\Pluto,0,,single symbol
+1140,Venus (calligraphic),\Venus,9792,,single symbol
+1141,Mars (calligraphic),\Mars,9794,,single symbol
+1142,Saturn (calligraphic),\Saturn,9796,,single symbol
+1143,Neptune (calligraphic),\Neptune,9798,,single symbol
+1144,\Moon,\Moon,0,,drawing
+1145,\Sun,\Sun,0,,single symbol
+1146,\Aries,\Aries,0,,single symbol
+1147,\Cancer,\Cancer,0,,single symbol
+1148,\Libra,\Libra,0,,single symbol
+1149,\Aquarius,\Aquarius,0,,single symbol
+1150,\Taurus,\Taurus,0,,single symbol
+1151,\Leo,\Leo,0,,single symbol
+1152,\Scorpio,\Scorpio,0,,single symbol
+1153,\Capricorn,\Capricorn,0,,single symbol
+1154,\Gemini,\Gemini,0,,single symbol
+1155,\Virgo,\Virgo,0,,single symbol
+1156,\Sagittarius,\Sagittarius,9808,,single symbol
+1157,\Pisces,\Pisces,0,,single symbol
+1158,\Email,\Email,0,,single symbol
+1159,\fax,\fax,0,,single symbol
+1160,\Faxmachine,\Faxmachine,0,,drawing
+1161,\Lightning,\Lightning,0,,single symbol
+1162,\Pickup,\Pickup,0,,single symbol
+1163,\Emailct,\Emailct,0,,single symbol
+1164,\FAX,\FAX,0,,single symbol
+1165,\Letter,\Letter,0,,drawing
+1166,\Mobilefone,\Mobilefone,0,,drawing
+1167,\Telefon,\Telefon,0,,drawing
+1168,\female,\female,9792,FEMALE SIGN,single symbol
+1169,\male,\male,9794,MALE SIGN,single symbol
+1170,\skull,\skull,0,,drawing
+1171,BLACK LEFT-POINTING SMALL TRIANGLE,\LEFTarrow,9666,,single symbol
+1172,BLACK DOWN-POINTING TRIANGLE,\DOWNarrow,9660,,single symbol
+1173,\phone,\phone,0,,drawing
+1174,BLACK UP-POINTING TRIANGLE,\UParrow,9650,,single symbol
+1175,\pointer,\pointer,0,,single symbol
+1176,\recorder,\recorder,8981,TELEPHONE RECORDER,single symbol
+1177,\checked,\checked,10003,,single symbol
+1178,\kreuz,\kreuz,0,,single symbol
+1179,BLACK RIGHT-POINTING TRIANGLE,\RIGHTarrow,9654,,single symbol
+1180,\ataribox,\ataribox,0,,single symbol
+1181,\clock,\clock,0,,drawing
+1182,\smiley,\smiley,0,,drawing
+1183,\bell,\bell,0,,single symbol
+1184,\diameter,\diameter,8960,DIAMETER SIGN,single symbol
+1185,\sun,\sun,9788,WHITE SUN WITH RAYS,single symbol
+1186,\blacksmiley,\blacksmiley,9787,,drawing
+1187,\Bowtie,\Bowtie,8904,,single symbol
+1188,\frownie,\frownie,0,,drawing
+1189,\wasylozenge,\wasylozenge,0,,single symbol
+1190,\brokenvert,\brokenvert,0,,single symbol
+1191,\invdiameter,\invdiameter,0,,single symbol
+1192,\Ankh,\Ankh,0,,single symbol
+1193,\Cross,\Cross,0,,single symbol
+1194,Heart,\Heart,0,,drawing
+1195,\Smiley,\Smiley,9786,,drawing
+1196,\Bat,\Bat,0,,drawing
+1197,\Mundus,\Mundus,0,,single symbol
+1198,\Yinyang,\Yinyang,0,,drawing
+1199,\Celtcross,\Celtcross,0,,single symbol
+1200,\Frowny,\Frowny,0,,drawing
+1201,@ (variant),\MVAt,64,,single symbol
+1202,\CircledA,\CircledA,0,,single symbol
+1203,\MVRightarrow,\MVRightarrow,0,,single symbol
+1311,Backslash,\textbackslash,92,REVERSE SOLIDUS,single symbol
+1312,Tilde,\textasciitilde,126,TILDE,single symbol
+1314,Set of rational numbers Q,\mathbb{Q},8474,DOUBLE-STRUCK CAPITAL Q,single symbol
+1315,Set of natural numbers,\mathbb{N},8469,DOUBLE-STRUCK CAPITAL N,single symbol
+1316,Set of integers,\mathbb{Z},8484,DOUBLE-STRUCK CAPITAL Z,single symbol
+1317,\mathbb{H},\mathbb{H},8461,DOUBLE-STRUCK CAPITAL H,single symbol
+1318,\indep,\indep,0,,single symbol
+1322,\dot{\cup},\dot{\cup},0,,single symbol
+1323,!,!,33,EXCLAMATION MARK,single symbol
+1324,\frac{}{},\frac{}{},8260,,nesting symbol
+1328,\int_{x} \mathrm{d} x,\int_{x} \mathrm{d} x,0,,formula
+1329,\int_{-\infty}^{\infty}e^{|x|}x \mathrm{d}x,\int_{-\infty}^{\infty}e^{|x|}x \mathrm{d}x,0,,NULL
+1330,A+B,A+B,0,,NULL
+1331,-\nabla,-\nabla,0,,NULL
+1332,1+1,1+1,0,,NULL
+1334,\int_{a}^{b} e^{-x} \mathrm{d} x,\int_{a}^{b} e^{-x} \mathrm{d} x,0,,NULL
+1335,\sum_{i=1}^{n} x^{i} + \ln{i},\sum_{i=1}^{n} x^{i} + \ln{i},0,,NULL
+1339,\sin(x),\sin(x),0,,NULL
+1340,\stackrel{\wedge}{=},\stackrel{\wedge}{=},0,,NULL
+1344,\overline{x},\overline {x},0,,formula
+1351,\frac{\sqrt{1+2}}{x+y^{2}},\frac{\sqrt{1+2}}{x+y^{2}},0,,formula
+1356,\alpha \cdot \beta,\alpha \cdot \beta,0,,NULL
+1357,Brent,Brent,0,,NULL
+1358,\mathbb{D},\mathbb{D},120123,MATHEMATICAL DOUBLE-STRUCK CAPITAL D,single symbol
+1359,\mathbb{C},\mathbb{C},0,,NULL
+1361,y=x^{2}+x,y=x^{2}+x,0,,formula
+1364,=,=,61,EQUALS SIGN,single symbol
+1366,FU,FU,0,,formula
+1369,\ss,\ss,223,LATIN SMALL LETTER SHARP S,single symbol
+1370,\OE,\OE,338,LATIN CAPITAL LIGATURE OE,single symbol
+1371,\aa,\aa,229,LATIN SMALL LETTER A WITH RING ABOVE,single symbol
+1372,\---,\---,0,,single symbol
+1373,\l,\l,322,LATIN SMALL LETTER L WITH STROKE,single symbol
+1374,\L,\L,321,LATIN CAPITAL LETTER L WITH STROKE,single symbol
+1375,\textquoteleft,\textquoteleft,0,,single symbol
+1376,\textasciicircum,\textasciicircum,0,,single symbol
+1377,\textendash,\textendash,8211,EN DASH,single symbol
+1378,\textvisiblespace,\textvisiblespace,9251,OPEN BOX,single symbol
+1379,\textquotedblleft,\textquotedblleft,8220,LEFT DOUBLE QUOTATION MARK,single symbol
+1380,\textbraceleft,\textbraceleft,123,,single symbol
+1381,!`,!`,0,,single symbol
+1382,\AA,\AA,8491,ANGSTROM SIGN,single symbol
+1383,\----,\----,0,,single symbol
+1384,\--,\--,0,,single symbol
+1385,\O,\O,216,LATIN CAPITAL LETTER O WITH STROKE,single symbol
+1386,\textunderscore,\textunderscore,0,,single symbol
+1387,\textgreater,\textgreater,0,,single symbol
+1388,\textless,\textless,0,,single symbol
+1389,\oe,\oe,339,LATIN SMALL LIGATURE OE,single symbol
+1390,\textquestiondown,\textquestiondown,191,INVERTED QUESTION MARK,single symbol
+1391,\textemdash,\textemdash,8212,EM DASH,single symbol
+1392,\textellipsis,\textellipsis,0,,single symbol
+1393,\textbar,\textbar,0,,single symbol
+1394,\o,\o,248,LATIN SMALL LETTER O WITH STROKE,single symbol
+1395,\ae,\ae,230,LATIN SMALL LETTER AE,single symbol
+1396,\AE,\AE,198,LATIN CAPITAL LETTER AE,single symbol
+1397,\textbraceright,\textbraceright,0,,single symbol
+1398,\textquotedblright,\textquotedblright,8221,RIGHT DOUBLE QUOTATION MARK,single symbol
+1399,\textexclamdown,\textexclamdown,161,INVERTED EXCLAMATION MARK,single symbol
+1400,\guillemotleft,\guillemotleft,171,LEFT-POINTING DOUBLE ANGLE QUOTATION MARK,single symbol
+1401,\guillemotright,\guillemotright,187,RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK,single symbol
+1402,3x,3x,0,,NULL
+1404,\int_{a}^{b} f(x),\int_{a}^{b} f(x),0,,NULL
+1405,x+5=6,x+5=6,0,,NULL
+1406,\mathbb{Z}_{m},\mathbb{Z}_{m},0,,NULL
+1408,\frac{\sqrt{x^{2}+y^{2}}}{\pi},\frac{\sqrt{x^{2}+y^{2}}}{\pi},0,,NULL
+1409,Love You,Love You,0,,NULL
+1410,\lim_{\rightarrow \infty},\lim_{\rightarrow \infty},0,,NULL
+1411,\lceil \rceil,\lceil \rceil,0,,NULL
+1412,Debian,Debian,0,,NULL
+1413,"P(D|Y_{C}, B)","P(D|Y_{C}, B)",0,,NULL
+1414,\sum_{i=0}^{n} (n+i)^{i},\sum_{i=0}^{n} (n+i)^{i},0,,NULL
+1415,FUCK,FUCK,0,,NULL
+1416,ANDRES,ANDRES,0,,NULL
+1417,\lfloor \rfloor,\lfloor \rfloor,0,,NULL
+1418,Birger,Birger,0,,NULL
+1420,\int x^{2} \mathrm{d} x,\int x^{2} \mathrm{d} x,0,,NULL
+1421,Siim,Siim,0,,NULL
+1422,Squirrel,Squirrel,0,,NULL
+1423,\frac{\partial f}{\partial x},\frac{\partial f}{\partial x},0,,NULL
+1424,\prod_{(i<j)},\prod_{(i<j)},0,,NULL
+1426,\sqrt{2},\sqrt{2},0,,NULL
+1427,Hello World,Hello World,0,,NULL
+1428,2\pi,2\pi,0,,NULL
+1429,\sqrt{\alpha+\beta},\sqrt{\alpha+\beta},0,,NULL
+1430,0.75,0.75,0,,NULL
+1431,Marcelo,Marcelo,0,,NULL
+1432,Mundus,Mundus,0,,NULL
+1433,\sum_{n=1}^{\infty},\sum_{n=1}^{\infty},0,,NULL
+1434,TILL,TILL,0,,NULL
+1437,',',8217,,single symbol
+1439,NIGGER,NIGGER,0,,NULL
+1440,Ruben,Ruben,0,,NULL
+1441,Seehofer,Seehofer,0,,NULL
+1442,LoL,LoL,0,,NULL
+1443,Carsten Wilhelm,Carsten Wilhelm,0,,NULL
+1444,FUCK YOU,FUCK YOU,0,,NULL
+1445,ä,ä,228,,single symbol
+1446,Jamal Wagge,Jamal Wagge,0,,NULL
+1447,ö,ö,246,,single symbol
+1448,f^{\pm} +,f^{\pm} +,0,,NULL
+1458,R^{2},R^{2},0,,NULL
+1459,\not\in,\not\in,8713,NOT AN ELEMENT OF,single symbol
+1460,R^{n},R^{n},0,,NULL
+1462,xdx,xdx,0,,NULL
+1464,\mathbb{R}^{+}_{0},\mathbb{R}^{+}_{0},0,,NULL
+1474,\not{},\not{},824,,nesting symbol
+1475,\sum^{x}_{n=1},\sum^{x}_{n=1},0,,NULL
+1476,-\infty,-\infty,0,,NULL
+1478,!=,!=,0,,NULL
+1479,\sum x,\sum x,0,,NULL
+1480,TeX,TeX,0,,NULL
+1481,\sum a,\sum a,0,,NULL
+1482,VINCENT,VINCENT,0,,NULL
+1483,exp,exp,0,,NULL
+1484,2^{5}+3=,2^{5}+3=,0,,NULL
+1485,+\sum\iint,+\sum\iint,0,,NULL
+1486,LOL,LOL,0,,NULL
+1487,a+b,a+b,0,,NULL
+1488,2x+5=0,2x+5=0,0,,NULL
+1489,3+5,3+5,0,,NULL
+1490,1+3=,1+3=,0,,NULL
+1491,Sofa,Sofa,0,,NULL
+1492,fuck,fuck,0,,NULL
+1493,Fuck,Fuck,0,,NULL
+1514,ü,ü,0,,
+1516,\land,\land,0,,single symbol
+1517,\lor,\lor,0,,
+1518,Ö,Ö,214,,single symbol
+1519,Ä,Ä,196,,single symbol
+1520,Ü,Ü,220,,single symbol
+1521,ß,ß,0,,single symbol
+1522,0,0,8228,ONE DOT LEADER,single symbol
+1523,",",",",8218,SINGLE LOW-9 QUOTATION MARK,single symbol
+1524,;,;,59,SEMICOLON,single symbol
+1525,colon,:,58,COLON,single symbol
+1526,?,?,63,QUESTION MARK,single symbol
+1528,x+y,x+y,0,,NULL
+1529,\int_{1}^{2} x^{2} \mathrm{d}x,\int_{1}^{2} x^{2} \mathrm{d}x,0,,NULL
+1530,\sqrt{x},\sqrt{x},0,,NULL
+1531,\sqrt{3},\sqrt{3},0,,NULL
+1532,\frac{v}{u},\frac{v}{u},0,,NULL
+1533,x=y^{2},x=y^{2},0,,NULL
+1534,\int_{1}^{0},\int_{1}^{0},0,,NULL
+1535,\int_{0}^{5},\int_{0}^{5},0,,NULL
+1536,2+3,2+3,0,,NULL
+1537,CIAO,CIAO,0,,NULL
+1538,\frac{x}{5},\frac{x}{5},0,,NULL
+1540,\int x,\int x,0,,NULL
+1541,TESTE,TESTE,0,,NULL
+1543,\mathbb{R}^{n},\mathbb{R}^{n},0,,NULL
+1545,[],[],0,,NULL
+1546,\mathbb{R}^{3},\mathbb{R}^{3},0,,NULL
+1547,\frac{x}{y},\frac{x}{y},0,,NULL
+1548,\sum_{i=},\sum_{i=},0,,NULL
+1549,(x+1),(x+1),0,,NULL
+1550,\int_{-\infty}^{+\infty},\int_{-\infty}^{+\infty},0,,NULL
+1551,\sqrt{5},\sqrt{5},0,,NULL
+1552,(,(,40,LEFT PARENTHESIS,single symbol
+1553,),),41,RIGHT PARENTHESIS,single symbol
+1554,a^{2},a^{2},0,,NULL
+1556,@,@,64,COMMERCIAL AT,single symbol
+1566,II,II,0,,NULL
+1568,\|\|,\|\|,0,,NULL
+1569,\sin(\theta),\sin(\theta),0,,NULL
+1570,\varphi=\sqrt{2},\varphi=\sqrt{2},0,,NULL
+1571,\psi=\sqrt{2},\psi=\sqrt{2},0,,NULL
+1572,5+5=10,5+5=10,0,,NULL
+1573,\lfloor\rfloor,\lfloor\rfloor,0,,NULL
+1574,Adam,Adam,0,,NULL
+1575,\prod_{i},\prod_{i},0,,NULL
+1576,\LaTeX{},\LaTeX{},0,,formula
+1577,\lim x \sin,\lim x \sin,0,,NULL
+1578,\sum_{i}^{k},\sum_{i}^{k},0,,NULL
+1579,\mathbb{R}^{2},\mathbb{R}^{2},0,,NULL
+1580,Bowties are cool,Bowties are cool,0,,NULL
+1581,\TeX{},\TeX{},0,,formula
+1583,1+2=3,1+2=3,0,,NULL
+1585,\sum_{i=0}^{1},\sum_{i=0}^{1},0,,NULL
+1586,\prod_{i=1},\prod_{i=1},0,,NULL
+1587,RANA,RANA,0,,NULL
+1588,\alpha+\beta,\alpha+\beta,0,,NULL
+1590,f(x),f(x),0,,NULL
+1591,x^{3},x^{3},0,,NULL
+1592,\sqrt{x^{2}},\sqrt{x^{2}},0,,NULL
+1593,tata,tata,0,,NULL
+1594,\sum_{n=1}^{\infty} a_{n},\sum_{n=1}^{\infty} a_{n},0,,NULL
+1595,"\int x\,\mathrm{d} x","\int x\,\mathrm{d} x",0,,NULL
+1596,x_{0},x_{0},0,,NULL
+1597,19,19,0,,NULL
+1598,5x,5x,0,,NULL
+1599,\int_{a}^{b},\int_{a}^{b},0,,NULL
+1600,\sum_{i=0},\sum_{i=0},0,,NULL
+1601,\sqrt{\frac{2500}{f^{2}}},\sqrt{\frac{2500}{f^{2}}},0,,NULL
+1602,\sqrt{\frac{2500}{t^{2}}},\sqrt{\frac{2500}{t^{2}}},0,,NULL
+1603,\sqrt{\frac{2600}{f^{2}}},\sqrt{\frac{2600}{f^{2}}},0,,NULL
+1604,\sqrt{\frac{2600}{t^{2}}},\sqrt{\frac{2600}{t^{2}}},0,,NULL
+1605,\sum_{1}^{n},\sum_{1}^{n},0,,NULL
+1606,x^{2}+2,x^{2}+2,0,,NULL
+1608,\frac{1}{1+1},\frac{1}{1+1},0,,NULL
+1610,NP,NP,0,,NULL
+1612,x^{2},x^{2},0,,NULL
+1613,\int\int\int\int\int\int\int,\int\int\int\int\int\int\int,0,,NULL
+1614,\frac{8}{3},\frac{8}{3},0,,NULL
+1615,M_{\odot},M_{\odot},0,,NULL
+1616,RESI,RESI,0,,NULL
+1617,:=,:=,0,,NULL
+1618,\int\int\int,\int\int\int,0,,NULL
+1619,\int\int\int\int\int,\int\int\int\int\int,0,,NULL
+1620,hi,hi,0,,NULL
+1621,\sqrt[3]{},\sqrt[3]{},0,,nesting symbol
+1622,\vec{\Delta},\vec{\Delta},0,,formula
+1623,\rightpropto,\rightpropto,0,,single symbol
+1624,\not\subset,\not\subset,0,,formula
+1625,\oint\oint,\oint\oint,0,,NULL
+1626,\int\int,\int\int,0,,NULL
+1627,5+1,5+1,0,,NULL
+1628,4+5,4+5,0,,NULL
+1629,\alpha_{1}Q,\alpha_{1}Q,0,,NULL
+1630,x^{2}\cdot y_{2},x^{2}\cdot y_{2},0,,NULL
+1632,\hat{h},\hat{h},293,,NULL
+1633,\int_{0}^{\infty} f x,\int_{0}^{\infty} f x,0,,NULL
+1634,\int_{0}^{\infty}e^{-\alpha^{2}x^{2}}\mathrm{d}x,\int_{0}^{\infty}e^{-\alpha^{2}x^{2}}\mathrm{d}x,0,,NULL
+1635,\frac{4}{3},\frac{4}{3},0,,NULL
+1636,\frac{2}{3},\frac{2}{3},0,,NULL
+1637,\int ax.\mathrm{d}x,\int ax.\mathrm{d}x,0,,NULL
+1638,\int_{0}^{1},\int_{0}^{1},0,,NULL
+1639,||,||,0,,NULL
+1640,tilde,tilde,0,,NULL
+1641,\tilde{x},\tilde{x},0,,NULL
+1642,\overset{\sim}{x},\overset{\sim}{x},0,,NULL
+1643,\backslash ast,\backslash ast,0,,NULL
+1644,Adrian,Adrian,0,,NULL
+1646,\tilde{\angle},\tilde{\angle},0,,NULL
+1647,\sqcup_{v=0}^{n=1},\sqcup_{v=0}^{n=1},0,,NULL
+1648,\bigsqcup_{v=0}^{n=1},\bigsqcup_{v=0}^{n=1},0,,NULL
+1649,"D
+NA","D
+NA",0,,NULL
+1650,\downarrow\uparrow,\downarrow\uparrow,0,,NULL
+1651,\frac{x^2}{3},\frac{x^{2}}{3},0,,NULL
+1652,\begin{cases}a\\b\end{cases},\begin{cases}a\\b\end{cases},0,,NULL
+1653,\int_{a}^{b}f(x) \mathrm{d}x,\int_{a}^{b}f(x) \mathrm{d}x,0,,NULL
+1655,2*2=,2*2=,0,,NULL
+1656,ж,ж,1078,,single symbol
+1657,Ѐ,Ѐ,1024,,single symbol
+1658,Ё,Ё,1025,,single symbol
+1659,д,д,1044,,single symbol
+1660,Ramel,Ramel,0,,NULL
+1661,Simon,Simon,0,,NULL
+1662,Hallo,Hallo,0,,NULL
+1663,Hello,Hello,0,,NULL
+1664,10+1,10+1,0,,NULL
+1665,\LaTeX,\LaTeX,0,,
+1666,\int_{a}^{b} x,\int_{a}^{b} x,0,,NULL
+1667,\sum_{i=1}^{\infty},\sum_{i=1}^{\infty},0,,NULL
+1668,\frac{6}{8},\frac{6}{8},0,,NULL
+1669,\prod_{k=1}^{\infty},\prod_{k=1}^{\infty},0,,NULL
+1670,ç,ç,231,,
+1671,E=mc^{2},E=mc^{2},0,,NULL
+1672,5=3,5=3,0,,NULL
+1673,\alpha',\alpha',0,,NULL
+1674,1+2,1+2,0,,NULL
+1675,\frac{1}{2},\frac{1}{2},0,,NULL
+1676,\sum_{i=0}^{n},\sum_{i=0}^{n},0,,NULL
+1677,\sum_{i=1}^{\infty} i,\sum_{i=1}^{\infty} i,0,,NULL
+1678,R=5,R=5,0,,NULL
+1679,2\pi=3,2\pi=3,0,,NULL
+1680,\tilde{a},\tilde{a},0,,NULL
+1681,\prod_{x:A} (a,\prod_{x:A} (a,0,,NULL
+1682,"2+3\\
+6 5 4","2+3\\
+6 5 4",0,,NULL
+1683,David,David,0,,NULL
+1684,2+2,2+2,0,,NULL
+1685,2',2',0,,NULL
+1686,2^{2},2^{2},0,,NULL
+1687,42,42,0,,NULL
+1688,<3,<3,0,,NULL
+1689,\sum_{n=1}^{i} x^{2},\sum_{n=1}^{i} x^{2},0,,NULL
+1690,\cupdot,\cupdot,10755,,single symbol
+1691,\int_{2}^{3},\int_{2}^{3},0,,NULL
+1692,Pentagram,\pentagram,9956,,single symbol
+1693,é,é,0,,NULL
+1694,a hat,\^{a},226,,single symbol
+1695,Treble Clef,\begin{music}\trebleclef\end{music},119070,,single symbol
+1696,Star of David,\davidsstar,10017,,single symbol
+1698,\sum_{1=1}^{n},\sum_{1=1}^{n},0,,NULL
+1699,\sum_{i=1}^{n},\sum_{i=1}^{n},0,,NULL
+1700,"B\\
+A","B\\
+A",0,,NULL
+1701,65,65,0,,NULL
+1702,\frac{1}{5}\cdot \frac{\mathrm{d}}{\mathrm{d}x}f(x),\frac{1}{5}\cdot \frac{\mathrm{d}}{\mathrm{d}x}f(x),0,,NULL
+1703,Trommer,Trommer,0,,NULL
+1704,\spiral,\spiral,43612,,drawing
+1706,etc,etc,0,,NULL
+1707,/LATEX,/LATEX,0,,NULL
+1708,LATE,LATE,0,,NULL
+1709,\sqrt{b^{2}-4ac},\sqrt{b^{2}-4ac},0,,
+1710,"""","""",34,,single symbol
+1714,\not\ni,\not\ni,0,,NULL
+1715,\triforce,\triforce,0,,single symbol
+1717,\swastika,\swastika,0,,NULL
+1718,и,и,1080,,single symbol
+1719,\ln,\ln,0,,single symbol
+1720,♬,♬,9836,,
+1721,\twonotes,\twonotes,9835,,single symbol
+1723,\mathbb{B},\mathbb{B},0,,NULL
+1724,butts,butts,0,,NULL
+1725,\sqrt[3]{\frac{a}{b}},\sqrt[3]{\frac{a}{b}},0,,NULL
+1726,\sqrt[3]{a},\sqrt[3]{a},0,,NULL
+1727,\cos,\cos,0,,single symbol
+1728,\sin,\sin,0,,single symbol
+1729,\tan,\tan,0,,single symbol
+1730,\lim,\lim,0,,single symbol
+1731,\log,\log,0,,single symbol
+1732,\arcsin,\arcsin,0,,formula
+1733,\mathrm{d}x,\mathrm{d}x,0,,formula
+1734,\mathrm{d}t,\mathrm{d}t,0,,formula
+1735,☮,☮,9774,,single symbol
+1736,Б,Б,1041,,single symbol
+1738,\max,\max,0,,formula
+1739,\hat{g},\hat{g},0,,NULL
+1740,y^{2},y^{2},0,,NULL
+1741,\vec{x},\vec{x},0,,NULL
+1742,>>,>>,0,,NULL
+3924,B\\ A,B\\ A,0,,NULL
+3925,\bassclef,\bassclef,119074,,single symbol
+3926,\dot{T},\dot{T},0,,NULL
+3927,\sum_{i=1}^{n} i^{2},\sum_{i=1}^{n} i^{2},0,,NULL
+3928,1+1=,1+1=,0,,NULL
+3929,\sum(m^{3}+a),\sum(m^{3}+a),0,,NULL
+3930,100,100,0,,NULL
+3931,\stackrel{!}{=},\stackrel{!}{=},0,,NULL
+3932,\frac{b}{a},\frac{b}{a},0,,NULL
+3934,Coff,Coff,0,,NULL
+3935,( ),( ),0,,NULL
+3937,a_{1},a_{1},0,,NULL
+3938,[ ],[ ],0,,NULL
+3939,\frac{1}{T_{2}},\frac{1}{T_{2}},0,,NULL
+3940,\int_{0}^{\infty} x^{2} \mathrm{d} x,\int_{0}^{\infty} x^{2} \mathrm{d} x,0,,NULL
+3941,\sum^{i=3},\sum^{i=3},0,,NULL
+3942,\pi r^{2},\pi r^{2},0,,formula
+3943,b^{5},b^{5},0,,NULL
+3944,QED,QED,0,,NULL
+3945,\int_{i=},\int_{i=},0,,NULL
+3946,\sum_{k \cdot},\sum_{k \cdot},0,,NULL
+3947,\sum x_{i},\sum x_{i},0,,NULL
+3948,\sum^{*},\sum^{*},0,,NULL
+3949,\frac{1+2}{3},\frac{1+2}{3},0,,NULL
+3950,\dot{x},\dot{x},0,,NULL
+3951,(x),(x),0,,NULL
+3952,\frac{\mathrm{d}}{\mathrm{d}x},\frac{\mathrm{d}}{\mathrm{d}x},0,,NULL
+3953,\tilde{n},\tilde{n},0,,NULL
+3954,\tilde{},\tilde{},0,,nesting symbol
+3955,\vec{},\vec{},0,,nesting symbol
+3956,\dot{},\dot{},0,,nesting symbol
+3958,\sum_{i=0}^{n} i^{2},\sum_{i=0}^{n} i^{2},0,,NULL
+3959,\bar{h},\bar{h},0,,NULL
+3960,\bar{},\bar{},0,,nesting symbol
+3961,\frac{\partial x}{\partial y},\frac{\partial x}{\partial y},0,,NULL
+3962,\perp\!\!\!\perp,\perp\!\!\!\perp,10987,,single symbol
+3963,i_{0},i_{0},0,,NULL
+3964,|\tilde{\hat{\alpha}}|,|\tilde{\hat{\alpha}}|,0,,NULL
+3965,\dot{a},\dot{a},0,,NULL
+3966,\vec{A},\vec{A},0,,NULL
+3967,\hat{x},\hat{x},0,,NULL
+3968,mod,mod,0,,NULL
+3970,TM,TM,0,,NULL
+3971,uwu,uwu,0,,NULL
+3972,\upmodels,\upmodels,10987,,single symbol
+3973,\oiiint,\oiiint,8752,,single symbol
+3974,\leftmodels,\leftmodels,0,,single symbol
+3975,III,III,0,,NULL
+3977,\bigcup_{i=1},\bigcup_{i=1},0,,NULL
+3978,\frac{\alpha \pm \beta}{2},\frac{\alpha \pm \beta}{2},0,,NULL
+3979,< >,< >,0,,NULL
+3980,\frac{y}{2},\frac{y}{2},0,,NULL
+3982,AF,AF,0,,NULL
+3984,\sqrt[2]{},\sqrt[2]{},0,,NULL
+3985,\hateq,\hateq,8793,,single symbol
+3987,\cmd,\cmd,8984,,single symbol
+3989,\tilde{\equiv},\tilde{\equiv},0,,NULL
+3990,2-3,2-3,0,,NULL
+3992,WILDPOINT,WILDPOINT,0,,
+3999,\hat{f},\hat{f},0,,NULL
+4010,"0,1,2,3,4","0,1,2,3,4",0,,NULL
+4011,\bar{A},\bar{A},0,,NULL
+4023,\not{\ddagger},\not{\ddagger},0,,NULL
+4172,\hat{=},\hat{=},0,,NULL
+4174,\not{R},\not{R},0,,NULL
+4183,\hat{},\hat{},0,,nesting symbol
+4184,\not,\not,0,,NULL
+4185,\not{\Vdash},\not{\Vdash},0,,NULL
+4360,BAT,BAT,0,,NULL
+4362,\sum_{k=0}^{n},\sum_{k=0}^{n},0,,NULL
+4363,y=x^{2},y=x^{2},0,,NULL
+4364,Nigger,Nigger,0,,NULL
+4365,Ha!,Ha!,0,,NULL
+4366,\log x,\log x,0,,NULL
+4367,Hi,Hi,0,,NULL
+4368,\hat{a},\hat{a},0,,NULL
+4369,\bar{\lambda},\bar{\lambda},0,,NULL
+4370,"\""{i}","\""{i}",239,,single symbol
+4371,"\""{e}","\""{e}",235,,single symbol
+4410,\vec{a},\vec{a},0,,NULL
+4412,Я,Я,1103,,single symbol
+4413,\multimapinv,\multimapinv,0,,single symbol
+4414,\multimapdotboth,\multimapdotboth,0,,single symbol
+4415,\coronaeq,\coronaeq,0,,single symbol
+4416,\curlyveeuparrow,\curlyveeuparrow,0,,single symbol
+4417,\drsh,\drsh,0,,single symbol
+4420,à,à,0,,single symbol
+4421,\multimapdotbothA,\multimapdotbothA,0,,single symbol
+4422,\multimapboth,\multimapboth,0,,
+4423,\curvearrowleftright,\curvearrowleftright,0,,single symbol
+4424,\dotdiv,\dotdiv,0,,single symbol
+4425,\reflectbox{$\alpha$},\reflectbox{$\alpha$},0,,single symbol
+4426,á,á,0,,
+4427,\not{B},\not{B},0,,NULL
+4438,\dlsh,\dlsh,0,,single symbol
+4439,\Nearrow,\Nearrow,8663,,single symbol
+4441,\Delta x,\Delta x,0,,NULL
+4442,\ddot{x},\ddot{x},0,,NULL
+4519,\not\hookrightarrow,\not\hookrightarrow,0,,NULL
+4583,\hexagon,\hexagon,11041,,single symbol
+4664,\overline{\land},\overline{\land},0,,NULL
+4732,卍,卍,21325,,single symbol
+4808,\married,\married,9901,,single symbol
+4809,⸮,⸮,11822,,single symbol
+4810,::=,::=,0,,NULL
+4811,卐,卐,21328,,single symbol
+4812,\uptriint,\uptriint,0,,single symbol
+4813,\overbrace{},\overbrace{},0,,nesting symbol
+4816,\rcirclearrowdown,\rcirclearrowdown,0,,single symbol
+4817,\varoiintctrclockwise,\varoiintctrclockwise,0,,single symbol
+4818,\eqsim,\eqsim,0,,single symbol
+4819,\precneq,\precneq,0,,single symbol
+4820,\curvearrowbotright,\curvearrowbotright,0,,single symbol
+4821,\squigarrowleftright,\squigarrowleftright,0,,single symbol
+4822,\lcurvearrowdown,\lcurvearrowdown,0,,single symbol
+4823,\triplesim,\triplesim,0,,single symbol
+4824,\underbrace{},\underbrace{},0,,nesting symbol
+4825,⚛,⚛,9883,,single symbol

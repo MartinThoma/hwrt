@@ -98,7 +98,7 @@ def main(args):
     elif args.cmd == 'serve':
         serve.main(args.port, args.n)
     elif args.cmd == 'filter_dataset':
-        filter_dataset.main(args.filename)
+        filter_dataset.main(args.symbol_filename, args.raw_filename, args.pickle_dest_path)
     else:
         logging.error("Command '%s' is not implemented yet.", args.cmd)
 

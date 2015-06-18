@@ -15,7 +15,7 @@ import pkg_resources
 from . import utils
 
 
-class bcolors(object):
+class Bcolors(object):
     """Terminal colors with ANSI escape codes."""
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -52,11 +52,11 @@ def check_python_version():
     cur_version = sys.version_info
     if cur_version >= req_version:
         print("Python version... %sOK%s (found %s, requires %s)" %
-              (bcolors.OKGREEN, bcolors.ENDC, str(platform.python_version()),
+              (Bcolors.OKGREEN, Bcolors.ENDC, str(platform.python_version()),
                str(req_version[0]) + "." + str(req_version[1])))
     else:
         print("Python version... %sFAIL%s (found %s, requires %s)" %
-              (bcolors.FAIL, bcolors.ENDC, str(cur_version),
+              (Bcolors.FAIL, Bcolors.ENDC, str(cur_version),
                str(req_version)))
 
 
@@ -72,14 +72,14 @@ def check_python_modules():
         try:
             imp.find_module(required_module)
             check = "module '%s' ... %sfound%s" % (required_module,
-                                                   bcolors.OKGREEN,
-                                                   bcolors.ENDC)
+                                                   Bcolors.OKGREEN,
+                                                   Bcolors.ENDC)
             print(check)
             found.append(required_module)
         except ImportError:
             print("module '%s' ... %sNOT%s found" % (required_module,
-                                                     bcolors.WARNING,
-                                                     bcolors.ENDC))
+                                                     Bcolors.WARNING,
+                                                     Bcolors.ENDC))
 
     if "argparse" in found:
         import argparse
@@ -126,13 +126,13 @@ def check_executables():
     for executable in required_executables:
         path = which(executable)
         if path is None:
-            print("%s ... %sNOT%s found" % (executable, bcolors.WARNING,
-                                            bcolors.ENDC))
+            print("%s ... %sNOT%s found" % (executable, Bcolors.WARNING,
+                                            Bcolors.ENDC))
             print("Try 'http://martin-thoma.com/what-are-pfiles/' for "
                   "instructions how to get it.")
         else:
-            print("%s ... %sfound%s at %s" % (executable, bcolors.OKGREEN,
-                                              bcolors.ENDC, path))
+            print("%s ... %sfound%s at %s" % (executable, Bcolors.OKGREEN,
+                                              Bcolors.ENDC, path))
 
 
 def main():
@@ -145,10 +145,10 @@ def main():
     rcfile = os.path.join(home, ".hwrtrc")
     if os.path.isfile(rcfile):
         print("~/.hwrtrc... %sFOUND%s" %
-              (bcolors.OKGREEN, bcolors.ENDC))
+              (Bcolors.OKGREEN, Bcolors.ENDC))
     else:
         print("~/.hwrtrc... %sNOT FOUND%s" %
-              (bcolors.FAIL, bcolors.ENDC))
+              (Bcolors.FAIL, Bcolors.ENDC))
     misc_path = pkg_resources.resource_filename('hwrt', 'misc/')
     print("misc-path: %s" % misc_path)
 

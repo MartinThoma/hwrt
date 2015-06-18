@@ -2,6 +2,8 @@
 [![Coverage Status](https://img.shields.io/coveralls/MartinThoma/hwrt.svg)](https://coveralls.io/r/MartinThoma/hwrt?branch=master)
 [![Documentation Status](http://img.shields.io/badge/docs-latest-brightgreen.svg)](http://pythonhosted.org/hwrt)
 [![Code Health](https://landscape.io/github/MartinThoma/hwrt/master/landscape.svg)](https://landscape.io/github/MartinThoma/hwrt/master)
+[![Code Issues](http://www.quantifiedcode.com/api/v1/project/e441582d563940a59d12ed10d3d39e54/badge.svg)](http://www.quantifiedcode.com/app/project/e441582d563940a59d12ed10d3d39e54)
+
 
 ## Handwriting Recognition Toolkit
 

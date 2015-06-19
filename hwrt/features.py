@@ -494,6 +494,69 @@ class StrokeCenter(Feature):
         return feature_vector
 
 
+class DouglasPeuckerPoints(Feature):
+
+    """Get the number of points which are left after applying the Douglas
+       Peucker line simplification algorithm.
+    """
+
+    normalize = True
+
+    def __init__(self, epsilon=0.2):
+        self.epsilon = epsilon
+
+    def __repr__(self):
+        return "DouglasPeuckerPoints"
+
+    def __str__(self):
+        return "DouglasPeucker Points"
+
+    def get_dimension(self):
+        """Get the dimension of the returned feature. This equals the number
+           of elements in the returned list of numbers."""
+        return 1
+
+    def _stroke_simplification(self, pointlist):
+        """The Douglas-Peucker line simplification takes a list of points as an
+           argument. It tries to simplifiy this list by removing as many points
+           as possible while still maintaining the overall shape of the stroke.
+           It does so by taking the first and the last point, connecting them
+           by a straight line and searchin for the point with the highest
+           distance. If that distance is bigger than 'epsilon', the point is
+           important and the algorithm continues recursively."""
+
+        # Find the point with the biggest distance
+        dmax = 0
+        index = 0
+        for i in range(1, len(pointlist)):
+            d = geometry.perpendicular_distance(pointlist[i],
+                                                pointlist[0],
+                                                pointlist[-1])
+            if d > dmax:
+                index = i
+                dmax = d
+
+        # If the maximum distance is bigger than the threshold 'epsilon', then
+        # simplify the pointlist recursively
+        if dmax >= self.epsilon:
+            # Recursive call
+            rec_results1 = self._stroke_simplification(pointlist[0:index])
+            rec_results2 = self._stroke_simplification(pointlist[index:])
+            result_list = rec_results1[:-1] + rec_results2
+        else:
+            result_list = [pointlist[0], pointlist[-1]]
+
+        return result_list
+
+    def __call__(self, handwritten_data):
+        super(self.__class__, self).__call__(handwritten_data)
+        dp_points = 0
+        for stroke in handwritten_data.get_pointlist():
+            points = self._stroke_simplification(stroke)
+            dp_points += len(points)
+        return [dp_points]
+
+
 class StrokeIntersections(Feature):
     """Count the number of intersections which strokes in the recording have
        with each other in form of a symmetrical matrix for the first

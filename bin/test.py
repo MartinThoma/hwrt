@@ -152,6 +152,13 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
             possible_keys.append(known['index'])
         for key in evaluated.keys():
             if key not in statistical:
+                if key not in index2latex:
+                    logging.error("Key '%s' is not in index2latex. Did you "
+                                  "probaly define a too small number of "
+                                  "outputnodes?", str(key))
+                    logging.error("index2latex.keys(): %s",
+                                  str(index2latex.keys()))
+                    sys.exit(-1)
                 statistical[key] = {'FP': 0,
                                     'TP': 0,
                                     'FN': 0,

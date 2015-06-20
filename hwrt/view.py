@@ -22,7 +22,7 @@ from . import utils
 from . import preprocessing
 from . import features
 from . import data_multiplication
-from . import create_pfiles
+from . import create_ffiles
 
 
 def _fetch_data_from_server(raw_data_id, mysql_cfg):
@@ -165,7 +165,7 @@ def display_data(raw_data_string, raw_data_id, model_folder, show_raw):
                      'formula_id': 42,
                      'formula_in_latex': 'None',
                      'handwriting': recording}]
-    training_set = create_pfiles.training_set_multiplication(training_set,
+    training_set = create_ffiles.training_set_multiplication(training_set,
                                                              mult_queue)
 
     # Display it

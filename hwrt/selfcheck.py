@@ -122,14 +122,12 @@ def check_python_modules():
 def check_executables():
     """Check if all necessary / recommended executables are installed."""
     print("\033[1mCheck executables\033[0m")
-    required_executables = ["pfile_create", utils.get_nntoolkit()]
+    required_executables = [utils.get_nntoolkit()]
     for executable in required_executables:
         path = which(executable)
         if path is None:
             print("%s ... %sNOT%s found" % (executable, Bcolors.WARNING,
                                             Bcolors.ENDC))
-            print("Try 'http://martin-thoma.com/what-are-pfiles/' for "
-                  "instructions how to get it.")
         else:
             print("%s ... %sfound%s at %s" % (executable, Bcolors.OKGREEN,
                                               Bcolors.ENDC, path))

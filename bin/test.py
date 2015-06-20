@@ -317,18 +317,18 @@ def main(model_folder, aset='test', n=3, merge=True):
     with open(model_description_file, 'r') as ymlfile:
         model_description = yaml.load(ymlfile)
 
-    # Get the data paths (pfiles)
+    # Get the data paths (hdf5)
     project_root = utils.get_project_root()
     data = {}
     data['training'] = os.path.join(project_root,
                                     model_description["data-source"],
-                                    "traindata.pfile")
+                                    "traindata.hdf5")
     data['testing'] = os.path.join(project_root,
                                    model_description["data-source"],
-                                   "testdata.pfile")
+                                   "testdata.hdf5")
     data['validating'] = os.path.join(project_root,
                                       model_description["data-source"],
-                                      "validdata.pfile")
+                                      "validdata.hdf5")
 
     test_data_path = os.path.join(model_folder, data[key_model])
     evaluation_file = get_test_results(model_folder,

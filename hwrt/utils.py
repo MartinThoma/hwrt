@@ -396,82 +396,34 @@ def create_adjusted_model_for_percentages(model_src, model_use):
         f.write(content)
 
 
-def create_hdf5(input_filename, feature_count, output_filename):
+def create_hdf5(output_filename, feature_count, data):
     """
-
-    Parameters
-    ----------
-    input_filename :
-        a CSV
-    feature_count : int
-    """
-    import h5py
-    new_output_name_x = output_filename.replace(".pfile", "-x.hdf5")
-    new_output_name_y = output_filename.replace(".pfile", "-y.hdf5")
-    x = []
-    y = []
-    with open(input_filename, "r") as f:
-        for line in f:
-            line = line.split(" ")
-            line = list(map(float, line))
-            frame, sentence, rest = line[0], line[1], line[2:]
-            if len(rest) != feature_count + 1:
-                logging.error("got %i features, should be %i",
-                              len(rest),
-                              feature_count+1)
-                sys.exit(-1)
-            features, label = rest[:-1], rest[-1]
-            x.append(features)
-            y.append(int(label))
-    Wfile = h5py.File(new_output_name_x, 'w')
-    Wfile.create_dataset(Wfile.id.name, data=x)
-    Wfile.close()
-    Wfile = h5py.File(new_output_name_y, 'w')
-    Wfile.create_dataset(Wfile.id.name, data=y)
-    Wfile.close()
-
-
-def create_pfile(output_filename, feature_count, data):
-    """
-    Create a pfile.
+    Create a HDF5 feature files.
 
     Parameters
     ----------
     output_filename : string
-        name of the pfile that will be created
+        name of the HDF5 file that will be created
     feature_count : int
         dimension of all features combined
     data : list of tuples
         list of (x, y) tuples, where x is the feature vector of dimension
         ``feature_count`` and y is a label.
     """
-    f = tempfile.NamedTemporaryFile(delete=False)
-    input_filename = f.name
-
-    for symbolnr, instance in enumerate(data):
-        feature_string, label = instance
-        assert len(feature_string) == feature_count, \
+    import h5py
+    logging.info("Start creating of %s hdf file", output_filename)
+    x = []
+    y = []
+    for features, label in data:
+        assert len(features) == feature_count, \
             "Expected %i features, got %i features" % \
-            (feature_count, len(feature_string))
-        feature_string = " ".join(map(str, feature_string))
-        line = "%i 0 %s %i" % (symbolnr, feature_string, label)
-        print(line, file=f)
-    f.close()
-
-    command = "pfile_create -i %s -f %i -l 1 -o %s" % \
-              (input_filename, feature_count, output_filename)
-    logging.info(command)
-    return_code = os.system(command)
-
-    # hack: create HDF5 files with pfiles
-    # create_hdf5(input_filename, feature_count, output_filename)
-
-    if return_code != 0:
-        logging.error("pfile_create failed with return code %i.", return_code)
-        sys.exit(-1)
-
-    # Cleanup
-    os.remove(input_filename)
+            (feature_count, len(features))
+        x.append(features)
+        y.append(int(label))
+    Wfile = h5py.File(output_filename, 'w')
+    Wfile.create_dataset("data", data=x, dtype='float32')
+    Wfile.create_dataset("labels", data=y, dtype='int32')
+    Wfile.close()
 
 
 def get_recognizer_folders(model_folder):
@@ -702,7 +654,7 @@ def _evaluate_model_single_file(target_folder, test_file):
     target_folder : string
         Folder where the model is
     test_file : string
-        The test file (.pfile)
+        The test file (.hdf5)
     """
     logging.info("Create running model...")
     model_src = get_latest_model(target_folder, "model")
@@ -767,9 +719,9 @@ def evaluate_model(recording, model_folder, verbose=False):
                                     feature_list))
             x = handwriting.feature_extraction(feature_list)
 
-            # Create pfile
-            _, output_filename = tempfile.mkstemp(suffix='.pfile', text=True)
-            create_pfile(output_filename, feature_count, [(x, 0)])
+            # Create hdf5
+            _, output_filename = tempfile.mkstemp(suffix='.hdf5', text=True)
+            create_hdf5(output_filename, feature_count, [(x, 0)])
         elif "model" in target_folder:
             logfile, model_use = _evaluate_model_single_file(target_folder,
                                                              output_filename)

@@ -15,7 +15,7 @@ import datetime
 # hwrt modules
 import hwrt.utils as utils
 import hwrt.preprocess_dataset as preprocess_dataset
-import hwrt.create_pfiles as create_pfiles
+import hwrt.create_ffiles as create_ffiles
 import hwrt.create_model as create_model
 
 
@@ -51,7 +51,7 @@ def update_if_outdated(folder):
                                                      target_folder))
             elif "feature-files" in target_folder:
                 logging.info("Feature file was outdated. Update...")
-                create_pfiles.main(target_folder)
+                create_ffiles.main(target_folder)
             elif "model" in target_folder:
                 logging.info("Model file was outdated. Update...")
                 create_model.main(target_folder, True)
@@ -70,18 +70,18 @@ def generate_training_command(model_folder):
     with open(model_description_file, 'r') as ymlfile:
         model_description = yaml.load(ymlfile)
 
-    # Get the data paths (pfiles)
+    # Get the data paths (hdf5 files)
     project_root = utils.get_project_root()
     data = {}
     data['training'] = os.path.join(project_root,
                                     model_description["data-source"],
-                                    "traindata.pfile")
+                                    "traindata.hdf5")
     data['testing'] = os.path.join(project_root,
                                    model_description["data-source"],
-                                   "testdata.pfile")
+                                   "testdata.hdf5")
     data['validating'] = os.path.join(project_root,
                                       model_description["data-source"],
-                                      "validdata.pfile")
+                                      "validdata.hdf5")
 
     # Get latest model file
     basename = "model"
@@ -130,9 +130,9 @@ def main(model_folder):
     # Analyze model
     logging.info(model_description['model'])
     data = {}
-    data['training'] = os.path.join(model_folder, "traindata.pfile")
-    data['testing'] = os.path.join(model_folder, "testdata.pfile")
-    data['validating'] = os.path.join(model_folder, "validdata.pfile")
+    data['training'] = os.path.join(model_folder, "traindata.hdf5")
+    data['testing'] = os.path.join(model_folder, "testdata.hdf5")
+    data['validating'] = os.path.join(model_folder, "validdata.hdf5")
     train_model(model_folder)
 
 

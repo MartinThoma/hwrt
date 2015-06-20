@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 """
-Create pfiles.
+Create feature files.
 
 Before this script is run, the `download.py` should get executed to generate
 a handwriting_datasets.pickle with exactly those symbols that should also
-be present in the pfiles and only raw_data that might get used for the
+be present in the feature files and only raw_data that might get used for the
 test-, validation- and training set.
 """
 
@@ -75,7 +75,7 @@ def _create_translation_file(feature_folder,
 
 
 def main(feature_folder, create_learning_curve=False):
-    """main function of create_pfiles.py"""
+    """main function of create_ffiles.py"""
 
     # Read the feature description file
     with open(os.path.join(feature_folder, "info.yml"), 'r') as ymlfile:
@@ -87,21 +87,21 @@ def main(feature_folder, create_learning_curve=False):
     if os.path.isdir(path_to_data):
         path_to_data = os.path.join(path_to_data, "data.pickle")
     target_paths = {'traindata': os.path.join(feature_folder,
-                                              "traindata.pfile"),
+                                              "traindata.hdf5"),
                     'validdata': os.path.join(feature_folder,
-                                              "validdata.pfile"),
+                                              "validdata.hdf5"),
                     'testdata': os.path.join(feature_folder,
-                                             "testdata.pfile")}
+                                             "testdata.hdf5")}
 
     feature_list = features.get_features(feature_description['features'])
     mult_queue = data_multiplication.get_data_multiplication_queue(
         feature_description['data-multiplication'])
 
-    # Set everything up for the creation of the 3 pfiles (test, validation,
+    # Set everything up for the creation of the 3 hdf5 (test, validation,
     # training).
 
     os.chdir(feature_folder)
-    logging.info("Start creation of pfiles...")
+    logging.info("Start creation of hdf5-files...")
     logging.info("Get sets from '%s' ...", path_to_data)
     (training_set, validation_set, test_set, formula_id2index,
      preprocessing_queue, index2latex) = get_sets(path_to_data)
@@ -114,7 +114,7 @@ def main(feature_folder, create_learning_curve=False):
     preprocessing.print_preprocessing_list(preprocessing_queue)
     features.print_featurelist(feature_list)
 
-    logging.info("Start creating pfiles")
+    logging.info("Start creating hdf5 files")
 
     # Get the dimension of the feature vector
     input_features = sum(map(lambda n: n.get_dimension(), feature_list))
@@ -131,12 +131,12 @@ def main(feature_folder, create_learning_curve=False):
                                                 feature_list,
                                                 is_traindata)
         logging.info("%s length: %i", dataset_name, len(prepared))
-        logging.info("start 'make_pfile' ...")
-        make_pfile(dataset_name,
-                   input_features,
-                   prepared,
-                   os.path.join(feature_folder, target_paths[dataset_name]),
-                   create_learning_curve)
+        logging.info("start 'make_hdf5'x ...")
+        make_hdf5(dataset_name,
+                  input_features,
+                  prepared,
+                  os.path.join(feature_folder, target_paths[dataset_name]),
+                  create_learning_curve)
 
         _create_translation_file(feature_folder,
                                  dataset_name,
@@ -321,21 +321,21 @@ def prepare_dataset(dataset,
     return (prepared, translation)
 
 
-def make_pfile(dataset_name, feature_count, data,
-               output_filename, create_learning_curve):
+def make_hdf5(dataset_name, feature_count, data,
+              output_filename, create_learning_curve):
     """
-    Create the pfile.
+    Create the hdf5 file.
 
     Parameters
     ----------
     filename :
-        name of the file that pfile_create will use to create the pfile.
+        name of the file that hdf5_create will use to create the hdf5 file.
     feature_count : integer
         number of features
     data : list of tuples
          data format ('feature_string', 'label')
     """
-    # create raw data file for pfile_create
+    # create raw data file for hdf5_create
     if dataset_name == "traindata" and create_learning_curve:
         max_trainingexamples = 501
         output_filename_save = output_filename
@@ -354,10 +354,10 @@ def make_pfile(dataset_name, feature_count, data,
                     seen_symbols[label] += 1
                     new_data = (feature_string, label)
 
-            # Create the pfile
-            utils.create_pfile(output_filename, feature_count, new_data)
+            # Create the hdf5 file
+            utils.create_hdf5(output_filename, feature_count, new_data)
     else:
-        utils.create_pfile(output_filename, feature_count, data)
+        utils.create_hdf5(output_filename, feature_count, data)
 
 
 def get_parser():
@@ -381,7 +381,7 @@ def get_parser():
                         default=latest_featurefolder)
     parser.add_argument("-l", "--learning-curve",
                         dest="create_learning_curve",
-                        help="create pfiles for a learning curve",
+                        help="create hdf5 files for a learning curve",
                         action='store_true',
                         default=False)
     return parser

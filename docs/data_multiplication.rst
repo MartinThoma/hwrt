@@ -16,7 +16,7 @@ The automatic data multiplication works like this:
 
 .. warning::
 
-    The create_pfile procedure replaces the current set of recordings by the
+    The create_ffile procedure replaces the current set of recordings by the
     set returned by the data multiplication steps.
 
 .. image:: rotated-30-0+30.png

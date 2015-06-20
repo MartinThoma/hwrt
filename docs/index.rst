@@ -36,7 +36,7 @@ Contents:
    preprocessing
    data_multiplication
    features
-   create_pfiles
+   create_ffiles
    plugins
    development
 

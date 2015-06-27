@@ -105,7 +105,7 @@ def get_symbol_ids(symbol_yml_file, metadata):
                     else:
                         sys.exit(-1)
                 mapping_ids.append(filtered[0]['id'])
-        symbol_ids.append({'id': results[0]['id'],
+        symbol_ids.append({'id': int(results[0]['id']),
                            'formula_in_latex': results[0]['formula_in_latex'],
                            'mappings': mapping_ids})
         for id_tmp in mapping_ids:

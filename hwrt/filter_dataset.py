@@ -53,6 +53,8 @@ def get_symbol_ids(symbol_yml_file, metadata):
     Parameters
     ----------
     symbol_yml_file : string
+    metadata : dict
+        Metainformation of symbols, like the id on write-math.com.
 
     Returns
     -------
@@ -103,7 +105,9 @@ def get_symbol_ids(symbol_yml_file, metadata):
                     else:
                         sys.exit(-1)
                 mapping_ids.append(filtered[0]['id'])
-        symbol_ids.append({'id': results[0]['id'], 'mappings': mapping_ids})
+        symbol_ids.append({'id': results[0]['id'],
+                           'formula_in_latex': results[0]['formula_in_latex'],
+                           'mappings': mapping_ids})
         for id_tmp in mapping_ids:
             if id_tmp not in symbol_ids_set:
                 symbol_ids_set.add(id_tmp)
@@ -149,6 +153,13 @@ def transform_sids(symbol_ids):
 
 
 def get_metadata():
+    """Get metadata of symbols, like their tags, id on write-math.com, LaTeX
+    command and unicode code point.
+
+    Returns
+    -------
+    dict
+    """
     misc_path = pkg_resources.resource_filename('hwrt', 'misc/')
     wm_symbols = os.path.join(misc_path, 'wm_symbols.csv')
     wm_tags = os.path.join(misc_path, 'wm_tags.csv')

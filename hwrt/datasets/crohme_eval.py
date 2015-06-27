@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """Evaluate a folder of InkML files for a CROHME competition."""
 

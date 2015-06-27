@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """Support for the SCG INK format defined in
 https://www.scg.uwaterloo.ca/mathbrush/publications/corpus.pdf

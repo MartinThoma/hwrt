@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """Script to import data into write-math.com"""
 
@@ -23,7 +24,7 @@ def main(directory):
                                                       len(symbol_recs)))
         for hw, info in symbol_recs:
             pass
-            #datasets.insert_recording(hw, info)
+            # datasets.insert_recording(hw, info)
     logging.info("Done importing dataset")
 
 

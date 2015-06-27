@@ -1201,7 +1201,7 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 1519,Ä,Ä,196,,single symbol
 1520,Ü,Ü,220,,single symbol
 1521,ß,ß,0,,single symbol
-1522,0,0,8228,ONE DOT LEADER,single symbol
+1522,.,.,8228,ONE DOT LEADER,single symbol
 1523,",",",",8218,SINGLE LOW-9 QUOTATION MARK,single symbol
 1524,;,;,59,SEMICOLON,single symbol
 1525,colon,:,58,COLON,single symbol

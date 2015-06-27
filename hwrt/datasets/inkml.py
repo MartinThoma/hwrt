@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import json
 import signal
@@ -21,7 +22,11 @@ def beautify_xml(path):
     with open(path) as f:
         content = f.read()
 
-    pretty_print = lambda data: '\n'.join([line for line in parseString(data).toprettyxml(indent=' '*2).split('\n') if line.strip()])
+    pretty_print = lambda data: '\n'.join([line for line in
+                                           parseString(data)
+                                           .toprettyxml(indent=' ' * 2)
+                                           .split('\n')
+                                           if line.strip()])
     return pretty_print(content)
 
 
@@ -61,7 +66,7 @@ def read(filepath):
     # Get the raw data
     recording = []
     strokes = sorted(root.findall('{http://www.w3.org/2003/InkML}trace'),
-                     key=lambda child: child.attrib['id'])
+                     key=lambda child: int(child.attrib['id']))
     time = 0
     for stroke in strokes:
         stroke = stroke.text.strip().split(',')
@@ -81,7 +86,6 @@ def read(filepath):
 
     # Get LaTeX
     formula_in_latex = None
-    # TODO: Make sure the order is correct!!!!!
     annotations = root.findall('{http://www.w3.org/2003/InkML}annotation')
     for annotation in annotations:
         if annotation.attrib['type'] == 'truth':
@@ -98,24 +102,22 @@ def read(filepath):
 
     # Get segmentation
     segmentation = []
-    # TODO: Make sure the order is correct!!!!!
-    traceGroups = root.findall('{http://www.w3.org/2003/InkML}traceGroup')
-    if len(traceGroups) != 1:
+    trace_groups = root.findall('{http://www.w3.org/2003/InkML}traceGroup')
+    if len(trace_groups) != 1:
         raise Exception('Malformed InkML',
                         'Exactly 1 top level traceGroup expected, found %i.' %
-                        len(traceGroups))
-    traceGroup = traceGroups[0]
+                        len(trace_groups))
+    trace_group = trace_groups[0]
     symbol_stream = []  # has to be consistent with segmentation
-    # TODO: Make sure the order is correct!!!!!
-    for tg in traceGroup.findall('{http://www.w3.org/2003/InkML}traceGroup'):
+    for tg in trace_group.findall('{http://www.w3.org/2003/InkML}traceGroup'):
         annotations = tg.findall('{http://www.w3.org/2003/InkML}annotation')
         if len(annotations) != 1:
             raise ValueError("%i annotations found for '%s'." %
                              (len(annotations), filepath))
         symbol_stream.append(formula_to_dbid(normalize_symbol_name(annotations[0].text)))
-        traceViews = tg.findall('{http://www.w3.org/2003/InkML}traceView')
+        trace_views = tg.findall('{http://www.w3.org/2003/InkML}traceView')
         symbol = []
-        for traceView in traceViews:
+        for traceView in trace_views:
             symbol.append(int(traceView.attrib['traceDataRef']))
         segmentation.append(symbol)
     hw.symbol_stream = symbol_stream
@@ -145,14 +147,17 @@ def read_folder(folder):
     import glob
     recordings = []
     for filename in natsorted(glob.glob("%s/*.inkml" % folder)):
-        #logging.info(filename)
         hw = read(filename)
         if hw.formula_in_latex is not None:
             hw.formula_in_latex = hw.formula_in_latex.strip()
-        if hw.formula_in_latex is None or not hw.formula_in_latex.startswith('$') or not hw.formula_in_latex.endswith('$'):
+        if hw.formula_in_latex is None or \
+           not hw.formula_in_latex.startswith('$') or \
+           not hw.formula_in_latex.endswith('$'):
             if hw.formula_in_latex is not None:
-                logging.info("Starts with: %s", str(hw.formula_in_latex.startswith('$')))
-                logging.info("ends with: %s", str(hw.formula_in_latex.endswith('$')))
+                logging.info("Starts with: %s",
+                             str(hw.formula_in_latex.startswith('$')))
+                logging.info("ends with: %s",
+                             str(hw.formula_in_latex.endswith('$')))
             logging.info(hw.formula_in_latex)
             logging.info(hw.segmentation)
             hw.show()
@@ -161,10 +166,8 @@ def read_folder(folder):
 
 
 def main():
-    #hw = read("misc/IVC_learn/f1e1.inkml")
-    #hw.show()
-
-    folder = "/home/moose/Downloads/ICFHR_package/CROHME2011_data/CROHME_training/CROHME_training/"
+    folder = ("/home/moose/Downloads/"
+              "ICFHR_package/CROHME2011_data/CROHME_training/CROHME_training/")
     logging.info(folder)
     read_folder(folder)
 

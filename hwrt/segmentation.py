@@ -36,6 +36,7 @@ from .HandwrittenData import HandwrittenData
 from . import features
 from . import geometry
 from . import partitions
+from . import less_than
 
 
 def main():
@@ -51,7 +52,7 @@ def main():
     stroke_segmented_classifier = lambda X: nn(X)[0][1]
     y_predicted = numpy.argmax(nn(X), axis=1)
     classification = [yi == yip for yi, yip in zip(y, y_predicted)]
-    err = float(sum([not i for i in classification]))/len(classification)
+    err = float(sum([not i for i in classification])) / len(classification)
     logging.info("Error: %0.2f (for %i training examples)", err, len(y))
 
     logging.info("Get single stroke classifier")
@@ -60,15 +61,15 @@ def main():
     logging.info("Start testing")
     score_place = []
     out_of_order_count = 0
-    ## Filter recordings
-    #recordings = filter_recordings(recordings)
+    # Filter recordings
+    # recordings = filter_recordings(recordings)
     over_segmented_symbols = 0
     under_segmented_symbols = 0
     overunder_segmented_symbols = 0
 
     for nr, recording in enumerate(recordings):
         if nr % 100 == 0:
-            print(("## %i " % nr) + "#"*80)
+            print(("## %i " % nr) + "#" * 80)
 
         t0 = time.time()
         seg_predict = get_segmentation(recording['data'],
@@ -89,7 +90,7 @@ def main():
             seg, score = pred
             if i == 0:
                 pred_str = "  Predict segmentation:\t%s (%0.8f)" % (seg, score)
-            #print("#{0:>3} {1:.8f}: {2}".format(i, score, seg))
+            # print("#{0:>3} {1:.8f}: {2}".format(i, score, seg))
             if seg == real_seg:
                 score_place.append(i)
                 break
@@ -100,7 +101,7 @@ def main():
             print("## %i" % recording['id'])
             print("  Real segmentation:\t%s (got at place %i)" % (real_seg, i))
             print(pred_str)
-            print("  Segmentation took %0.4f seconds." % (t1-t0))
+            print("  Segmentation took %0.4f seconds." % (t1 - t0))
             if has_wrong_break(real_seg, seg_predict[0][0]):
                 print("  over-segmented")
             if has_missing_break(real_seg, seg_predict[0][0]):
@@ -108,14 +109,17 @@ def main():
         out_of_order_count += _is_out_of_order(real_seg)
     logging.info("mean: %0.2f", numpy.mean(score_place))
     logging.info("median: %0.2f", numpy.median(score_place))
-    logging.info("TOP-1: %0.2f", _less_than(score_place, 1)/len(recordings))
-    logging.info("TOP-3: %0.2f", _less_than(score_place, 3)/len(recordings))
-    logging.info("TOP-10: %0.2f", _less_than(score_place, 10)/len(recordings))
-    logging.info("TOP-20: %0.2f", _less_than(score_place, 20)/len(recordings))
-    logging.info("TOP-50: %0.2f", _less_than(score_place, 50)/len(recordings))
-    logging.info("Over-segmented: %0.2f", float(over_segmented_symbols)/len(recordings))
-    logging.info("Under-segmented: %0.2f", float(under_segmented_symbols)/len(recordings))
-    logging.info("overUnder-segmented: %0.2f", float(overunder_segmented_symbols)/len(recordings))
+    logging.info("TOP-1: %0.2f", less_than(score_place, 1) / len(recordings))
+    logging.info("TOP-3: %0.2f", less_than(score_place, 3) / len(recordings))
+    logging.info("TOP-10: %0.2f", less_than(score_place, 10) / len(recordings))
+    logging.info("TOP-20: %0.2f", less_than(score_place, 20) / len(recordings))
+    logging.info("TOP-50: %0.2f", less_than(score_place, 50) / len(recordings))
+    logging.info("Over-segmented: %0.2f",
+                 float(over_segmented_symbols) / len(recordings))
+    logging.info("Under-segmented: %0.2f",
+                 float(under_segmented_symbols) / len(recordings))
+    logging.info("overUnder-segmented: %0.2f",
+                 float(overunder_segmented_symbols) / len(recordings))
     logging.info("Out of order: %i", out_of_order_count)
     logging.info("Total: %i", len(recordings))
 
@@ -755,10 +759,6 @@ def _is_out_of_order(segmentation):
                 return True
             last_stroke = stroke
     return False
-
-
-def _less_than(l, n):
-    return float(len([1 for el in l if el < n]))
 
 
 class single_symbol_stroke_classifier(object):

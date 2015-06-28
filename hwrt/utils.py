@@ -37,8 +37,8 @@ def print_status(total, current, start_time=None):
     start_time : int
         The start time in seconds since 1970 to estimate the remaining time.
     """
-    percentage_done = float(current)/total
-    sys.stdout.write("\r%0.2f%% " % (percentage_done*100))
+    percentage_done = float(current) / total
+    sys.stdout.write("\r%0.2f%% " % (percentage_done * 100))
     if start_time is not None:
         current_running_time = time.time() - start_time
         remaining_seconds = current_running_time / percentage_done
@@ -516,8 +516,8 @@ def get_possible_splits(n):
     """
     get_bin = lambda x, n: x >= 0 and str(bin(x))[2:].zfill(n) or "-" + str(bin(x))[3:].zfill(n)
     possible_splits = []
-    for i in range(2**(n-1)):
-        possible_splits.append(get_bin(i, n-1))
+    for i in range(2**(n - 1)):
+        possible_splits.append(get_bin(i, n - 1))
     return possible_splits
 
 
@@ -897,3 +897,19 @@ def get_class(name, config_key, module):
 
     logging.debug("Unknown class '%s'.", name)
     return None
+
+
+def less_than(l, n):
+    """Get number of symbols in list `l` which have a value less than `n`.
+
+    Parameters
+    ----------
+    l : list of numbers
+    n : int
+
+    Returns
+    -------
+    float :
+        Number of elements of the list l which are strictly less than n.
+    """
+    return float(len([1 for el in l if el < n]))

@@ -15,22 +15,7 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
 # hwrt modules
 from ..classify import classify_segmented_recording as evaluate
 from ..datasets import mfrdb
-
-
-def _less_than(l, n):
-    """Get number of symbols in list `l` which have a value less than `n`.
-
-    Parameters
-    ----------
-    l : list
-        List of numbers
-    n : int
-
-    Returns
-    -------
-    float (with int values)
-    """
-    return float(len([1 for el in l if el < n]))
+from ..utils import less_than
 
 
 def main(directory):
@@ -59,16 +44,16 @@ def main(directory):
                     break
             else:
                 if recording.formula_in_latex not in symbols_showed:
-                    logging.info("#"*80)
+                    logging.info("#" * 80)
                     logging.info(recording.formula_in_latex)
                     symbols_showed.append(recording.formula_in_latex)
         logging.info(("{0:>10}: TOP-1: {1:0.2f} | TOP-3: {2:0.2f} | "
                       "TOP-10: {3:0.2f} | TOP-50: {4:0.2f} | {5}").format(
                      latex,
-                     _less_than(score_place_symbol, 1)/len(symbol_recording),
-                     _less_than(score_place_symbol, 3)/len(symbol_recording),
-                     _less_than(score_place_symbol, 10)/len(symbol_recording),
-                     _less_than(score_place_symbol, 50)/len(symbol_recording),
+                     less_than(score_place_symbol, 1) / len(symbol_recording),
+                     less_than(score_place_symbol, 3) / len(symbol_recording),
+                     less_than(score_place_symbol, 10) / len(symbol_recording),
+                     less_than(score_place_symbol, 50) / len(symbol_recording),
                      len(symbol_recording)))
 
     total_recordings = len([1 for l, symb in recordings for el in symb])
@@ -79,8 +64,8 @@ def main(directory):
     for i in [1, 3, 10, 20, 50]:
         logging.info("TOP-%i: %0.2f correct",
                      i,
-                     _less_than(score_place, i)/total_recordings)
-    #logging.info("Out of order: %i", out_of_order_count)
+                     less_than(score_place, i) / total_recordings)
+    # logging.info("Out of order: %i", out_of_order_count)
     logging.info("Total: %i", total_recordings)
 
 

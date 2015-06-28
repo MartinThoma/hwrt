@@ -54,14 +54,11 @@ def print_report(score_place):
     logging.info("Total: %i", len(score_place))
     logging.info("mean: %0.2f", numpy.mean(score_place))
     logging.info("median: %0.2f", numpy.median(score_place))
-    logging.info("TOP-1: %0.2f", less_than(score_place, 1) / len(score_place))
-    logging.info("TOP-3: %0.2f", less_than(score_place, 3) / len(score_place))
-    logging.info("TOP-10: %0.2f",
-                 less_than(score_place, 10) / len(score_place))
-    logging.info("TOP-20: %0.2f",
-                 less_than(score_place, 20) / len(score_place))
-    logging.info("TOP-50: %0.2f",
-                 less_than(score_place, 50) / len(score_place))
+    for i in [1, 3, 10, 50]:
+        logging.info("TOP-%i error: %0.4f",
+                     i,
+                     (len(score_place) - less_than(score_place, i)) /
+                     len(score_place))
 
 
 def get_position(results, correct, default=10000):

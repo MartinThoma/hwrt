@@ -18,7 +18,12 @@ from ..datasets import formula_to_dbid
 
 
 def beautify_xml(path):
-    """Beautify / pretty print XML in `path`."""
+    """Beautify / pretty print XML in `path`.
+
+    Returns
+    -------
+    str
+    """
     with open(path) as f:
         content = f.read()
 

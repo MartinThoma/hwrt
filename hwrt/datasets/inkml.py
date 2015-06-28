@@ -42,7 +42,7 @@ def normalize_symbol_name(symbol_name):
         return '\\sqrt{}'
     elif symbol_name in ['&lt;', '\lt']:
         return '<'
-    elif symbol_name == '&gt;':
+    elif symbol_name in ['&gt;', '\gt']:
         return '>'
     elif symbol_name == '{':
         return '\{'

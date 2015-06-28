@@ -255,6 +255,27 @@ class HandwrittenData(object):
                 counter += 1
         return (xsum / counter, ysum / counter)
 
+    def to_single_symbol_list(self):
+        """Convert this HandwrittenData object into a list of HandwrittenData
+        objects. Each element of the list is a single symbol.
+
+        Returns
+        -------
+        list of HandwrittenData objects
+        """
+        symbol_stream = getattr(self,
+                                'symbol_stream',
+                                [None for symbol in self.segmentation])
+        single_symbols = []
+        pointlist = self.get_sorted_pointlist()
+        for stroke_indices, label in zip(self.segmentation, symbol_stream):
+            strokes = []
+            for stroke_index in stroke_indices:
+                strokes.append(pointlist[stroke_index])
+            single_symbols.append(HandwrittenData(json.dumps(strokes),
+                                                  formula_id=label))
+        return single_symbols
+
     def __eq__(self, other):
         return (isinstance(other, self.__class__)
                 and self.__dict__ == other.__dict__)

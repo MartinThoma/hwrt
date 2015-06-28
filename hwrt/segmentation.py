@@ -36,7 +36,7 @@ from .HandwrittenData import HandwrittenData
 from . import features
 from . import geometry
 from . import partitions
-from . import less_than
+from .utils import less_than
 
 
 def main():

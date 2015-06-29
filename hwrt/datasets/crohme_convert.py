@@ -11,6 +11,12 @@ import glob
 import natsort
 import numpy
 import pickle
+import os
+import pkg_resources
+
+# Python 2 / 3 compatibility
+if sys.version_info[0] == 2:
+    from future.builtins import open  # pylint: disable=W0622
 
 from hwrt import classify
 from hwrt import utils
@@ -75,14 +81,46 @@ def save_raw_pickle(hwr_objects):
     ----------
     hwr_objects : list of hwr objects
     """
+    converted_hwr = []
+
+    translate = {}
+    translate_id = {}
+    model_path = pkg_resources.resource_filename('hwrt', 'misc/')
+    translation_csv = os.path.join(model_path, 'latex2writemathindex.csv')
+    arguments = {'newline': '', 'encoding': 'utf8'}
+    with open(translation_csv, 'rt', **arguments) as csvfile:
+        contents = csvfile.read()
+    lines = contents.split("\n")
+    for csvrow in lines:
+        csvrow = csvrow.split(',')
+        if len(csvrow) == 1:
+            writemathid = csvrow[0]
+            latex = ""
+        else:
+            writemathid, latex = int(csvrow[0]), csvrow[1:]
+            latex = ','.join(latex)
+        translate[latex] = writemathid
+        translate_id[writemathid] = latex
+
+    for hwr in hwr_objects:
+        hwr.formula_in_latex = translate_id[hwr.formula_id]
+
     formula_id2latex = {}
-    # for el in hwr_objects:
-    #     if el.formula_id not in formula_id2latex:
-    #         formula_id2latex[el.formula_id] = el.formula_in_latex
-    logging.debug('formula_id2latex: %s', formula_id2latex)
+    for el in hwr_objects:
+        if el.formula_id not in formula_id2latex:
+            formula_id2latex[el.formula_id] = el.formula_in_latex
+
+    for hwr in hwr_objects:
+        hwr.formula_in_latex = translate_id[hwr.formula_id]
+        hwr.raw_data_id = 42
+        converted_hwr.append({'is_in_testset': 0,
+                              'formula_id': hwr.formula_id,
+                              'handwriting': hwr,
+                              'id': 42,
+                              'formula_in_latex': hwr.formula_in_latex})
     with open('crohme.pickle', 'wb') as f:
-        pickle.dump({'formula_id2latex': None,
-                     'handwriting_datasets': hwr_objects},
+        pickle.dump({'formula_id2latex': formula_id2latex,
+                     'handwriting_datasets': converted_hwr},
                     f,
                     protocol=pickle.HIGHEST_PROTOCOL)
 

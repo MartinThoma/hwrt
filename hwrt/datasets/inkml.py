@@ -110,8 +110,9 @@ def read(filepath):
     trace_groups = root.findall('{http://www.w3.org/2003/InkML}traceGroup')
     if len(trace_groups) != 1:
         raise Exception('Malformed InkML',
-                        'Exactly 1 top level traceGroup expected, found %i.' %
-                        len(trace_groups))
+                        ('Exactly 1 top level traceGroup expected, found %i. '
+                         '(%s) - probably no ground truth?') %
+                        (len(trace_groups), filepath))
     trace_group = trace_groups[0]
     symbol_stream = []  # has to be consistent with segmentation
     for tg in trace_group.findall('{http://www.w3.org/2003/InkML}traceGroup'):
@@ -129,8 +130,8 @@ def read(filepath):
     hw.segmentation = segmentation
     _flat_seg = [stroke for symbol in segmentation for stroke in symbol]
     assert len(_flat_seg) == len(recording), \
-        ("Segmentation had length %i, but recording has %i strokes" %
-         (len(_flat_seg), len(recording)))
+        ("Segmentation had length %i, but recording has %i strokes (%s)" %
+         (len(_flat_seg), len(recording), filepath))
     assert set(_flat_seg) == set(range(len(_flat_seg)))
     hw.inkml = beautify_xml(filepath)
     hw.filepath = filepath

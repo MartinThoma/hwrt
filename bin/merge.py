@@ -46,12 +46,14 @@ def merge(d1, d2):
     -------
     dict
     """
-    formula_id2latex = d1['formula_id2latex'].copy()
-    print(formula_id2latex)
+    if d1['formula_id2latex'] is None:
+        formula_id2latex = {}
+    else:
+        formula_id2latex = d1['formula_id2latex'].copy()
     formula_id2latex.update(d2['formula_id2latex'])
     handwriting_datasets = d1['handwriting_datasets']
     for dataset in d2['handwriting_datasets']:
-        handwriting_datasets.append(handwriting_datasets)
+        handwriting_datasets.append(dataset)
     return {'formula_id2latex': formula_id2latex,
             'handwriting_datasets': handwriting_datasets}
 

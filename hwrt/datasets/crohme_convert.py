@@ -10,6 +10,7 @@ import sys
 import glob
 import natsort
 import numpy
+import pickle
 
 from hwrt import classify
 from hwrt import utils
@@ -24,22 +25,20 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
 def main(folder):
     score_place = []
     wrong_counter = {}
-    for filepath in natsort.natsorted(glob.glob("%s/*.inkml" % folder)):
-        tmp = inkml.read(filepath)
-        for hwr in tmp.to_single_symbol_list():
-            results = classify.classify_segmented_recording(hwr.raw_data_json)
-            score_place.append(get_position(results, hwr.formula_id))
-            if score_place[-1] > 350:
-                if hwr.formula_id not in wrong_counter:
-                    wrong_counter[hwr.formula_id] = 1
-                    logging.info('%i probably not in evaluation set?',
-                                 hwr.formula_id)
-                else:
-                    wrong_counter[hwr.formula_id] += 1
+    for hwr in read_folder(folder):
+        results = classify.classify_segmented_recording(hwr.raw_data_json)
+        score_place.append(get_position(results, hwr.formula_id))
+        if score_place[-1] > 350:
+            if hwr.formula_id not in wrong_counter:
+                wrong_counter[hwr.formula_id] = 1
+                logging.info('%i probably not in evaluation set?',
+                             hwr.formula_id)
+            else:
+                wrong_counter[hwr.formula_id] += 1
 
-            if len(score_place) % 200 == 0:
-                print("#" * 80)
-                print_report(score_place)
+        if len(score_place) % 200 == 0:
+            print("#" * 80)
+            print_report(score_place)
     print("#" * 80)
     print_report(score_place)
     print("#" * 80)
@@ -48,6 +47,44 @@ def main(folder):
                              key=lambda n: n[1]):
         print("http://www.martin-thoma.de/write-math/symbol/?id=%i :%i count" %
               (key, value))
+
+
+def read_folder(folder):
+    """
+    Parameters
+    ----------
+    folder : str
+
+    Returns
+    -------
+    list of HandwrittenData objects
+    """
+    hwr_objects = []
+    for filepath in natsort.natsorted(glob.glob("%s/*.inkml" % folder)):
+        tmp = inkml.read(filepath)
+        for hwr in tmp.to_single_symbol_list():
+            hwr_objects.append(hwr)
+    logging.info("Done reading formulas")
+    save_raw_pickle(hwr_objects)
+    return hwr_objects
+
+
+def save_raw_pickle(hwr_objects):
+    """
+    Parameters
+    ----------
+    hwr_objects : list of hwr objects
+    """
+    formula_id2latex = {}
+    # for el in hwr_objects:
+    #     if el.formula_id not in formula_id2latex:
+    #         formula_id2latex[el.formula_id] = el.formula_in_latex
+    logging.debug('formula_id2latex: %s', formula_id2latex)
+    with open('crohme.pickle', 'wb') as f:
+        pickle.dump({'formula_id2latex': None,
+                     'handwriting_datasets': hwr_objects},
+                    f,
+                    protocol=pickle.HIGHEST_PROTOCOL)
 
 
 def print_report(score_place):

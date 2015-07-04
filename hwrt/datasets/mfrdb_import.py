@@ -11,8 +11,8 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     stream=sys.stdout)
 
 # hwrt modules
-from hwrt.datasets import mfrdb
-from hwrt import datasets
+from . import mfrdb
+# from .. import datasets
 
 
 def main(directory):

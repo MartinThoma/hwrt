@@ -6,7 +6,7 @@
 import os
 
 # hwrt modules
-from hwrt.HandwrittenData import HandwrittenData
+from hwrt.handwritten_data import HandwrittenData
 
 
 def get_all_symbols():

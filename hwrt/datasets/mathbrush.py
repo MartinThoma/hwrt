@@ -17,7 +17,7 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     stream=sys.stdout)
 
 # hwrt modules
-from .. import HandwrittenData
+from .. import handwritten_data
 from .. import datasets
 
 missing_stroke_segmentation = []
@@ -142,7 +142,7 @@ def get_segmentation(recording, annotations, internal_id=None):
         symbol_stream.append(datasets.formula_to_dbid(mathbrush_formula_fix(symbol_string), True))
 
     if len(needed) > 0:
-        # hw = HandwrittenData.HandwrittenData(json.dumps(recording))
+        # hw = handwritten_data.HandwrittenData(json.dumps(recording))
         # hw.show()
         missing_stroke_segmentation.append(internal_id)
         segmentation.append(needed)
@@ -218,7 +218,8 @@ def parse_scg_ink_file(filename):
                 except ValueError:
                     raise ValueError(("%s: Line %i has to be the number of "
                                       "points which has to be an integer, "
-                                      " but was '%s'") % (filename, i+1, line))
+                                      " but was '%s'") %
+                                     (filename, i + 1, line))
                 if stroke_point_count <= 0:
                     raise ValueError(("%s: Stroke point count was %i, but "
                                       "should be > 0.") %
@@ -228,9 +229,9 @@ def parse_scg_ink_file(filename):
                 recording.append(current_stroke)
                 stroke_count -= 1
                 current_stroke = []
-    hw = HandwrittenData.HandwrittenData(json.dumps(recording),
-                                         formula_in_latex=formula_in_latex,
-                                         formula_id=datasets.formula_to_dbid(mathbrush_formula_fix(formula_in_latex)))
+    hw = handwritten_data.HandwrittenData(json.dumps(recording),
+                                          formula_in_latex=formula_in_latex,
+                                          formula_id=datasets.formula_to_dbid(mathbrush_formula_fix(formula_in_latex)))
     hw.internal_id = "/".join(filename.split("/")[-2:])
     hw.segmentation, hw.symbol_stream = get_segmentation(recording,
                                                          annotations,
@@ -240,7 +241,8 @@ def parse_scg_ink_file(filename):
     copyright_str = ("This dataset was contributed by MathBrush. You can "
                      "download their complete dataset by contacting them. See "
                      "[www.scg.uwaterloo.ca/mathbrush/]"
-                     "(https://www.scg.uwaterloo.ca/mathbrush/publications/corpus.pdf)")
+                     "(https://www.scg.uwaterloo.ca/mathbrush/publications/"
+                     "corpus.pdf)")
     hw.user_id = datasets.getuserid(hw.username, copyright_str)
     return hw
 
@@ -276,10 +278,10 @@ def main(directory):
     logging.info("Got %i recordings.", len(recordings))
     logging.info("Double segmented strokes: %i (%0.2f%%)",
                  len(double_segmentation),
-                 float(len(double_segmentation))/len(recordings))
+                 float(len(double_segmentation)) / len(recordings))
     logging.info("Missing segmented strokes: %i (%0.2f%%)",
                  len(missing_stroke_segmentation),
-                 float(len(missing_stroke_segmentation))/len(recordings))
+                 float(len(missing_stroke_segmentation)) / len(recordings))
     for recording in recordings:
         datasets.insert_recording(recording)
 

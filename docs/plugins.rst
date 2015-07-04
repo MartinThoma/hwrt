@@ -38,7 +38,7 @@ Preprocessing Plugin Example
     #!/usr/bin/env python
     # -*- coding: utf-8 -*-
 
-    import hwrt.HandwrittenData as HandwrittenData
+    import hwrt.handwritten_data as HandwrittenData
 
 
     class Nullify(object):
@@ -48,16 +48,16 @@ Preprocessing Plugin Example
         def __str__(self):
             return "Nullify"
 
-        def __call__(self, handwritten_data):
-            assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
+        def __call__(self, hwr_obj):
+            assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
                 "handwritten data is not of type HandwrittenData, but of %r" % \
-                type(handwritten_data)
-            # pointlist = handwritten_data.get_pointlist()
+                type(hwr_obj)
+            # pointlist = hwr_obj.get_pointlist()
             new_pointlist = []
             new_stroke = []
             new_stroke.append({'x': 0, 'y': 0, 'time': 0})
             new_pointlist.append(new_stroke)
-            handwritten_data.set_pointlist(new_pointlist)
+            hwr_obj.set_pointlist(new_pointlist)
 
 Feature Plugin Example
 ----------------------
@@ -67,7 +67,7 @@ Feature Plugin Example
     #!/usr/bin/env python
     # -*- coding: utf-8 -*-
 
-    import hwrt.HandwrittenData as HandwrittenData
+    import hwrt.handwritten_data as HandwrittenData
 
 
     class StrokeCountTata(object):
@@ -85,8 +85,8 @@ Feature Plugin Example
         def get_dimension(self):
             return 1
 
-        def __call__(self, handwritten_data):
-            assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
+        def __call__(self, hwr_obj):
+            assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
                 "handwritten data is not of type HandwrittenData, but of %r" % \
-                type(handwritten_data)
-            return [len(handwritten_data.get_pointlist())]
+                type(hwr_obj)
+            return [len(hwr_obj.get_pointlist())]

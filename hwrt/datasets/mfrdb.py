@@ -15,7 +15,7 @@ import pymysql.cursors
 import unicodedata
 
 # hwrt modules
-from .. import HandwrittenData
+from .. import handwritten_data
 from .. import utils
 from .. import datasets
 
@@ -147,8 +147,8 @@ def get_recordings(directory):
                     time += 20
                 time += 200
                 recording.append(stroke)
-            hw = HandwrittenData.HandwrittenData(json.dumps(recording),
-                                                 formula_in_latex=name)
+            hw = handwritten_data.HandwrittenData(json.dumps(recording),
+                                                  formula_in_latex=name)
             info = {}
             if 'text' in example['FormulaInputInfo']['Username']:
                 uname = example['FormulaInputInfo']['Username']['text'].strip()

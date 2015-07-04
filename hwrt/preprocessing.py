@@ -22,7 +22,7 @@ from scipy.interpolate import interp1d
 import math
 
 # hwrt modules
-from . import HandwrittenData
+from . import handwritten_data
 from . import utils
 from . import geometry
 
@@ -37,7 +37,7 @@ def euclidean_distance(p1, p2):
     >>> euclidean_distance({'x': 0, 'y': 0}, {'x': 3, 'y': 4})
     5.0
     """
-    return math.sqrt((p1["x"]-p2["x"])**2 + (p1["y"]-p2["y"])**2)
+    return math.sqrt((p1["x"] - p2["x"])**2 + (p1["y"] - p2["y"])**2)
 
 
 def get_preprocessing_queue(preprocessing_list):
@@ -90,11 +90,11 @@ class RemoveDuplicateTime(object):
     def __str__(self):
         return "remove duplicate time"
 
-    def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
+    def __call__(self, hwr_obj):
+        assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
             "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
-        pointlist = handwritten_data.get_pointlist()
+            type(hwr_obj)
+        pointlist = hwr_obj.get_pointlist()
         new_pointlist = []
         times = []
         for stroke in pointlist:
@@ -111,7 +111,7 @@ class RemoveDuplicateTime(object):
             ("The list of all times in RemoveDuplicateTime has %i values, "
              "but the set has %i values: %s --- %s") % \
             (len(times), len(set(times)), pointlist, new_pointlist)
-        handwritten_data.set_pointlist(new_pointlist)
+        hwr_obj.set_pointlist(new_pointlist)
 
 
 class RemoveDots(object):
@@ -124,11 +124,11 @@ class RemoveDots(object):
     def __str__(self):
         return "remove points"
 
-    def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
+    def __call__(self, hwr_obj):
+        assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
             "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
-        pointlist = handwritten_data.get_pointlist()
+            type(hwr_obj)
+        pointlist = hwr_obj.get_pointlist()
         has_nonpoint_stroke = False
         # Check if recording has non-point stroke:
         for stroke in pointlist:
@@ -139,7 +139,7 @@ class RemoveDots(object):
             for stroke in pointlist:
                 if len(stroke) > 1:
                     new_pointlist.append(stroke)
-            handwritten_data.set_pointlist(new_pointlist)
+            hwr_obj.set_pointlist(new_pointlist)
 
 
 class ScaleAndShift(object):
@@ -172,39 +172,39 @@ class ScaleAndShift(object):
                 " - max_height: %i\n") % \
             (self.center, self.max_width, self.max_height)
 
-    def _get_parameters(self, handwritten_data):
+    def _get_parameters(self, hwr_obj):
         """ Take a list of points and calculate the factors for scaling and
             moving it so that it's in the unit square. Keept the aspect
             ratio.
             Optionally center the points inside of the unit square.
         """
-        a = handwritten_data.get_bounding_box()
+        a = hwr_obj.get_bounding_box()
 
         width = a['maxx'] - a['minx'] + self.width_add
         height = a['maxy'] - a['miny'] + self.height_add
 
         factor_x, factor_y = 1, 1
         if width != 0:
-            factor_x = self.max_width/width
+            factor_x = self.max_width / width
 
         if height != 0:
-            factor_y = self.max_height/height
+            factor_y = self.max_height / height
 
         factor = min(factor_x, factor_y)
         addx, addy = 0.0, 0.0
 
         if self.center:
             # Only one dimension (x or y) has to be centered (the smaller one)
-            add = -(factor/(2.0*max(factor_x, factor_y)))
+            add = -(factor / (2.0 * max(factor_x, factor_y)))
 
             if factor == factor_x:
                 addy = add
                 if self.center_other:
-                    addx = -(width*factor/2.0)
+                    addx = -(width * factor / 2.0)
             else:
                 addx = add
                 if self.center_other:
-                    addy = -(height*factor/2.0)
+                    addy = -(height * factor / 2.0)
         assert factor > 0, "factor > 0 is False. factor = %s" % str(factor)
         assert isinstance(addx, float), "addx is %s" % str(addx)
         assert isinstance(addy, float), "addy is %s" % str(addy)
@@ -214,16 +214,16 @@ class ScaleAndShift(object):
         return {"factor": factor, "addx": addx, "addy": addy,
                 "minx": a['minx'], "miny": a['miny'], "mint": a['mint']}
 
-    def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
+    def __call__(self, hwr_obj):
+        assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
             "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+            type(hwr_obj)
 
-        tmp = self._get_parameters(handwritten_data)
+        tmp = self._get_parameters(hwr_obj)
         factor, addx, addy = tmp['factor'], tmp['addx'], tmp['addy']
         minx, miny, mint = tmp['minx'], tmp['miny'], tmp['mint']
 
-        pointlist = handwritten_data.get_pointlist()
+        pointlist = hwr_obj.get_pointlist()
         for strokenr, stroke in enumerate(pointlist):
             for key, p in enumerate(stroke):
                 pointlist[strokenr][key] = {
@@ -232,13 +232,13 @@ class ScaleAndShift(object):
                     "time": p["time"] - mint}
                 if "pen_down" in p:
                     pointlist[strokenr][key]["pen_down"] = p["pen_down"]
-        handwritten_data.set_pointlist(pointlist)
-        assert self.max_width - handwritten_data.get_width() >= -0.00001, \
+        hwr_obj.set_pointlist(pointlist)
+        assert self.max_width - hwr_obj.get_width() >= -0.00001, \
             "max_width: %0.5f; width: %0.5f" % (self.max_width,
-                                                handwritten_data.get_width())
-        assert self.max_height - handwritten_data.get_height() >= -0.00001, \
+                                                hwr_obj.get_width())
+        assert self.max_height - hwr_obj.get_height() >= -0.00001, \
             "max_height: %0.5f; height: %0.5f" % \
-            (self.max_height, handwritten_data.get_height())
+            (self.max_height, hwr_obj.get_height())
 
 
 class SpaceEvenly(object):
@@ -303,10 +303,10 @@ class SpaceEvenly(object):
             times = []
         for i in range(len(pointlist) - 1):
             stroke_info = {"start": pointlist[i][-1]['time'],
-                           "end": pointlist[i+1][0]['time'],
+                           "end": pointlist[i + 1][0]['time'],
                            "pen_down": False}
             x, y, t = [], [], []
-            for point in [pointlist[i][-1], pointlist[i+1][0]]:
+            for point in [pointlist[i][-1], pointlist[i + 1][0]]:
                 if point['time'] not in t:
                     x.append(point['x'])
                     y.append(point['y'])
@@ -324,12 +324,12 @@ class SpaceEvenly(object):
             times.append(stroke_info)
         return times
 
-    def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
+    def __call__(self, hwr_obj):
+        assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
             "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+            type(hwr_obj)
         # Make sure that the lists are sorted
-        pointlist = handwritten_data.get_sorted_pointlist()
+        pointlist = hwr_obj.get_sorted_pointlist()
 
         # Build 'times' datastructure which will contain information about
         # strokes and when they were started / ended and how they should be
@@ -352,7 +352,7 @@ class SpaceEvenly(object):
                     new_pointlist.append({'x': x, 'y': y, 'time': time,
                                           'pen_down':
                                           stroke_interval['pen_down']})
-        handwritten_data.set_pointlist([new_pointlist])
+        hwr_obj.set_pointlist([new_pointlist])
 
 
 class SpaceEvenlyPerStroke(object):
@@ -379,7 +379,7 @@ class SpaceEvenlyPerStroke(object):
                 " - kind: %s\n") % \
             (self.number, self.kind)
 
-    def _space(self, handwritten_data, stroke, kind):
+    def _space(self, hwr_obj, stroke, kind):
         """Do the interpolation of 'kind' for 'stroke'"""
         new_stroke = []
         stroke = sorted(stroke, key=lambda p: p['time'])
@@ -397,9 +397,9 @@ class SpaceEvenlyPerStroke(object):
             fx = interp1d(t, x, kind=kind)
             fy = interp1d(t, y, kind=kind)
         except Exception as e:  # pylint: disable=W0703
-            if handwritten_data.raw_data_id is not None:
+            if hwr_obj.raw_data_id is not None:
                 logging.debug("spline failed for raw_data_id %i",
-                              handwritten_data.raw_data_id)
+                              hwr_obj.raw_data_id)
             else:
                 logging.debug("spline failed")
             logging.debug(e)
@@ -425,11 +425,11 @@ class SpaceEvenlyPerStroke(object):
             new_stroke.append({'x': x, 'y': y, 'time': t})
         return new_stroke
 
-    def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
+    def __call__(self, hwr_obj):
+        assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
             "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
-        pointlist = handwritten_data.get_sorted_pointlist()
+            type(hwr_obj)
+        pointlist = hwr_obj.get_sorted_pointlist()
         new_pointlist = []
 
         for stroke in pointlist:
@@ -438,15 +438,15 @@ class SpaceEvenlyPerStroke(object):
                 new_stroke = stroke
             elif 2 <= len(stroke) <= 3:
                 # Linear interpolation for 2 or 3 points
-                new_stroke = self._space(handwritten_data,
+                new_stroke = self._space(hwr_obj,
                                          stroke,
                                          'linear')
             else:
-                new_stroke = self._space(handwritten_data,
+                new_stroke = self._space(hwr_obj,
                                          stroke,
                                          self.kind)
             new_pointlist.append(new_stroke)
-        handwritten_data.set_pointlist(new_pointlist)
+        hwr_obj.set_pointlist(new_pointlist)
 
 
 class DouglasPeucker(object):
@@ -496,17 +496,17 @@ class DouglasPeucker(object):
 
         return result_list
 
-    def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
+    def __call__(self, hwr_obj):
+        assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
             "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
-        pointlist = handwritten_data.get_pointlist()
+            type(hwr_obj)
+        pointlist = hwr_obj.get_pointlist()
 
         for i in range(0, len(pointlist)):
             pointlist[i] = self._stroke_simplification(pointlist[i])
-        handwritten_data.set_pointlist(pointlist)
+        hwr_obj.set_pointlist(pointlist)
         # This might have duplicated points! Filter them!
-        handwritten_data.preprocessing([RemoveDuplicateTime()])
+        hwr_obj.preprocessing([RemoveDuplicateTime()])
 
 
 class StrokeConnect(object):
@@ -527,25 +527,25 @@ class StrokeConnect(object):
         return "Stroke connect (minimum_distance: %0.2f)" % \
             self.minimum_distance
 
-    def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
+    def __call__(self, hwr_obj):
+        assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
             "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
-        pointlist = handwritten_data.get_pointlist()
+            type(hwr_obj)
+        pointlist = hwr_obj.get_pointlist()
 
         # Connecting strokes makes only sense when there are multiple strokes
         if len(pointlist) > 1:
             strokes = []
             last_appended = False
             i = 0
-            while i < len(pointlist)-1:
+            while i < len(pointlist) - 1:
                 last_point = pointlist[i][-1]
-                first_point = pointlist[i+1][0]
+                first_point = pointlist[i + 1][0]
                 if euclidean_distance(last_point, first_point) < \
                    self.minimum_distance:
-                    strokes.append(pointlist[i]+pointlist[i+1])
-                    pointlist[i+1] = strokes[-1]
-                    if i == len(pointlist)-2:
+                    strokes.append(pointlist[i] + pointlist[i + 1])
+                    pointlist[i + 1] = strokes[-1]
+                    if i == len(pointlist) - 2:
                         last_appended = True
                     i += 1
                 else:
@@ -553,7 +553,7 @@ class StrokeConnect(object):
                 i += 1
             if not last_appended:
                 strokes.append(pointlist[-1])
-            handwritten_data.set_pointlist(strokes)
+            hwr_obj.set_pointlist(strokes)
 
 
 class DotReduction(object):
@@ -572,18 +572,18 @@ class DotReduction(object):
         return "DotReduction (threshold: %0.2f)" % \
             self.threshold
 
-    def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
+    def __call__(self, hwr_obj):
+        assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
             "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+            type(hwr_obj)
 
-        def _get_max_distance(L):
+        def _get_max_distance(ps):
             """
             Find the maximum distance between two points in a list of points
 
             Parameters
             ----------
-            L : list
+            ps : list
                 list of points
 
             Returns
@@ -591,13 +591,13 @@ class DotReduction(object):
             float
                 maximum distance bewtween two points
             """
-            if len(L) <= 1:
+            if len(ps) <= 1:
                 return -1
             else:
-                max_dist = euclidean_distance(L[0], L[1])
-                for i in range(len(L)-1):
-                    for j in range(i+1, len(L)):
-                        max_dist = max(euclidean_distance(L[i], L[j]),
+                max_dist = euclidean_distance(ps[0], ps[1])
+                for i in range(len(ps) - 1):
+                    for j in range(i + 1, len(ps)):
+                        max_dist = max(euclidean_distance(ps[i], ps[j]),
                                        max_dist)
                 return max_dist
 
@@ -626,14 +626,14 @@ class DotReduction(object):
             return {'x': x, 'y': y, 'time': t}
 
         new_pointlist = []
-        pointlist = handwritten_data.get_pointlist()
+        pointlist = hwr_obj.get_pointlist()
         for stroke in pointlist:
             new_stroke = stroke
             if len(stroke) > 1 and _get_max_distance(stroke) < self.threshold:
                 new_stroke = [_get_average_point(stroke)]
             new_pointlist.append(new_stroke)
 
-        handwritten_data.set_pointlist(new_pointlist)
+        hwr_obj.set_pointlist(new_pointlist)
 
 
 class WildPointFilter(object):
@@ -651,12 +651,12 @@ class WildPointFilter(object):
         return "Wild point filter (threshold: %0.2f)" % \
             self.threshold
 
-    def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
+    def __call__(self, hwr_obj):
+        assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
             "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+            type(hwr_obj)
         new_pointlist = []
-        pointlist = handwritten_data.get_sorted_pointlist()
+        pointlist = hwr_obj.get_sorted_pointlist()
         for stroke in pointlist:
             new_stroke = []
             for last_point, point in zip(stroke, stroke[1:]):
@@ -665,7 +665,7 @@ class WildPointFilter(object):
                 time_dist = float(point['time'] - last_point['time'])
                 if time_dist == 0:
                     continue
-                speed = space_dist/time_dist
+                speed = space_dist / time_dist
                 if speed < self.threshold:
                     new_stroke.append(point)
 
@@ -681,14 +681,14 @@ class WeightedAverageSmoothing(object):
     def __init__(self, theta=None):
         """Theta is a list of 3 non-negative numbers"""
         if theta is None:
-            theta = [1./6, 4./6, 1./6]
+            theta = [1. / 6, 4. / 6, 1. / 6]
         assert len(theta) == 3, \
             "theta has length %i, but should have length 3" % \
             len(theta)
         theta = [float(element) for element in theta]
 
         # Normalize parameters to a sum of 1
-        self.theta = list(1./sum(theta) * numpy.array(theta))
+        self.theta = list(1. / sum(theta) * numpy.array(theta))
 
     def __repr__(self):
         return "WeightedAverageSmoothing"
@@ -711,22 +711,22 @@ class WeightedAverageSmoothing(object):
                 self.theta[2] * points[2][key]
         return new_point
 
-    def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
+    def __call__(self, hwr_obj):
+        assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
             "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+            type(hwr_obj)
         new_pointlist = []
-        pointlist = handwritten_data.get_sorted_pointlist()
+        pointlist = hwr_obj.get_sorted_pointlist()
         for stroke in pointlist:
             tmp = [stroke[0]]
             new_pointlist.append(tmp)
             if len(stroke) > 1:
-                for i in range(1, len(stroke)-1):
-                    points = [stroke[i-1], stroke[i], stroke[i+1]]
+                for i in range(1, len(stroke) - 1):
+                    points = [stroke[i - 1], stroke[i], stroke[i + 1]]
                     p = self._calculate_average(points)
                     new_pointlist[-1].append(p)
                 new_pointlist[-1].append(stroke[-1])
-        handwritten_data.set_pointlist(new_pointlist)
+        hwr_obj.set_pointlist(new_pointlist)
 
 if __name__ == '__main__':
     import doctest

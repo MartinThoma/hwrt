@@ -28,7 +28,7 @@ from collections import defaultdict
 
 # hwrt modules
 # HandwrittenData and preprocessing are needed because of pickle
-from . import HandwrittenData  # pylint: disable=W0611
+from . import handwritten_data  # pylint: disable=W0611
 from . import preprocessing
 from . import features
 from . import data_multiplication

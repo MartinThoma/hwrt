@@ -5,8 +5,8 @@ import nose
 import tests.testhelper as testhelper
 
 # hwrt modules
-from hwrt.HandwrittenData import HandwrittenData
-import hwrt.preprocessing as preprocessing
+from hwrt.handwritten_data import HandwrittenData
+# import hwrt.preprocessing as preprocessing
 import hwrt.features as features
 
 

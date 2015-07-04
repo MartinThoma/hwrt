@@ -13,7 +13,7 @@ from natsort import natsorted
 from xml.dom.minidom import parseString
 
 # hwrt modules
-from .. import HandwrittenData
+from .. import handwritten_data
 from ..datasets import formula_to_dbid
 
 
@@ -95,8 +95,8 @@ def read(filepath):
     for annotation in annotations:
         if annotation.attrib['type'] == 'truth':
             formula_in_latex = annotation.text
-    hw = HandwrittenData.HandwrittenData(json.dumps(recording),
-                                         formula_in_latex=formula_in_latex)
+    hw = handwritten_data.HandwrittenData(json.dumps(recording),
+                                          formula_in_latex=formula_in_latex)
     for annotation in annotations:
         if annotation.attrib['type'] == 'writer':
             hw.writer = annotation.text

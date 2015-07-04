@@ -6,7 +6,7 @@ import tests.testhelper as testhelper
 import mock
 
 # hwrt modules
-from hwrt.HandwrittenData import HandwrittenData
+from hwrt.handwritten_data import HandwrittenData
 
 
 # Tests

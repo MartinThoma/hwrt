@@ -17,10 +17,10 @@ import time
 # hwrt modules
 from . import utils
 from . import preprocessing
-from . import HandwrittenData
+from . import handwritten_data
 
-sys.modules['hwrt.HandwrittenData'] = HandwrittenData
-sys.modules['HandwrittenData'] = HandwrittenData
+sys.modules['hwrt.HandwrittenData'] = handwritten_data
+sys.modules['HandwrittenData'] = handwritten_data
 
 
 def get_parameters(folder):

@@ -23,7 +23,7 @@ import numpy
 import abc
 
 # hwrt modules
-from . import HandwrittenData
+from . import handwritten_data
 from . import preprocessing
 from . import utils
 from . import geometry
@@ -83,12 +83,12 @@ class Feature(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def __call__(self, handwritten_data):
-        """Get the features value for a given recording ``handwritten_data``.
+    def __call__(self, hwr_obj):
+        """Get the features value for a given recording ``hwr_obj``.
         """
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
+        assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
             "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+            type(hwr_obj)
 
     @abc.abstractmethod
     def get_dimension(self):
@@ -162,11 +162,11 @@ class ConstantPointCoordinates(Feature):
             else:
                 return 2*self.points_per_stroke
 
-    def _features_with_strokes(self, handwritten_data):
+    def _features_with_strokes(self, hwr_obj):
         """Calculate the ConstantPointCoordinates features for the case of
            a fixed number of strokes."""
         x = []
-        pointlist = handwritten_data.get_pointlist()
+        pointlist = hwr_obj.get_pointlist()
         for stroke_nr in range(self.strokes):
             # make sure that the current symbol actually has that many
             # strokes
@@ -184,11 +184,11 @@ class ConstantPointCoordinates(Feature):
                     x.append(self.fill_empty_with)
         return x
 
-    def _features_without_strokes(self, handwritten_data):
+    def _features_without_strokes(self, hwr_obj):
         """Calculate the ConstantPointCoordinates features for the case of
            a single (callapesed) stroke with pen_down features."""
         x = []
-        for point in handwritten_data.get_pointlist()[0]:
+        for point in hwr_obj.get_pointlist()[0]:
             if len(x) >= 3*self.points_per_stroke or \
                (len(x) >= 2*self.points_per_stroke and not self.pen_down):
                 break
@@ -210,12 +210,12 @@ class ConstantPointCoordinates(Feature):
                 x.append(self.fill_empty_with)
         return x
 
-    def __call__(self, handwritten_data):
-        super(self.__class__, self).__call__(handwritten_data)
+    def __call__(self, hwr_obj):
+        super(self.__class__, self).__call__(hwr_obj)
         if self.strokes > 0:
-            x = self._features_with_strokes(handwritten_data)
+            x = self._features_with_strokes(hwr_obj)
         else:
-            x = self._features_without_strokes(handwritten_data)
+            x = self._features_without_strokes(hwr_obj)
         assert self.get_dimension() == len(x), \
             "Dimension of %s should be %i, but was %i" % \
             (str(self), self.get_dimension(), len(x))
@@ -249,10 +249,10 @@ class FirstNPoints(Feature):
            of elements in the returned list of numbers."""
         return 2*self.n
 
-    def __call__(self, handwritten_data):
-        super(self.__class__, self).__call__(handwritten_data)
+    def __call__(self, hwr_obj):
+        super(self.__class__, self).__call__(hwr_obj)
         x = []
-        pointlist = handwritten_data.get_pointlist()
+        pointlist = hwr_obj.get_pointlist()
         left = self.n
         for stroke in pointlist:
             for point in stroke:
@@ -287,9 +287,9 @@ class StrokeCount(Feature):
            of elements in the returned list of numbers."""
         return 1
 
-    def __call__(self, handwritten_data):
-        super(self.__class__, self).__call__(handwritten_data)
-        return [len(handwritten_data.get_pointlist())]
+    def __call__(self, hwr_obj):
+        super(self.__class__, self).__call__(hwr_obj)
+        return [len(hwr_obj.get_pointlist())]
 
 
 class Ink(Feature):
@@ -311,12 +311,12 @@ class Ink(Feature):
            of elements in the returned list of numbers."""
         return 1
 
-    def __call__(self, handwritten_data):
-        super(self.__class__, self).__call__(handwritten_data)
+    def __call__(self, hwr_obj):
+        super(self.__class__, self).__call__(hwr_obj)
         ink = 0.
         # calculate ink used for this symbol
         # TODO: What about dots? What about speed?
-        for stroke in handwritten_data.get_pointlist():
+        for stroke in hwr_obj.get_pointlist():
             last_point = None
             for point in stroke:
                 if last_point is not None:
@@ -342,10 +342,10 @@ class AspectRatio(Feature):
            of elements in the returned list of numbers."""
         return 1
 
-    def __call__(self, handwritten_data):
-        super(self.__class__, self).__call__(handwritten_data)
-        width = float(handwritten_data.get_width()+0.01)
-        height = float(handwritten_data.get_height()+0.01)
+    def __call__(self, hwr_obj):
+        super(self.__class__, self).__call__(hwr_obj)
+        width = float(hwr_obj.get_width()+0.01)
+        height = float(hwr_obj.get_height()+0.01)
         return [width/height]
 
 
@@ -372,9 +372,9 @@ class Width(Feature):
            of elements in the returned list of numbers."""
         return 1
 
-    def __call__(self, handwritten_data):
-        super(self.__class__, self).__call__(handwritten_data)
-        return [float(handwritten_data.get_width())]
+    def __call__(self, hwr_obj):
+        super(self.__class__, self).__call__(hwr_obj)
+        return [float(hwr_obj.get_width())]
 
 
 class Height(Feature):
@@ -400,9 +400,9 @@ class Height(Feature):
            of elements in the returned list of numbers."""
         return 1
 
-    def __call__(self, handwritten_data):
-        super(self.__class__, self).__call__(handwritten_data)
-        return [float(handwritten_data.get_height())]
+    def __call__(self, hwr_obj):
+        super(self.__class__, self).__call__(hwr_obj)
+        return [float(hwr_obj.get_height())]
 
 
 class Time(Feature):
@@ -423,9 +423,9 @@ class Time(Feature):
            of elements in the returned list of numbers."""
         return 1
 
-    def __call__(self, handwritten_data):
-        super(self.__class__, self).__call__(handwritten_data)
-        return [float(handwritten_data.get_time())]
+    def __call__(self, hwr_obj):
+        super(self.__class__, self).__call__(hwr_obj)
+        return [float(hwr_obj.get_time())]
 
 
 class CenterOfMass(Feature):
@@ -445,11 +445,11 @@ class CenterOfMass(Feature):
            of elements in the returned list of numbers."""
         return 2
 
-    def __call__(self, handwritten_data):
-        super(self.__class__, self).__call__(handwritten_data)
+    def __call__(self, hwr_obj):
+        super(self.__class__, self).__call__(hwr_obj)
         xs = []
         ys = []
-        for stroke in handwritten_data.get_pointlist():
+        for stroke in hwr_obj.get_pointlist():
             for point in stroke:
                 xs.append(point['x'])
                 ys.append(point['y'])
@@ -476,10 +476,10 @@ class StrokeCenter(Feature):
            of elements in the returned list of numbers."""
         return self.strokes*2
 
-    def __call__(self, handwritten_data):
-        super(self.__class__, self).__call__(handwritten_data)
+    def __call__(self, hwr_obj):
+        super(self.__class__, self).__call__(hwr_obj)
         feature_vector = []
-        for i, stroke in enumerate(handwritten_data.get_pointlist()):
+        for i, stroke in enumerate(hwr_obj.get_pointlist()):
             if i >= self.strokes:
                 break
             xs = []
@@ -548,10 +548,10 @@ class DouglasPeuckerPoints(Feature):
 
         return result_list
 
-    def __call__(self, handwritten_data):
-        super(self.__class__, self).__call__(handwritten_data)
+    def __call__(self, hwr_obj):
+        super(self.__class__, self).__call__(hwr_obj)
         dp_points = 0
-        for stroke in handwritten_data.get_pointlist():
+        for stroke in hwr_obj.get_pointlist():
             points = self._stroke_simplification(stroke)
             dp_points += len(points)
         return [dp_points]
@@ -597,21 +597,21 @@ class StrokeIntersections(Feature):
            of elements in the returned list of numbers."""
         return int(round(float(self.strokes**2)/2 + float(self.strokes)/2))
 
-    def __call__(self, handwritten_data):
-        super(self.__class__, self).__call__(handwritten_data)
+    def __call__(self, hwr_obj):
+        super(self.__class__, self).__call__(hwr_obj)
 
-        pointlist = handwritten_data.get_pointlist()
-        polygonalChains = []
+        pointlist = hwr_obj.get_pointlist()
+        polygonal_chains = []
 
         # Make sure the dimension is correct
         for i in range(self.strokes):
             if i < len(pointlist):
-                polygonalChains.append(geometry.PolygonalChain(pointlist[i]))
+                polygonal_chains.append(geometry.PolygonalChain(pointlist[i]))
             else:
-                polygonalChains.append(geometry.PolygonalChain([]))
+                polygonal_chains.append(geometry.PolygonalChain([]))
 
         x = []
-        for chainA, chainB in combinations_wr(polygonalChains, 2):
+        for chainA, chainB in combinations_wr(polygonal_chains, 2):
             if chainA == chainB:
                 x.append(chainA.count_selfintersections())
             else:
@@ -650,10 +650,10 @@ class ReCurvature(Feature):
            of elements in the returned list of numbers."""
         return self.strokes
 
-    def __call__(self, handwritten_data):
-        super(self.__class__, self).__call__(handwritten_data)
+    def __call__(self, hwr_obj):
+        super(self.__class__, self).__call__(hwr_obj)
         x = []
-        for stroke in handwritten_data.get_pointlist():
+        for stroke in hwr_obj.get_pointlist():
             stroke_y = [point['y'] for point in stroke]
             height = max(stroke_y) - min(stroke_y)
             length = 0.0

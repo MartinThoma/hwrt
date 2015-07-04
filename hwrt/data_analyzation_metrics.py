@@ -36,7 +36,7 @@ import numpy
 
 # hwrt modules
 # HandwrittenData and preprocessing are needed because of pickle
-from . import HandwrittenData  # pylint: disable=W0611
+from . import handwritten_data  # pylint: disable=W0611
 from . import preprocessing  # pylint: disable=W0611
 from . import utils
 
@@ -128,7 +128,7 @@ class Creator(object):
             if i % 100 == 0 and i > 0:
                 utils.print_status(len(raw_datasets), i, start_time)
             print_data[raw_dataset['handwriting'].user_id] += 1
-        print("\r100%"+"\033[K\n")
+        print("\r100%" + "\033[K\n")
 
         # Sort the data by highest value, descending
         print_data = sorted(print_data.items(),
@@ -173,8 +173,8 @@ class InstrokeSpeed(object):
                     time_delta = point['time'] - last_point['time']
                     if time_delta == 0:
                         continue
-                    print_data.append(space_dist/time_delta)
-        print("\r100%"+"\033[K\n")
+                    print_data.append(space_dist / time_delta)
+        print("\r100%" + "\033[K\n")
         # Sort the data by highest value, descending
         print_data = sorted(print_data, reverse=True)
         # Write data to file
@@ -215,7 +215,7 @@ class InterStrokeDistance(object):
                 space_dist = math.hypot(point1['x'] - point2['x'],
                                         point1['y'] - point2['y'])
                 print_data.append(space_dist)
-        print("\r100%"+"\033[K\n")
+        print("\r100%" + "\033[K\n")
         # Sort the data by highest value, descending
         print_data = sorted(print_data, reverse=True)
         # Write data to file
@@ -274,7 +274,7 @@ class TimeBetweenPointsAndStrokes(object):
             if len(times_between_strokes) > 0:
                 tmp = times_between_strokes
                 average_between_strokes.write("%0.2f\n" % numpy.average(tmp))
-        print("\r100%"+"\033[K\n")
+        print("\r100%" + "\033[K\n")
         average_between_points.close()
         average_between_strokes.close()
 
@@ -282,7 +282,7 @@ class TimeBetweenPointsAndStrokes(object):
 class AnalyzeErrors(object):
     """Analyze the number of errors in the dataset."""
 
-    def __init__(self, filename="errors.txt", time_max_threshold=30*1000):
+    def __init__(self, filename="errors.txt", time_max_threshold=30 * 1000):
         self.filename = prepare_file(filename)
         self.time_max_threshold = time_max_threshold  # in ms
         self.dot_symbols = ['i', 'j', '\cdot', '\div', '\\because',
@@ -334,26 +334,26 @@ class AnalyzeErrors(object):
         # Show errors
         print("Recordings with wild points: %i (%0.2f%%)" %
               (err_recs['wild_points'],
-               float(err_recs['wild_points'])/nr_recordings*100),
+               float(err_recs['wild_points']) / nr_recordings * 100),
               file=write_file)
         print("wild points: %i" % total_error_count['wild_points'],
               file=write_file)
         print("Recordings with missing stroke: %i (%0.2f%%)" %
               (err_recs['missing_stroke'],
-               float(err_recs['missing_stroke'])/nr_recordings*100),
+               float(err_recs['missing_stroke']) / nr_recordings * 100),
               file=write_file)
         print("Recordings with errors: %i (%0.2f%%)" %
               (err_recs['total'],
-               float(err_recs['total'])/nr_recordings*100),
+               float(err_recs['total']) / nr_recordings * 100),
               file=write_file)
         print("Recordings with dots: %i (%0.2f%%)" %
               (err_recs['single_dots'],
-               float(err_recs['single_dots'])/nr_recordings*100),
+               float(err_recs['single_dots']) / nr_recordings * 100),
               file=write_file)
         print("dots: %i" % total_error_count['single_dots'], file=write_file)
         print("size changing removal: %i (%0.2f%%)" %
               (len(percentages),
-               float(len(percentages))/nr_recordings*100),
+               float(len(percentages)) / nr_recordings * 100),
               file=write_file)
         print("%i recordings took more than %i ms. That were: " %
               (len(time_max_list), self.time_max_threshold),
@@ -404,7 +404,7 @@ class AnalyzeErrors(object):
                 tmp = [preprocessing.RemoveDots()]
                 recording.preprocessing(tmp)
                 new_area = recording.get_area()
-                percentage = float(new_area)/float(old_area)
+                percentage = float(new_area) / float(old_area)
                 if percentage < 1.0:
                     percentages.append(percentage)
             total_error_count['single_dots'] += recording.count_single_dots()

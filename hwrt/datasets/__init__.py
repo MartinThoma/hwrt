@@ -11,7 +11,7 @@ import pymysql
 import pymysql.cursors
 
 # hwrt modules
-from hwrt import utils
+from .. import utils
 
 __formula_to_dbid_cache = None
 username2id = {}
@@ -174,7 +174,10 @@ def insert_recording(hw):
         cursor.execute(sql, data)
         connection.commit()
         for symbol_id, strokes in zip(hw.symbol_stream, hw.segmentation):
-            insert_symbol_mapping(cursor.lastrowid, symbol_id, hw.user_id, strokes)
+            insert_symbol_mapping(cursor.lastrowid,
+                                  symbol_id,
+                                  hw.user_id,
+                                  strokes)
         logging.info("Insert raw data.")
     except pymysql.err.IntegrityError as e:
         print("Error: {} (can probably be ignored)".format(e))
@@ -200,7 +203,8 @@ def insert_symbol_mapping(raw_data_id, symbol_id, user_id, strokes):
                                  cursorclass=pymysql.cursors.DictCursor)
     cursor = connection.cursor()
     sql = ("INSERT INTO `wm_partial_answer` "
-           "(`recording_id`, `symbol_id`, `strokes`, `user_id`, `is_accepted`) "
+           "(`recording_id`, `symbol_id`, `strokes`, `user_id`, "
+           "`is_accepted`) "
            "VALUES (%s, %s, %s, %s, 1);")
     data = (raw_data_id,
             symbol_id,

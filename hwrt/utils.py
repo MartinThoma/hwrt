@@ -21,7 +21,7 @@ import tempfile
 import tarfile
 
 # hwrt modules
-from . import HandwrittenData
+from . import handwritten_data
 
 
 def print_status(total, current, start_time=None):
@@ -498,8 +498,8 @@ def evaluate_model_single_recording_preloaded(preprocessing_queue,
     recording : string in JSON format
         The handwritten recording in JSON format.
     """
-    handwriting = HandwrittenData.HandwrittenData(recording,
-                                                  raw_data_id=recording_id)
+    handwriting = handwritten_data.HandwrittenData(recording,
+                                                   raw_data_id=recording_id)
     handwriting.preprocessing(preprocessing_queue)
     x = handwriting.feature_extraction(feature_list)
     import nntoolkit.evaluate
@@ -565,14 +565,14 @@ def evaluate_model_single_recording_preloaded_multisymbol(preprocessing_queue,
     import json
     import nntoolkit.evaluate
     recording = json.loads(recording)
-    logging.info(("## start (%i strokes)" % len(recording)) + "#"*80)
+    logging.info(("## start (%i strokes)" % len(recording)) + "#" * 80)
     hypotheses = []  # [[{'score': 0.123, symbols: [123, 123]}]  # split0
                      #  []] # Split i...
     for split in get_possible_splits(len(recording)):
         recording_segmented = segment_by_split(split, recording)
         cur_split_results = []
         for i, symbol in enumerate(recording_segmented):
-            handwriting = HandwrittenData.HandwrittenData(json.dumps(symbol))
+            handwriting = handwritten_data.HandwrittenData(json.dumps(symbol))
             handwriting.preprocessing(preprocessing_queue)
             x = handwriting.feature_extraction(feature_list)
 
@@ -700,7 +700,7 @@ def evaluate_model(recording, model_folder, verbose=False):
             logging.info("Start applying preprocessing methods...")
             t = target_folder
             _, _, preprocessing_queue = preprocess_dataset.get_parameters(t)
-            handwriting = HandwrittenData.HandwrittenData(recording)
+            handwriting = handwritten_data.HandwrittenData(recording)
             if verbose:
                 handwriting.show()
             handwriting.preprocessing(preprocessing_queue)

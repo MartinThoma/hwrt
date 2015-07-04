@@ -17,8 +17,8 @@ import numpy
 
 # hwrt modules
 # HandwrittenData is necessary because of pickle
-from . import HandwrittenData
-sys.modules['HandwrittenData'] = HandwrittenData
+from . import handwritten_data
+sys.modules['HandwrittenData'] = handwritten_data
 from . import features
 from . import utils
 from . import data_analyzation_metrics as dam
@@ -60,8 +60,8 @@ def analyze_feature(raw_datasets, feature, basename="aspect_ratios"):
     """
 
     # Prepare files
-    csv_file = dam.prepare_file(basename+'.csv')
-    raw_file = dam.prepare_file(basename+'.raw')
+    csv_file = dam.prepare_file(basename + '.csv')
+    raw_file = dam.prepare_file(basename + '.raw')
 
     csv_file = open(csv_file, 'a')
     raw_file = open(raw_file, 'a')

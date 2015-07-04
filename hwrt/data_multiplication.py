@@ -21,7 +21,7 @@ import math
 from copy import deepcopy
 
 # hwrt modules
-from . import HandwrittenData
+from . import handwritten_data
 from . import utils
 
 
@@ -60,13 +60,13 @@ class Multiply(object):
     def __str__(self):
         return repr(self)
 
-    def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
+    def __call__(self, hwr_obj):
+        assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
             "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+            type(hwr_obj)
         new_trainging_set = []
         for _ in range(self.nr):
-            new_trainging_set.append(handwritten_data)
+            new_trainging_set.append(hwr_obj)
         training_set = new_trainging_set
         return training_set
 
@@ -86,13 +86,13 @@ class Rotate(object):
     def __str__(self):
         return repr(self)
 
-    def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
+    def __call__(self, hwr_obj):
+        assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
             "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+            type(hwr_obj)
         new_trainging_set = []
-        xc, yc = handwritten_data.get_center_of_mass()
-        pointlist = handwritten_data.get_pointlist()
+        xc, yc = hwr_obj.get_center_of_mass()
+        pointlist = hwr_obj.get_pointlist()
         for rotation in numpy.linspace(self.min, self.max, self.num):
             new_poinlist = []
             # Rotate pointlist around center of mass (xc, yc)
@@ -113,7 +113,7 @@ class Rotate(object):
                                      'time': point['time']})
                 new_poinlist.append(new_line)
             #create the new handwritten data object
-            hwd_tmp = deepcopy(handwritten_data)
+            hwd_tmp = deepcopy(hwr_obj)
             hwd_tmp.set_pointlist(new_poinlist)
             new_trainging_set.append(hwd_tmp)
         training_set = new_trainging_set

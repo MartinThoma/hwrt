@@ -32,7 +32,7 @@ import scipy.sparse.csgraph
 
 # hwrt modules
 from . import utils
-from .HandwrittenData import HandwrittenData
+from .handwritten_data import HandwrittenData
 from . import features
 from . import geometry
 from . import partitions

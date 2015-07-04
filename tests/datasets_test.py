@@ -31,8 +31,8 @@ def mfrdb_strip_end_test():
 
 
 def mfrdb_eval_less_than_test():
-    from hwrt.datasets import mfrdb_eval
-    mfrdb_eval._less_than([1, 2, 3], 2)
+    from hwrt import utils
+    utils.less_than([1, 2, 3], 2)
 
 
 # def mfrdb_import_get_parser_test():

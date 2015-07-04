@@ -8,7 +8,7 @@ import shutil
 import tests.testhelper as testhelper
 
 # hwrt modules
-from hwrt.HandwrittenData import HandwrittenData
+from hwrt.handwritten_data import HandwrittenData
 import hwrt.data_analyzation_metrics as dam
 import hwrt.utils as utils
 

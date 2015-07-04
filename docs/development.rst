@@ -150,3 +150,4 @@ Current State
     2015-04-13, 5999, 1085, 73%, 9.55, 443/595, 1, many updates
     2015-05-31, 6481, 1085, 71%, 8.97, 415/595, 1, many updates
     2015-06-17, 5437, 1123, 55%, 9.53, 463/595, 1, many updates
+    2015-07-04, 5675, 1113, 56%, 9.54, 463/595, 1, HandwrittenData -> handwritten_data as it is a module

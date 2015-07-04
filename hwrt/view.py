@@ -16,8 +16,8 @@ except ImportError:  # Python 3
 
 # hwrt modules
 import hwrt
-from . import HandwrittenData
-sys.modules['HandwrittenData'] = HandwrittenData
+from . import handwritten_data
+sys.modules['HandwrittenData'] = handwritten_data
 from . import utils
 from . import preprocessing
 from . import features
@@ -144,8 +144,8 @@ def display_data(raw_data_string, raw_data_id, model_folder, show_raw):
     features.print_featurelist(feature_list)
 
     # Get Handwriting
-    recording = HandwrittenData.HandwrittenData(raw_data_string,
-                                                raw_data_id=raw_data_id)
+    recording = handwritten_data.HandwrittenData(raw_data_string,
+                                                 raw_data_id=raw_data_id)
     if show_raw:
         recording.show()
 

@@ -7,8 +7,8 @@ import urllib
 import os
 
 # hwrt modules
-import hwrt.HandwrittenData as HandwrittenData
-import hwrt.utils as utils
+from . import handwritten_data
+from . import utils
 
 
 class Bitmap(object):
@@ -31,13 +31,13 @@ class Bitmap(object):
            of elements in the returned list of numbers."""
         return self.n**2
 
-    def __call__(self, handwritten_data):
-        assert isinstance(handwritten_data, HandwrittenData.HandwrittenData), \
+    def __call__(self, hwr_obj):
+        assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
             "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(handwritten_data)
+            type(hwr_obj)
         x = []
         url = "http://localhost/write-math/website/raw-data/"
-        raw_data_id = handwritten_data.raw_data_id
+        raw_data_id = hwr_obj.raw_data_id
         project_root = utils.get_project_root()
         foldername = os.path.jon(project_root, "bitmaps")
         f = urllib.urlopen("{url}{id}.svg".format(url=url, id=raw_data_id))

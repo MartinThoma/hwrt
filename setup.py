@@ -9,7 +9,7 @@ config = {
     'maintainer': 'Martin Thoma',
     'maintainer_email': 'info@martin-thoma.de',
     'packages': find_packages(),
-    'scripts': ['bin/hwrt', 'bin/test.py', 'bin/train.py'],
+    'scripts': ['bin/hwrt'],
     'package_data': {'hwrt': ['templates/*', 'misc/*']},
     'platforms': ['Linux', 'MacOS X', 'Windows'],
     'url': 'https://github.com/MartinThoma/hwrt',

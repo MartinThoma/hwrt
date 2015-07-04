@@ -31,6 +31,8 @@ from hwrt import download
 from hwrt import analyze_data
 from hwrt import serve
 from hwrt import filter_dataset
+from hwrt import test
+from hwrt import train
 
 
 def get_parser():
@@ -57,6 +59,14 @@ def get_parser():
                           add_help=False,
                           parents=[analyze_data.get_parser()],
                           help=("Analyze data according to many metrics."))
+    subparsers.add_parser('test',
+                          add_help=False,
+                          parents=[test.get_parser()],
+                          help=("Test a given model against a dataset."))
+    subparsers.add_parser('train',
+                          add_help=False,
+                          parents=[train.get_parser()],
+                          help=("Train a model."))
     subparsers.add_parser('create_ffiles',
                           add_help=False,
                           description="Create ffiles",
@@ -91,6 +101,10 @@ def main(args):
         download.main()
     elif args.cmd == 'analyze_data':
         analyze_data.main(args.handwriting_datasets, args.analyze_features)
+    elif args.cmd == 'test':
+        test.main(args.model, args.aset, args.n, args.merge)
+    elif args.cmd == 'train':
+        train.main(args.model)
     elif args.cmd == 'create_ffiles':
         create_ffiles.main(args.folder, args.create_learning_curve)
     elif args.cmd == 'create_model':
@@ -98,7 +112,9 @@ def main(args):
     elif args.cmd == 'serve':
         serve.main(args.port, args.n)
     elif args.cmd == 'filter_dataset':
-        filter_dataset.main(args.symbol_filename, args.raw_filename, args.pickle_dest_path)
+        filter_dataset.main(args.symbol_filename,
+                            args.raw_filename,
+                            args.pickle_dest_path)
     else:
         logging.error("Command '%s' is not implemented yet.", args.cmd)
 

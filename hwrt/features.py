@@ -21,6 +21,8 @@ import sys
 from itertools import combinations_with_replacement as combinations_wr
 import numpy
 import abc
+import Image
+import ImageDraw
 
 # hwrt modules
 from . import handwritten_data
@@ -122,40 +124,58 @@ class ConstantPointCoordinates(Feature):
 
        If ``points`` is set to 0, the first ``points_per_stroke`` point
        coordinates and the ``pen_down`` feature is used. This leads to
-       :math:`3 \\cdot \\text{points_per_stroke}` features."""
+       :math:`3 \\cdot \\text{points_per_stroke}` features.
+
+    Parameters
+    ----------
+    strokes : int
+    points_per_stroke : int
+    fill_empty_with : float
+    pen_down : boolean
+    pixel_env : int
+        How big should the pixel map around the given point be?
+    """
 
     normalize = False
 
     def __init__(self, strokes=4, points_per_stroke=20, fill_empty_with=0,
-                 pen_down=True):
+                 pen_down=True, pixel_env=0, scaling_factor=32):
         self.strokes = strokes
         self.points_per_stroke = points_per_stroke
         self.fill_empty_with = fill_empty_with
         self.pen_down = pen_down
+        self.pixel_env = pixel_env
+        self.scaling_factor = scaling_factor
 
     def __repr__(self):
         return ("ConstantPointCoordinates\n"
                 " - strokes: %i\n"
                 " - points per stroke: %i\n"
                 " - fill empty with: %i\n"
-                " - pen down feature: %r\n") % \
+                " - pen down feature: %r\n"
+                " - pixel_env: %i\n") % \
                (self.strokes, self.points_per_stroke, self.fill_empty_with,
-                self.pen_down)
+                self.pen_down, self.pixel_env)
 
     def __str__(self):
         return ("constant point coordinates\n"
                 " - strokes: %i\n"
                 " - points per stroke: %i\n"
                 " - fill empty with: %i\n"
-                " - pen down feature: %r\n") % \
+                " - pen down feature: %r\n"
+                " - pixel_env: %i\n") % \
                (self.strokes, self.points_per_stroke, self.fill_empty_with,
-                self.pen_down)
+                self.pen_down, self.pixel_env)
 
     def get_dimension(self):
         """Get the dimension of the returned feature. This equals the number
            of elements in the returned list of numbers."""
         if self.strokes > 0:
-            return 2*self.strokes * self.points_per_stroke
+            if self.pixel_env > 0:
+                return (2 + (1 + 2*self.pixel_env)**2) \
+                    * self.strokes * self.points_per_stroke
+            else:
+                return 2*self.strokes * self.points_per_stroke
         else:
             if self.pen_down:
                 return 3*self.points_per_stroke
@@ -166,22 +186,54 @@ class ConstantPointCoordinates(Feature):
         """Calculate the ConstantPointCoordinates features for the case of
            a fixed number of strokes."""
         x = []
+        img = Image.new('L', ((int(hwr_obj.get_width()*self.scaling_factor) + 2), (int(hwr_obj.get_height()*self.scaling_factor) + 2)), 'black')
+        draw = ImageDraw.Draw(img, 'L')
         pointlist = hwr_obj.get_pointlist()
+        bb = hwr_obj.get_bounding_box()
         for stroke_nr in range(self.strokes):
+            last_point = None
             # make sure that the current symbol actually has that many
             # strokes
             if stroke_nr < len(pointlist):
                 for point_nr in range(self.points_per_stroke):
                     if point_nr < len(pointlist[stroke_nr]):
+                        point = pointlist[stroke_nr][point_nr]
                         x.append(pointlist[stroke_nr][point_nr]['x'])
                         x.append(pointlist[stroke_nr][point_nr]['y'])
+                        if last_point is None:
+                            last_point = point
+                        y_from = int((-bb['miny'] + last_point['y'])*self.scaling_factor)
+                        x_from = int((-bb['minx'] + last_point['x'])*self.scaling_factor)
+                        y_to = int((-bb['miny'] + point['y'])*self.scaling_factor)
+                        x_to = int((-bb['minx'] + point['x'])*self.scaling_factor)
+                        draw.line([x_from, y_from, x_to, y_to], fill='#ffffff', width=1)
+                        if self.pixel_env > 0:
+                            pix = img.load()
+                            for x_offset in range(-self.pixel_env,
+                                                  self.pixel_env + 1):
+                                for y_offset in range(-self.pixel_env,
+                                                      self.pixel_env + 1):
+                                    xp = int((-bb['minx'] + point['x'])
+                                             * self.scaling_factor) + x_offset
+                                    yp = int((-bb['miny'] + point['y'])
+                                             * self.scaling_factor) + y_offset
+                                    xp = max(0, xp)
+                                    yp = max(0, yp)
+                                    x.append(pix[xp, yp])
+                        last_point = point
                     else:
                         x.append(self.fill_empty_with)
                         x.append(self.fill_empty_with)
+                        if self.pixel_env > 0:
+                            for i in range((1 + 2 * self.pixel_env)**2):
+                                x.append(self.fill_empty_with)
             else:
                 for _ in range(self.points_per_stroke):
                     x.append(self.fill_empty_with)
                     x.append(self.fill_empty_with)
+                    for i in range((1 + 2 * self.pixel_env)**2):
+                        x.append(self.fill_empty_with)
+        del draw
         return x
 
     def _features_without_strokes(self, hwr_obj):

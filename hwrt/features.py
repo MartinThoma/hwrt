@@ -231,8 +231,9 @@ class ConstantPointCoordinates(Feature):
                 for _ in range(self.points_per_stroke):
                     x.append(self.fill_empty_with)
                     x.append(self.fill_empty_with)
-                    for i in range((1 + 2 * self.pixel_env)**2):
-                        x.append(self.fill_empty_with)
+                    if self.pixel_env > 0:
+                        for i in range((1 + 2 * self.pixel_env)**2):
+                            x.append(self.fill_empty_with)
         del draw
         return x
 

@@ -27,7 +27,12 @@ def load_nn_classifier():
 
     if os.path.isfile(nn_pickled_filename):
         with open(nn_pickled_filename, 'rb') as handle:
-            get_output = pickle.load(handle)
+            try:
+                get_output = pickle.load(handle)
+            except ImportError as e:
+                logging.error("Import error in load_nn_classifier()")
+                logging.error(e)
+                return None
     else:
         logging.error('"is_one_symbol_classifier" not found.')
         return None
@@ -55,14 +60,17 @@ def segment_recording(pointlist):
     global nn, stroke_segmented_classifier, single_stroke_clf, single_clf
     assert isinstance(pointlist, basestring), \
         ("Expected string, but was %s" % type(pointlist))
-    if nn is None or stroke_segmented_classifier is None:
-        nn = load_nn_classifier()
-        stroke_segmented_classifier = lambda X: nn(X)[0][1]
-    if single_clf is None:
-        single_clf = segmentation.single_classifier()
-    pointlist = json.loads(pointlist)
-    seg_predict = segmentation.get_segmentation(pointlist,
-                                                single_clf,
-                                                single_stroke_clf,
-                                                stroke_segmented_classifier)
+    try:
+        if nn is None or stroke_segmented_classifier is None:
+            nn = load_nn_classifier()
+            stroke_segmented_classifier = lambda X: nn(X)[0][1]
+        if single_clf is None:
+            single_clf = segmentation.single_classifier()
+        pointlist = json.loads(pointlist)
+        seg_predict = segmentation.get_segmentation(pointlist,
+                                                    single_clf,
+                                                    single_stroke_clf,
+                                                    stroke_segmented_classifier)
+    except:
+        seg_predict = [([[i for i in range(len(pointlist))]], 1.0)]
     return seg_predict

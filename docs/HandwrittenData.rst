@@ -1,5 +1,5 @@
 Handwritten Data
 ================================
 
-.. automodule:: hwrt.HandwrittenData
+.. automodule:: hwrt.handwritten_data
    :members:

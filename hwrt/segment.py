@@ -9,7 +9,7 @@ import pickle
 import json
 
 # hwrt modules
-from . import segmentation
+from . import segmentation as se
 
 nn = None
 stroke_segmented_classifier = None
@@ -23,7 +23,7 @@ def load_nn_classifier():
     model_path = pkg_resources.resource_filename('hwrt', 'misc/')
     nn_pickled_filename = os.path.join(model_path,
                                        "is_one_symbol_classifier.pickle")
-    logging.info("Model: %s", nn_pickled_filename)
+    logging.info("Model for segmentation classifier: %s", nn_pickled_filename)
 
     if os.path.isfile(nn_pickled_filename):
         with open(nn_pickled_filename, 'rb') as handle:
@@ -65,12 +65,12 @@ def segment_recording(pointlist):
             nn = load_nn_classifier()
             stroke_segmented_classifier = lambda X: nn(X)[0][1]
         if single_clf is None:
-            single_clf = segmentation.single_classifier()
+            single_clf = se.single_classifier()
         pointlist = json.loads(pointlist)
-        seg_predict = segmentation.get_segmentation(pointlist,
-                                                    single_clf,
-                                                    single_stroke_clf,
-                                                    stroke_segmented_classifier)
+        seg_predict = se.get_segmentation(pointlist,
+                                          single_clf,
+                                          single_stroke_clf,
+                                          stroke_segmented_classifier)
     except:
         seg_predict = [([[i for i in range(len(pointlist))]], 1.0)]
     return seg_predict

@@ -15,6 +15,7 @@ The configuration file is in YAML format. The possible values are:
   to see how they should be structured.
 * ``features``: Just like preprocessing, this has to be a path to a Python
   script.
+* ``environment``: Either ``'production'`` or ``'development'``.
 
 There are 3 configurations that are probably only interesting for me:
 
@@ -37,3 +38,4 @@ The following is an example ``~/.hwrtrc`` configuration file:
     dbconfig: /home/moose/hwrt-config/db.config.yml
     dropbox_app_key: 'INSERT_APP_KEY'
     dropbox_app_secret: 'INSERT_APP_SECRET'
+    environment: 'production'

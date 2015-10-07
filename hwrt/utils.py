@@ -87,7 +87,8 @@ def create_project_configuration(filename):
               'dropbox_app_secret': None,
               'dbconfig': os.path.join(home, "hwrt-config/db.config.yml"),
               'data_analyzation_queue': [{'Creator': None}],
-              'worker_api_key': '1234567890abc'}
+              'worker_api_key': '1234567890abc',
+              'environment': 'development'}
     with open(filename, 'w') as f:
         yaml.dump(config, f, default_flow_style=False)
 
@@ -913,3 +914,16 @@ def less_than(l, n):
         Number of elements of the list l which are strictly less than n.
     """
     return float(len([1 for el in l if el < n]))
+
+
+def get_mysql_cfg():
+    """
+    Get the appropriate MySQL configuration
+    """
+    environment = get_project_configuration()['environment']
+    cfg = get_database_configuration()
+    if environment == 'production':
+        mysql = cfg['mysql_online']
+    else:
+        mysql = cfg['mysql_dev']
+    return mysql

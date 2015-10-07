@@ -35,8 +35,7 @@ def formula_to_dbid(formula_str, backslash_fix=False):
     """
     global __formula_to_dbid_cache
     if __formula_to_dbid_cache is None:
-        cfg = utils.get_database_configuration()
-        mysql = cfg['mysql_dev']
+        mysql = utils.get_mysql_cfg()
         connection = pymysql.connect(host=mysql['host'],
                                      user=mysql['user'],
                                      passwd=mysql['passwd'],
@@ -57,8 +56,9 @@ def formula_to_dbid(formula_str, backslash_fix=False):
     elif backslash_fix and ('\\%s' % formula_str) in __formula_to_dbid_cache:
         return __formula_to_dbid_cache['\\%s' % formula_str]
     else:
-        cfg = utils.get_database_configuration()
-        mysql = cfg['mysql_dev']
+        logging.info("Symbol '%s' was not found. Add it to write-math.com.",
+                     formula_str)
+        mysql = utils.get_mysql_cfg()
         connection = pymysql.connect(host=mysql['host'],
                                      user=mysql['user'],
                                      passwd=mysql['passwd'],
@@ -97,8 +97,7 @@ def getuserid(username, copyright_str):
     """
     global username2id
     if username not in username2id:
-        cfg = utils.get_database_configuration()
-        mysql = cfg['mysql_dev']
+        mysql = utils.get_mysql_cfg()
         connection = pymysql.connect(host=mysql['host'],
                                      user=mysql['user'],
                                      passwd=mysql['passwd'],
@@ -137,8 +136,7 @@ def getuserid(username, copyright_str):
 
 def insert_recording(hw):
     """Insert recording `hw` into database."""
-    cfg = utils.get_database_configuration()
-    mysql = cfg['mysql_dev']
+    mysql = utils.get_mysql_cfg()
     connection = pymysql.connect(host=mysql['host'],
                                  user=mysql['user'],
                                  passwd=mysql['passwd'],
@@ -193,8 +191,7 @@ def insert_symbol_mapping(raw_data_id, symbol_id, user_id, strokes):
     user_id : int
     strokes: list of int
     """
-    cfg = utils.get_database_configuration()
-    mysql = cfg['mysql_dev']
+    mysql = utils.get_mysql_cfg()
     connection = pymysql.connect(host=mysql['host'],
                                  user=mysql['user'],
                                  passwd=mysql['passwd'],

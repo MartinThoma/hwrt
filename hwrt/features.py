@@ -323,6 +323,32 @@ class FirstNPoints(Feature):
 
 # Global features
 
+class Bitmap(Feature):
+
+    """Get a fixed-size bitmap of the recording."""
+
+    normalize = True
+
+    def __init__(self, size=16):
+        self.size = size
+
+    def __repr__(self):
+        return "Bitmap(%i x %i)" % (self.size, self.size)
+
+    def __str__(self):
+        return "Bitmap(%i x %i)" % (self.size, self.size)
+
+    def get_dimension(self):
+        """Get the dimension of the returned feature. This equals the number
+           of elements in the returned list of numbers."""
+        return self.size**2
+
+    def __call__(self, hwr_obj):
+        super(self.__class__, self).__call__(hwr_obj)
+        feat = hwr_obj.get_bitmap(size=self.size).flatten()
+        return list(feat)
+
+
 class StrokeCount(Feature):
 
     """Stroke count as a 1 dimensional recording."""

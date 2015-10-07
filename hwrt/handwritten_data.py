@@ -7,6 +7,9 @@
 
 import logging
 import json
+import Image
+import ImageDraw
+import numpy
 
 
 class HandwrittenData(object):
@@ -137,6 +140,46 @@ class HandwrittenData(object):
         """Get the time in which the recording was created."""
         box = self.get_bounding_box()
         return box['maxt'] - box['mint']
+
+    def get_bitmap(self, time=None, size=32, store_path=None):
+        """
+        Get a bitmap of the object at a given instance of time. If time is
+        `None`,`then the bitmap is generated for the last point in time.
+
+        Parameters
+        ----------
+        time : int or None
+        size : int
+            Size in pixels. The resulting bitmap will be (size x size).
+        store_path : None or str
+            If this is set, then the image will be saved there.
+
+        Returns
+        -------
+        numpy array :
+            Greyscale png image
+        """
+        # bitmap_width = int(self.get_width()*size) + 2
+        # bitmap_height = int(self.get_height()*size) + 2
+        img = Image.new('L', (size, size), 'black')
+        draw = ImageDraw.Draw(img, 'L')
+        bb = self.get_bounding_box()
+        for stroke in self.get_sorted_pointlist():
+            for p1, p2 in zip(stroke, stroke[1:]):
+                if time is not None and \
+                   (p1['time'] > time or p2['time'] > time):
+                    continue
+                y_from = int((-bb['miny'] + p1['y'])/max(self.get_height(), 1)*size)
+                x_from = int((-bb['minx'] + p1['x'])/max(self.get_width(), 1)*size)
+                y_to = int((-bb['miny'] + p2['y'])/max(self.get_height(), 1)*size)
+                x_to = int((-bb['minx'] + p2['x'])/max(self.get_width(), 1)*size)
+                draw.line([x_from, y_from, x_to, y_to],
+                          fill='#ffffff',
+                          width=1)
+        del draw
+        if store_path is not None:
+            img.save(store_path)
+        return numpy.asarray(img)
 
     def preprocessing(self, algorithms):
         """Apply preprocessing algorithms.

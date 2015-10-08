@@ -1,8 +1,11 @@
 docs:
 	python setup.py upload_docs --upload-dir docs/_build/html
 
-localinstall:
+install:
 	sudo python setup.py install --user
+	sudo -H python setup.py install --user
+	sudo python setup.py install
+	sudo -H python setup.py install
 
 update:
 	python setup.py sdist upload --sign

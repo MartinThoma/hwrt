@@ -22,6 +22,7 @@ import json
 import itertools
 import numpy
 import os
+import sys
 
 import pickle
 import pkg_resources
@@ -29,6 +30,11 @@ import pkg_resources
 import time
 
 import scipy.sparse.csgraph
+import numpy as np
+import lasagne
+import theano
+import theano.tensor as T
+import pymysql.cursors
 
 # hwrt modules
 from . import utils
@@ -172,7 +178,7 @@ def get_dataset():
     X, y = [], []
     for i, data in enumerate(datasets):
         if i % 10 == 0:
-            logging.info("[Create Dataset] i=%i", i)
+            logging.info("[Create Dataset] i=%i/%i", i, len(datasets))
         # logging.info("Start looking at dataset %i", i)
         segmentation = json.loads(data['segmentation'])
         # logging.info(segmentation)
@@ -228,9 +234,14 @@ def _get_symbol_index(stroke_id_needle, segmentation):
     return None
 
 
-def get_segmented_raw_data():
-    """Fetch data from the server."""
-    import pymysql.cursors
+def get_segmented_raw_data(top_n=10000):
+    """Fetch data from the server.
+
+    Parameters
+    ----------
+    top_n : int
+        Number of data sets which get fetched from the server.
+    """
     cfg = utils.get_database_configuration()
     mysql = cfg['mysql_online']
     connection = pymysql.connect(host=mysql['host'],
@@ -244,7 +255,7 @@ def get_segmented_raw_data():
            "(`segmentation` IS NOT NULL OR `accepted_formula_id` IS NOT NULL) "
            "AND `wild_point_count` = 0 "
            "AND `stroke_segmentable` = 1 "
-           "ORDER BY `id` LIMIT 0, 10000")
+           "ORDER BY `id` LIMIT 0, %i") % top_n
     logging.info(sql)
     cursor.execute(sql)
     datasets = cursor.fetchall()
@@ -340,70 +351,106 @@ def train_nn_segmentation_classifier(X, y):
     Theano expression :
         The trained neural network
     """
-    import lasagne
-    import theano
-    import theano.tensor as T
-    N_CLASSES = 2
-    # First, construct an input layer. The shape parameter defines the
-    # expected input shape, which is just the shape of our data matrix X.
-    l_in = lasagne.layers.InputLayer(shape=X.shape)
-    # A dense layer implements a linear mix (xW + b) followed by a
-    # nonlinear function.
-    hiddens = [64, 64, 64]  # sollte besser als 0.12 sein (mit [32])
-    layers = [l_in]
 
-    for n_units in hiddens:
-        l_hidden_1 = lasagne.layers.DenseLayer(
-            layers[-1],  # The first argument is the input to this layer
-            num_units=n_units,  # the layer's output dimensionality
-            nonlinearity=lasagne.nonlinearities.tanh)
-        layers.append(l_hidden_1)
-    # For our output layer, we'll use a dense layer with a softmax
-    # nonlinearity.
-    l_output = lasagne.layers.DenseLayer(layers[-1], num_units=N_CLASSES,
-                                         nonlinearity=lasagne.nonlinearities.softmax)
-    # Now, we can generate the symbolic expression of the network's output
-    # given an input variable.
-    # net_input = T.matrix('net_input')
-    net_output = lasagne.layers.get_output(l_output)
-    # As a loss function, we'll use Theano's categorical_crossentropy
-    # function. This allows for the network output to be class
-    # probabilities, but the target output to be class labels.
-    true_output = T.ivector('true_output')
-    objective = lasagne.objectives.Objective(
-            l_output,
-            # categorical_crossentropy computes the cross-entropy loss where the network
-            # output is class probabilities and the target value is an integer denoting the class.
-            loss_function=lasagne.objectives.categorical_crossentropy)
-    loss = objective.get_loss(target=true_output)
+    def build_mlp(input_var=None):
+        N_CLASSES = 2
+        # First, construct an input layer. The shape parameter defines the
+        # expected input shape, which is just the shape of our data matrix X.
+        l_in = lasagne.layers.InputLayer(shape=X.shape,
+                                         input_var=input_var)
+        # A dense layer implements a linear mix (xW + b) followed by a
+        # nonlinear function.
+        hiddens = [64, 64, 64]  # sollte besser als 0.12 sein (mit [32])
+        layers = [l_in]
 
-    reg = lasagne.regularization.l2(l_output)
-    loss = loss + 0.001*reg
-    #NLL_LOSS = -T.sum(T.log(p_y_given_x)[T.arange(y.shape[0]), y])
-    # Retrieving all parameters of the network is done using
-    # get_all_params, which recursively collects the parameters of all
-    # layers connected to the provided layer.
-    all_params = lasagne.layers.get_all_params(l_output)
+        for n_units in hiddens:
+            l_hidden_1 = lasagne.layers.DenseLayer(
+                layers[-1],  # The first argument is the input to this layer
+                num_units=n_units,  # the layer's output dimensionality
+                nonlinearity=lasagne.nonlinearities.tanh)
+            layers.append(l_hidden_1)
+        # For our output layer, we'll use a dense layer with a softmax
+        # nonlinearity.
+        l_output = lasagne.layers.DenseLayer(layers[-1], num_units=N_CLASSES,
+                                             nonlinearity=lasagne.nonlinearities.softmax)
+        return l_output
 
-    # Now, we'll generate updates using Lasagne's SGD function
-    updates = lasagne.updates.momentum(loss, all_params, learning_rate=0.1)
+    # Batch iterator, Copied directly from the Lasagne example.
+    def iterate_minibatches(inputs, targets, batchsize, shuffle=False):
+        """
+        This is just a simple helper function iterating over training data in
+        mini-batches of a particular size, optionally in random order. It
+        assumes data is available as numpy arrays. For big datasets, you could
+        load numpy arrays as memory-mapped files (np.load(..., mmap_mode='r')),
+        or write your own custom data iteration function. For small datasets,
+        you can also copy them to GPU at once for slightly improved
+        performance. This would involve several changes in the main program,
+        though, and is not demonstrated here.
+        """
+        assert len(inputs) == len(targets)
+        if shuffle:
+            indices = np.arange(len(inputs))
+            np.random.shuffle(indices)
+        for start_idx in range(0, len(inputs) - batchsize + 1, batchsize):
+            if shuffle:
+                excerpt = indices[start_idx:start_idx + batchsize]
+            else:
+                excerpt = slice(start_idx, start_idx + batchsize)
+            yield inputs[excerpt], targets[excerpt]
 
-    # Finally, we can compile Theano functions for training and computing
-    # the output.
-    train = theano.function([l_in.input_var, true_output],
-                            loss,
-                            updates=updates)
-    get_output = theano.function([l_in.input_var], net_output)
+    input_var = T.matrix('inputs')
+    target_var = T.ivector('targets')
+    network = build_mlp(input_var)
+    num_epochs = 7
 
-    logging.debug("|X|=%i", len(X))
-    logging.debug("|y|=%i", len(y))
-    logging.debug("|X[0]|=%i", len(X[0]))
+    # We reserve the last 100 training examples for validation.
+    X_train, X_val = X[:-100], X[-100:]
+    y_train, y_val = y[:-100], y[-100:]
 
-    # Train
-    epochs = 20
-    for n in range(epochs):
-        train(X, y)
-    return get_output
+    # Create a loss expression for training, i.e., a scalar objective we want
+    # to minimize (for our multi-class problem, it is the cross-entropy loss):
+    prediction = lasagne.layers.get_output(network)
+    loss = lasagne.objectives.categorical_crossentropy(prediction, target_var)
+    loss = loss.mean()
+    # We could add some weight decay as well here, see lasagne.regularization.
+
+    # Create update expressions for training, i.e., how to modify the
+    # parameters at each training step. Here, we'll use Stochastic Gradient
+    # Descent (SGD) with Nesterov momentum, but Lasagne offers plenty more.
+    params = lasagne.layers.get_all_params(network, trainable=True)
+    updates = lasagne.updates.nesterov_momentum(
+            loss, params, learning_rate=0.01, momentum=0.9)
+
+    # Create a loss expression for validation/testing. The crucial difference
+    # here is that we do a deterministic forward pass through the network,
+    # disabling dropout layers.
+    test_prediction = lasagne.layers.get_output(network, deterministic=True)
+
+    # Compile a function performing a training step on a mini-batch (by giving
+    # the updates dictionary) and returning the corresponding training loss:
+    train_fn = theano.function([input_var, target_var], loss, updates=updates)
+
+    # Finally, launch the training loop.
+    print("Starting training...")
+    # We iterate over epochs:
+    for epoch in range(num_epochs):
+        # In each epoch, we do a full pass over the training data:
+        train_err = 0
+        train_batches = 0
+        start_time = time.time()
+        for batch in iterate_minibatches(X_train, y_train, 20, shuffle=True):
+            inputs, targets = batch
+            train_err += train_fn(inputs, targets)
+            train_batches += 1
+
+        # Then we print the results for this epoch:
+        print("Epoch {} of {} took {:.3f}s".format(
+            epoch + 1, num_epochs, time.time() - start_time))
+        print("  training loss:\t\t{:.6f}".format(train_err / train_batches))
+
+    predict_fn = theano.function([input_var],
+                                 test_prediction)
+    return predict_fn
 
 
 def get_stroke_features(recording, strokeid1, strokeid2):
@@ -965,7 +1012,6 @@ def normalize_segmentation(seg):
 
 
 if __name__ == '__main__':
-    import sys
     logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                         level=logging.DEBUG,
                         stream=sys.stdout)

@@ -110,7 +110,9 @@ def main(args):
     elif args.cmd == 'create_model':
         create_model.main(args.model, args.override)
     elif args.cmd == 'serve':
-        serve.main(args.port, args.n)
+        serve.main(port=args.port,
+                   n_output=args.n,
+                   use_segmenter=args.use_segmenter)
     elif args.cmd == 'filter_dataset':
         filter_dataset.main(args.symbol_filename,
                             args.raw_filename,

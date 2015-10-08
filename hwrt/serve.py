@@ -26,6 +26,7 @@ from . import segment
 
 # Global variables
 n = 10
+use_segmenter = False
 
 
 def submit_recording(raw_data_json):
@@ -111,6 +112,7 @@ def get_json_result(results, n=10):
 def worker():
     """Implement a worker for write-math.com."""
     global n
+    global use_segmenter
     if request.method == 'POST':
         raw_data_json = request.form['classify']
 
@@ -121,7 +123,10 @@ def worker():
             return "Invalid JSON string: %s" % raw_data_json
 
         # Classify
-        segmentation = segment.segment_recording(raw_data_json)
+        if use_segmenter:
+            segmentation = segment.segment_recording(raw_data_json)
+        else:
+            segmentation = [([[i for i, _ in enumerate(json.loads(raw_data_json))]], 1)]
         logging.info("Found Segmentation: %s", segmentation)
         parsed = json.loads(raw_data_json)
         result_list = []
@@ -274,13 +279,21 @@ def get_parser():
     parser.add_argument("--port",
                         dest="port", default=5000, type=int,
                         help="where should the webserver run")
+    parser.add_argument("--use_segmenter",
+                        dest="use_segmenter",
+                        default=False,
+                        action='store_true',
+                        help=("try to segment the input for multiple symbol "
+                              "recognition"))
     return parser
 
 
-def main(port=8000, n_output=10):
+def main(port=8000, n_output=10, use_segmenter=False):
     """Main function starting the webserver."""
     global n
+    global use_segmenter
     n = n_output
+    use_segmenter = use_segmenter
     logging.info("Start webserver...")
     app.run(port=port)
 
@@ -288,4 +301,4 @@ if __name__ == '__main__':
     global n
     args = get_parser().parse_args()
     n = args.n
-    main(args.port)
+    main(port=args.port, use_segmenter=args.use_segmenter)

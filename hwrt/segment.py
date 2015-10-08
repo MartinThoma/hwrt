@@ -72,5 +72,7 @@ def segment_recording(pointlist):
                                           single_stroke_clf,
                                           stroke_segmented_classifier)
     except:
+        logging.warning("Couldn't load segmenters. "
+                        "Fallback to no segmentation.")
         seg_predict = [([[i for i in range(len(pointlist))]], 1.0)]
     return seg_predict

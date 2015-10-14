@@ -64,7 +64,7 @@ class HandwrittenData(object):
         Returns
         -------
         list :
-            A list of strokes. Each stroke is a dictionary
+            A list of strokes. Each stroke is a list of dictionaries
             {'x': 123, 'y': 42, 'time': 1337}
         """
         try:

@@ -19,6 +19,11 @@ import csv
 import pkg_resources
 import tempfile
 import tarfile
+import numpy
+from uuid import UUID
+import pickle
+from decimal import Decimal, getcontext
+getcontext().prec = 100
 
 # hwrt modules
 from . import handwritten_data
@@ -927,3 +932,108 @@ def get_mysql_cfg():
     else:
         mysql = cfg['mysql_dev']
     return mysql
+
+
+def softmax(w, t=1.0):
+    """Calculate the softmax of a list of numbers w.
+
+    Parameters
+    ----------
+    w : list of numbers
+
+    Returns
+    -------
+    a list of the same length as w of non-negative numbers
+
+    Examples
+    --------
+    >>> softmax([0.1, 0.2])
+    array([ 0.47502081,  0.52497919])
+    >>> softmax([-0.1, 0.2])
+    array([ 0.42555748,  0.57444252])
+    >>> softmax([0.9, -10])
+    array([  9.99981542e-01,   1.84578933e-05])
+    >>> softmax([0, 10])
+    array([  4.53978687e-05,   9.99954602e-01])
+    """
+    w = [Decimal(w) for el in w]
+    e = numpy.exp(numpy.array(w) / t)
+    dist = e / numpy.sum(e)
+    return dist
+
+
+def get_beam_cache_directory():
+    """
+    Get a directory where pickled Beam Data can be stored.
+
+    Create that directory, if it doesn't exist.
+
+    Returns
+    -------
+    str
+        Path to the directory
+    """
+    home = os.path.expanduser("~")
+    cache_dir = os.path.join(home, '.hwrt-beam-cache')
+    if not os.path.exists(cache_dir):
+        os.makedirs(cache_dir)
+    return cache_dir
+
+
+def get_beam(secret_uuid):
+    """
+    Get a beam from the session with `secret_uuid`.
+
+    Parameters
+    ----------
+    secret_uuid : str
+
+    Returns
+    -------
+    The beam object if it exists, otherwise `None`.
+    """
+    beam_dir = get_beam_cache_directory()
+    beam_filename = os.path.join(beam_dir, secret_uuid)
+    if os.path.isfile(beam_filename):
+        with open(beam_filename, 'rb') as handle:
+            beam = pickle.load(handle)
+        return beam
+    else:
+        return None
+
+
+def store_beam(beam, secret_uuid):
+    beam_dir = get_beam_cache_directory()
+    beam_filename = os.path.join(beam_dir, secret_uuid)
+    with open(beam_filename, 'wb') as pfile:
+        pickle.dump(beam,
+                    pfile,
+                    protocol=pickle.HIGHEST_PROTOCOL)
+
+
+def is_valid_uuid(uuid_to_test, version=4):
+    """
+    Check if uuid_to_test is a valid UUID.
+
+    Parameters
+    ----------
+    uuid_to_test : str
+    version : {1, 2, 3, 4}
+
+    Returns
+    -------
+    `True` if uuid_to_test is a valid UUID, otherwise `False`.
+
+    Examples
+    --------
+    >>> is_valid_uuid('c9bf9e57-1685-4c89-bafb-ff5af830be8a')
+    True
+    >>> is_valid_uuid('c9bf9e58')
+    False
+    """
+    try:
+        uuid_obj = UUID(uuid_to_test, version=version)
+    except:
+        return False
+
+    return str(uuid_obj) == uuid_to_test

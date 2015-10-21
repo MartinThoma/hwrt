@@ -21,8 +21,7 @@ if sys.version_info[0] == 2:
 import hwrt
 from . import utils
 from . import classify
-from . import segment
-
+from . import segmentation as se
 
 # Global variables
 n = 10
@@ -115,6 +114,7 @@ def worker():
     global use_segmenter_flag
     if request.method == 'POST':
         raw_data_json = request.form['classify']
+        secret_uuid = request.form['secret']
 
         # Check recording
         try:
@@ -124,18 +124,23 @@ def worker():
 
         # Classify
         if use_segmenter_flag:
-            segmentation = segment.segment_recording(raw_data_json)
+            strokelist = json.loads(raw_data_json)
+            beam = utils.get_beam(secret_uuid)
+
+            if beam is None:
+                beam = se.Beam()
+                for stroke in strokelist:
+                    beam.add_stroke({'data': [stroke], 'id': 42})  # TODO
+                results = beam.get_results()
+                utils.store_beam(beam, secret_uuid)
+            else:
+                stroke = strokelist[-1]
+                beam.add_stroke({'data': [stroke], 'id': 42})
+                logging.debug(beam)
+                results = beam.get_results()
+                utils.store_beam(beam, secret_uuid)
         else:
-            segmentation = [([[i for i, _ in
-                               enumerate(json.loads(raw_data_json))]], 1)]
-        logging.info("Found Segmentation: %s", segmentation)
-        parsed = json.loads(raw_data_json)
-        result_list = []
-        for strokes in segmentation[0][0]:
-            part = json.dumps(_get_part(parsed, strokes))
-            results = classify.classify_segmented_recording(part)
-            result_list.append(results[:1])
-        logging.info(result_list)
+            results = classify.classify_segmented_recording(raw_data_json)
         return get_json_result(results, n=n)
     else:
         # Page where the user can enter a recording

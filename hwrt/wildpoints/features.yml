@@ -1,0 +1,12 @@
+data-source: /home/moose/GitHub/hwrt/hwrt/wildpoints/
+data-multiplication:
+  - Multiply:
+      - nr: 1
+features:
+  - Ink: null
+  - ConstantPointCoordinates:
+      - strokes: 4
+      - points_per_stroke: 20
+      - fill_empty_with: 0
+      - pen_down: false
+      - pixel_env: 1

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import json
+# import json
 import logging
 import time
 from copy import deepcopy
@@ -11,9 +11,10 @@ getcontext().prec = 100
 
 # hwrt modules
 from .segmentation import single_clf
-from ..handwritten_data import HandwrittenData
-from .. import spacial_relationship
+# from ..handwritten_data import HandwrittenData
+# from .. import spacial_relationship
 from .. import language_model
+from ..utils import softmax
 
 __all__ = [
     "Beam"
@@ -57,7 +58,7 @@ class Beam(object):
          }
     """
 
-    def __init__(self, m=10, n=3, k=50):
+    def __init__(self, m=3, n=3, k=20):
         self.m = m
         self.n = n
         self.k = k
@@ -92,7 +93,6 @@ class Beam(object):
             point.
         """
         global single_clf
-        t0 = time.time()
         if len(self.hypotheses) == 0:  # Don't put this in the constructor!
             self.hypotheses = [{'segmentation': [],
                                 'symbols': [],
@@ -109,55 +109,59 @@ class Beam(object):
 
         # Get new guesses by assuming new_stroke is a new symbol
         guesses = single_clf.predict(new_stroke)[:self.m]
-        for hypothesis in self.hypotheses:
-            new_geometry = deepcopy(hypothesis['geometry'])
+        for hyp in self.hypotheses:
+            new_geometry = deepcopy(hyp['geometry'])
             most_right = new_geometry
-            if len(hypothesis['symbols']) == 0:
+            if len(hyp['symbols']) == 0:
                 while 'right' in most_right:
                     most_right = most_right['right']
-                most_right['right'] = {'symbol_index': len(hypothesis['symbols']),
+                most_right['right'] = {'symbol_index': len(hyp['symbols']),
                                        'right': None}
             else:
-                most_right = {'symbol_index': len(hypothesis['symbols']),
+                most_right = {'symbol_index': len(hyp['symbols']),
                               'right': None}
             for guess in guesses:
                 sym = {'symbol': guess['semantics'],
                        'probability': guess['probability']}
-                new_seg = deepcopy(hypothesis['segmentation'])
+                new_seg = deepcopy(hyp['segmentation'])
                 new_seg.append([stroke_nr])
-                new_sym = deepcopy(hypothesis['symbols'])
+                new_sym = deepcopy(hyp['symbols'])
                 new_sym.append(sym)
                 b = {'segmentation': new_seg,
                      'symbols': new_sym,
                      'geometry': new_geometry,
                      'probability': reduce(getcontext().multiply,
-                                           [Decimal(s['probability']) for s in new_sym],
+                                           [Decimal(s['probability'])
+                                            for s in new_sym],
                                            Decimal(1))
                      }
 
-                spacial_rels = []  # TODO
-                for s1_indices, s2_indices in zip(b['segmentation'],
-                                                  b['segmentation'][1:]):
-                    s1 = HandwrittenData(json.dumps([new_beam.history['data'][el] for el in s1_indices]))
-                    s2 = HandwrittenData(json.dumps([new_beam.history['data'][el] for el in s2_indices]))
-                    rel = spacial_relationship.estimate(s1, s2)
-                    spacial_rels.append(rel)
-                b['geometry'] = spacial_rels
+                # spacial_rels = []  # TODO
+                # for s1_indices, s2_indices in zip(b['segmentation'],
+                #                                   b['segmentation'][1:]):
+                #     tmp = [new_beam.history['data'][el] for el in s1_indices]
+                #     s1 = HandwrittenData(json.dumps(tmp))
+                #     tmp = [new_beam.history['data'][el] for el in s2_indices]
+                #     s2 = HandwrittenData(json.dumps(tmp))
+                #     rel = spacial_relationship.estimate(s1, s2)
+                #     spacial_rels.append(rel)
+                # b['geometry'] = spacial_rels
                 new_beam.hypotheses.append(b)
         t1 = time.time()
 
         # Get new guesses by assuming new_stroke belongs to an already begun
         # symbol
-        for hypothesis in self.hypotheses:
+        for hyp in self.hypotheses:
             # Add stroke to last n symbols (seperately)
-            for i in range(min(self.n, len(hypothesis['segmentation']))):
+            for i in range(min(self.n, len(hyp['segmentation']))):
                 # Build stroke data
                 new_strokes = {'data': [], 'id': -1}
-                for stroke_index in hypothesis['segmentation'][-(i+1)]:
-                    new_strokes['data'].append(self.history['data'][stroke_index])
+                for stroke_index in hyp['segmentation'][-(i+1)]:
+                    curr_stroke = self.history['data'][stroke_index]
+                    new_strokes['data'].append(curr_stroke)
                 new_strokes['data'].append(new_stroke['data'][0])
 
-                new_seg = deepcopy(hypothesis['segmentation'])
+                new_seg = deepcopy(hyp['segmentation'])
                 new_seg[-(i+1)].append(stroke_nr)
 
                 if new_seg in evaluated_segmentations:
@@ -170,34 +174,38 @@ class Beam(object):
                 for guess in guesses:
                     sym = {'symbol': guess['semantics'],
                            'probability': guess['probability']}
-                    new_sym = deepcopy(hypothesis['symbols'])
+                    new_sym = deepcopy(hyp['symbols'])
                     new_sym[-(i+1)] = sym
                     b = {'segmentation': new_seg,
                          'symbols': new_sym,
-                         'geometry': deepcopy(hypothesis['geometry']),
+                         'geometry': deepcopy(hyp['geometry']),
                          'probability': reduce(getcontext().multiply,
-                                               [Decimal(s['probability']) for s in new_sym],
+                                               [Decimal(s['probability'])
+                                                for s in new_sym],
                                                Decimal(1))
                          }
                     new_beam.hypotheses.append(b)
 
         # Use language model to update probabilities
         lm_probs = []
-        for hypothesis in new_beam.hypotheses:
+        for hyp in new_beam.hypotheses:
             pure_symbols = [symbol['symbol'].split(";")[1]
-                            for symbol in hypothesis['symbols']]
+                            for symbol in hyp['symbols']]
             pure_symbols = ["<s>"] + pure_symbols + ["</s>"]
             lm_prob = language_model.get_probability(pure_symbols)
-            hypothesis['lm_probability'] = lm_prob
+            hyp['lm_probability'] = lm_prob
             lm_probs.append(lm_prob)
-        add = Decimal(1.0) - max(lm_probs)  # bring the highest one to 0.5
-        for hypothesis in new_beam.hypotheses:
-            hypothesis['probability'] *= (hypothesis['lm_probability'] + add)
+
+        new_probs = softmax([h['lm_probability']
+                             for h in new_beam.hypotheses])
+        # add = Decimal(1.0) - max(lm_probs)  # bring the highest one to 0.5
+        for hyp, prob in zip(new_beam.hypotheses, new_probs):
+            hyp['probability'] *= prob  # (hyp['lm_probability'])  # + add
 
         # Get probability again
-        # new_probs = softmax([h['lm_probability'] for h in new_beam.hypotheses])
-        # for prob, hypothesis in zip(new_probs, new_beam.hypotheses):
-        #     hypothesis['probability'] *= prob
+
+        # for prob, hyp in zip(new_probs, new_beam.hypotheses):
+        #     hyp['probability'] *= prob
 
         # Get geometry of each beam entry
         # TODO
@@ -209,10 +217,7 @@ class Beam(object):
         self.history = new_beam.history
         self._prune()
         t2 = time.time()
-        logging.info("It took %0.3fs to add this stroke.", (t2-t0))
-        logging.info("%0.3fs for the first part, %0.3fs for the second",
-                     (t1-t0),
-                     (t2-t1))
+        logging.info("It took %0.3fs to add this stroke.", (t2-t1))
 
     def _prune(self):
         """Shorten hypotheses to the best k ones."""

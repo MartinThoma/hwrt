@@ -956,8 +956,8 @@ def softmax(w, t=1.0):
     >>> softmax([0, 10])
     array([  4.53978687e-05,   9.99954602e-01])
     """
-    w = [Decimal(w) for el in w]
-    e = numpy.exp(numpy.array(w) / t)
+    w = [Decimal(el) for el in w]
+    e = numpy.exp(numpy.array(w) / Decimal(t))
     dist = e / numpy.sum(e)
     return dist
 

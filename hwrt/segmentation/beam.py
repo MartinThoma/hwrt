@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 # import json
-import logging
-import time
 from copy import deepcopy
 from functools import reduce  # Valid in Python 2.6+, required in Python 3
 from decimal import Decimal, getcontext
@@ -147,7 +145,6 @@ class Beam(object):
                 #     spacial_rels.append(rel)
                 # b['geometry'] = spacial_rels
                 new_beam.hypotheses.append(b)
-        t1 = time.time()
 
         # Get new guesses by assuming new_stroke belongs to an already begun
         # symbol
@@ -216,8 +213,6 @@ class Beam(object):
         self.hypotheses = new_beam.hypotheses
         self.history = new_beam.history
         self._prune()
-        t2 = time.time()
-        logging.info("It took %0.3fs to add this stroke.", (t2-t1))
 
     def _prune(self):
         """Shorten hypotheses to the best k ones."""
@@ -229,7 +224,8 @@ class Beam(object):
         results = []
         for hyp in self.hypotheses:
             results.append({'semantics': "-1;" + build_latex(hyp),
-                            'probability': float(hyp['probability'])})
+                            'probability': float(hyp['probability']),
+                            'symbol count': len(hyp['segmentation'])})
         return results
 
     def __str__(self):

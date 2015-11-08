@@ -27,7 +27,7 @@ config = {
         "matplotlib",
         "nntoolkit",
         "h5py",
-        "flask",
+        "Flask",
         "flask-bootstrap",
         "requests",
         "six"

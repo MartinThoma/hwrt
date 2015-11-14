@@ -1,6 +1,6 @@
 id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 1,TRASH,TRASH,128465,WASTEBASKET,single symbol
-2,::UNKNOWN::,::UNKNOWN::,0,::UNKNOWN::,single symbol
+2,::UNKNOWN::,::UNKNOWN::,0,,NULL
 31,A,A,65,LATIN CAPITAL LETTER A,single symbol
 32,B,B,66,LATIN CAPITAL LETTER B,single symbol
 33,C,C,67,LATIN CAPITAL LETTER C,single symbol
@@ -13,8 +13,8 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 40,J,J,74,LATIN CAPITAL LETTER J,single symbol
 41,K,K,75,LATIN CAPITAL LETTER K,single symbol
 42,L,L,76,LATIN CAPITAL LETTER L,single symbol
-43,M,M,924,GREEK CAPITAL LETTER MU,single symbol
-44,N,N,120558,MATHEMATICAL ITALIC CAPITAL NU,single symbol
+43,M,M,77,GREEK CAPITAL LETTER MU,single symbol
+44,N,N,78,MATHEMATICAL ITALIC CAPITAL NU,single symbol
 45,O,O,79,MATHEMATICAL SANS-SERIF BOLD ITALIC CAPITAL OMICRON,single symbol
 46,P,P,80,LATIN CAPITAL LETTER P,single symbol
 47,Q,Q,81,LATIN CAPITAL LETTER Q,single symbol
@@ -49,7 +49,7 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 93,d,d,100,LATIN SMALL LETTER D,single symbol
 94,e,e,101,LATIN SMALL LETTER E,single symbol
 95,f,f,102,LATIN SMALL LETTER F WITH HOOK,single symbol
-96,g,g,609,LATIN SMALL LETTER SCRIPT G,single symbol
+96,g,g,103,LATIN SMALL LETTER SCRIPT G,single symbol
 97,h,h,104,LATIN SMALL LETTER H,single symbol
 98,i,i,105,LATIN SMALL LETTER I,single symbol
 99,j,j,106,LATIN SMALL LETTER J,single symbol
@@ -57,7 +57,7 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 101,l,l,108,LATIN SMALL LETTER L,single symbol
 102,m,m,109,LATIN SMALL LETTER M,single symbol
 103,n,n,110,LATIN SMALL LETTER N,single symbol
-104,o,o,959,GREEK SMALL LETTER OMICRON,single symbol
+104,o,o,111,GREEK SMALL LETTER OMICRON,single symbol
 105,p,p,112,LATIN SMALL LETTER P,single symbol
 106,q,q,113,LATIN SMALL LETTER Q,single symbol
 107,r,r,114,LATIN SMALL LETTER R,single symbol
@@ -94,7 +94,7 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 170,rho (variant),\varrho,1009,GREEK RHO SYMBOL,single symbol
 171,tau,\tau,964,GREEK SMALL LETTER TAU,single symbol
 172,\upsilon,\upsilon,965,GREEK SMALL LETTER UPSILON,single symbol
-173,\Upsilon,\Upsilon,978,GREEK UPSILON WITH HOOK SYMBOL,single symbol
+173,\Upsilon,\Upsilon,933,GREEK UPSILON WITH HOOK SYMBOL,single symbol
 174,\phi,\phi,981,GREEK PHI SYMBOL,single symbol
 175,Phi,\Phi,934,GREEK CAPITAL LETTER PHI,single symbol
 176,\varphi,\varphi,966,GREEK SMALL LETTER PHI,single symbol
@@ -103,7 +103,7 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 179,\Psi,\Psi,936,GREEK CAPITAL LETTER PSI,single symbol
 180,omega,\omega,969,GREEK SMALL LETTER OMEGA,single symbol
 181,\Omega,\Omega,8486,OHM SIGN,single symbol
-182,\partial,\partial,120771,MATHEMATICAL SANS-SERIF BOLD ITALIC PARTIAL DIFFERENTIAL,single symbol
+182,\partial,\partial,8706,MATHEMATICAL SANS-SERIF BOLD ITALIC PARTIAL DIFFERENTIAL,single symbol
 183,\int,\int,8747,INTEGRAL,single symbol
 184,\cdot,\cdot,8901,DOT OPERATOR,single symbol
 185,\leq,\leq,8804,LESS-THAN OR EQUAL TO,single symbol
@@ -133,246 +133,246 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 265,\&,\&,38,AMPERSAND,single symbol
 266,\#,\#,35,NUMBER SIGN,single symbol
 267,\%,\%,37,PERCENT SIGN,single symbol
-268,\checkmark,\checkmark,10003,CHECK MARK,single symbol
+268,\checkmark,\checkmark,10004,CHECK MARK,single symbol
 269,\circledR,\circledR,174,REGISTERED SIGN,single symbol
 270,\maltese,\maltese,10016,MALTESE CROSS,single symbol
-271,\textbabygamma,\textbabygamma,0,,single symbol
-272,\textglotstop,\textglotstop,0,,single symbol
-273,\textrtailn,\textrtailn,0,,single symbol
+271,\textbabygamma,\textbabygamma,612,,single symbol
+272,\textglotstop,\textglotstop,660,,single symbol
+273,\textrtailn,\textrtailn,627,,single symbol
 274,\textbarb,\textbarb,0,,single symbol
 275,\texthalflength,\texthalflength,0,,single symbol
-276,\textrtailr,\textrtailr,0,,single symbol
+276,\textrtailr,\textrtailr,637,,single symbol
 277,\textbarc,\textbarc,0,,single symbol
 278,\texthardsign,\texthardsign,0,,single symbol
-279,\textrtails,\textrtails,0,,single symbol
+279,\textrtails,\textrtails,642,,single symbol
 280,\textbard,\textbard,0,,single symbol
 281,\texthooktop,\texthooktop,0,,single symbol
-282,\textrtailt,\textrtailt,0,,single symbol
-283,\textbardotlessj,\textbardotlessj,0,,single symbol
+282,\textrtailt,\textrtailt,648,,single symbol
+283,\textbardotlessj,\textbardotlessj,584,,single symbol
 284,\texthtb,\texthtb,0,,single symbol
-285,\textrtailz,\textrtailz,0,,single symbol
+285,\textrtailz,\textrtailz,656,,single symbol
 286,\textbarg,\textbarg,0,,single symbol
 287,\texthtbardotlessj,\texthtbardotlessj,0,,single symbol
 288,\textrthook,\textrthook,0,,single symbol
-289,\textbarglotstop,\textbarglotstop,0,,single symbol
+289,\textbarglotstop,\textbarglotstop,673,,single symbol
 290,\texthtc,\texthtc,0,,single symbol
-291,\textsca,\textsca,0,,single symbol
-292,\textbari,\textbari,0,,single symbol
-293,\texthtd,\texthtd,0,,single symbol
-294,\textscb,\textscb,0,,single symbol
-295,\textbarl,\textbarl,0,,single symbol
-296,\texthtg,\texthtg,0,,single symbol
-297,\textsce,\textsce,0,,single symbol
-298,\textbaro,\textbaro,0,,single symbol
+291,\textsca,\textsca,7424,,single symbol
+292,\textbari,\textbari,616,,single symbol
+293,\texthtd,\texthtd,599,,single symbol
+294,\textscb,\textscb,665,,single symbol
+295,\textbarl,\textbarl,410,,single symbol
+296,\texthtg,\texthtg,608,,single symbol
+297,\textsce,\textsce,7431,,single symbol
+298,\textbaro,\textbaro,629,,single symbol
 299,\texthth,\texthth,0,,single symbol
-300,\textscg,\textscg,0,,single symbol
-301,\textbarrevglotstop,\textbarrevglotstop,0,,single symbol
-302,\texththeng,\texththeng,0,,single symbol
-303,\textsch,\textsch,0,,single symbol
+300,\textscg,\textscg,610,,single symbol
+301,\textbarrevglotstop,\textbarrevglotstop,674,,single symbol
+302,\texththeng,\texththeng,615,,single symbol
+303,\textsch,\textsch,668,,single symbol
 304,\textbaru,\textbaru,0,,single symbol
-305,\texthtk,\texthtk,0,,single symbol
+305,\texthtk,\texthtk,409,,single symbol
 306,\textschwa,\textschwa,0,,single symbol
-307,\textbeltl,\textbeltl,0,,single symbol
+307,\textbeltl,\textbeltl,620,,single symbol
 308,\texthtp,\texthtp,0,,single symbol
 309,\textsci,\textsci,0,,single symbol
-310,\textbeta,\textbeta,0,,single symbol
-311,\texthtq,\texthtq,0,,single symbol
-312,\textscj,\textscj,0,,single symbol
-313,\textbullseye,\textbullseye,0,,single symbol
+310,\textbeta,\textbeta,946,,single symbol
+311,\texthtq,\texthtq,672,,single symbol
+312,\textscj,\textscj,567,,single symbol
+313,\textbullseye,\textbullseye,664,,single symbol
 314,\texthtrtaild,\texthtrtaild,0,,single symbol
-315,\textscl,\textscl,0,,single symbol
-316,\textceltpal,\textceltpal,0,,single symbol
+315,\textscl,\textscl,671,,single symbol
+316,\textceltpal,\textceltpal,697,,single symbol
 317,\texthtscg,\texthtscg,0,,single symbol
-318,\textscn,\textscn,0,,single symbol
+318,\textscn,\textscn,628,,single symbol
 319,\textchi,\textchi,0,,single symbol
 320,\texthtt,\texthtt,0,,single symbol
-321,\textscoelig,\textscoelig,0,,single symbol
-322,epsilon (closed variant),\textcloseepsilon,0,,single symbol
+321,\textscoelig,\textscoelig,630,,single symbol
+322,epsilon (closed variant),\textcloseepsilon,666,,single symbol
 323,\texthvlig,\texthvlig,405,LATIN SMALL LETTER HV,single symbol
-324,\textscomega,\textscomega,0,,single symbol
-325,\textcloseomega,\textcloseomega,0,,single symbol
-326,\textinvglotstop,\textinvglotstop,0,,single symbol
-327,\textscr,\textscr,0,,single symbol
-328,epsilon (closed and reversed variant),\textcloserevepsilon,0,,single symbol
+324,\textscomega,\textscomega,43877,,single symbol
+325,\textcloseomega,\textcloseomega,631,,single symbol
+326,\textinvglotstop,\textinvglotstop,662,,single symbol
+327,\textscr,\textscr,640,,single symbol
+328,epsilon (closed and reversed variant),\textcloserevepsilon,606,,single symbol
 329,\textinvscr,\textinvscr,0,,single symbol
 330,\textscripta,\textscripta,0,,single symbol
-331,\textcommatailz,\textcommatailz,0,,single symbol
-332,\textiota,\textiota,0,,single symbol
+331,\textcommatailz,\textcommatailz,549,,single symbol
+332,\textiota,\textiota,617,,single symbol
 333,\textscriptg,\textscriptg,0,,single symbol
 334,\textcorner,\textcorner,0,,single symbol
 335,\textlambda,\textlambda,0,,single symbol
 336,\textscriptv,\textscriptv,0,,single symbol
-337,\textcrb,\textcrb,0,,single symbol
-338,\textlengthmark,\textlengthmark,0,,single symbol
-339,\textscu,\textscu,0,,single symbol
-340,\textcrd,\textcrd,0,,single symbol
+337,\textcrb,\textcrb,384,,single symbol
+338,\textlengthmark,\textlengthmark,720,,single symbol
+339,\textscu,\textscu,7452,,single symbol
+340,\textcrd,\textcrd,273,,single symbol
 341,\textlhookt,\textlhookt,0,,single symbol
 342,\textscy,\textscy,0,,single symbol
 343,\textcrg,\textcrg,0,,single symbol
 344,\textlhtlongi,\textlhtlongi,0,,single symbol
-345,\textsecstress,\textsecstress,0,,single symbol
+345,\textsecstress,\textsecstress,712,,single symbol
 346,\textcrh,\textcrh,0,,single symbol
-347,\textlhtlongy,\textlhtlongy,0,,single symbol
+347,\textlhtlongy,\textlhtlongy,686,,single symbol
 348,\textsoftsign,\textsoftsign,0,,single symbol
 349,\textcrinvglotstop,\textcrinvglotstop,0,,single symbol
-350,\textlonglegr,\textlonglegr,0,,single symbol
-351,\textstretchc,\textstretchc,0,,single symbol
-352,\textcrlambda,\textcrlambda,0,,single symbol
-353,\textlptr,\textlptr,0,,single symbol
+350,\textlonglegr,\textlonglegr,636,,single symbol
+351,\textstretchc,\textstretchc,663,,single symbol
+352,\textcrlambda,\textcrlambda,411,,single symbol
+353,\textlptr,\textlptr,706,,single symbol
 354,\texttctclig,\texttctclig,0,,single symbol
 355,\textcrtwo,\textcrtwo,0,,single symbol
-356,\textltailm,\textltailm,0,,single symbol
-357,\textteshlig,\textteshlig,0,,single symbol
-358,\textctc,\textctc,0,,single symbol
-359,\textltailn,\textltailn,0,,single symbol
+356,\textltailm,\textltailm,625,,single symbol
+357,\textteshlig,\textteshlig,679,,single symbol
+358,\textctc,\textctc,597,,single symbol
+359,\textltailn,\textltailn,626,,single symbol
 360,\texttheta,\texttheta,952,GREEK SMALL LETTER THETA,single symbol
-361,\textctd,\textctd,0,,single symbol
-362,\textltilde,\textltilde,0,,single symbol
+361,\textctd,\textctd,545,,single symbol
+362,\textltilde,\textltilde,619,,single symbol
 363,\textthorn,\textthorn,0,,single symbol
-364,\textctdctzlig,\textctdctzlig,0,,single symbol
-365,\textlyoghlig,\textlyoghlig,0,,single symbol
-366,\texttoneletterstem,\texttoneletterstem,0,,single symbol
-367,\textctesh,\textctesh,0,,single symbol
+364,\textctdctzlig,\textctdctzlig,677,,single symbol
+365,\textlyoghlig,\textlyoghlig,622,,single symbol
+366,\texttoneletterstem,\texttoneletterstem,448,,single symbol
+367,\textctesh,\textctesh,646,,single symbol
 368,\textObardotlessj,\textObardotlessj,0,,single symbol
-369,\texttslig,\texttslig,0,,single symbol
+369,\texttslig,\texttslig,678,,single symbol
 370,\textctj,\textctj,0,,single symbol
 371,\textOlyoghlig,\textOlyoghlig,0,,single symbol
-372,\textturna,\textturna,0,,single symbol
-373,\textctn,\textctn,0,,single symbol
+372,\textturna,\textturna,592,,single symbol
+373,\textctn,\textctn,565,,single symbol
 374,omega (variant),\textomega,969,,single symbol
 375,\textturncelig,\textturncelig,0,,single symbol
-376,\textctt,\textctt,0,,single symbol
+376,\textctt,\textctt,566,,single symbol
 377,\textopencorner,\textopencorner,0,,single symbol
-378,\textturnh,\textturnh,0,,single symbol
-379,\textcttctclig,\textcttctclig,0,,single symbol
+378,\textturnh,\textturnh,613,,single symbol
+379,\textcttctclig,\textcttctclig,680,,single symbol
 380,\textopeno,\textopeno,0,,single symbol
 381,\textturnk,\textturnk,670,LATIN SMALL LETTER TURNED K,single symbol
-382,\textctyogh,\textctyogh,0,,single symbol
-383,\textpalhook,\textpalhook,0,,single symbol
-384,\textturnlonglegr,\textturnlonglegr,0,,single symbol
-385,\textctz,\textctz,0,,single symbol
+382,\textctyogh,\textctyogh,659,,single symbol
+383,\textpalhook,\textpalhook,801,,single symbol
+384,\textturnlonglegr,\textturnlonglegr,634,,single symbol
+385,\textctz,\textctz,657,,single symbol
 386,\textphi,\textphi,632,LATIN SMALL LETTER PHI,single symbol
 387,\textturnm,\textturnm,0,,single symbol
 388,\textdctzlig,\textdctzlig,0,,single symbol
 389,\textpipe,\textpipe,0,,single symbol
-390,\textturnmrleg,\textturnmrleg,0,,single symbol
+390,\textturnmrleg,\textturnmrleg,624,,single symbol
 391,\textdoublebaresh,\textdoublebaresh,0,,single symbol
 392,\textprimstress,\textprimstress,0,,single symbol
-393,\textturnr,\textturnr,0,,single symbol
-394,\textdoublebarpipe,\textdoublebarpipe,0,,single symbol
-395,\textraiseglotstop,\textraiseglotstop,0,,single symbol
-396,\textturnrrtail,\textturnrrtail,0,,single symbol
+393,\textturnr,\textturnr,633,,single symbol
+394,\textdoublebarpipe,\textdoublebarpipe,450,,single symbol
+395,\textraiseglotstop,\textraiseglotstop,704,,single symbol
+396,\textturnrrtail,\textturnrrtail,635,,single symbol
 397,\textdoublebarslash,\textdoublebarslash,0,,single symbol
 398,\textraisevibyi,\textraisevibyi,0,,single symbol
 399,\textturnscripta,\textturnscripta,0,,single symbol
-400,\textdoublepipe,\textdoublepipe,0,LATIN LETTER ALVEOLAR CLICK,single symbol
+400,\textdoublepipe,\textdoublepipe,449,LATIN LETTER ALVEOLAR CLICK,single symbol
 401,\textramshorns,\textramshorns,0,,single symbol
-402,\textturnt,\textturnt,0,,single symbol
-403,\textdoublevertline,\textdoublevertline,0,,single symbol
-404,\textrevapostrophe,\textrevapostrophe,0,,single symbol
-405,\textturnv,\textturnv,0,,single symbol
+402,\textturnt,\textturnt,647,,single symbol
+403,\textdoublevertline,\textdoublevertline,449,,single symbol
+404,\textrevapostrophe,\textrevapostrophe,701,,single symbol
+405,\textturnv,\textturnv,652,,single symbol
 406,\textdownstep,\textdownstep,0,,single symbol
-407,\textreve,\textreve,0,,single symbol
-408,\textturnw,\textturnw,0,,single symbol
-409,\textdyoghlig,\textdyoghlig,0,,single symbol
-410,epsilon (reversed variant),\textrevepsilon,0,,single symbol
-411,\textturny,\textturny,0,,single symbol
-412,\textdzlig,\textdzlig,0,,single symbol
-413,\textrevglotstop,\textrevglotstop,0,,single symbol
-414,\textupsilon,\textupsilon,0,,single symbol
+407,\textreve,\textreve,600,,single symbol
+408,\textturnw,\textturnw,653,,single symbol
+409,\textdyoghlig,\textdyoghlig,676,,single symbol
+410,epsilon (reversed variant),\textrevepsilon,604,,single symbol
+411,\textturny,\textturny,654,,single symbol
+412,\textdzlig,\textdzlig,499,,single symbol
+413,\textrevglotstop,\textrevglotstop,661,,single symbol
+414,\textupsilon,\textupsilon,650,,single symbol
 415,epsilon,\textepsilon,949,,single symbol
-416,\textrevyogh,\textrevyogh,0,,single symbol
+416,\textrevyogh,\textrevyogh,441,,single symbol
 417,\textupstep,\textupstep,0,,single symbol
-418,\textesh,\textesh,0,,single symbol
-419,epsilon with hook,\textrhookrevepsilon,0,,single symbol
-420,\textvertline,\textvertline,0,,single symbol
-421,\textfishhookr,\textfishhookr,0,,single symbol
-422,\textrhookschwa,\textrhookschwa,0,,single symbol
+418,\textesh,\textesh,643,,single symbol
+419,epsilon with hook,\textrhookrevepsilon,605,,single symbol
+420,\textvertline,\textvertline,448,,single symbol
+421,\textfishhookr,\textfishhookr,638,,single symbol
+422,\textrhookschwa,\textrhookschwa,602,,single symbol
 423,\textvibyi,\textvibyi,0,,single symbol
-424,\textg,\textg,0,,single symbol
+424,\textg,\textg,609,,single symbol
 425,\textrhoticity,\textrhoticity,0,,single symbol
-426,\textvibyy,\textvibyy,0,,single symbol
-427,\textgamma,\textgamma,0,,single symbol
-428,\textrptr,\textrptr,0,,single symbol
+426,\textvibyy,\textvibyy,687,,single symbol
+427,\textgamma,\textgamma,611,,single symbol
+428,\textrptr,\textrptr,707,,single symbol
 429,\textwynn,\textwynn,0,,single symbol
-430,\textglobfall,\textglobfall,0,,single symbol
-431,\textrtaild,\textrtaild,0,,single symbol
-432,\textyogh,\textyogh,0,,single symbol
-433,\textglobrise,\textglobrise,0,,single symbol
-434,\textrtaill,\textrtaill,0,,single symbol
+430,\textglobfall,\textglobfall,8600,,single symbol
+431,\textrtaild,\textrtaild,598,,single symbol
+432,\textyogh,\textyogh,658,,single symbol
+433,\textglobrise,\textglobrise,8599,,single symbol
+434,\textrtaill,\textrtaill,621,,single symbol
 435,\textbaht,\textbaht,3647,,single symbol
 436,\textdollar,\textdollar,36,DOLLAR SIGN,single symbol
-437,\textguarani,\textguarani,0,,single symbol
-438,\textwon,\textwon,0,,single symbol
+437,\textguarani,\textguarani,8370,,single symbol
+438,\textwon,\textwon,8361,,single symbol
 439,\textcent,\textcent,162,CENT SIGN,single symbol
 440,\textdollaroldstyle,\textdollaroldstyle,0,,single symbol
-441,\textlira,\textlira,0,,single symbol
+441,\textlira,\textlira,8356,,single symbol
 442,yen,\textyen,165,YEN SIGN,single symbol
-443,\textcentoldstyle,\textcentoldstyle,0,,single symbol
+443,\textcentoldstyle,\textcentoldstyle,162,,single symbol
 444,\textdong,\textdong,8363,,single symbol
 445,\textnaira,\textnaira,8358,,single symbol
 446,\textcolonmonetary,\textcolonmonetary,0,,single symbol
 447,\texteuro,\texteuro,8364,EURO SIGN,single symbol
 448,\textpeso,\textpeso,8369,,single symbol
 449,\textcurrency,\textcurrency,164,CURRENCY SIGN,single symbol
-450,\textflorin,\textflorin,0,,single symbol
+450,\textflorin,\textflorin,402,,single symbol
 451,"Pound sign (sterling, upright variant)",\textsterling,163,POUND SIGN,single symbol
 452,\Denarius,\Denarius,0,,single symbol
-453,\EUR,\EUR,0,,single symbol
-454,\EURdig,\EURdig,0,,single symbol
-455,\EURtm,\EURtm,0,,single symbol
+453,\EUR,\EUR,8364,,single symbol
+454,\EURdig,\EURdig,8364,,single symbol
+455,\EURtm,\EURtm,8364,,single symbol
 456,\Pfund,\Pfund,0,,single symbol
 457,\Ecommerce,\Ecommerce,0,,single symbol
-458,\EURcr,\EURcr,0,,single symbol
+458,\EURcr,\EURcr,8364,,single symbol
 459,\EURhv,\EURhv,0,,single symbol
 460,\EyesDollar,\EyesDollar,0,,single symbol
 461,\Shilling,\Shilling,0,,single symbol
-462,\cent,\cent,0,,single symbol
-463,\currency,\currency,0,,single symbol
-464,\textcircledP,\textcircledP,0,,single symbol
+462,\cent,\cent,65504,,single symbol
+463,\currency,\currency,164,,single symbol
+464,\textcircledP,\textcircledP,9413,,single symbol
 465,\textcopyright,\textcopyright,169,COPYRIGHT SIGN,single symbol
-466,\textservicemark,\textservicemark,0,,single symbol
+466,\textservicemark,\textservicemark,8480,,single symbol
 467,\textcopyleft,\textcopyleft,0,,single symbol
 468,\textregistered,\textregistered,174,REGISTERED SIGN,single symbol
 469,\texttrademark,\texttrademark,8482,TRADE MARK SIGN,single symbol
-470,\textasteriskcentered,\textasteriskcentered,0,,single symbol
+470,\textasteriskcentered,\textasteriskcentered,42,,single symbol
 471,\textordfeminine,\textordfeminine,170,FEMININE ORDINAL INDICATOR,single symbol
 472,\textbardbl,\textbardbl,0,,single symbol
 473,\textordmasculine,\textordmasculine,186,MASCULINE ORDINAL INDICATOR,single symbol
 474,\textbigcircle,\textbigcircle,0,,single symbol
 475,\textparagraph,\textparagraph,182,PILCROW SIGN,single symbol
-476,\textblank,\textblank,0,,single symbol
+476,\textblank,\textblank,9250,,single symbol
 477,\textperiodcentered,\textperiodcentered,729,DOT ABOVE,single symbol
 478,\textbrokenbar,\textbrokenbar,166,BROKEN BAR,single symbol
 479,\textpertenthousand,\textpertenthousand,8241,PER TEN THOUSAND SIGN,single symbol
 480,\textbullet,\textbullet,8226,BULLET,single symbol
 481,\textperthousand,\textperthousand,8240,PER MILLE SIGN,single symbol
 482,\textdagger,\textdagger,8224,DAGGER,single symbol
-483,\textpilcrow,\textpilcrow,0,,single symbol
+483,\textpilcrow,\textpilcrow,182,,single symbol
 484,\textdaggerdbl,\textdaggerdbl,8225,DOUBLE DAGGER,single symbol
 485,\textquotesingle,\textquotesingle,39,APOSTROPHE,single symbol
-486,\textdblhyphen,\textdblhyphen,0,,single symbol
+486,\textdblhyphen,\textdblhyphen,11840,,single symbol
 487,\textquotestraightbase,\textquotestraightbase,0,,single symbol
-488,\textdblhyphenchar,\textdblhyphenchar,0,,single symbol
+488,\textdblhyphenchar,\textdblhyphenchar,11840,,single symbol
 489,\textquotestraightdblbase,\textquotestraightdblbase,0,,single symbol
-490,\textdiscount,\textdiscount,0,,single symbol
+490,\textdiscount,\textdiscount,8274,,single symbol
 491,\textrecipe,\textrecipe,0,,single symbol
 492,\textestimated,\textestimated,0,,single symbol
-493,\textreferencemark,\textreferencemark,0,,single symbol
+493,\textreferencemark,\textreferencemark,8251,,single symbol
 494,\textinterrobang,\textinterrobang,8253,,single symbol
 495,\textsection,\textsection,167,SECTION SIGN,single symbol
-496,\textinterrobangdown,\textinterrobangdown,0,,single symbol
+496,\textinterrobangdown,\textinterrobangdown,11800,,single symbol
 497,\textthreequartersemdash,\textthreequartersemdash,0,,single symbol
-498,\textmusicalnote,\textmusicalnote,0,,single symbol
+498,\textmusicalnote,\textmusicalnote,9834,,single symbol
 499,\texttildelow,\texttildelow,732,SMALL TILDE,single symbol
-500,\textnumero,\textnumero,0,,single symbol
+500,\textnumero,\textnumero,8470,,single symbol
 501,\texttwelveudash,\texttwelveudash,0,,single symbol
 502,\textopenbullet,\textopenbullet,0,,single symbol
-503,\permil,\permil,0,,single symbol
+503,\permil,\permil,8240,,single symbol
 504,\mathdollar,\mathdollar,36,DOLLAR SIGN,single symbol
 505,\mathparagraph,\mathparagraph,0,,single symbol
 506,"Pound sign (sterling, thin)",\mathsterling,163,POUND SIGN,single symbol
-507,\mathellipsis,\mathellipsis,0,,single symbol
+507,\mathellipsis,\mathellipsis,8230,,single symbol
 508,\mathsection,\mathsection,167,,single symbol
 509,\mathunderscore,\mathunderscore,0,,single symbol
 510,\amalg,\amalg,10815,AMALGAMATION OR COPRODUCT,single symbol
@@ -406,7 +406,7 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 538,\ominus,\ominus,8854,CIRCLED MINUS,single symbol
 539,\star,\star,8902,STAR OPERATOR,single symbol
 540,\wr,\wr,8768,WREATH PRODUCT,single symbol
-541,\barwedge,\barwedge,8965,PROJECTIVE,single symbol
+541,\barwedge,\barwedge,8892,PROJECTIVE,single symbol
 542,\circledcirc,\circledcirc,8858,CIRCLED RING OPERATOR,single symbol
 543,\intercal,\intercal,8890,INTERCALATE,single symbol
 544,\boxdot,\boxdot,8865,SQUARED DOT OPERATOR,single symbol
@@ -430,11 +430,11 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 562,\circledast,\circledast,8859,CIRCLED ASTERISK OPERATOR,single symbol
 563,\doublebarwedge,\doublebarwedge,10846,LOGICAL AND WITH DOUBLE OVERBAR,single symbol
 564,\lhd,\lhd,9665,,single symbol
-565,\ocircle,\ocircle,0,,single symbol
-566,\RHD,\RHD,0,,single symbol
+565,\ocircle,\ocircle,9898,,single symbol
+566,\RHD,\RHD,9654,,single symbol
 567,\unrhd,\unrhd,0,,single symbol
-568,\LHD,\LHD,0,,single symbol
-569,\rhd,\rhd,0,,single symbol
+568,\LHD,\LHD,9664,,single symbol
+569,\rhd,\rhd,9655,,single symbol
 570,\unlhd,\unlhd,0,,single symbol
 571,\bigcap,\bigcap,8898,N-ARY INTERSECTION,single symbol
 572,\bigotimes,\bigotimes,10754,N-ARY CIRCLED TIMES OPERATOR,single symbol
@@ -626,7 +626,7 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 758,SOUTH EAST ARROW,\searrow,8600,SOUTH EAST ARROW,single symbol
 759,\longmapsto,\longmapsto,10236,LONG RIGHTWARDS ARROW FROM BAR,single symbol
 760,SOUTH WEST ARROW,\swarrow,8601,SOUTH WEST ARROW,single symbol
-761,\leftarrow,\leftarrow,8592,LEFTWARDS ARROW,single symbol
+761,LEFTWARDS ARROW,\leftarrow,8592,LEFTWARDS ARROW,single symbol
 762,\Longrightarrow,\Longrightarrow,10233,LONG RIGHTWARDS DOUBLE ARROW,single symbol
 763,\uparrow,\uparrow,8593,UPWARDS ARROW,single symbol
 764,\Leftarrow,\Leftarrow,8656,LEFTWARDS DOUBLE ARROW,single symbol
@@ -644,9 +644,9 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 776,\leftharpoonup,\leftharpoonup,8636,LEFTWARDS HARPOON WITH BARB UPWARDS,single symbol
 777,\rightharpoonup,\rightharpoonup,8640,RIGHTWARDS HARPOON WITH BARB UPWARDS,single symbol
 778,\leadsto,\leadsto,8605,,single symbol
-779,\textdownarrow,\textdownarrow,0,,single symbol
-780,\textrightarrow,\textrightarrow,0,,single symbol
-781,\textleftarrow,\textleftarrow,0,,single symbol
+779,\textdownarrow,\textdownarrow,8595,,single symbol
+780,\textrightarrow,\textrightarrow,8594,,single symbol
+781,\textleftarrow,\textleftarrow,8592,,single symbol
 782,\textuparrow,\textuparrow,8593,,single symbol
 783,Anticlockwise Open Circle Arrow,\circlearrowleft,8634,ANTICLOCKWISE OPEN CIRCLE ARROW,single symbol
 784,\leftleftarrows,\leftleftarrows,8647,LEFTWARDS PAIRED ARROWS,single symbol
@@ -661,10 +661,10 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 793,\Lleftarrow,\Lleftarrow,8666,LEFTWARDS TRIPLE ARROW,single symbol
 794,\Rrightarrow,\Rrightarrow,8667,RIGHTWARDS TRIPLE ARROW,single symbol
 795,Upwards Arrow With Tip Rightwards,\Rsh,8625,UPWARDS ARROW WITH TIP RIGHTWARDS,single symbol
-796,\dashleftarrow,\dashleftarrow,0,,single symbol
+796,\dashleftarrow,\dashleftarrow,8672,,single symbol
 797,\looparrowleft,\looparrowleft,8619,LEFTWARDS ARROW WITH LOOP,single symbol
 798,\twoheadleftarrow,\twoheadleftarrow,8606,LEFTWARDS TWO HEADED ARROW,single symbol
-799,\dashrightarrow,\dashrightarrow,0,,single symbol
+799,\dashrightarrow,\dashrightarrow,8674,,single symbol
 800,\looparrowright,\looparrowright,8620,RIGHTWARDS ARROW WITH LOOP,single symbol
 801,\twoheadrightarrow,\twoheadrightarrow,8608,RIGHTWARDS TWO HEADED ARROW,single symbol
 802,\downdownarrows,\downdownarrows,8650,DOWNWARDS PAIRED ARROWS,single symbol
@@ -684,14 +684,14 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 816,\downharpoonright,\downharpoonright,8642,DOWNWARDS HARPOON WITH BARB RIGHTWARDS,single symbol
 817,\upharpoonright,\upharpoonright,8638,UPWARDS HARPOON WITH BARB RIGHTWARDS,single symbol
 818,\leftarrowtriangle,\leftarrowtriangle,8701,LEFTWARDS OPEN-HEADED ARROW,single symbol
-819,\Mapsfrom,\Mapsfrom,10502,LEFTWARDS DOUBLE ARROW FROM BAR,single symbol
-820,\shortleftarrow,\shortleftarrow,0,,single symbol
+819,LEFTWARDS DOUBLE ARROW FROM BAR,\Mapsfrom,10502,LEFTWARDS DOUBLE ARROW FROM BAR,single symbol
+820,\shortleftarrow,\shortleftarrow,8592,,single symbol
 821,\leftrightarroweq,\leftrightarroweq,0,,single symbol
 822,\mapsfrom,\mapsfrom,8612,LEFTWARDS ARROW FROM BAR,single symbol
 823,\shortrightarrow,\shortrightarrow,8594,,single symbol
 824,\leftrightarrowtriangle,\leftrightarrowtriangle,8703,LEFT RIGHT OPEN-HEADED ARROW,single symbol
-825,\Mapsto,\Mapsto,10503,RIGHTWARDS DOUBLE ARROW FROM BAR,single symbol
-826,Short upwards arrow,\shortuparrow,0,,single symbol
+825,RIGHTWARDS DOUBLE ARROW FROM BAR,\Mapsto,10503,RIGHTWARDS DOUBLE ARROW FROM BAR,single symbol
+826,Short upwards arrow,\shortuparrow,8593,,single symbol
 827,\lightning,\lightning,8623,,single symbol
 828,NORTH NORTH EAST ARROW,\nnearrow,0,,single symbol
 829,South South east arrow,\ssearrow,0,,single symbol
@@ -701,7 +701,7 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 833,\longmapsfrom,\longmapsfrom,10235,LONG LEFTWARDS ARROW FROM BAR,single symbol
 834,\rightarrowtriangle,\rightarrowtriangle,8702,RIGHTWARDS OPEN-HEADED ARROW,single symbol
 835,\Longmapsto,\Longmapsto,10238,LONG RIGHTWARDS DOUBLE ARROW FROM BAR,single symbol
-836,\shortdownarrow,\shortdownarrow,0,,single symbol
+836,\shortdownarrow,\shortdownarrow,8595,,single symbol
 837,\vartheta,\vartheta,977,GREEK THETA SYMBOL,single symbol
 838,\varpi,\varpi,982,GREEK PI SYMBOL,single symbol
 839,\varsigma,\varsigma,962,GREEK SMALL LETTER FINAL SIGMA,single symbol
@@ -790,24 +790,24 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 922,/,/,47,SOLIDUS,single symbol
 923,\llbracket,\llbracket,10214,,single symbol
 924,\rrbracket,\rrbracket,10215,,single symbol
-925,left angle,\textlangle,0,,single symbol
-926,\textrangle,\textrangle,0,,single symbol
-927,\textlbrackdbl,\textlbrackdbl,0,,single symbol
-928,\textrbrackdbl,\textrbrackdbl,0,,single symbol
+925,left angle,\textlangle,60,,single symbol
+926,\textrangle,\textrangle,62,,single symbol
+927,\textlbrackdbl,\textlbrackdbl,91,,single symbol
+928,\textrbrackdbl,\textrbrackdbl,93,,single symbol
 929,\textlquill,\textlquill,0,,single symbol
 930,\textrquill,\textrquill,0,,single symbol
 931,\cdotp,\cdotp,183,MIDDLE DOT,single symbol
-932,\colon,\colon,0,,single symbol
+932,\colon,\colon,58,,single symbol
 933,\ldotp,\ldotp,0,,single symbol
 934,\vdots,\vdots,8942,VERTICAL ELLIPSIS,single symbol
 935,\cdots,\cdots,8943,MIDLINE HORIZONTAL ELLIPSIS,single symbol
 936,\ddots,\ddots,8945,DOWN RIGHT DIAGONAL ELLIPSIS,single symbol
 937,\ldots,\ldots,8230,HORIZONTAL ELLIPSIS,single symbol
-938,\dotsi,\dotsi,0,,single symbol
-939,\dotsb,\dotsb,0,,single symbol
-940,\dotsm,\dotsm,0,,single symbol
+938,\dotsi,\dotsi,8943,,single symbol
+939,\dotsb,\dotsb,8943,,single symbol
+940,\dotsm,\dotsm,8943,,single symbol
 941,\dotsc,\dotsc,8230,,single symbol
-942,\dotso,\dotso,0,,single symbol
+942,\dotso,\dotso,8230,,single symbol
 943,\aleph,\aleph,8501,ALEF SYMBOL,single symbol
 944,\infty,\infty,8734,INFINITY,single symbol
 945,\prime,\prime,8242,PRIME,single symbol
@@ -846,14 +846,14 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 978,\textdegree,\textdegree,176,DEGREE SIGN,single symbol
 979,\textonehalf,\textonehalf,189,VULGAR FRACTION ONE HALF,single symbol
 980,\textthreequarters,\textthreequarters,190,VULGAR FRACTION THREE QUARTERS,single symbol
-981,\textdiv,\textdiv,0,,single symbol
+981,\textdiv,\textdiv,247,,single symbol
 982,\textonequarter,\textonequarter,188,VULGAR FRACTION ONE QUARTER,single symbol
 983,\textthreesuperior,\textthreesuperior,179,,single symbol
 984,\textfractionsolidus,\textfractionsolidus,0,,single symbol
 985,\textonesuperior,\textonesuperior,185,,single symbol
 986,\texttimes,\texttimes,215,MULTIPLICATION SIGN,single symbol
 987,\textlnot,\textlnot,0,,single symbol
-988,\textpm,\textpm,0,,single symbol
+988,\textpm,\textpm,177,,single symbol
 989,\texttwosuperior,\texttwosuperior,178,,single symbol
 990,\textminus,\textminus,0,,single symbol
 991,\textsurd,\textsurd,0,,single symbol
@@ -911,35 +911,35 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 1043,\mathfrak{Y},\mathfrak{Y},120092,MATHEMATICAL FRAKTUR CAPITAL Y,single symbol
 1044,\mathfrak{Z},\mathfrak{Z},8488,BLACK-LETTER CAPITAL Z,single symbol
 1045,\mathbb{1},\mathbb{1},120793,MATHEMATICAL DOUBLE-STRUCK DIGIT ONE,single symbol
-1046,\mathds{1},\mathds{1},49,,single symbol
-1047,\mathds{h},\mathds{h},0,,single symbol
-1048,\mathds{k},\mathds{k},0,,single symbol
-1049,\mathds{A},\mathds{A},0,,single symbol
-1050,\mathds{B},\mathds{B},0,,single symbol
-1051,\mathds{C},\mathds{C},67,,single symbol
-1052,\mathds{D},\mathds{D},0,,single symbol
-1053,\mathds{E},\mathds{E},69,,single symbol
-1054,\mathds{F},\mathds{F},0,,single symbol
-1055,\mathds{G},\mathds{G},0,,single symbol
-1056,\mathds{H},\mathds{H},0,,single symbol
-1057,\mathds{I},\mathds{I},0,,single symbol
-1058,\mathds{J},\mathds{J},0,,single symbol
-1059,\mathds{K},\mathds{K},0,,single symbol
-1060,\mathds{L},\mathds{L},0,,single symbol
-1061,\mathds{M},\mathds{M},0,,single symbol
+1046,\mathds{1},\mathds{1},120793,,single symbol
+1047,\mathds{h},\mathds{h},120153,,single symbol
+1048,\mathds{k},\mathds{k},120156,,single symbol
+1049,\mathds{A},\mathds{A},120120,,single symbol
+1050,\mathds{B},\mathds{B},120121,,single symbol
+1051,\mathds{C},\mathds{C},8450,,single symbol
+1052,\mathds{D},\mathds{D},120123,,single symbol
+1053,\mathds{E},\mathds{E},120124,,single symbol
+1054,\mathds{F},\mathds{F},120125,,single symbol
+1055,\mathds{G},\mathds{G},120126,,single symbol
+1056,\mathds{H},\mathds{H},8461,,single symbol
+1057,\mathds{I},\mathds{I},120128,,single symbol
+1058,\mathds{J},\mathds{J},120129,,single symbol
+1059,\mathds{K},\mathds{K},120130,,single symbol
+1060,\mathds{L},\mathds{L},120131,,single symbol
+1061,\mathds{M},\mathds{M},120132,,single symbol
 1062,\mathds{N},\mathds{N},78,,single symbol
-1063,\mathds{O},\mathds{O},0,,single symbol
-1064,\mathds{P},\mathds{P},80,,single symbol
+1063,\mathds{O},\mathds{O},120134,,single symbol
+1064,\mathds{P},\mathds{P},8473,,single symbol
 1065,\mathds{Q},\mathds{Q},81,,single symbol
 1066,\mathds{R},\mathds{R},82,,single symbol
-1067,\mathds{S},\mathds{S},0,,single symbol
-1068,\mathds{T},\mathds{T},0,,single symbol
-1069,\mathds{U},\mathds{U},0,,single symbol
-1070,\mathds{V},\mathds{V},0,,single symbol
-1071,\mathds{W},\mathds{W},0,,single symbol
-1072,\mathds{X},\mathds{X},0,,single symbol
-1073,\mathds{Y},\mathds{Y},0,,single symbol
-1074,\mathds{Z},\mathds{Z},90,,single symbol
+1067,\mathds{S},\mathds{S},120138,,single symbol
+1068,\mathds{T},\mathds{T},120139,,single symbol
+1069,\mathds{U},\mathds{U},120140,,single symbol
+1070,\mathds{V},\mathds{V},120141,,single symbol
+1071,\mathds{W},\mathds{W},120142,,single symbol
+1072,\mathds{X},\mathds{X},120143,,single symbol
+1073,\mathds{Y},\mathds{Y},120144,,single symbol
+1074,\mathds{Z},\mathds{Z},8484,,single symbol
 1075,\mathscr{A},\mathscr{A},119964,MATHEMATICAL SCRIPT CAPITAL A,single symbol
 1076,\mathscr{B},\mathscr{B},8492,SCRIPT CAPITAL B,single symbol
 1077,\mathscr{C},\mathscr{C},119966,MATHEMATICAL SCRIPT CAPITAL C,single symbol
@@ -969,8 +969,8 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 1101,\celsius,\celsius,8451,,single symbol
 1102,\degree,\degree,176,,single symbol
 1103,ohm,\ohm,937,,single symbol
-1104,\conjunction,\conjunction,0,,single symbol
-1105,\opposition,\opposition,0,,single symbol
+1104,\conjunction,\conjunction,9740,,single symbol
+1105,\opposition,\opposition,9741,,single symbol
 1106,Mercury,\mercury,9791,MERCURY,single symbol
 1107,Earth,\earth,9793,,single symbol
 1108,Jupiter,\jupiter,9795,JUPITER,single symbol
@@ -983,7 +983,7 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 1115,\astrosun,\astrosun,9737,SUN,single symbol
 1116,\fullmoon,\fullmoon,9675,,single symbol
 1117,\leftmoon,\leftmoon,9790,LAST QUARTER MOON,single symbol
-1118,\newmoon,\newmoon,0,,single symbol
+1118,\newmoon,\newmoon,127761,,single symbol
 1119,\rightmoon,\rightmoon,9789,LAST QUARTER MOON,single symbol
 1120,\aries,\aries,9800,ARIES,single symbol
 1121,\cancer,\cancer,9803,CANCER,single symbol
@@ -997,11 +997,11 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 1129,\virgo,\virgo,9805,VIRGO,single symbol
 1130,\sagittarius,\sagittarius,9808,SAGITTARIUS,single symbol
 1131,\pisces,\pisces,9811,PISCES,single symbol
-1132,\ascnode,\ascnode,0,,single symbol
+1132,\ascnode,\ascnode,9804,,single symbol
 1133,\descnode,\descnode,0,,single symbol
 1134,\vernal,\vernal,0,,single symbol
 1135,Mercury (calligraphic),\Mercury,9791,,single symbol
-1136,Earth (caligraphic),\Earth,0,,single symbol
+1136,Earth (caligraphic),\Earth,9793,,single symbol
 1137,Jupiter (calligraphic),\Jupiter,9795,,single symbol
 1138,Uranus (calligraphic),\Uranus,9797,,single symbol
 1139,Pluto (calligraphic),\Pluto,0,,single symbol
@@ -1011,64 +1011,64 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 1143,Neptune (calligraphic),\Neptune,9798,,single symbol
 1144,\Moon,\Moon,0,,drawing
 1145,\Sun,\Sun,0,,single symbol
-1146,\Aries,\Aries,0,,single symbol
-1147,\Cancer,\Cancer,0,,single symbol
-1148,\Libra,\Libra,0,,single symbol
-1149,\Aquarius,\Aquarius,0,,single symbol
-1150,\Taurus,\Taurus,0,,single symbol
-1151,\Leo,\Leo,0,,single symbol
-1152,\Scorpio,\Scorpio,0,,single symbol
+1146,\Aries,\Aries,9800,,single symbol
+1147,\Cancer,\Cancer,9803,,single symbol
+1148,\Libra,\Libra,9806,,single symbol
+1149,\Aquarius,\Aquarius,9810,,single symbol
+1150,\Taurus,\Taurus,9801,,single symbol
+1151,\Leo,\Leo,9804,,single symbol
+1152,\Scorpio,\Scorpio,9807,,single symbol
 1153,\Capricorn,\Capricorn,0,,single symbol
-1154,\Gemini,\Gemini,0,,single symbol
-1155,\Virgo,\Virgo,0,,single symbol
+1154,\Gemini,\Gemini,9802,,single symbol
+1155,\Virgo,\Virgo,9805,,single symbol
 1156,\Sagittarius,\Sagittarius,9808,,single symbol
-1157,\Pisces,\Pisces,0,,single symbol
-1158,\Email,\Email,0,,single symbol
+1157,\Pisces,\Pisces,9811,,single symbol
+1158,\Email,\Email,128388,,single symbol
 1159,\fax,\fax,0,,single symbol
 1160,\Faxmachine,\Faxmachine,0,,drawing
 1161,\Lightning,\Lightning,0,,single symbol
 1162,\Pickup,\Pickup,0,,single symbol
 1163,\Emailct,\Emailct,0,,single symbol
 1164,\FAX,\FAX,0,,single symbol
-1165,\Letter,\Letter,0,,drawing
+1165,\Letter,\Letter,9993,,drawing
 1166,\Mobilefone,\Mobilefone,0,,drawing
-1167,\Telefon,\Telefon,0,,drawing
+1167,\Telefon,\Telefon,9742,,drawing
 1168,\female,\female,9792,FEMALE SIGN,single symbol
 1169,\male,\male,9794,MALE SIGN,single symbol
 1170,\skull,\skull,0,,drawing
 1171,BLACK LEFT-POINTING SMALL TRIANGLE,\LEFTarrow,9666,,single symbol
 1172,BLACK DOWN-POINTING TRIANGLE,\DOWNarrow,9660,,single symbol
-1173,\phone,\phone,0,,drawing
+1173,\phone,\phone,9742,,drawing
 1174,BLACK UP-POINTING TRIANGLE,\UParrow,9650,,single symbol
-1175,\pointer,\pointer,0,,single symbol
+1175,\pointer,\pointer,8680,,single symbol
 1176,\recorder,\recorder,8981,TELEPHONE RECORDER,single symbol
 1177,\checked,\checked,10003,,single symbol
 1178,\kreuz,\kreuz,0,,single symbol
 1179,BLACK RIGHT-POINTING TRIANGLE,\RIGHTarrow,9654,,single symbol
 1180,\ataribox,\ataribox,0,,single symbol
-1181,\clock,\clock,0,,drawing
-1182,\smiley,\smiley,0,,drawing
-1183,\bell,\bell,0,,single symbol
+1181,\clock,\clock,128338,,drawing
+1182,\smiley,\smiley,9786,,drawing
+1183,\bell,\bell,128276,,single symbol
 1184,\diameter,\diameter,8960,DIAMETER SIGN,single symbol
 1185,\sun,\sun,9788,WHITE SUN WITH RAYS,single symbol
 1186,\blacksmiley,\blacksmiley,9787,,drawing
 1187,\Bowtie,\Bowtie,8904,,single symbol
-1188,\frownie,\frownie,0,,drawing
-1189,\wasylozenge,\wasylozenge,0,,single symbol
-1190,\brokenvert,\brokenvert,0,,single symbol
+1188,\frownie,\frownie,9785,,drawing
+1189,\wasylozenge,\wasylozenge,8977,,single symbol
+1190,\brokenvert,\brokenvert,166,,single symbol
 1191,\invdiameter,\invdiameter,0,,single symbol
-1192,\Ankh,\Ankh,0,,single symbol
-1193,\Cross,\Cross,0,,single symbol
-1194,Heart,\Heart,0,,drawing
+1192,\Ankh,\Ankh,9765,,single symbol
+1193,\Cross,\Cross,10013,,single symbol
+1194,Heart,\Heart,9825,,drawing
 1195,\Smiley,\Smiley,9786,,drawing
 1196,\Bat,\Bat,0,,drawing
-1197,\Mundus,\Mundus,0,,single symbol
+1197,\Mundus,\Mundus,127757,,single symbol
 1198,\Yinyang,\Yinyang,0,,drawing
-1199,\Celtcross,\Celtcross,0,,single symbol
-1200,\Frowny,\Frowny,0,,drawing
+1199,\Celtcross,\Celtcross,128328,,single symbol
+1200,\Frowny,\Frowny,9785,,drawing
 1201,@ (variant),\MVAt,64,,single symbol
-1202,\CircledA,\CircledA,0,,single symbol
-1203,\MVRightarrow,\MVRightarrow,0,,single symbol
+1202,\CircledA,\CircledA,9398,,single symbol
+1203,\MVRightarrow,\MVRightarrow,10132,,single symbol
 1311,Backslash,\textbackslash,92,REVERSE SOLIDUS,single symbol
 1312,Tilde,\textasciitilde,126,TILDE,single symbol
 1314,Set of rational numbers Q,\mathbb{Q},8474,DOUBLE-STRUCK CAPITAL Q,single symbol
@@ -1076,7 +1076,7 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 1316,Set of integers,\mathbb{Z},8484,DOUBLE-STRUCK CAPITAL Z,single symbol
 1317,\mathbb{H},\mathbb{H},8461,DOUBLE-STRUCK CAPITAL H,single symbol
 1318,\indep,\indep,0,,single symbol
-1322,\dot{\cup},\dot{\cup},0,,single symbol
+1322,\dot{\cup},\dot{\cup},8845,,single symbol
 1323,!,!,33,EXCLAMATION MARK,single symbol
 1324,\frac{}{},\frac{}{},8260,,nesting symbol
 1328,\int_{x} \mathrm{d} x,\int_{x} \mathrm{d} x,0,,formula
@@ -1109,7 +1109,7 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 1378,\textvisiblespace,\textvisiblespace,9251,OPEN BOX,single symbol
 1379,\textquotedblleft,\textquotedblleft,8220,LEFT DOUBLE QUOTATION MARK,single symbol
 1380,\textbraceleft,\textbraceleft,123,,single symbol
-1381,!`,!`,0,,single symbol
+1381,!`,!`,161,,single symbol
 1382,\AA,\AA,8491,ANGSTROM SIGN,single symbol
 1383,\----,\----,0,,single symbol
 1384,\--,\--,0,,single symbol
@@ -1120,7 +1120,7 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 1389,\oe,\oe,339,LATIN SMALL LIGATURE OE,single symbol
 1390,\textquestiondown,\textquestiondown,191,INVERTED QUESTION MARK,single symbol
 1391,\textemdash,\textemdash,8212,EM DASH,single symbol
-1392,\textellipsis,\textellipsis,0,,single symbol
+1392,\textellipsis,\textellipsis,8230,,single symbol
 1393,\textbar,\textbar,0,,single symbol
 1394,\o,\o,248,LATIN SMALL LETTER O WITH STROKE,single symbol
 1395,\ae,\ae,230,LATIN SMALL LETTER AE,single symbol
@@ -1194,15 +1194,15 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 1491,Sofa,Sofa,0,,NULL
 1492,fuck,fuck,0,,NULL
 1493,Fuck,Fuck,0,,NULL
-1514,ü,ü,0,,
-1516,\land,\land,0,,single symbol
-1517,\lor,\lor,0,,
+1514,ü,ü,252,,
+1516,\land,\land,8743,,single symbol
+1517,\lor,\lor,8744,,
 1518,Ö,Ö,214,,single symbol
 1519,Ä,Ä,196,,single symbol
 1520,Ü,Ü,220,,single symbol
 1521,ß,ß,0,,single symbol
-1522,.,.,8228,ONE DOT LEADER,single symbol
-1523,",",",",8218,SINGLE LOW-9 QUOTATION MARK,single symbol
+1522,.,.,46,ONE DOT LEADER,single symbol
+1523,",",",",44,SINGLE LOW-9 QUOTATION MARK,single symbol
 1524,;,;,59,SEMICOLON,single symbol
 1525,colon,:,58,COLON,single symbol
 1526,?,?,63,QUESTION MARK,single symbol
@@ -1275,11 +1275,11 @@ id,formula_name,formula_in_latex,unicode_dec,unicodexml_description,formula_type
 1614,\frac{8}{3},\frac{8}{3},0,,NULL
 1615,M_{\odot},M_{\odot},0,,NULL
 1616,RESI,RESI,0,,NULL
-1617,:=,:=,0,,NULL
+1617,:=,:=,8788,,
 1618,\int\int\int,\int\int\int,0,,NULL
 1619,\int\int\int\int\int,\int\int\int\int\int,0,,NULL
 1620,hi,hi,0,,NULL
-1621,\sqrt[3]{},\sqrt[3]{},0,,nesting symbol
+1621,\sqrt[3]{},\sqrt[3]{},8731,,nesting symbol
 1622,\vec{\Delta},\vec{\Delta},0,,formula
 1623,\rightpropto,\rightpropto,0,,single symbol
 1624,\not\subset,\not\subset,0,,formula
@@ -1327,7 +1327,7 @@ NA",0,,NULL
 1667,\sum_{i=1}^{\infty},\sum_{i=1}^{\infty},0,,NULL
 1668,\frac{6}{8},\frac{6}{8},0,,NULL
 1669,\prod_{k=1}^{\infty},\prod_{k=1}^{\infty},0,,NULL
-1670,ç,ç,231,,
+1670,ç,ç,231,,single symbol
 1671,E=mc^{2},E=mc^{2},0,,NULL
 1672,5=3,5=3,0,,NULL
 1673,\alpha',\alpha',0,,NULL
@@ -1434,7 +1434,7 @@ A",0,,NULL
 3962,\perp\!\!\!\perp,\perp\!\!\!\perp,10987,,single symbol
 3963,i_{0},i_{0},0,,NULL
 3964,|\tilde{\hat{\alpha}}|,|\tilde{\hat{\alpha}}|,0,,NULL
-3965,\dot{a},\dot{a},0,,NULL
+3965,\dot{a},\dot{a},551,,
 3966,\vec{A},\vec{A},0,,NULL
 3967,\hat{x},\hat{x},0,,NULL
 3968,mod,mod,0,,NULL
@@ -1481,20 +1481,20 @@ A",0,,NULL
 4414,\multimapdotboth,\multimapdotboth,0,,single symbol
 4415,\coronaeq,\coronaeq,0,,single symbol
 4416,\curlyveeuparrow,\curlyveeuparrow,0,,single symbol
-4417,\drsh,\drsh,0,,single symbol
-4420,à,à,0,,single symbol
+4417,\drsh,\drsh,8627,,single symbol
+4420,à,à,224,,single symbol
 4421,\multimapdotbothA,\multimapdotbothA,0,,single symbol
 4422,\multimapboth,\multimapboth,0,,
 4423,\curvearrowleftright,\curvearrowleftright,0,,single symbol
-4424,\dotdiv,\dotdiv,0,,single symbol
+4424,\dotdiv,\dotdiv,8760,,single symbol
 4425,\reflectbox{$\alpha$},\reflectbox{$\alpha$},0,,single symbol
-4426,á,á,0,,
+4426,á,á,225,,
 4427,\not{B},\not{B},0,,NULL
-4438,\dlsh,\dlsh,0,,single symbol
+4438,\dlsh,\dlsh,8629,,single symbol
 4439,\Nearrow,\Nearrow,8663,,single symbol
 4441,\Delta x,\Delta x,0,,NULL
-4442,\ddot{x},\ddot{x},0,,NULL
-4519,\not\hookrightarrow,\not\hookrightarrow,0,,NULL
+4442,\ddot{x},\ddot{x},7821,,single symbol
+4519,\not\hookrightarrow,\not\hookrightarrow,0,,formula
 4583,\hexagon,\hexagon,11041,,single symbol
 4664,\overline{\land},\overline{\land},0,,NULL
 4732,卍,卍,21325,,single symbol
@@ -1514,3 +1514,88 @@ A",0,,NULL
 4823,\triplesim,\triplesim,0,,single symbol
 4824,\underbrace{},\underbrace{},0,,nesting symbol
 4825,⚛,⚛,9883,,single symbol
+4828,\det,\det,0,,single symbol
+4829,\not\supset,\not\supset,0,,NULL
+4830,\not\geqslant,\not\geqslant,0,,NULL
+4831,\triangleeq,\triangleeq,0,,single symbol
+4832,\not\geq,\not\geq,0,,NULL
+4833,\not\EUR,\not\EUR,0,,NULL
+4834,\mathbb{X},\mathbb{X},0,,single symbol
+4835,\updownharpoons,\updownharpoons,0,,single symbol
+4837,\CheckedBox,\CheckedBox,9745,,single symbol
+4838,\rcirclearrowleft,\rcirclearrowleft,10226,,single symbol
+4839,\lcurvearrowsw,\lcurvearrowsw,0,,single symbol
+4840,\lcurvearrowright,\lcurvearrowright,0,,single symbol
+4841,\leqslantdot,\leqslantdot,0,,single symbol
+4842,\looparrowdownleft,\looparrowdownleft,0,,single symbol
+4843,\bigboxbackslash,\bigboxbackslash,0,,single symbol
+4844,\boxslash,\boxslash,0,,single symbol
+4845,\boxbackslash,\boxbackslash,0,,single symbol
+4846,\boxasterisk,\boxasterisk,0,,single symbol
+4847,\boxcirc,\boxcirc,0,,single symbol
+4848,\manconcentriccircles,\manconcentriccircles,0,,single symbol
+4849,\AAcht,\AAcht,9835,,single symbol
+4850,\Halb,\Halb,119134,,single symbol
+4851,\ding{179},\ding{179},9319,,single symbol
+4852,\obackslash,\obackslash,0,,single symbol
+4853,\ding{173},\ding{173},9313,,single symbol
+4854,\otriangle,\otriangle,0,,single symbol
+4855,5x+2,5x+2,0,,NULL
+4856,\int x^{2},\int x^{2},0,,NULL
+4862,\bull,\bull,0,,NULL
+4866,\LBTSbrak,\LBTSbrak,12308,,single symbol
+4868,\ruble,\ruble,8381,,single symbol
+4869,$\frac{\sqrt{2}}{-4}$,$\frac{\sqrt{2}}{-4}$,0,,NULL
+4871,\varclubsuit,\varclubsuit,9831,,single symbol
+4872,\naturalto,\naturalto,0,,single symbol
+4873,\Hermaphrodite,\Hermaphrodite,9893,,single symbol
+4874,\eqqcolon,\eqqcolon,8789,,single symbol
+4875,\coloneqq,\coloneqq,8788,,single symbol
+4876,\sum\limits_{n=1}^{5}n,\sum\limits_{n=1}^{5}n,0,,NULL
+4877,\dasheddownarrow,\dasheddownarrow,8675,,single symbol
+4878,\dashedrightarrow,\dashedrightarrow,8674,,single symbol
+4879,,,0,,NULL
+4881,\RADot,\RADot,10653,,single symbol
+4883,\nsuccsim,\nsuccsim,0,,single symbol
+4884,\RBTSbrak,\RBTSbrak,12309,,single symbol
+4886,\ddot{},\ddot{},0,,nesting symbol
+4887,\Laplace,\Laplace,8887,,single symbol
+4888,\frowny,\frowny,0,,NULL
+4889,\laplace,\laplace,8886,,single symbol
+4890,\InvertedPentagram,\InvertedPentagram,9959,,
+4891,\Searrow,\Searrow,8664,,single symbol
+4892,\reflectedAmpersand,\reflectedAmpersand,0,,single symbol
+4893,LEFTWARDS WAVE ARROW,\leftwavearrow,8604,,single symbol
+4894,\updownarrows,\updownarrows,8645,,single symbol
+4895,\twoheaduparrow,\twoheaduparrow,8607,,single symbol
+4896,\twoheaddownarrow,\twoheaddownarrow,8609,,single symbol
+4897,\rdsh,\rdsh,8628,,single symbol
+4898,\Dsh,\Dsh,8626,,single symbol
+4899,\sqrt[4]{},\sqrt[4]{},8732,,nesting symbol
+4901,Concatenation Operation,\concat,0,,single symbol
+4902,\sq,\sq,0,,single symbol
+4903,\mathrm{T},\mathrm{T},84,,single symbol
+4904,\mathrm{G},\mathrm{G},71,,single symbol
+4905,\mathrm{C},\mathrm{C},67,,
+4906,\mathrm{b},\mathrm{b},98,,single symbol
+4907,\mathrm{l},\mathrm{l},108,,single symbol
+4908,\mathrm{B},\mathrm{B},66,,single symbol
+4909,\mathrm{k},\mathrm{k},107,,single symbol
+4910,\mathrm{h},\mathrm{h},104,,single symbol
+4911,\mathrm{I},\mathrm{I},73,,single symbol
+4912,\mathrm{x},\mathrm{x},120,,single symbol
+4913,\mathrm{A},\mathrm{A},65,,single symbol
+4914,\mathrm{e},\mathrm{e},101,,single symbol
+4915,\mathrm{m},\mathrm{m},109,,single symbol
+4916,\mathrm{d},\mathrm{d},100,,single symbol
+4917,\to,\to,8594,,single symbol
+4918,\mathbb{F},\mathbb{F},120125,,single symbol
+4919,LATIN CAPITAL LETTER Z WITH CARON,Ž,381,,single symbol
+4923,\int f(x) \mathrm{d}x,\int f(x) \mathrm{d}x,0,,NULL
+4924,N_{0},N_{0},0,,NULL
+4925,\int (1+1),\int (1+1),0,,NULL
+4926,x-2,x-2,0,,NULL
+4927,\righttoleftarrow,\righttoleftarrow,0,,NULL
+4928,f(x)=x^{2},f(x)=x^{2},0,,NULL
+4931,::MULTISYMBOL::,::MULTISYMBOL::,0,,NULL
+

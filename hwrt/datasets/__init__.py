@@ -18,7 +18,8 @@ username2id = {}
 
 
 def formula_to_dbid(formula_str, backslash_fix=False):
-    """Convert a LaTeX formula to the database index.
+    """
+    Convert a LaTeX formula to the database index.
 
     Parameters
     ----------
@@ -68,9 +69,8 @@ def formula_to_dbid(formula_str, backslash_fix=False):
         cursor = connection.cursor()
         sql = ("INSERT INTO `wm_formula` (`user_id`, `formula_name`, "
                "`formula_in_latex`, "
-               "`mode`, `package`, "
-               "`is_important`) VALUES ("
-               "'10', %s, %s, 'bothmodes', NULL, '0');")
+               "`mode`, `package`) VALUES ("
+               "'10', %s, %s, 'bothmodes', NULL);")
         if len(formula_str) < 20:
             logging.info("Insert formula %s.", formula_str)
         cursor.execute(sql, (formula_str, formula_str))

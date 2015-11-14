@@ -48,12 +48,16 @@ def _as_ndarray(dct):
 
 
 def create_output_semantics(model_folder, outputs):
-    """Create a 'output_semantics.csv' file which contains information what
-       the output of the single output neurons mean.
+    """
+    Create a 'output_semantics.csv' file which contains information what the
+    output of the single output neurons mean.
 
-    @param model_folder: folder where the model description file is
-    @param outputs: number of output neurons
-    @type outputs: int
+    Parameters
+    ----------
+    model_folder : str
+        folder where the model description file is
+    outputs : int
+        number of output neurons
     """
     with open('output_semantics.csv', 'wb') as csvfile:
         model_description_file = os.path.join(model_folder, "info.yml")

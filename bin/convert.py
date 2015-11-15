@@ -83,6 +83,12 @@ def create_output_semantics(model_folder, outputs):
 
 
 def main(model_folder):
+    """
+    Parameters
+    ----------
+    model_folder : str
+        Path to a folder in which a model (json file) is.
+    """
     a = yaml.load(open(utils.get_latest_in_folder(model_folder, ".json")))
 
     layers = []
@@ -102,27 +108,27 @@ def main(model_folder):
     create_output_semantics(model_folder, outputs)
 
     # Write layers
-    for layer in range(len(a['layers'])):
-        W = _as_ndarray(a['layers'][layer]['params']['W'])
-        Wfile = h5py.File('W%i.hdf5' % layer, 'w')
+    for layer_index, layer in enumerate(a['layers']):
+        W = _as_ndarray(layer['params']['W'])
+        Wfile = h5py.File('W%i.hdf5' % layer_index, 'w')
         Wfile.create_dataset(Wfile.id.name, data=W)
         Wfile.close()
 
-        b = _as_ndarray(a['layers'][layer]['params']['b'])
-        bfile = h5py.File('b%i.hdf5' % layer, 'w')
+        b = _as_ndarray(layer['params']['b'])
+        bfile = h5py.File('b%i.hdf5' % layer_index, 'w')
         bfile.create_dataset(bfile.id.name, data=b)
         bfile.close()
 
-        activation = a['layers'][layer]['_props']['activation']
+        activation = layer['_props']['activation']
         activation = activation.replace('sigmoid', 'Sigmoid')
         activation = activation.replace('softmax', 'Softmax')
         layers.append({'W': {'size': list(W.shape),
-                             'filename': 'W%i.hdf5' % layer},
+                             'filename': 'W%i.hdf5' % layer_index},
                        'b': {'size': list(b.shape),
-                             'filename': 'b%i.hdf5' % layer},
+                             'filename': 'b%i.hdf5' % layer_index},
                        'activation': activation})
-        filenames.append('W%i.hdf5' % layer)
-        filenames.append('b%i.hdf5' % layer)
+        filenames.append('W%i.hdf5' % layer_index)
+        filenames.append('b%i.hdf5' % layer_index)
 
     model = {'type': 'mlp', 'layers': layers}
 

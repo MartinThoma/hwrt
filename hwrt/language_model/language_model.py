@@ -19,6 +19,14 @@ class NgramLanguageModel(object):
         self.ngrams = {}
 
     def load_from_arpa_str(self, arpa_str):
+        """
+        Initialize N-gram model by reading an ARPA language model string.
+
+        Parameters
+        ----------
+        arpa_str : str
+            A string in ARPA language model file format
+        """
         data_found = False
         end_found = False
         in_ngram_block = 0
@@ -95,6 +103,11 @@ class NgramLanguageModel(object):
         ----------
         trigram
             tuple with exactly 3 elements
+
+        Returns
+        -------
+        numeric
+            The log likelihood of P(w3 | (w1, w2))
         """
         w1, w2, w3 = trigram
         # if w1 not in self.ngrams[1]['data']:

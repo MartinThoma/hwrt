@@ -26,6 +26,7 @@ def features_detection_test():
 
 
 def print_featurelist_test():
+    """Test features.print_featurelist."""
     feature_list = [features.StrokeCount(),
                     features.ConstantPointCoordinates(strokes=4,
                                                       points_per_stroke=20,
@@ -46,6 +47,7 @@ def print_featurelist_test():
 
 
 def constant_point_coordinates_test():
+    """Test features.ConstantPointCoordinates."""
     f = features.ConstantPointCoordinates(strokes=0,
                                           points_per_stroke=2,
                                           pen_down=False)

@@ -98,13 +98,26 @@ class PolygonalChain(object):
                 counter += 1
         return counter
 
-    def count_intersections(self, lineSegmentsB):
-        """Count the intersections of two strokes with each other."""
-        lineSegmentsA = self.lineSegments
+    def count_intersections(self, line_segments_b):
+        """
+        Count the intersections of two strokes with each other.
+
+        Parameters
+        ----------
+        line_segments_b : list
+            A list of line segemnts
+
+        Returns
+        -------
+        int
+            The number of intersections between A and B.
+        """
+        line_segments_a = self.lineSegments
 
         # Calculate intersections
         intersection_points = []
-        for line1, line2 in itertools.product(lineSegmentsA, lineSegmentsB):
+        for line1, line2 in itertools.product(line_segments_a,
+                                              line_segments_b):
             intersection_points += get_segments_intersections(line1, line2)
         return len(set(intersection_points))
 
@@ -338,23 +351,23 @@ def point_segment_distance(point, segment):
         return point.dist_to(segment.p1)
 
     if dx == 0:  # It's a straight vertical line
-        pIsBelowP1 = point.y <= segment.p1.y and segment.p1.y <= segment.p2.y
-        pIsBelowP2 = point.y <= segment.p2.y and segment.p2.y <= segment.p1.y
-        pIsAboveP2 = segment.p1.y <= segment.p2.y and segment.p2.y <= point.y
-        pIsAboveP1 = segment.p2.y <= segment.p1.y and segment.p1.y <= point.y
-        if pIsBelowP1 or pIsAboveP1:
+        p_below_p1 = point.y <= segment.p1.y and segment.p1.y <= segment.p2.y
+        p_below_p2 = point.y <= segment.p2.y and segment.p2.y <= segment.p1.y
+        p_above_p2 = segment.p1.y <= segment.p2.y and segment.p2.y <= point.y
+        p_above_p1 = segment.p2.y <= segment.p1.y and segment.p1.y <= point.y
+        if p_below_p1 or p_above_p1:
             return point.dist_to(segment.p1)
-        elif pIsBelowP2 or pIsAboveP2:
+        elif p_below_p2 or p_above_p2:
             return point.dist_to(segment.p2)
 
     if dy == 0:  # It's a straight horizontal line
-        pIsLeftP1 = point.x <= segment.p1.x and segment.p1.x <= segment.p2.x
-        pIsLeftP2 = point.x <= segment.p2.x and segment.p2.x <= segment.p1.x
-        pIsRightP2 = segment.p1.x <= segment.p2.x and segment.p2.x <= point.x
-        pIsRightP1 = segment.p2.x <= segment.p1.x and segment.p1.x <= point.x
-        if pIsLeftP1 or pIsRightP1:
+        p_left_p1 = point.x <= segment.p1.x and segment.p1.x <= segment.p2.x
+        p_left_p2 = point.x <= segment.p2.x and segment.p2.x <= segment.p1.x
+        p_right_p2 = segment.p1.x <= segment.p2.x and segment.p2.x <= point.x
+        p_right_p1 = segment.p2.x <= segment.p1.x and segment.p1.x <= point.x
+        if p_left_p1 or p_right_p1:
             return point.dist_to(segment.p1)
-        elif pIsLeftP2 or pIsRightP2:
+        elif p_left_p2 or p_right_p2:
             return point.dist_to(segment.p2)
 
     # Calculate the t that minimizes the distance.
@@ -399,9 +412,9 @@ def perpendicular_distance(p3, p1, p2):
         # The line is in fact only a single dot.
         # In this case the distance of two points has to be
         # calculated
-        linePoint = Point(p1['x'], p1['y'])
+        line_point = Point(p1['x'], p1['y'])
         point = Point(p3['x'], p3['y'])
-        return linePoint.dist_to(point)
+        return line_point.dist_to(point)
 
     u = ((p3['x'] - p1['x'])*px + (p3['y'] - p1['y'])*py) / squared_distance
 

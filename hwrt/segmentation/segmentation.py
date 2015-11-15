@@ -149,6 +149,13 @@ class SingleClassifier(object):
         self.output_semantics = output_semantics
 
     def predict(self, parsed_json):
+        """
+        Parameters
+        ----------
+        parsed_json : dict
+            with keys 'data' and 'id', where 'data' contains a recording and
+            'id' is the id on write-math.com for debugging purposes
+        """
         evaluate = utils.evaluate_model_single_recording_preloaded
         results = evaluate(self.preprocessing_queue,
                            self.feature_list,
@@ -310,7 +317,8 @@ def filter_recordings(recordings):
 
 
 def get_nn_classifier(X, y):
-    """Train a neural network classifier.
+    """
+    Train a neural network classifier.
 
     Parameters
     ----------
@@ -342,7 +350,8 @@ def get_nn_classifier(X, y):
 
 
 def train_nn_segmentation_classifier(X, y):
-    """Train a neural network classifier.
+    """
+    Train a neural network classifier.
 
     Parameters
     ----------
@@ -451,9 +460,9 @@ def train_nn_segmentation_classifier(X, y):
             train_batches += 1
 
         # Then we print the results for this epoch:
-        print("Epoch {} of {} took {:.3f}s".format(
-            epoch + 1, num_epochs, time.time() - start_time))
-        print("  training loss:\t\t{:.6f}".format(train_err / train_batches))
+        print("Epoch {0} of {1} took {2:.3f}s".format(
+              epoch + 1, num_epochs, time.time() - start_time))
+        print("  training loss:\t\t{0:.6f}".format(train_err / train_batches))
 
     predict_fn = theano.function([input_var],
                                  test_prediction)
@@ -566,7 +575,8 @@ def get_segmentation(recording,
                      single_clf,
                      single_stroke_clf,
                      stroke_segmented_classifier):
-    """Get a list of segmentations of recording with the probability of the
+    """
+    Get a list of segmentations of recording with the probability of the
     segmentation being correct.
 
     Parameters
@@ -772,7 +782,8 @@ def find_split_node(mst_wood, i):
 
 
 def break_mst(mst, i):
-    """Break mst into multiple MSTs by removing one node i.
+    """
+    Break mst into multiple MSTs by removing one node i.
 
     Parameters
     ----------
@@ -883,6 +894,9 @@ def apply_segmentation(recording, segmentation):
 
 
 class Graph(object):
+    """
+    A graph class. It has nodes and vertices.
+    """
     def __init__(self):
         self.nodes = []
 
@@ -925,6 +939,15 @@ class Graph(object):
 
 
 class Node(object):
+    """
+    A node class.
+
+    Parameters
+    ----------
+    identifier
+    payload
+    """
+
     def __init__(self, identifier, payload):
         self.neighbors = []
         self.payload = payload
@@ -960,7 +983,8 @@ def get_segmentation_from_mst(mst, number):
 
 
 def get_points(recording):
-    """Get one point for each stroke in a recording. The point represents the
+    """
+    Get one point for each stroke in a recording. The point represents the
     strokes spacial position (e.g. the center of the bounding box).
 
     Parameters
@@ -980,7 +1004,8 @@ def get_points(recording):
 
 
 def get_bb_intersections(recording):
-    """Get all intersections of the bounding boxes of strokes.
+    """
+    Get all intersections of the bounding boxes of strokes.
 
     Parameters
     ----------
@@ -1031,7 +1056,8 @@ def get_mst(points):
 
 
 def normalize_segmentation(seg):
-    """Bring the segmentation into order.
+    """
+    Bring the segmentation into order.
 
     Parameters
     ----------

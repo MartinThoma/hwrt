@@ -10,6 +10,10 @@ import hwrt.features as features
 
 # Tests
 def execution_test():
+    """
+    Test if analyze_data.filter_label and analyze_data.analyze_feature are
+    executable at all.
+    """
     analyze_data.filter_label("\\dag", replace_by_similar=True)
     analyze_data.filter_label("\\diameter", replace_by_similar=True)
     analyze_data.filter_label("\\degree", replace_by_similar=True)
@@ -22,4 +26,5 @@ def execution_test():
 
 
 def parser_test():
+    """Test analyze_data.get_parser."""
     analyze_data.get_parser()

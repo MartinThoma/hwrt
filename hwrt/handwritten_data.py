@@ -392,6 +392,6 @@ def _get_colors(segmentation):
     # colors
     new_array = color_array[:]
     while len(new_array) <= num_colors:
-        new_array = new_array + color_array
+        new_array += color_array
 
     return new_array[:num_colors]

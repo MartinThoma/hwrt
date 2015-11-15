@@ -13,6 +13,14 @@ import hwrt.segmentation as segmentation
 
 # Tests
 def prepare_beams():
+    """
+    Prepare one beam object for each recording.
+
+    Returns
+    -------
+    list
+        A list of beam objects
+    """
     beams = []
     hwrs = testhelper.get_all_symbols_as_handwriting()
     for hwr in hwrs:
@@ -24,12 +32,14 @@ def prepare_beams():
 
 
 def get_results_test():
+    """Test the .get_results() method of beam objects."""
     beams = prepare_beams()
     for beam in beams:
         beam.get_results()
 
 
 def get_writemath_results_test():
+    """Test the .get_writemath_results method of beam objects."""
     beams = prepare_beams()
     for beam in beams:
         beam.get_writemath_results()

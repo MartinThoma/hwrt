@@ -16,6 +16,7 @@ import hwrt.utils as utils
 
 # Tests
 def training_set_multiplication_test():
+    """Test the create_ffiles.training_set_multiplication method."""
     sample = th.get_symbol_as_handwriting(292934)
     training_set = [{'id': 1337,
                      'is_in_testset': 0,
@@ -37,10 +38,12 @@ def execution_test():
 
 
 def parser_test():
+    """Test create_ffiles.get_parser."""
     create_ffiles.get_parser()
 
 
 def prepare_dataset_test():
+    """Test create_ffiles.prepare_dataset."""
     dataset = []
     for i in range(200):
         dataset.append({'handwriting': th.get_symbol_as_handwriting(97705),
@@ -57,6 +60,7 @@ def prepare_dataset_test():
 
 
 def normalize_features_one_test():
+    """Test create_ffiles._normalize_features with one point."""
     feature_list = [features.Width(), features.Height()]
     prepared = [([123], 1)]
     is_traindata = True
@@ -67,6 +71,7 @@ def normalize_features_one_test():
 
 
 def normalize_features_two_test():
+    """Test create_ffiles._normalize_features with two points."""
     feature_list = [features.Width(), features.Height()]
     prepared = [([123], 1), ([100], 1)]
     is_traindata = True
@@ -88,6 +93,7 @@ def normalize_features_two_test():
 
 
 def normalize_features_two_feats_test():
+    """Test create_ffiles._normalize_features with two points."""
     feature_list = [features.Width(), features.Height()]
     prepared = [([123, 123], 1), ([100, 100], 1)]
     is_traindata = True
@@ -109,6 +115,7 @@ def normalize_features_two_feats_test():
 
 
 def normalize_features_two_feats2_test():
+    """Test create_ffiles._normalize_features with two points."""
     feature_list = [features.Width(), features.Height()]
     prepared = [([123, 123], 1), ([100, 100], 1)]
     is_traindata = True
@@ -130,6 +137,7 @@ def normalize_features_two_feats2_test():
 
 
 def normalize_features_two_classes_test():
+    """Test create_ffiles._normalize_features with two classes."""
     feature_list = [features.Width(), features.Height()]
     prepared = [([123], 1), ([100], 1), ([500], 2)]
     is_traindata = True
@@ -143,6 +151,7 @@ def normalize_features_two_classes_test():
 
 
 def create_translation_file_test():
+    """Test create_ffiles._create_translation_file."""
     feature_folder = os.path.join(utils.get_project_root(),
                                   "feature-files",
                                   "small-baseline")

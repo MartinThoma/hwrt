@@ -85,7 +85,7 @@
                          content += "<thead><tr><th>&alpha;</th><th>LaTeX</th><th>%</th></tr></thead><tbody>";
                          $.each(data, function(index, value) {
                             probability = value['probability'];
-                            var symbollistrender = value['semantics'].split("::");
+                            var symbollistrender = value['semantics'].split(";;");
                             var latex_complete = value['complete_latex'];
                             var rendered = "";
                             for (var i = 0; i < symbollistrender.length; i++) {

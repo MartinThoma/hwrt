@@ -107,10 +107,7 @@ def get_json_result(results, n=10):
     """
     s = []
     last = -1
-    i = 0
     for res in results[:min(len(results), n)]:
-        logging.debug("\t\t%i: P(x)=%0.4f", i, res['probability'])
-        i += 1
         if res['probability'] < last*0.5 and res['probability'] < 0.05:
             break
         if res['probability'] < 0.01:

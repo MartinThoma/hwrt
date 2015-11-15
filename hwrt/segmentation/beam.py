@@ -363,7 +363,7 @@ def build_unicode(hyp):
     latex = []
     for symbol in hyp['symbols']:
         latex.append(symbol['symbol'])
-    return "::".join(latex)
+    return ";;".join(latex)
 
 
 def build_latex(hyp):

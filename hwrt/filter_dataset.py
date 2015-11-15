@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-"""Given a dataset, filter the recordings which are desired."""
+"""
+Given a dataset and a vocabulary file, filter the recordings which are desired.
+"""
 
 # This has to work with preprocess_dataset.py
 import pkg_resources
@@ -33,7 +35,28 @@ def main(symbol_yml_file, raw_pickle_file, pickle_dest_path):
 
 
 def get_symbol_ids(symbol_yml_file, metadata):
-    """Get a list of ids which describe which class they get mapped to.
+    """
+    Get a list of ids which describe which class they get mapped to.
+
+    Parameters
+    ----------
+    symbol_yml_file : string
+        Path to a YAML file.
+    metadata : dict
+        Metainformation of symbols, like the id on write-math.com.
+        Has keys 'symbols', 'tags', 'tags2symbols'.
+
+    Returns
+    -------
+    list of dictionaries : Each dictionary represents one output class and has
+        to have the keys 'id' (which is an id on write-math.com) and
+        'mappings' (which is a list of ids on write-math.com). The mappings
+        list should at least contain the id itself, but can contain more.
+
+    Examples
+    --------
+    >>> get_symbol_ids('symbols.yml')
+    [{'id': 42, 'mappings': [1, 42, 456, 1337]}, {'id': 2, 'mappings': [2]}]
 
     The yml file has to be of the structure
 
@@ -49,24 +72,6 @@ def get_symbol_ids(symbol_yml_file, metadata):
        mappings: ['::TAG/arrow::'],
        exclude: ['\rightarrow']}
     ```
-
-    Parameters
-    ----------
-    symbol_yml_file : string
-    metadata : dict
-        Metainformation of symbols, like the id on write-math.com.
-
-    Returns
-    -------
-    list of dictionaries : Each dictionary represents one output class and has
-        to have the keys 'id' (which is an id on write-math.com) and
-        'mappings' (which is a list of ids on write-math.com). The mappings
-        list should at least contain the id itself, but can contain more.
-
-    Examples
-    --------
-    >>> get_symbol_ids('symbols.yml')
-    [{'id': 42, 'mappings': [1, 42, 456, 1337]}, {'id': 2, 'mappings': [2]}]
     """
     with open(symbol_yml_file, 'r') as stream:
         symbol_cfg = yaml.load(stream)
@@ -120,8 +125,8 @@ def get_symbol_ids(symbol_yml_file, metadata):
                               symbol_tmp)
                 sys.exit(-1)
 
-    #print(metadata.keys())
-    #for el in metadata:
+    # print(metadata.keys())
+    # for el in metadata:
     #    print(metadata[el][0].keys())
     # TODO: assert no double mappings
     # TODO: Support for
@@ -153,7 +158,8 @@ def transform_sids(symbol_ids):
 
 
 def get_metadata():
-    """Get metadata of symbols, like their tags, id on write-math.com, LaTeX
+    """
+    Get metadata of symbols, like their tags, id on write-math.com, LaTeX
     command and unicode code point.
 
     Returns
@@ -175,7 +181,7 @@ def read_csv(filepath):
 
     Parameters
     ----------
-    fileapth : string
+    filepath : string
 
     Returns
     -------
@@ -197,6 +203,16 @@ def load_raw(raw_pickle_file):
 
 
 def filter_and_save(raw, symbol_ids, destination_path):
+    """
+    Parameters
+    ----------
+    raw : dict
+        with key 'handwriting_datasets'
+    symbol_ids : dict
+        Maps LaTeX to write-math.com id
+    destination_path : str
+        Path where the filtered dict 'raw' will be saved
+    """
     logging.info('Start filtering...')
     new_hw_ds = []
     for el in raw['handwriting_datasets']:

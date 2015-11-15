@@ -12,6 +12,8 @@ import json
 import requests
 import logging
 
+logging.getLogger("requests").setLevel(logging.WARNING)
+
 # Python 2 / 3 compatibility
 from six.moves.urllib.request import urlopen
 if sys.version_info[0] == 2:
@@ -30,6 +32,11 @@ use_segmenter_flag = False
 
 def submit_recording(raw_data_json):
     """Submit a recording to the database on write-math.com.
+
+    Parameters
+    ----------
+    raw_data_json : str
+        Raw data in JSON format
 
     Raises
     ------
@@ -89,21 +96,24 @@ def interactive():
 
 def get_json_result(results, n=10):
     """Return the top `n` results as a JSON list.
-    >>> results = [{'symbolnr': 2,
-    ...             'probability': 0.65,
-    ...             'semantics': '\\alpha'},
-    ...            {'symbolnr': 45,
-    ...             'probability': 0.25,
-    ...             'semantics': '\\propto'},
-    ...            {'symbolnr': 15,
-    ...             'probability': 0.0512,
-    ...             'semantics': '\\varpropto'}]
+    >>> results = [{'probability': 0.65,
+    ...             whatever},
+    ...            {'probability': 0.21,
+    ...             whatever},
+    ...            {'probability': 0.05,
+    ...             whatever}]
     >>> get_json_result(results, n=10)
     [{'\\alpha': 0.65}, {'\\propto': 0.25}, {'\\varpropto': 0.0512}]
     """
     s = []
+    last = -1
     for res in results[:min(len(results), n)]:
-        s.append({res['semantics']: res['probability']})
+        if res['probability'] < last*0.5 and res['probability'] < 0.05:
+            break
+        if res['probability'] < 0.01:
+            break
+        s.append(res)
+        last = res['probability']
     return json.dumps(s)
 
 
@@ -136,7 +146,6 @@ def worker():
             else:
                 stroke = strokelist[-1]
                 beam.add_stroke({'data': [stroke], 'id': 42})
-                logging.debug(beam)
                 results = beam.get_results()
                 utils.store_beam(beam, secret_uuid)
         else:
@@ -166,21 +175,11 @@ def _get_part(pointlist, strokes):
     return result
 
 
-def fix_writemath_answer(results):
-    """Bring ``results`` into a format that is accepted by write-math.com.
-       This means using the ID for the formula that is used by the write-math
-       server.
-
-    Examples
-    --------
-    >>> results = [{'symbolnr': 214,
-    ...             'semantics': '\\triangleq',
-    ...             'probability': 0.03}, ...]
-    >>> fix_writemath_answer(results)
-    [{123: 0.03}, ...]
+def _get_translate():
     """
-    new_results = []
-    # Read csv
+    Get a dictionary which translates from a neural network output to
+    semantics.
+    """
     translate = {}
     model_path = pkg_resources.resource_filename('hwrt', 'misc/')
     translation_csv = os.path.join(model_path, 'latex2writemathindex.csv')
@@ -197,15 +196,53 @@ def fix_writemath_answer(results):
             writemathid, latex = csvrow[0], csvrow[1:]
             latex = ','.join(latex)
         translate[latex] = writemathid
+    return translate
+
+
+def get_writemath_id(el, translate):
+    """
+    Parameters
+    ----------
+    el : dict
+        with key 'semantics'
+        results element
+
+    Returns
+    -------
+    int or None:
+        ID of the symbol on write-math.com
+    """
+    semantics = el['semantics'].split(";")[1]
+    if semantics not in translate:
+        logging.debug("Could not find '%s' in translate.", semantics)
+        logging.debug("el: %s", el)
+        return None
+    else:
+        writemathid = translate[semantics]
+    return writemathid
+
+
+def fix_writemath_answer(results):
+    """
+    Bring ``results`` into a format that is accepted by write-math.com. This
+    means using the ID for the formula that is used by the write-math server.
+
+    Examples
+    --------
+    >>> results = [{'symbolnr': 214,
+    ...             'semantics': '\\triangleq',
+    ...             'probability': 0.03}, ...]
+    >>> fix_writemath_answer(results)
+    [{123: 0.03}, ...]
+    """
+    new_results = []
+    # Read csv
+    translate = _get_translate()
 
     for i, el in enumerate(results):
-        semantics = el['semantics'].split(";")[1]
-        if semantics not in translate:
-            logging.debug("Could not find '%s' in translate.", semantics)
-            logging.debug("el: %s", el)
+        writemathid = get_writemath_id(el, translate)
+        if writemathid is None:
             continue
-        else:
-            writemathid = translate[semantics]
         new_results.append({'symbolnr': el['symbolnr'],
                             'semantics': writemathid,
                             'probability': el['probability']})
@@ -244,14 +281,30 @@ def work():
             return ("Raw Data ID %s; Invalid JSON string: %s" %
                     (parsed_json['id'], raw_data_json))
 
-        print("http://www.martin-thoma.de/write-math/view/?raw_data_id=%s" %
+        # Classify
+        if use_segmenter_flag:
+            strokelist = json.loads(raw_data_json)
+            beam = se.Beam()
+            for stroke in strokelist:
+                beam.add_stroke({'data': [stroke], 'id': 42})  # TODO
+            results = beam.get_writemath_results()
+        else:
+            results_sym = classify.classify_segmented_recording(raw_data_json)
+            results = []
+            strokelist = json.loads(raw_data_json)
+            segmentation = [list(range(len(strokelist)))]
+            translate = _get_translate()
+            for symbol in results_sym:
+                s = {'id': get_writemath_id(symbol, translate),
+                     'probability': symbol['probability']}
+                results.append({'probability': symbol['probability'],
+                                'segmentation': segmentation,
+                                'symbols': [s]})
+
+        print("\thttp://write-math.com/view/?raw_data_id=%s" %
               str(parsed_json['id']))
 
-        # Classify
-        results = classify.classify_segmented_recording(raw_data_json)
-
-        # Submit classification to write-math server
-        results = fix_writemath_answer(results)
+        # Submit classification to write-math.com server
         results_json = get_json_result(results, n=n)
         headers = {'User-Agent': 'Mozilla/5.0',
                    'Content-Type': 'application/x-www-form-urlencoded'}

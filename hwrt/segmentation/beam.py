@@ -1,9 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# import json
+import logging
+import sys
+
+logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
+                    level=logging.DEBUG,
+                    stream=sys.stdout)
 from copy import deepcopy
-from functools import reduce  # Valid in Python 2.6+, required in Python 3
+import pkg_resources
+import os
+import yaml
 from decimal import Decimal, getcontext
 getcontext().prec = 100
 
@@ -17,6 +24,70 @@ from ..utils import softmax
 __all__ = [
     "Beam"
 ]
+
+
+stroke_prob = None
+
+
+def p_strokes(symbol, count):
+    """
+    Get the probability of a written `symbol` having `count` strokes.
+
+    Parameters
+    ----------
+    symbol : str
+    count : int, >= 1
+
+    Returns
+    -------
+    float
+        In [0.0, 1.0]
+    """
+    global stroke_prob
+    assert count >= 1
+    epsilon = 0.00000001
+    if stroke_prob is None:
+        misc_path = pkg_resources.resource_filename('hwrt', 'misc/')
+        stroke_prob_file = os.path.join(misc_path,
+                                        'prob_stroke_count_by_symbol.yml')
+        with open(stroke_prob_file, 'r') as stream:
+            stroke_prob = yaml.load(stream)
+    if symbol in stroke_prob:
+        if count in stroke_prob[symbol]:
+            return stroke_prob[symbol][count]
+        else:
+            return epsilon
+    return epsilon
+
+
+def _calc_hypothesis_probability(hypothesis):
+    """
+    Get the probability (or rather a score) of a hypothesis.
+
+    Parameters
+    ----------
+    hypothesis : dict
+        with keys 'segmentation', 'symbols', ...
+
+    Returns
+    -------
+    float
+        in [0.0, 1.0]
+    """
+    prob = 0.0
+    for symbol, seg in zip(hypothesis['symbols'], hypothesis['segmentation']):
+        # symbol_latex = symbol['symbol'].split(";")[1]
+        # TODO: Does p_strokes really improve the system?
+        prob += symbol['probability']  # * p_strokes(symbol_latex, len(seg))
+
+    # Use language model to update probabilities
+    pure_symbols = [symbol['symbol'].split(";")[1]
+                    for symbol in hypothesis['symbols']]
+    pure_symbols = ["<s>"] + pure_symbols + ["</s>"]
+    lm_prob = language_model.get_probability(pure_symbols)
+    hypothesis['lm_probability'] = 2**lm_prob
+    return (prob * float(hypothesis['lm_probability']) *
+            (1.0 / len(hypothesis['segmentation'])))
 
 
 class Beam(object):
@@ -45,7 +116,6 @@ class Beam(object):
                        'right': None or dict,
                        'superscript': None or dict,
                        'top': None or dict},
-           'LM': ???,
            'probability': 0.123
          }, ...]
     history: dict
@@ -56,7 +126,7 @@ class Beam(object):
          }
     """
 
-    def __init__(self, m=3, n=3, k=20):
+    def __init__(self, m=10, n=1, k=20):
         self.m = m
         self.n = n
         self.k = k
@@ -104,7 +174,6 @@ class Beam(object):
         new_beam.history = new_history
 
         evaluated_segmentations = []
-
         # Get new guesses by assuming new_stroke is a new symbol
         guesses = single_clf.predict(new_stroke)[:self.m]
         for hyp in self.hypotheses:
@@ -128,10 +197,7 @@ class Beam(object):
                 b = {'segmentation': new_seg,
                      'symbols': new_sym,
                      'geometry': new_geometry,
-                     'probability': reduce(getcontext().multiply,
-                                           [Decimal(s['probability'])
-                                            for s in new_sym],
-                                           Decimal(1))
+                     'probability': None
                      }
 
                 # spacial_rels = []  # TODO
@@ -176,33 +242,14 @@ class Beam(object):
                     b = {'segmentation': new_seg,
                          'symbols': new_sym,
                          'geometry': deepcopy(hyp['geometry']),
-                         'probability': reduce(getcontext().multiply,
-                                               [Decimal(s['probability'])
-                                                for s in new_sym],
-                                               Decimal(1))
+                         'probability': None
                          }
                     new_beam.hypotheses.append(b)
 
-        # Use language model to update probabilities
-        lm_probs = []
         for hyp in new_beam.hypotheses:
-            pure_symbols = [symbol['symbol'].split(";")[1]
-                            for symbol in hyp['symbols']]
-            pure_symbols = ["<s>"] + pure_symbols + ["</s>"]
-            lm_prob = language_model.get_probability(pure_symbols)
-            hyp['lm_probability'] = lm_prob
-            lm_probs.append(lm_prob)
-
-        new_probs = softmax([h['lm_probability']
-                             for h in new_beam.hypotheses])
-        # add = Decimal(1.0) - max(lm_probs)  # bring the highest one to 0.5
-        for hyp, prob in zip(new_beam.hypotheses, new_probs):
-            hyp['probability'] *= prob  # (hyp['lm_probability'])  # + add
+            hyp['probability'] = _calc_hypothesis_probability(hyp)
 
         # Get probability again
-
-        # for prob, hyp in zip(new_probs, new_beam.hypotheses):
-        #     hyp['probability'] *= prob
 
         # Get geometry of each beam entry
         # TODO
@@ -210,9 +257,14 @@ class Beam(object):
         # Update probabilities
         # TODO
 
+        # Normalize to sum=1
         self.hypotheses = new_beam.hypotheses
         self.history = new_beam.history
         self._prune()
+        new_probs = softmax([h['probability']
+                             for h in self.hypotheses])
+        for hyp, prob in zip(self.hypotheses, new_probs):
+            hyp['probability'] = prob
 
     def _prune(self):
         """Shorten hypotheses to the best k ones."""
@@ -223,18 +275,67 @@ class Beam(object):
     def get_results(self):
         results = []
         for hyp in self.hypotheses:
-            results.append({'semantics': "-1;" + build_latex(hyp),
+            results.append({'semantics': build_unicode(hyp),
+                            'complete_latex': build_latex(hyp),
                             'probability': float(hyp['probability']),
                             'symbol count': len(hyp['segmentation'])})
+        return results
+
+    def get_writemath_results(self):
+        """
+        Get the result in the format
+        [{'probability': 0.987,
+          'segmentation': [[0, 1], [2, 4], [3]]}   // index of the stroke
+          'symbols': [{'id': 456,  // on write-math.com
+                       'probability': 0.123},
+                      {'id': 456,
+                       'probability': 0.999},  // The sum does not have to be 1
+                      {'id': 195,
+                       'probability': 0.0001}]
+          },
+         {...}  // another hypothesis
+        ]
+        """
+        results = []
+        for hyp in self.hypotheses:
+            symbols = []
+            for sym in hyp['symbols']:
+                symbols.append({'id': sym['symbol'].split(';')[0],
+                                'probability': sym['probability']})
+            results.append({'probability': float(hyp['probability']),
+                            'segmentation': hyp['segmentation'],
+                            'symbols': symbols})
         return results
 
     def __str__(self):
         s = "Beam(n=%i, m=%i, k=%i)\n" % (self.n, self.m, self.k)
         for hyp in self.hypotheses:
-            symbols = [el['symbol'] for el in hyp['symbols']]
-            symbols = str([el.split(';')[1] for el in symbols])
+            symbols = [sym['symbol'] for sym in hyp['symbols']]
+            symbols = str([sym.split(';')[1] for sym in symbols])
             s += "\t%0.3f%%\t%s\n" % (hyp['probability']*100, symbols)
         return s
+
+
+def build_unicode(hyp):
+    """
+    Parameters
+    ----------
+    hyp : dict
+        {'segmentation': [[0, 3], [1, 2]],
+         'symbols': [{'symbol': ID, 'probability': 0.12}],
+         'geometry': {'symbol': index,
+                      'bottom': None or dict,
+                      'subscript': None or dict,
+                      'right': None or dict,
+                      'superscript': None or dict,
+                      'top': None or dict},
+          'probability': 0.123
+        }
+    """
+    latex = []
+    for symbol in hyp['symbols']:
+        latex.append(symbol['symbol'])
+    return "::".join(latex)
 
 
 def build_latex(hyp):
@@ -250,7 +351,6 @@ def build_latex(hyp):
                       'right': None or dict,
                       'superscript': None or dict,
                       'top': None or dict},
-          'LM': ???,
           'probability': 0.123
         }
     """

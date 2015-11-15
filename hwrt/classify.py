@@ -12,7 +12,7 @@ from hwrt import utils
 single_symbol_classifier = None
 
 
-class single_classificer(object):
+class SingleClassificer(object):
     """Classifier for single (and hence perfectly segmented) symbols."""
 
     def __init__(self):
@@ -56,6 +56,9 @@ class single_classificer(object):
         if result_format == 'LaTeX':
             for i in range(len(results)):
                 results[i]['semantics'] = results[i]['semantics'].split(";")[1]
+        for i in range(len(results)):
+            splitted = results[i]['semantics'].split(";")
+            results[i]['complete_latex'] = splitted[1]
         return results
 
 
@@ -75,5 +78,5 @@ def classify_segmented_recording(recording, result_format=None):
     """
     global single_symbol_classifier
     if single_symbol_classifier is None:
-        single_symbol_classifier = single_classificer()
+        single_symbol_classifier = SingleClassificer()
     return single_symbol_classifier.predict(recording, result_format)

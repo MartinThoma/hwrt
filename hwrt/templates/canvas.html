@@ -83,23 +83,28 @@
                         $('#resultlink').removeClass('invisible');
                          var content = "<table class='table' role='table' name='resulttable' id='resulttable'>";
                          content += "<thead><tr><th>&alpha;</th><th>LaTeX</th><th>%</th></tr></thead><tbody>";
-                         $.each(data, function( index, value ) {
-                             $.each(value,
-                                    function(symbolbla, probability) {
-                                        var arr = symbolbla.split(";");
-                                        var system_id = arr[0];
-                                        var latex = arr[1];
-                                        var unicode_code_point = arr[2];
-                                        var font = arr[3];
-                                        var font_style = arr[4];
-                                        content += "<tr><td><a href='../symbol/?id="+system_id+"' style='font-family:"+font+";font-style:"+font_style+"'>&#" + unicode_code_point + ";</a></td><td><input id=\"inptxt"+system_id+"\" class=\"form-control\" value='"+ latex + "' disabled/></td><td style='text-align:right'>" + parseFloat(probability*100).toFixed(2) + "</td></tr>";
-                                    })
+                         $.each(data, function(index, value) {
+                            probability = value['probability'];
+                            var symbollistrender = value['semantics'].split("::");
+                            var latex_complete = value['complete_latex'];
+                            var rendered = "";
+                            for (var i = 0; i < symbollistrender.length; i++) {
+                                var arr = symbollistrender[i].split(";");
+                                var system_id = arr[0];
+                                var latex = arr[1];
+                                var unicode_code_point = arr[2];
+                                var font = arr[3];
+                                var font_style = arr[4];
+                                rendered += "<a href='http://write-math.com/symbol/?id="+system_id+"' style='font-family:"+font+";font-style:"+font_style+"'>&#" + unicode_code_point + ";</a>";
+                            };
+
+                            content += "<tr><td>"+rendered+"</td><td><input id=\"inptxt"+system_id+"\" class=\"form-control\" value='"+ latex_complete + "' disabled/></td><td style='text-align:right'>" + parseFloat(probability*100).toFixed(2) + "</td></tr>";
                          });
                          content += "</tbody></table>";
                          document.getElementById('classification-results').innerHTML = content;
 
 
-                         $.each(data, function( index, value ) {
+                         $.each(data, function(index, value) {
                              $.each(value,
                                     function(symbolbla, probability) {
                                         var arr = symbolbla.split(";");

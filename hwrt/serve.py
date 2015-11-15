@@ -140,12 +140,12 @@ def worker():
             if beam is None:
                 beam = se.Beam()
                 for stroke in strokelist:
-                    beam.add_stroke({'data': [stroke], 'id': 42})  # TODO
+                    beam.add_stroke(stroke)
                 results = beam.get_results()
                 utils.store_beam(beam, secret_uuid)
             else:
                 stroke = strokelist[-1]
-                beam.add_stroke({'data': [stroke], 'id': 42})
+                beam.add_stroke(stroke)
                 results = beam.get_results()
                 utils.store_beam(beam, secret_uuid)
         else:

@@ -503,6 +503,8 @@ def evaluate_model_single_recording_preloaded(preprocessing_queue,
         List that defines what an output means.
     recording : string in JSON format
         The handwritten recording in JSON format.
+    recording_id : int or None
+        For debugging purposes.
     """
     handwriting = handwritten_data.HandwrittenData(recording,
                                                    raw_data_id=recording_id)

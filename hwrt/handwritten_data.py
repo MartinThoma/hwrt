@@ -69,19 +69,27 @@ class HandwrittenData(object):
         """
         try:
             pointlist = json.loads(self.raw_data_json)
-        except Exception as inst:  # pragma: no cover
+        except Exception as inst:
             logging.debug("pointStrokeList: strokelistP")
             logging.debug(self.raw_data_json)
             logging.debug("didn't work")
             raise inst
 
-        if len(pointlist) == 0:  # pragma: no cover
+        if len(pointlist) == 0:
             logging.warning("Pointlist was empty. Search for '" +
                             self.raw_data_json + "' in `wm_raw_draw_data`.")
         return pointlist
 
     def get_sorted_pointlist(self):
-        """Make sure that the points and strokes are in order."""
+        """
+        Make sure that the points and strokes are in order.
+
+        Returns
+        -------
+        list
+            A list of all strokes in the recording. Each stroke is represented
+            as a list of dicts {'time': 123, 'x': 45, 'y': 67}
+        """
         pointlist = self.get_pointlist()
         for i in range(len(pointlist)):
             pointlist[i] = sorted(pointlist[i], key=lambda p: p['time'])
@@ -169,10 +177,14 @@ class HandwrittenData(object):
                 if time is not None and \
                    (p1['time'] > time or p2['time'] > time):
                     continue
-                y_from = int((-bb['miny'] + p1['y'])/max(self.get_height(), 1)*size)
-                x_from = int((-bb['minx'] + p1['x'])/max(self.get_width(), 1)*size)
-                y_to = int((-bb['miny'] + p2['y'])/max(self.get_height(), 1)*size)
-                x_to = int((-bb['minx'] + p2['x'])/max(self.get_width(), 1)*size)
+                y_from = int((-bb['miny'] + p1['y']) /
+                             max(self.get_height(), 1)*size)
+                x_from = int((-bb['minx'] + p1['x']) /
+                             max(self.get_width(), 1)*size)
+                y_to = int((-bb['miny'] + p2['y']) /
+                           max(self.get_height(), 1)*size)
+                x_to = int((-bb['minx'] + p2['x']) /
+                           max(self.get_width(), 1)*size)
                 draw.line([x_from, y_from, x_to, y_to],
                           fill='#ffffff',
                           width=1)

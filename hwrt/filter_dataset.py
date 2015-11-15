@@ -243,6 +243,7 @@ def filter_and_save(raw, symbol_ids, destination_path):
 
 
 def get_parser():
+    """Return the parser object for this script."""
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
     parser = ArgumentParser(description=__doc__,
                             formatter_class=ArgumentDefaultsHelpFormatter)

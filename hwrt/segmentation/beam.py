@@ -36,6 +36,7 @@ def p_strokes(symbol, count):
     Parameters
     ----------
     symbol : str
+        LaTeX command
     count : int, >= 1
 
     Returns
@@ -157,8 +158,8 @@ class Beam(object):
         Parameters
         ----------
         new_stroke : list of dicts
-            A list of dicts {'x': 12, 'y': 34, 'time': 56} which represent a
-            point.
+            A list of dicts [{'x': 12, 'y': 34, 'time': 56}, ...] which
+            represent a point.
         """
         global single_clf
         if len(self.hypotheses) == 0:  # Don't put this in the constructor!
@@ -169,13 +170,14 @@ class Beam(object):
                                 }]
         stroke_nr = len(self.history['data'])
         new_history = deepcopy(self.history)
-        new_history['data'].append(new_stroke['data'][0])
+        new_history['data'].append(new_stroke)
         new_beam = Beam()
         new_beam.history = new_history
 
         evaluated_segmentations = []
         # Get new guesses by assuming new_stroke is a new symbol
-        guesses = single_clf.predict(new_stroke)[:self.m]
+        guesses = single_clf.predict({'data': [new_stroke],
+                                      'id': None})[:self.m]
         for hyp in self.hypotheses:
             new_geometry = deepcopy(hyp['geometry'])
             most_right = new_geometry
@@ -222,7 +224,7 @@ class Beam(object):
                 for stroke_index in hyp['segmentation'][-(i+1)]:
                     curr_stroke = self.history['data'][stroke_index]
                     new_strokes['data'].append(curr_stroke)
-                new_strokes['data'].append(new_stroke['data'][0])
+                new_strokes['data'].append(new_stroke)
 
                 new_seg = deepcopy(hyp['segmentation'])
                 new_seg[-(i+1)].append(stroke_nr)

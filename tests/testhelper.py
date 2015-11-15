@@ -10,6 +10,12 @@ from hwrt.handwritten_data import HandwrittenData
 
 
 def get_all_symbols():
+    """
+    Returns
+    -------
+    list
+        A list of paths to json files which are recordings.
+    """
     current_folder = os.path.dirname(os.path.realpath(__file__))
     symbol_folder = os.path.join(current_folder, "symbols")
     symbols = [os.path.join(symbol_folder, f)

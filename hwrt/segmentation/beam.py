@@ -134,6 +134,60 @@ class Beam(object):
         self.history = {'data': [], 'id': -1}
         self.hypotheses = []
 
+    def _add_hypotheses_assuming_new_stroke(self,
+                                            new_stroke,
+                                            stroke_nr,
+                                            new_beam):
+        """
+        Get new guesses by assuming new_stroke is a new symbol.
+
+        Parameters
+        ----------
+        new_stroke : list of dicts
+            A list of dicts [{'x': 12, 'y': 34, 'time': 56}, ...] which
+            represent a point.
+        stroke_nr : int
+            Number of the stroke for segmentation
+        new_beam : beam object
+        """
+        guesses = single_clf.predict({'data': [new_stroke],
+                                      'id': None})[:self.m]
+        for hyp in self.hypotheses:
+            new_geometry = deepcopy(hyp['geometry'])
+            most_right = new_geometry
+            if len(hyp['symbols']) == 0:
+                while 'right' in most_right:
+                    most_right = most_right['right']
+                most_right['right'] = {'symbol_index': len(hyp['symbols']),
+                                       'right': None}
+            else:
+                most_right = {'symbol_index': len(hyp['symbols']),
+                              'right': None}
+            for guess in guesses:
+                sym = {'symbol': guess['semantics'],
+                       'probability': guess['probability']}
+                new_seg = deepcopy(hyp['segmentation'])
+                new_seg.append([stroke_nr])
+                new_sym = deepcopy(hyp['symbols'])
+                new_sym.append(sym)
+                b = {'segmentation': new_seg,
+                     'symbols': new_sym,
+                     'geometry': new_geometry,
+                     'probability': None
+                     }
+
+                # spacial_rels = []  # TODO
+                # for s1_indices, s2_indices in zip(b['segmentation'],
+                #                                   b['segmentation'][1:]):
+                #     tmp = [new_beam.history['data'][el] for el in s1_indices]
+                #     s1 = HandwrittenData(json.dumps(tmp))
+                #     tmp = [new_beam.history['data'][el] for el in s2_indices]
+                #     s2 = HandwrittenData(json.dumps(tmp))
+                #     rel = spacial_relationship.estimate(s1, s2)
+                #     spacial_rels.append(rel)
+                # b['geometry'] = spacial_rels
+                new_beam.hypotheses.append(b)
+
     def add_stroke(self, new_stroke):
         """
         Update the beam so that it considers `new_stroke`.
@@ -175,47 +229,10 @@ class Beam(object):
         new_beam.history = new_history
 
         evaluated_segmentations = []
-        # Get new guesses by assuming new_stroke is a new symbol
-        guesses = single_clf.predict({'data': [new_stroke],
-                                      'id': None})[:self.m]
-        for hyp in self.hypotheses:
-            new_geometry = deepcopy(hyp['geometry'])
-            most_right = new_geometry
-            if len(hyp['symbols']) == 0:
-                while 'right' in most_right:
-                    most_right = most_right['right']
-                most_right['right'] = {'symbol_index': len(hyp['symbols']),
-                                       'right': None}
-            else:
-                most_right = {'symbol_index': len(hyp['symbols']),
-                              'right': None}
-            for guess in guesses:
-                sym = {'symbol': guess['semantics'],
-                       'probability': guess['probability']}
-                new_seg = deepcopy(hyp['segmentation'])
-                new_seg.append([stroke_nr])
-                new_sym = deepcopy(hyp['symbols'])
-                new_sym.append(sym)
-                b = {'segmentation': new_seg,
-                     'symbols': new_sym,
-                     'geometry': new_geometry,
-                     'probability': None
-                     }
-
-                # spacial_rels = []  # TODO
-                # for s1_indices, s2_indices in zip(b['segmentation'],
-                #                                   b['segmentation'][1:]):
-                #     tmp = [new_beam.history['data'][el] for el in s1_indices]
-                #     s1 = HandwrittenData(json.dumps(tmp))
-                #     tmp = [new_beam.history['data'][el] for el in s2_indices]
-                #     s2 = HandwrittenData(json.dumps(tmp))
-                #     rel = spacial_relationship.estimate(s1, s2)
-                #     spacial_rels.append(rel)
-                # b['geometry'] = spacial_rels
-                new_beam.hypotheses.append(b)
 
         # Get new guesses by assuming new_stroke belongs to an already begun
         # symbol
+        had_multisymbol = False
         for hyp in self.hypotheses:
             # Add stroke to last n symbols (seperately)
             for i in range(min(self.n, len(hyp['segmentation']))):
@@ -237,6 +254,10 @@ class Beam(object):
                 # Predict this new collection of strokes
                 guesses = single_clf.predict(new_strokes)[:self.m]
                 for guess in guesses:
+                    if guess['semantics'].split(";")[1] == "MULTISYMBOL":
+                        # This was a wrong segmentation. Ignore it.
+                        had_multisymbol = True
+                        continue
                     sym = {'symbol': guess['semantics'],
                            'probability': guess['probability']}
                     new_sym = deepcopy(hyp['symbols'])
@@ -247,6 +268,11 @@ class Beam(object):
                          'probability': None
                          }
                     new_beam.hypotheses.append(b)
+
+        if len(self.hypotheses) <= 1 or had_multisymbol:
+            self._add_hypotheses_assuming_new_stroke(new_stroke,
+                                                     stroke_nr,
+                                                     new_beam)
 
         for hyp in new_beam.hypotheses:
             hyp['probability'] = _calc_hypothesis_probability(hyp)

@@ -97,17 +97,20 @@ def interactive():
 def get_json_result(results, n=10):
     """Return the top `n` results as a JSON list.
     >>> results = [{'probability': 0.65,
-    ...             whatever},
+    ...             'whatever': 'bar'},
     ...            {'probability': 0.21,
-    ...             whatever},
+    ...             'whatever': 'bar'},
     ...            {'probability': 0.05,
-    ...             whatever}]
+    ...             'whatever': 'bar'},]
     >>> get_json_result(results, n=10)
     [{'\\alpha': 0.65}, {'\\propto': 0.25}, {'\\varpropto': 0.0512}]
     """
     s = []
     last = -1
+    i = 0
     for res in results[:min(len(results), n)]:
+        logging.debug("\t\t%i: P(x)=%0.4f", i, res['probability'])
+        i += 1
         if res['probability'] < last*0.5 and res['probability'] < 0.05:
             break
         if res['probability'] < 0.01:
@@ -262,7 +265,7 @@ def work():
 
     chunk_size = 1000
 
-    logging.info("Start working!")
+    logging.info("Start working with n=%i", n)
     for _ in range(chunk_size):
         # contact the write-math server and get something to classify
         url = "http://www.martin-thoma.de/write-math/api/get_unclassified.php"
@@ -286,7 +289,7 @@ def work():
             strokelist = json.loads(raw_data_json)
             beam = se.Beam()
             for stroke in strokelist:
-                beam.add_stroke({'data': [stroke], 'id': 42})  # TODO
+                beam.add_stroke(stroke)
             results = beam.get_writemath_results()
         else:
             results_sym = classify.classify_segmented_recording(raw_data_json)

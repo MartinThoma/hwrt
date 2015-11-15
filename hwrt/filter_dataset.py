@@ -27,6 +27,16 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
 
 
 def main(symbol_yml_file, raw_pickle_file, pickle_dest_path):
+    """
+    Parameters
+    ----------
+    symbol_yml_file : str
+        Path to a YAML file which contains recordings.
+    raw_pickle_file : str
+        Path to a pickle file which contains raw recordings.
+    pickle_dest_path : str
+        Path where the filtered dict gets serialized as a pickle file again.
+    """
     metadata = get_metadata()
     symbol_ids = get_symbol_ids(symbol_yml_file, metadata)
     symbol_ids = transform_sids(symbol_ids)
@@ -147,15 +157,6 @@ def transform_sids(symbol_ids):
             new_sids[int(from_sid)] = int(to_sid['id'])
     return new_sids
 
-# def get_symbol_id(symbol, wm_symbols):
-#     """Get the write-math.com symbol id from an entry in a symbol.yml file.
-
-#     Parameters
-#     ----------
-#     symbol : dict
-#     wm_symbols : list of dicts
-#     """
-
 
 def get_metadata():
     """
@@ -176,8 +177,9 @@ def get_metadata():
 
 
 def read_csv(filepath):
-    """Read a CSV into a list of dictionarys. The first line of the CSV
-    determines the keys of the dictionary.
+    """
+    Read a CSV into a list of dictionarys. The first line of the CSV determines
+    the keys of the dictionary.
 
     Parameters
     ----------
@@ -196,6 +198,19 @@ def read_csv(filepath):
 
 
 def load_raw(raw_pickle_file):
+    """
+    Load a pickle file of raw recordings.
+
+    Parameters
+    ----------
+    raw_pickle_file : str
+        Path to a pickle file which contains raw recordings.
+
+    Returns
+    -------
+    dict
+        The loaded pickle file.
+    """
     with open(raw_pickle_file, 'rb') as f:
         raw = pickle.load(f)
     logging.info("Loaded %i recordings.", len(raw['handwriting_datasets']))

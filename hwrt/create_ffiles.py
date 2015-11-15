@@ -38,8 +38,19 @@ from . import utils
 def _create_index_formula_lookup(formula_id2index,
                                  feature_folder,
                                  index2latex):
-    """Create a lookup file where the index is mapped to the formula id
-       and the LaTeX command."""
+    """
+    Create a lookup file where the index is mapped to the formula id and the
+    LaTeX command.
+
+    Parameters
+    ----------
+    formula_id2index : dict
+    feature_folder : str
+        Path to a folder in which a feature file as well as an
+        index2formula_id.csv is.
+    index2latex : dict
+        Maps an integer index to a LaTeX command
+    """
     index2formula_id = sorted(formula_id2index.items(), key=lambda n: n[1])
     index2formula_file = os.path.join(feature_folder, "index2formula_id.csv")
     with open(index2formula_file, "w") as f:
@@ -184,12 +195,31 @@ def training_set_multiplication(training_set, mult_queue):
 def get_sets(path_to_data):
     """
     Get a training, validation and a testset as well as a dictionary that maps
-    each formula_id to an index (0...nr_of_formulas).
+    each formula_id to an index (0...nr_of_formulas - 1).
 
     Parameters
     ----------
     path_to_data :
-        a pickle file that contains a list of datasets
+        A pickle file that contains a list of datasets.
+
+    Returns
+    -------
+    tuple
+        0: list
+            The training_set contains recordings.
+        1: list
+            The validation_set contains recordings.
+        2: list
+            The test_set contains recordings.
+        3: dict
+            The formula_id2index maps write-math.com formula ids to
+            an index which begins at 0.
+        4: list
+            The preprocessing_queue contains objects which encapsulate
+            algorithms for preprocessing.
+        5: dict
+            The index2latex maps the index of the neural network to the latex
+            command.
     """
     loaded = pickle.load(open(path_to_data, 'rb'))
     datasets = loaded['handwriting_datasets']

@@ -13,6 +13,8 @@ import logging
 from decimal import Decimal, getcontext
 getcontext().prec = 100
 
+ngram_model = None
+
 
 class NgramLanguageModel(object):
     def __init__(self):
@@ -177,6 +179,8 @@ def load_model():
 
 def get_probability(sentence):
     global ngram_model
+    if ngram_model is None:
+        initialize_module()
     return ngram_model.get_probability(sentence)
 
 
@@ -190,7 +194,10 @@ def get_parser():
                         help="sentence, splitted by ';'")
     return parser
 
-ngram_model = load_model()
+
+def initialize_module():
+    global ngram_model
+    ngram_model = load_model()
 
 
 if __name__ == "__main__":

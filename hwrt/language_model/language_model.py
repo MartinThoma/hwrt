@@ -196,6 +196,11 @@ def get_parser():
 
 
 def initialize_module():
+    """
+    Initialize the language model module.
+
+    This loads the language model.
+    """
     global ngram_model
     ngram_model = load_model()
 

@@ -367,7 +367,7 @@ def train_nn_segmentation_classifier(X, y):
     """
 
     def build_mlp(input_var=None):
-        N_CLASSES = 2
+        n_classes = 2
         # First, construct an input layer. The shape parameter defines the
         # expected input shape, which is just the shape of our data matrix X.
         l_in = lasagne.layers.InputLayer(shape=X.shape,
@@ -385,7 +385,7 @@ def train_nn_segmentation_classifier(X, y):
             layers.append(l_hidden_1)
         # For our output layer, we'll use a dense layer with a softmax
         # nonlinearity.
-        l_output = lasagne.layers.DenseLayer(layers[-1], num_units=N_CLASSES,
+        l_output = lasagne.layers.DenseLayer(layers[-1], num_units=n_classes,
                                              nonlinearity=softmax)
         return l_output
 
@@ -638,14 +638,14 @@ def get_segmentation(recording,
 
         # Segment after pre-segmentation
         prob = [[1.0 for _ in chunk] for _ in chunk]
-        for strokeid1 in range(len(chunk)):
-            for strokeid2 in range(len(chunk)):
-                if strokeid1 == strokeid2:
-                    continue
-                X = get_stroke_features(chunk, strokeid1, strokeid2)
-                X += X_symbol
-                X = numpy.array([X], dtype=numpy.float32)
-                prob[strokeid1][strokeid2] = stroke_segmented_classifier(X)
+        for strokeid1, strokeid2 in itertools.product(range(len(chunk)),
+                                                      range(len(chunk))):
+            if strokeid1 == strokeid2:
+                continue
+            X = get_stroke_features(chunk, strokeid1, strokeid2)
+            X += X_symbol
+            X = numpy.array([X], dtype=numpy.float32)
+            prob[strokeid1][strokeid2] = stroke_segmented_classifier(X)
 
         # Top segmentations
         ts = list(partitions.get_top_segmentations(prob, 500))

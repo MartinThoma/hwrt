@@ -254,7 +254,7 @@ class Beam(object):
                 # Predict this new collection of strokes
                 guesses = single_clf.predict(new_strokes)[:self.m]
                 for guess in guesses:
-                    if guess['semantics'].split(";")[1] == "MULTISYMBOL":
+                    if guess['semantics'].split(";")[1] == "::MULTISYMBOL::":
                         # This was a wrong segmentation. Ignore it.
                         had_multisymbol = True
                         continue

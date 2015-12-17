@@ -1,4 +1,26 @@
 {% extends "bootstrap/base.html" %}
+{% block styles %}
+<!-- Bootstrap -->
+    <link href="{{bootstrap_find_resource('css/bootstrap.css', cdn='bootstrap')}}" rel="stylesheet">
+    <!-- prevent centering jumps-->
+    <style>
+    html {
+       overflow-y: scroll;
+    }
+    </style>
+<script type="text/javascript">
+  window.MathJax = {
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  };
+</script>
+<script type="text/javascript"
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+{% endblock %}
+
 {% block title %}Classify{% endblock %}
 
 {% block navbar %}
@@ -82,7 +104,7 @@
                     {
                         $('#resultlink').removeClass('invisible');
                          var content = "<table class='table' role='table' name='resulttable' id='resulttable'>";
-                         content += "<thead><tr><th>&alpha;</th><th>LaTeX</th><th>%</th></tr></thead><tbody>";
+                         content += "<thead><tr><th>&alpha;</th><th>&alpha;</th><th>LaTeX</th><th>%</th></tr></thead><tbody>";
                          $.each(data, function(index, value) {
                             probability = value['probability'];
                             var symbollistrender = value['semantics'].split(";;");
@@ -98,7 +120,7 @@
                                 rendered += "<a href='http://write-math.com/symbol/?id="+system_id+"' style='font-family:"+font+";font-style:"+font_style+"'>&#" + unicode_code_point + ";</a>";
                             };
 
-                            content += "<tr><td>"+rendered+"</td><td><input id=\"inptxt"+system_id+"\" class=\"form-control\" value='"+ latex_complete + "' disabled/></td><td style='text-align:right'>" + parseFloat(probability*100).toFixed(2) + "</td></tr>";
+                            content += "<tr><td>"+rendered+"</td><td>$$"+ latex_complete + "$$</td><td><input id=\"inptxt"+system_id+"\" class=\"form-control\" value='"+ latex_complete + "' disabled/></td><td style='text-align:right'>" + parseFloat(probability*100).toFixed(2) + "</td></tr>";
                          });
                          content += "</tbody></table>";
                          document.getElementById('classification-results').innerHTML = content;
@@ -115,6 +137,7 @@
                                         var font_style = arr[4];
                                     })
                          });
+                         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
                     },
                   dataType: "json",
                   error: function(e) {

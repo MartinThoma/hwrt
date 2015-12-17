@@ -1,0 +1,10 @@
+{
+	"folders":
+	[
+		{
+			"path": ".",
+			"folder_exclude_patterns": ["hwrt.egg-info", "dist", "build"],
+			"file_exclude_patterns": ["*.pyc", ".coverage"]
+		}
+	]
+}

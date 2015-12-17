@@ -69,3 +69,6 @@ cover/
 
 *.npy
 *.pickle
+
+# Sublime
+*.sublime-workspace

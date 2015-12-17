@@ -18,7 +18,12 @@ from ..datasets import formula_to_dbid
 
 
 def beautify_xml(path):
-    """Beautify / pretty print XML in `path`.
+    """
+    Beautify / pretty print XML in `path`.
+
+    Parameters
+    ----------
+    path : str
 
     Returns
     -------
@@ -36,6 +41,17 @@ def beautify_xml(path):
 
 
 def normalize_symbol_name(symbol_name):
+    """
+    Change symbol names to a version which is known by write-math.com
+
+    Parameters
+    ----------
+    symbol_name : str
+
+    Returns
+    -------
+    str
+    """
     if symbol_name == '\\frac':
         return '\\frac{}{}'
     elif symbol_name == '\\sqrt':
@@ -120,7 +136,8 @@ def read(filepath):
         if len(annotations) != 1:
             raise ValueError("%i annotations found for '%s'." %
                              (len(annotations), filepath))
-        symbol_stream.append(formula_to_dbid(normalize_symbol_name(annotations[0].text)))
+        db_id = formula_to_dbid(normalize_symbol_name(annotations[0].text))
+        symbol_stream.append(db_id)
         trace_views = tg.findall('{http://www.w3.org/2003/InkML}traceView')
         symbol = []
         for traceView in trace_views:
@@ -128,7 +145,7 @@ def read(filepath):
         segmentation.append(symbol)
     hw.symbol_stream = symbol_stream
     hw.segmentation = segmentation
-    _flat_seg = [stroke for symbol in segmentation for stroke in symbol]
+    _flat_seg = [stroke2 for symbol2 in segmentation for stroke2 in symbol2]
     assert len(_flat_seg) == len(recording), \
         ("Segmentation had length %i, but recording has %i strokes (%s)" %
          (len(_flat_seg), len(recording), filepath))
@@ -171,17 +188,26 @@ def read_folder(folder):
     return recordings
 
 
-def main():
-    folder = ("/home/moose/Downloads/"
-              "ICFHR_package/CROHME2011_data/CROHME_training/CROHME_training/")
+def main(folder):
+    """
+    Read folder.
+
+    Parameters
+    ----------
+    folder : str
+    """
+
     logging.info(folder)
     read_folder(folder)
 
 
 def handler(signum, frame):
+    """Add signal handler to savely quit program."""
     print('Signal handler called with signal %i' % signum)
     sys.exit(-1)
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, handler)
-    main()
+    folder = ("/home/moose/Downloads/"
+              "ICFHR_package/CROHME2011_data/CROHME_training/CROHME_training/")
+    main(folder)

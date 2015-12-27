@@ -21,11 +21,23 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
 
 
 def main():
+    """
+    Orchestrate the conversion from a pickled file with CUDA matrices to a tar
+    file with hdf5 files.
+    """
     matrices = get_matrices()
     create_model_tar(matrices)
 
 
 def get_matrices():
+    """
+    Get the matrices from a pickled files.
+
+    Returns
+    -------
+    list
+        List of all matrices.
+    """
     with open('hwrt/misc/is_one_symbol_classifier.pickle', 'rb') as f:
         a = pickle.load(f)
 
@@ -42,14 +54,23 @@ def get_matrices():
 
 
 def create_model_tar(matrices, tarname="model-cuda-converted.tar"):
+    """
+    Create a tar file which contains the model.
+
+    Parameters
+    ----------
+    matrices : list
+    tarname : str
+        Target file which will be created.
+    """
     # Write layers
     filenames = []
     for layer in range(len(matrices)):
         if matrices[layer]['name'] == 'W':
-            W = matrices[layer]['storage']
-            Wfile = h5py.File('W%i.hdf5' % (layer / 2), 'w')
-            Wfile.create_dataset(Wfile.id.name, data=W)
-            Wfile.close()
+            weights = matrices[layer]['storage']
+            weights_file = h5py.File('W%i.hdf5' % (layer / 2), 'w')
+            weights_file.create_dataset(weights_file.id.name, data=weights)
+            weights_file.close()
             filenames.append('W%i.hdf5' % (layer / 2))
         elif matrices[layer]['name'] == 'b':
             b = matrices[layer]['storage']

@@ -311,7 +311,8 @@ class HandwrittenData(object):
         return (xsum / counter, ysum / counter)
 
     def to_single_symbol_list(self):
-        """Convert this HandwrittenData object into a list of HandwrittenData
+        """
+        Convert this HandwrittenData object into a list of HandwrittenData
         objects. Each element of the list is a single symbol.
 
         Returns
@@ -339,7 +340,10 @@ class HandwrittenData(object):
         return not self.__eq__(other)
 
     def __repr__(self):
-        return "HandwrittenData(raw_data_id=%s)" % str(self.raw_data_id)
+        if self.raw_data_id is None and self.formula_in_latex is not None:
+            return "HwD(%s)" % str(self.formula_in_latex)
+        else:
+            return "HwD(raw_data_id=%s)" % str(self.raw_data_id)
 
     def __str__(self):
         return repr(self)

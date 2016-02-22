@@ -1,0 +1,5 @@
+## Requirements
+
+* h5py: Requires `python-dev`, `libhdf5-dev`
+* scipy: Requires `gfortran`
+* matplotlib: `python-matplotlib`

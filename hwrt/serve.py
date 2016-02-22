@@ -124,7 +124,11 @@ def worker():
     global use_segmenter_flag
     if request.method == 'POST':
         raw_data_json = request.form['classify']
-        secret_uuid = request.form['secret']
+        try:
+            secret_uuid = request.form['secret']
+        except:
+            logging.info("No secret uuid given. Create one.")
+            secret_uuid = str(uuid.uuid4())
 
         # Check recording
         try:

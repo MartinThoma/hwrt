@@ -11,6 +11,7 @@ import sys
 import json
 import requests
 import logging
+import uuid
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 
@@ -128,7 +129,6 @@ def worker():
             secret_uuid = request.form['secret']
         except:
             logging.info("No secret uuid given. Create one.")
-            import uuid
             secret_uuid = str(uuid.uuid4())
 
         # Check recording

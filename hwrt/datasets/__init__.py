@@ -10,8 +10,10 @@ logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
 import pymysql
 import pymysql.cursors
 
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # hwrt modules
-from .. import utils
+import utils
 
 __formula_to_dbid_cache = None
 username2id = {}
@@ -209,3 +211,4 @@ def insert_symbol_mapping(raw_data_id, symbol_id, user_id, strokes):
             user_id)
     cursor.execute(sql, data)
     connection.commit()
+

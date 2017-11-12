@@ -7,18 +7,22 @@
 
 import logging
 import json
-import Image
-import ImageDraw
+from PIL import Image
+from PIL import ImageDraw
 import numpy
-
+import pprint
+from collections import defaultdict
+import numpy as np
 
 class HandwrittenData(object):
     """Represents a handwritten symbol."""
-    def __init__(self, raw_data_json, formula_id=None, raw_data_id=None,
+    def __init__(self, raw_data_json, filename=None, formula_id=None, raw_data_id=None,
                  formula_in_latex=None, wild_point_count=0,
                  missing_stroke=0, user_id=0, user_name='', segmentation=None):
+        self.mapping = defaultdict(list)
         self.raw_data_json = raw_data_json
         self.formula_id = formula_id
+        self.filename = filename
         self.raw_data_id = raw_data_id
         self.formula_in_latex = formula_in_latex
         self.wild_point_count = wild_point_count
@@ -36,6 +40,9 @@ class HandwrittenData(object):
             # same symbol.
             self.segmentation = [[i for i in
                                   range(len(json.loads(self.raw_data_json)))]]
+
+        print raw_data_json
+        print "segmentation: {}".format(segmentation)
         assert wild_point_count >= 0
         assert missing_stroke >= 0
         self.fix_times()
@@ -78,6 +85,9 @@ class HandwrittenData(object):
         if len(pointlist) == 0:
             logging.warning("Pointlist was empty. Search for '" +
                             self.raw_data_json + "' in `wm_raw_draw_data`.")
+
+      #  print "File: {}".format(self.filename)
+     #   pprint.pprint(pointlist)
         return pointlist
 
     def get_sorted_pointlist(self):
@@ -232,6 +242,7 @@ class HandwrittenData(object):
             features += new_features
         return features
 
+
     def show(self):
         """Show the data graphically in a new pop-up window."""
 
@@ -241,7 +252,10 @@ class HandwrittenData(object):
         # import matplotlib
         # matplotlib.use('GTK3Agg', warn=False)
 
+        import matplotlib
+        matplotlib.use('Agg')
         import matplotlib.pyplot as plt
+
 
         pointlist = self.get_pointlist()
         if 'pen_down' in pointlist[0][0]:
@@ -272,19 +286,65 @@ class HandwrittenData(object):
 
         colors = _get_colors(self.segmentation)
         for symbols, color in zip(self.segmentation, colors):
+            fig = plt.figure()
+            ax = fig.add_subplot(111)
             for stroke_index in symbols:
                 stroke = pointlist[stroke_index]
                 xs, ys = [], []
                 for p in stroke:
                     xs.append(p['x'])
                     ys.append(p['y'])
-                if "pen_down" in stroke[0] and stroke[0]["pen_down"] is False:
-                    plt.plot(xs, ys, '-x', color=color)
-                else:
-                    plt.plot(xs, ys, '-o', color=color)
-        plt.gca().invert_yaxis()
-        ax.set_aspect('equal')
-        plt.show()
+                    ax.plot(xs,ys, color="#000000")
+               # if "pen_down" in stroke[0] and stroke[0]["pen_down"] is False:
+               #     ax.plot(xs, ys, '-x', color=color)
+               # else:
+               #     ax.plot(xs, ys, '-x', color=color)
+              #  print xs,ys
+
+            # Make a random plot...
+
+
+            # If we haven't already shown or saved the plot, then we need to
+            # draw the figure first...
+            plt.gca().invert_yaxis()
+            ax.set_aspect('equal')
+            plt.axis('off')
+            fig.canvas.draw()
+           # fig.savefig("test_fig.png")
+            np.set_printoptions(threshold=np.nan)
+            # Now we can save it to a numpy array.
+         #   non_grey = []
+            data = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
+           # print data
+           # print fig.canvas.get_width_height()
+           # print data.shape
+            data = data.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+            data = np.dot(data[..., :3], [0.299, 0.587, 0.114])
+
+            print data.shape
+            data_dict = defaultdict(int)
+            new_data = np.zeros(data.shape)
+            for row in range(len(data)):
+               for col in range(len(data[0])):
+                   point = data[row][col]
+                #  if point != 191:
+                #       new_data[row][col] = 0
+                   if point != 191:
+                    new_data[row][col] = 1
+                    data_dict[(row,col)] = 1
+
+
+
+
+            plt.imshow(new_data, cmap=plt.get_cmap('gray'))
+            plt.savefig("current_{}".format(symbols))
+           # print data
+           # data = data.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+           # print "Non grey: {}".format(non_grey)
+          #
+         #
+
+    #    plt.show()c
 
     def count_single_dots(self):
         """Count all strokes of this recording that have only a single dot.
@@ -399,3 +459,4 @@ def _get_colors(segmentation):
         new_array += color_array
 
     return new_array[:num_colors]
+

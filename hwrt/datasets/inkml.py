@@ -13,8 +13,10 @@ from natsort import natsorted
 from xml.dom.minidom import parseString
 
 # hwrt modules
-from .. import handwritten_data
-from ..datasets import formula_to_dbid
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import handwritten_data
+from __init__ import formula_to_dbid
 
 
 def beautify_xml(path):
@@ -67,7 +69,7 @@ def normalize_symbol_name(symbol_name):
     return symbol_name
 
 
-def read(filepath):
+def read(folder, filepath, short_filename):
     """
     Read a single InkML file
 
@@ -112,7 +114,7 @@ def read(filepath):
         if annotation.attrib['type'] == 'truth':
             formula_in_latex = annotation.text
     hw = handwritten_data.HandwrittenData(json.dumps(recording),
-                                          formula_in_latex=formula_in_latex)
+                                          formula_in_latex=formula_in_latex, filename= filepath, raw_data_id=folder[1]+ short_filename)
     for annotation in annotations:
         if annotation.attrib['type'] == 'writer':
             hw.writer = annotation.text
@@ -133,14 +135,25 @@ def read(filepath):
     symbol_stream = []  # has to be consistent with segmentation
     for tg in trace_group.findall('{http://www.w3.org/2003/InkML}traceGroup'):
         annotations = tg.findall('{http://www.w3.org/2003/InkML}annotation')
+       # anno_xml = tg.findall('{http://www.w3.org/2003/InkML}annotationXML')
         if len(annotations) != 1:
             raise ValueError("%i annotations found for '%s'." %
                              (len(annotations), filepath))
+
+        value = annotations[0].text
+        '''
         db_id = formula_to_dbid(normalize_symbol_name(annotations[0].text))
         symbol_stream.append(db_id)
+        '''
+
+        '''
+        Need some sort of mapping from symbol to strokes
+        '''
+
         trace_views = tg.findall('{http://www.w3.org/2003/InkML}traceView')
         symbol = []
         for traceView in trace_views:
+            hw.mapping[value] += [int(traceView.attrib['traceDataRef'])]
             symbol.append(int(traceView.attrib['traceDataRef']))
         segmentation.append(symbol)
     hw.symbol_stream = symbol_stream
@@ -152,6 +165,8 @@ def read(filepath):
     assert set(_flat_seg) == set(range(len(_flat_seg)))
     hw.inkml = beautify_xml(filepath)
     hw.filepath = filepath
+    print "Segmentation: {}".format(hw.segmentation)
+    print hw.mapping
     return hw
 
 
@@ -169,13 +184,20 @@ def read_folder(folder):
     """
     import glob
     recordings = []
-    for filename in natsorted(glob.glob("%s/*.inkml" % folder)):
-        hw = read(filename)
+    filenames =  os.listdir(folder[0] + folder[1])
+    for filename in filenames[:2]: #natsorted(glob.glob("%s/*.inkml" % folder)):
+        filename_copy = filename
+        filename = folder[0] + folder[1] + filename
+        #print filename
+
+        hw = read(folder, filename, filename_copy)
         if hw.formula_in_latex is not None:
             hw.formula_in_latex = hw.formula_in_latex.strip()
         if hw.formula_in_latex is None or \
            not hw.formula_in_latex.startswith('$') or \
            not hw.formula_in_latex.endswith('$'):
+            continue
+            '''
             if hw.formula_in_latex is not None:
                 logging.info("Starts with: %s",
                              str(hw.formula_in_latex.startswith('$')))
@@ -184,7 +206,16 @@ def read_folder(folder):
             logging.info(hw.formula_in_latex)
             logging.info(hw.segmentation)
             hw.show()
+            '''
+
+        print hw.formula_in_latex
+
+
         recordings.append(hw)
+      # break
+
+    for hw in recordings:
+        hw.show()
     return recordings
 
 
@@ -202,12 +233,12 @@ def main(folder):
 
 
 def handler(signum, frame):
-    """Add signal handler to savely quit program."""
+    """Add signal handler to safely quit program."""
     print('Signal handler called with signal %i' % signum)
     sys.exit(-1)
 
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, handler)
-    folder = ("/home/moose/Downloads/"
-              "ICFHR_package/CROHME2011_data/CROHME_training/CROHME_training/")
+    folder = ("/Users/norahborus/Documents/latex-project/baseline/training_data/", "CHROME_training_2011/")
     main(folder)
+

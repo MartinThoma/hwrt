@@ -26,7 +26,7 @@ from decimal import Decimal, getcontext
 getcontext().prec = 100
 
 # hwrt modules
-from . import handwritten_data
+from hwrt import handwritten_data
 
 
 def print_status(total, current, start_time=None):
@@ -82,8 +82,10 @@ def get_project_configuration():
 
 
 def create_project_configuration(filename):
-    """Create a project configuration file which contains a configuration
-       that might make sense."""
+    """
+    Create a project configuration file which contains a configuration
+    that might make sense.
+    """
     home = os.path.expanduser("~")
     project_root_folder = os.path.join(home, "hwr-experiments")
     config = {'root': project_root_folder,
@@ -160,8 +162,9 @@ def get_nntoolkit():
 
 
 def get_latest_in_folder(folder, ending="", default=""):
-    """Get the file that comes last with natural sorting in folder and has
-       file ending 'ending'.
+    """
+    Get the file that comes last with natural sorting in folder and has file
+    ending 'ending'.
     """
     latest = default
     for my_file in natsort.natsorted(os.listdir(folder), reverse=True):
@@ -172,8 +175,9 @@ def get_latest_in_folder(folder, ending="", default=""):
 
 
 def get_latest_folder(folder):
-    """Get the absolute path of a subfolder that comes last with natural
-       sorting in the given folder.
+    """
+    Get the absolute path of a subfolder that comes last with natural sorting
+    in the given folder.
     """
     folders = [os.path.join(folder, name) for name in os.listdir(folder)
                if os.path.isdir(os.path.join(folder, name))]
@@ -216,7 +220,7 @@ def get_database_configuration():
 
 
 def sizeof_fmt(num):
-    """Takes the a filesize in bytes and returns a nicely formatted string. """
+    """Take the a filesize in bytes and returns a nicely formatted string. """
     for x in ['bytes', 'KB', 'MB', 'GB', 'TB']:
         if num < 1024.0:
             return "%3.1f %s" % (num, x)
@@ -224,8 +228,10 @@ def sizeof_fmt(num):
 
 
 def input_string(question=""):
-    """A function that works for both, Python 2.x and Python 3.x.
-       It asks the user for input and returns it as a string.
+    """
+    Ask the user for input and return it as a string.
+
+    Works for both, Python 2.x and Python 3.x.
     """
     if sys.version_info[0] == 2:
         return raw_input(question)
@@ -234,8 +240,10 @@ def input_string(question=""):
 
 
 def input_int_default(question="", default=0):
-    """A function that works for both, Python 2.x and Python 3.x.
-       It asks the user for input and returns it as a string.
+    """
+    Ask the user for input and return it as a string.
+
+    Works for both, Python 2.x and Python 3.x.
     """
     answer = input_string(question)
     if answer == "" or answer == "yes":
@@ -315,8 +323,9 @@ def get_latest_successful_run(folder):
 
 
 def create_run_logfile(folder):
-    """Create a 'run.log' within folder. This file contains the time of the
-       latest successful run.
+    """
+    Create a 'run.log' within folder. This file contains the time of the
+    latest successful run.
     """
     with open(os.path.join(folder, "run.log"), "w") as f:
         datestring = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
@@ -446,8 +455,9 @@ def get_recognizer_folders(model_folder):
 
 
 def load_model(model_file):
-    """Load a model by its file. This includes the model itself, but also
-       the preprocessing queue, the feature list and the output semantics.
+    """
+    Load a model by its file. This includes the model itself, but also
+    the preprocessing queue, the feature list and the output semantics.
     """
     # Extract tar
     with tarfile.open(model_file) as tar:
@@ -522,7 +532,11 @@ def get_possible_splits(n):
     n : int
         n strokes were make
     """
-    get_bin = lambda x, n: x >= 0 and str(bin(x))[2:].zfill(n) or "-" + str(bin(x))[3:].zfill(n)
+    def get_bin(x, n):
+        if x >= 0:
+            return str(bin(x))[2:].zfill(n)
+        else:
+            return str(bin(x))[3:].zfill(n)
     possible_splits = []
     for i in range(2**(n - 1)):
         possible_splits.append(get_bin(i, n - 1))
@@ -540,10 +554,10 @@ def segment_by_split(split, recording):
         A recording of handwritten text.
     """
     segmented = [[recording[0]]]
-    for i in range(len(recording)-1):
+    for i in range(len(recording) - 1):
         if split[i] == "1":
             segmented.append([])
-        segmented[-1].append(recording[i+1])
+        segmented[-1].append(recording[i + 1])
     assert split.count("1") + 1 == len(segmented)
     return segmented
 
@@ -574,8 +588,9 @@ def evaluate_model_single_recording_preloaded_multisymbol(preprocessing_queue,
     import nntoolkit.evaluate
     recording = json.loads(recording)
     logging.info(("## start (%i strokes)" % len(recording)) + "#" * 80)
-    hypotheses = []  # [[{'score': 0.123, symbols: [123, 123]}]  # split0
-                     #  []] # Split i...
+    hypotheses = []
+    # [[{'score': 0.123, symbols: [123, 123]}]  # split0
+    #  []] # Split i...
     for split in get_possible_splits(len(recording)):
         recording_segmented = segment_by_split(split, recording)
         cur_split_results = []
@@ -588,23 +603,32 @@ def evaluate_model_single_recording_preloaded_multisymbol(preprocessing_queue,
             results = nntoolkit.evaluate.get_results(model_output,
                                                      output_semantics)
             results = results[:10]
-            cur_split_results.append([el for el in results if el['probability'] >= 0.01])
+            cur_split_results.append([el
+                                      for el in results
+                                      if el['probability'] >= 0.01])
             # serve.show_results(results, n=10)
 
         # Now that I have all symbols of this split, I have to get all
         # combinations of the hypothesis
         import itertools
         for hyp in itertools.product(*cur_split_results):
-            hypotheses.append({'score': reduce(lambda x, y: x*y,
-                                               [s['probability'] for s in hyp])*len(hyp)/len(recording),
+            probs = [s['probability'] for s in hyp]
+            score = (reduce(lambda x, y: x * y, probs) *
+                     len(hyp) / len(recording))
+            min_part = min([s['probability'] for s in hyp])
+            hypotheses.append({'score': score,
                                'symbols': [s['semantics'] for s in hyp],
-                               'min_part': min([s['probability'] for s in hyp]),
+                               'min_part': min_part,
                                'segmentation': split})
 
-    hypotheses = sorted(hypotheses, key=lambda n: n['min_part'], reverse=True)[:10]
+    hypotheses = sorted(hypotheses, key=lambda n: n['min_part'], reverse=True)
+    hypotheses = hypotheses[:10]
     for i, hyp in enumerate(hypotheses):
         if hyp['score'] > 0.001:
-            logging.info("%0.4f: %s (seg: %s)", hyp['score'], hyp['symbols'], hyp['segmentation'])
+            logging.info("%0.4f: %s (seg: %s)",
+                         hyp['score'],
+                         hyp['symbols'],
+                         hyp['segmentation'])
     return nntoolkit.evaluate.get_results(model_output, output_semantics)
 
 
@@ -924,9 +948,7 @@ def less_than(l, n):
 
 
 def get_mysql_cfg():
-    """
-    Get the appropriate MySQL configuration
-    """
+    """Get the appropriate MySQL configuration."""
     environment = get_project_configuration()['environment']
     cfg = get_database_configuration()
     if environment == 'production':
@@ -937,7 +959,8 @@ def get_mysql_cfg():
 
 
 def softmax(w, t=1.0):
-    """Calculate the softmax of a list of numbers w.
+    """
+    Calculate the softmax of a list of numbers w.
 
     Parameters
     ----------
@@ -949,14 +972,14 @@ def softmax(w, t=1.0):
 
     Examples
     --------
-    >>> softmax([0.1, 0.2])
-    array([ 0.47502081,  0.52497919])
-    >>> softmax([-0.1, 0.2])
-    array([ 0.42555748,  0.57444252])
-    >>> softmax([0.9, -10])
-    array([  9.99981542e-01,   1.84578933e-05])
-    >>> softmax([0, 10])
-    array([  4.53978687e-05,   9.99954602e-01])
+    >>> ['{:0.2f}'.format(el) for el in softmax([0.1, 0.2])]
+    ['0.48', '0.52']
+    >>> ['{:0.2f}'.format(el) for el in softmax([-0.1, 0.2])]
+    ['0.43', '0.57']
+    >>> ['{:0.2f}'.format(el) for el in softmax([0.9, -10])]
+    ['1.00', '0.00']
+    >>> ['{:0.2f}'.format(el) for el in softmax([0, 10])]
+    ['0.00', '1.00']
     """
     w = [Decimal(el) for el in w]
     e = numpy.exp(numpy.array(w) / Decimal(t))

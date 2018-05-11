@@ -1,23 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# core modules
 import glob
-import logging
-import sys
 import json
-
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
-
-import pymysql
-import pymysql.cursors
+import logging
 import unicodedata
 
 # hwrt modules
-from .. import handwritten_data
-from .. import utils
-from .. import datasets
+from hwrt import handwritten_data
+from hwrt import datasets
 
 replacements = [('int', r'\int'),
                 ('cross', r'\times'),
@@ -82,7 +74,6 @@ def elementtree_to_dict(element):
             # if it's not a list already, convert it to a list and append
             if not isinstance(d[c.tag], list):
                 d[c.tag] = [d[c.tag], elementtree_to_dict(c)]
-           # append to the list
             else:
                 d[c.tag].append(elementtree_to_dict(c))
     return d
@@ -92,7 +83,7 @@ def strip_end(text, suffix):
     """Strip `suffix` from the end of `text` if `text` has that suffix."""
     if not text.endswith(suffix):
         return text
-    return text[:len(text)-len(suffix)]
+    return text[:len(text) - len(suffix)]
 
 
 def remove_accents(input_str):
@@ -125,8 +116,6 @@ def get_recordings(directory):
 
         symbol_recordings = []
 
-        #import pprint
-        #pprint.pprint(root)
         if isinstance(examples, dict):
             examples = [examples]
         for example in examples:
@@ -155,8 +144,10 @@ def get_recordings(directory):
                 info['username'] = 'MfrDB::%s' % remove_accents(unicode(uname))
                 info['username'] = info['username'].replace("+", "PLUS")
                 info['username'] = info['username'].replace("...", "DOTS")
-                info['username'] = info['username'].replace(u"\u0432\u044b\u0444", "BBEF")
-                info['username'] = info['username'].replace(u"\u0437\u0438\u0438", "Zeii")
+                tmp = u"\u0432\u044b\u0444"
+                info['username'] = info['username'].replace(tmp, "BBEF")
+                tmp = u"\u0437\u0438\u0438"
+                info['username'] = info['username'].replace(tmp, "Zeii")
             else:
                 info['username'] = 'MfrDB::unknown'
             copyright_str = ("This dataset was contributed by MfrDB. You can "
@@ -173,17 +164,21 @@ def get_recordings(directory):
             info['accepted_formula_id'] = datasets.formula_to_dbid(name)
             info['client'] = example['FormulaInputInfo']['Client']['text']
             from dateutil.parser import parse
-            info['creation_date'] = parse(example['FormulaInputInfo']['Time']['text'])
-            info['device_type'] = example['FormulaInputInfo']['Device']['text'].lower()
+            info['creation_date'] = parse(example['FormulaInputInfo']
+                                                 ['Time']['text'])
+            info['device_type'] = (example['FormulaInputInfo']
+                                          ['Device']['text'].lower())
             info['sample_id'] = example['FormulaInputInfo']['SampleId']['text']
+            address = example['FormulaInputInfo']['Address']['text']
             info['rec_desc'] = "%s::%s::%s::%s::%s" % (filepath,
                                                        example['Id'],
                                                        info['sample_id'],
                                                        info['client'],
-                                                       example['FormulaInputInfo']['Address']['text'])
+                                                       address)
             info['description'] = ("This dataset was contributed by MfrDB. "
                                    "You can download their complete dataset "
-                                   "at [mfr.felk.cvut.cz/Database.html](http://mfr.felk.cvut.cz/Database.html)")
+                                   "at [mfr.felk.cvut.cz/Database.html]"
+                                   "(http://mfr.felk.cvut.cz/Database.html)")
             symbol_recordings.append((hw, info))
         recordings.append((name, symbol_recordings))
     return recordings

@@ -3,19 +3,7 @@
 
 """Convert a raw datafile to a tar with HDF5 files."""
 
-import numpy as np
-
-from base64 import b64encode, b64decode
-from StringIO import StringIO
-import yaml
-import h5py
-import tarfile
-import os
-import csv
 import pickle
-
-# hwrt modules
-import hwrt.utils as utils
 
 
 def get_parser():

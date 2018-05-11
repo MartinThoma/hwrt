@@ -6,7 +6,7 @@
 import numpy as np
 
 from base64 import b64encode, b64decode
-from StringIO import StringIO
+import io
 import yaml
 import h5py
 import tarfile
@@ -20,7 +20,7 @@ import hwrt.utils as utils
 
 def _array2cstr(arr):
     """ Serializes a numpy array to a compressed base64 string """
-    out = StringIO()
+    out = io.StringIO()
     np.save(out, arr)
     return b64encode(out.getvalue())
 
@@ -29,13 +29,13 @@ def _str2array(d):
     """ Reconstructs a numpy array from a plain-text string """
     if type(d) == list:
         return np.asarray([_str2array(s) for s in d])
-    ins = StringIO(d)
+    ins = io.StringIO(d)
     return np.loadtxt(ins)
 
 
 def _cstr2array(d):
     """ Reconstructs a numpy array from a compressed base64 string """
-    ins = StringIO(b64decode(d))
+    ins = io.StringIO(b64decode(d))
     return np.load(ins)
 
 

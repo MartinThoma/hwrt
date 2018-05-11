@@ -1,23 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Get all data in a CROHME folder as a feature vector list and a label
-   list (Xs, ys) of single symbols. If it is a test folder, ys is None.
+"""
+Binding for CROHME.
+
+Get all data in a CROHME folder as a feature vector list and a label
+list (Xs, ys) of single symbols. If it is a test folder, ys is None.
 """
 
-import logging
-import sys
+# core modules
 import glob
+import logging
+import os
+import pickle
+import pkg_resources
+import sys
+
+# 3rd party modules
 import natsort
 import numpy
-import pickle
-import os
-import pkg_resources
 
-# Python 2 / 3 compatibility
-if sys.version_info[0] == 2:
-    from future.builtins import open  # pylint: disable=W0622
-
+# internal modules
 from hwrt import classify
 from hwrt import utils
 from hwrt.datasets import inkml
@@ -57,6 +60,8 @@ def main(folder):
 
 def read_folder(folder):
     """
+    Read data from a folder.
+
     Parameters
     ----------
     folder : str
@@ -77,6 +82,8 @@ def read_folder(folder):
 
 def save_raw_pickle(hwr_objects):
     """
+    Save raw data as pickle.
+
     Parameters
     ----------
     hwr_objects : list of hwr objects

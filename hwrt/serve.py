@@ -22,9 +22,9 @@ if sys.version_info[0] == 2:
 
 # hwrt modules
 import hwrt
-from . import utils
-from . import classify
-from . import segmentation as se
+from hwrt import utils
+from hwrt import classify
+from hwrt import segmentation as se
 
 # Global variables
 n = 10
@@ -56,7 +56,7 @@ def submit_recording(raw_data_json):
 
 
 def show_results(results, n=10):
-    """Show the TOP n results of a classification.
+    r"""Show the TOP n results of a classification.
     >>> results = [{'\\alpha': 0.67}, {'\\propto': 0.25}]
     >>> show_results(results)
     """
@@ -109,7 +109,7 @@ def get_json_result(results, n=10):
     s = []
     last = -1
     for res in results[:min(len(results), n)]:
-        if res['probability'] < last*0.5 and res['probability'] < 0.05:
+        if res['probability'] < last * 0.5 and res['probability'] < 0.05:
             break
         if res['probability'] < 0.01:
             break
@@ -162,7 +162,8 @@ def worker():
 
 
 def _get_part(pointlist, strokes):
-    """Get some strokes of pointlist
+    """
+    Get some strokes of pointlist.
 
     Parameters
     ----------
@@ -206,6 +207,8 @@ def _get_translate():
 
 def get_writemath_id(el, translate):
     """
+    Get the ID on write-math.com.
+
     Parameters
     ----------
     el : dict
@@ -228,7 +231,7 @@ def get_writemath_id(el, translate):
 
 
 def fix_writemath_answer(results):
-    """
+    r"""
     Bring ``results`` into a format that is accepted by write-math.com. This
     means using the ID for the formula that is used by the write-math server.
 

@@ -16,19 +16,22 @@ this:
  >>> x = a.feature_extraction(feature_list)
 """
 
+# core modules
+from itertools import combinations_with_replacement as combinations_wr
+import abc
 import logging
 import sys
-from itertools import combinations_with_replacement as combinations_wr
+
+# 3rd party modules
 import numpy
-import abc
-import Image
-import ImageDraw
+from PIL import Image
+from PIL import ImageDraw
 
 # hwrt modules
-from . import handwritten_data
-from . import preprocessing
-from . import utils
-from . import geometry
+from hwrt import handwritten_data
+from hwrt import preprocessing
+from hwrt import utils
+from hwrt import geometry
 
 
 def get_features(model_description_features):
@@ -79,15 +82,13 @@ def print_featurelist(feature_list):
 
 
 class Feature(object):
-
     """Abstract class which defines which methods to implement for features."""
 
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def __call__(self, hwr_obj):
-        """Get the features value for a given recording ``hwr_obj``.
-        """
+        """Get the features value for a given recording ``hwr_obj``."""
         assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
             "handwritten data is not of type HandwrittenData, but of %r" % \
             type(hwr_obj)
@@ -172,21 +173,24 @@ class ConstantPointCoordinates(Feature):
            of elements in the returned list of numbers."""
         if self.strokes > 0:
             if self.pixel_env > 0:
-                return (2 + (1 + 2*self.pixel_env)**2) \
+                return (2 + (1 + 2 * self.pixel_env)**2) \
                     * self.strokes * self.points_per_stroke
             else:
-                return 2*self.strokes * self.points_per_stroke
+                return 2 * self.strokes * self.points_per_stroke
         else:
             if self.pen_down:
-                return 3*self.points_per_stroke
+                return 3 * self.points_per_stroke
             else:
-                return 2*self.points_per_stroke
+                return 2 * self.points_per_stroke
 
     def _features_with_strokes(self, hwr_obj):
         """Calculate the ConstantPointCoordinates features for the case of
            a fixed number of strokes."""
         x = []
-        img = Image.new('L', ((int(hwr_obj.get_width()*self.scaling_factor) + 2), (int(hwr_obj.get_height()*self.scaling_factor) + 2)), 'black')
+        height = (int(hwr_obj.get_height() * self.scaling_factor) + 2)
+        img = Image.new('L',
+                        ((int(hwr_obj.get_width() * self.scaling_factor) + 2),
+                         height), 'black')
         draw = ImageDraw.Draw(img, 'L')
         pointlist = hwr_obj.get_pointlist()
         bb = hwr_obj.get_bounding_box()
@@ -202,21 +206,27 @@ class ConstantPointCoordinates(Feature):
                         x.append(pointlist[stroke_nr][point_nr]['y'])
                         if last_point is None:
                             last_point = point
-                        y_from = int((-bb['miny'] + last_point['y'])*self.scaling_factor)
-                        x_from = int((-bb['minx'] + last_point['x'])*self.scaling_factor)
-                        y_to = int((-bb['miny'] + point['y'])*self.scaling_factor)
-                        x_to = int((-bb['minx'] + point['x'])*self.scaling_factor)
-                        draw.line([x_from, y_from, x_to, y_to], fill='#ffffff', width=1)
+                        y_from = int((-bb['miny'] + last_point['y']) *
+                                     self.scaling_factor)
+                        x_from = int((-bb['minx'] + last_point['x']) *
+                                     self.scaling_factor)
+                        y_to = int((-bb['miny'] + point['y']) *
+                                   self.scaling_factor)
+                        x_to = int((-bb['minx'] + point['x']) *
+                                   self.scaling_factor)
+                        draw.line([x_from, y_from, x_to, y_to],
+                                  fill='#ffffff',
+                                  width=1)
                         if self.pixel_env > 0:
                             pix = img.load()
                             for x_offset in range(-self.pixel_env,
                                                   self.pixel_env + 1):
                                 for y_offset in range(-self.pixel_env,
                                                       self.pixel_env + 1):
-                                    xp = int((-bb['minx'] + point['x'])
-                                             * self.scaling_factor) + x_offset
-                                    yp = int((-bb['miny'] + point['y'])
-                                             * self.scaling_factor) + y_offset
+                                    xp = int((-bb['minx'] + point['x']) *
+                                             self.scaling_factor) + x_offset
+                                    yp = int((-bb['miny'] + point['y']) *
+                                             self.scaling_factor) + y_offset
                                     xp = max(0, xp)
                                     yp = max(0, yp)
                                     x.append(pix[xp, yp])
@@ -242,8 +252,8 @@ class ConstantPointCoordinates(Feature):
            a single (callapesed) stroke with pen_down features."""
         x = []
         for point in hwr_obj.get_pointlist()[0]:
-            if len(x) >= 3*self.points_per_stroke or \
-               (len(x) >= 2*self.points_per_stroke and not self.pen_down):
+            if len(x) >= 3 * self.points_per_stroke or \
+               (len(x) >= 2 * self.points_per_stroke and not self.pen_down):
                 break
             x.append(point['x'])
             x.append(point['y'])
@@ -256,10 +266,10 @@ class ConstantPointCoordinates(Feature):
                 else:
                     x.append(int(point['pen_down']))
         if self.pen_down:
-            while len(x) != 3*self.points_per_stroke:
+            while len(x) != 3 * self.points_per_stroke:
                 x.append(self.fill_empty_with)
         else:
-            while len(x) != 2*self.points_per_stroke:
+            while len(x) != 2 * self.points_per_stroke:
                 x.append(self.fill_empty_with)
         return x
 
@@ -276,11 +286,11 @@ class ConstantPointCoordinates(Feature):
 
 
 class FirstNPoints(Feature):
-
-    """Similar to the ``ConstantPointCoordinates`` feature, this feature takes
-       the first ``n=81`` point coordinates. It also has the
-       ``fill_empty_with=0`` to make sure that the dimension of this feature is
-       always the same."""
+    """
+    Similar to the ``ConstantPointCoordinates`` feature, this feature takes the
+    first ``n=81`` point coordinates. It also has the ``fill_empty_with=0``
+    to make sure that the dimension of this feature is always the same.
+    """
 
     normalize = False
 
@@ -298,9 +308,12 @@ class FirstNPoints(Feature):
                (self.n)
 
     def get_dimension(self):
-        """Get the dimension of the returned feature. This equals the number
-           of elements in the returned list of numbers."""
-        return 2*self.n
+        """
+        Get the dimension of the returned feature.
+
+        This equals the number of elements in the returned list of numbers.
+        """
+        return 2 * self.n
 
     def __call__(self, hwr_obj):
         super(self.__class__, self).__call__(hwr_obj)
@@ -339,8 +352,11 @@ class Bitmap(Feature):
         return "Bitmap(%i x %i)" % (self.size, self.size)
 
     def get_dimension(self):
-        """Get the dimension of the returned feature. This equals the number
-           of elements in the returned list of numbers."""
+        """
+        Get the dimension of the returned feature.
+
+        This equals the number of elements in the returned list of numbers.
+        """
         return self.size**2
 
     def __call__(self, hwr_obj):
@@ -423,9 +439,9 @@ class AspectRatio(Feature):
 
     def __call__(self, hwr_obj):
         super(self.__class__, self).__call__(hwr_obj)
-        width = float(hwr_obj.get_width()+0.01)
-        height = float(hwr_obj.get_height()+0.01)
-        return [width/height]
+        width = float(hwr_obj.get_width() + 0.01)
+        height = float(hwr_obj.get_height() + 0.01)
+        return [width / height]
 
 
 class Width(Feature):
@@ -532,7 +548,7 @@ class CenterOfMass(Feature):
             for point in stroke:
                 xs.append(point['x'])
                 ys.append(point['y'])
-        return [float(sum(xs))/len(xs), float(sum(ys))/len(ys)]
+        return [float(sum(xs)) / len(xs), float(sum(ys)) / len(ys)]
 
 
 class StrokeCenter(Feature):
@@ -551,9 +567,12 @@ class StrokeCenter(Feature):
         return "Stroke center"
 
     def get_dimension(self):
-        """Get the dimension of the returned feature. This equals the number
-           of elements in the returned list of numbers."""
-        return self.strokes*2
+        """
+        Get the dimension of the returned feature.
+
+        This equals the number of elements in the returned list of numbers.
+        """
+        return self.strokes * 2
 
     def __call__(self, hwr_obj):
         super(self.__class__, self).__call__(hwr_obj)
@@ -674,7 +693,7 @@ class StrokeIntersections(Feature):
     def get_dimension(self):
         """Get the dimension of the returned feature. This equals the number
            of elements in the returned list of numbers."""
-        return int(round(float(self.strokes**2)/2 + float(self.strokes)/2))
+        return int(round(float(self.strokes**2) / 2 + float(self.strokes) / 2))
 
     def __call__(self, hwr_obj):
         super(self.__class__, self).__call__(hwr_obj)
@@ -703,11 +722,12 @@ class StrokeIntersections(Feature):
 
 
 class ReCurvature(Feature):
+    r"""
+    Re-curvature is a 1 dimensional, stroke-global feature for a recording.
 
-    """Re-curvature is a 1 dimensional, stroke-global feature for a recording.
-       It is the ratio
+    It is the ratio
        :math:`\\frac{\\text{height}(s)}{\\text{length}(s)}`.
-       If ``length(s) == 0``, then the re-curvature is defined to be 1.
+    If ``length(s) == 0``, then the re-curvature is defined to be 1.
     """
 
     normalize = True
@@ -742,7 +762,7 @@ class ReCurvature(Feature):
             if length == 0:
                 x.append(1)
             else:
-                x.append(height/length)
+                x.append(height / length)
             if len(x) == self.strokes:
                 break
         while len(x) < self.strokes:

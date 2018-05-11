@@ -1,20 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# core modules
 import json
+import logging
 import signal
 import sys
-import logging
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
 
+# 3rd party modules
 from natsort import natsorted
 from xml.dom.minidom import parseString
 
 # hwrt modules
-from .. import handwritten_data
-from ..datasets import formula_to_dbid
+from hwrt import handwritten_data
+from hwrt.datasets import formula_to_dbid
 
 
 def beautify_xml(path):
@@ -32,17 +31,18 @@ def beautify_xml(path):
     with open(path) as f:
         content = f.read()
 
-    pretty_print = lambda data: '\n'.join([line for line in
-                                           parseString(data)
-                                           .toprettyxml(indent=' ' * 2)
-                                           .split('\n')
-                                           if line.strip()])
+    def pretty_print(data):
+        return '\n'.join([line
+                          for line in parseString(data)
+                          .toprettyxml(indent=' ' * 2)
+                          .split('\n')
+                          if line.strip()])
     return pretty_print(content)
 
 
 def normalize_symbol_name(symbol_name):
     """
-    Change symbol names to a version which is known by write-math.com
+    Change symbol names to a version which is known by write-math.com.
 
     Parameters
     ----------
@@ -69,7 +69,7 @@ def normalize_symbol_name(symbol_name):
 
 def read(filepath):
     """
-    Read a single InkML file
+    Read a single InkML file.
 
     Parameters
     ----------
@@ -157,6 +157,8 @@ def read(filepath):
 
 def read_folder(folder):
     """
+    Read the contents of a folder.
+
     Parameters
     ----------
     folder : string
@@ -164,7 +166,7 @@ def read_folder(folder):
 
     Returns
     -------
-    list :
+    recordings : list
         Objects of the type HandwrittenData
     """
     import glob
@@ -196,7 +198,6 @@ def main(folder):
     ----------
     folder : str
     """
-
     logging.info(folder)
     read_folder(folder)
 

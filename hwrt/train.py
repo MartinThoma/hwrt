@@ -3,14 +3,12 @@
 
 """Create and train a given model."""
 
-import logging
-import sys
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
-import os
-import yaml
+# core modules
 import datetime
+import logging
+import os
+import sys
+import yaml
 
 # hwrt modules
 import hwrt.utils as utils
@@ -20,10 +18,10 @@ import hwrt.create_model as create_model
 
 
 def update_if_outdated(folder):
-    """Check if the currently watched instance (model, feature or
-        preprocessing) is outdated and update it eventually.
     """
-
+    Check if the currently watched instance (model, feature or preprocessing)
+    is outdated and update it eventually.
+    """
     folders = []
     while os.path.isdir(folder):
         folders.append(folder)
@@ -62,8 +60,10 @@ def update_if_outdated(folder):
 
 
 def generate_training_command(model_folder):
-    """Generate a string that contains a command with all necessary
-       parameters to train the model."""
+    """
+    Generate a string that contains a command with all necessary
+    parameters to train the model.
+    """
     update_if_outdated(model_folder)
     model_description_file = os.path.join(model_folder, "info.yml")
     # Read the model description file
@@ -95,7 +95,7 @@ def generate_training_command(model_folder):
         i = int(latest_model.split("-")[-1].split(".")[0])
         model_src = os.path.join(model_folder, "%s-%i.json" % (basename, i))
         model_target = os.path.join(model_folder,
-                                    "%s-%i.json" % (basename, i+1))
+                                    "%s-%i.json" % (basename, i + 1))
 
     # generate the training command
     training = model_description['training']

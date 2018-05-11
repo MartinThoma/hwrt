@@ -2,12 +2,17 @@
 
 """Tools for partitioning sets."""
 
-# http://codereview.stackexchange.com/questions/1526/finding-all-k-subset-partitions
-# http://stackoverflow.com/questions/18353280/iterator-over-all-partitions-into-k-groups
+# http://codereview.stackexchange.com/questions/1526/
+#    finding-all-k-subset-partitions
+# http://stackoverflow.com/questions/18353280/
+#    iterator-over-all-partitions-into-k-groups
 # https://docs.python.org/3/library/itertools.html
-# http://stackoverflow.com/questions/9316436/how-many-different-partitions-with-exactly-n-parts-can-be-made-of-a-set-with-k-e
+# http://stackoverflow.com/questions/9316436/
+#    how-many-different-partitions-with-exactly-n-parts-can
+#    -be-made-of-a-set-with-k-e
 # https://en.wikipedia.org/wiki/Partition_of_a_set
-# http://math.stackexchange.com/questions/1215983/how-can-i-get-the-maximum-score-without-iterating-all-possibilities
+# http://math.stackexchange.com/questions/1215983/
+#    how-can-i-get-the-maximum-score-without-iterating-all-possibilities
 
 import logging
 import sys
@@ -28,15 +33,16 @@ def prepare_table(table):
             if i == j:
                 table[i][i] = 0.0
             elif i > j:
-                table[i][j] = 1-table[j][i]
+                table[i][j] = 1 - table[j][i]
     return table
 
 
 def clusters(l, K):
     """Partition list ``l`` in ``K`` partitions.
     >>> l = [0, 1, 2]
-    >>> list(clusters(l, K=3))
-    [[[0], [1], [2]], [[], [0, 1], [2]], [[], [1], [0, 2]], [[0], [], [1, 2]], [[], [0], [1, 2]], [[], [], [0, 1, 2]]]
+    >> list(clusters(l, K=3))
+    [[[0], [1], [2]], [[], [0, 1], [2]], [[], [1], [0, 2]], [[0], [], [1, 2]],
+    [[], [0], [1, 2]], [[], [], [0, 1, 2]]]
     >>> list(clusters(l, K=2))
     [[[0, 1], [2]], [[1], [0, 2]], [[0], [1, 2]], [[], [0, 1, 2]]]
     >>> list(clusters(l, K=1))
@@ -49,7 +55,7 @@ def clusters(l, K):
             if tup != prev:
                 prev = tup
                 for i in range(K):
-                    yield tup[:i] + [[l[0]] + tup[i], ] + tup[i+1:]
+                    yield tup[:i] + [[l[0]] + tup[i], ] + tup[i + 1:]
     else:
         yield [[] for _ in range(K)]
 
@@ -78,7 +84,7 @@ def all_segmentations(l):
     [[[0, 1, 2]], [[0, 1], [2]], [[1], [0, 2]], [[0], [1, 2]], [[0], [1], [2]]]
 
     """
-    for K in range(1, len(l)+1):
+    for K in range(1, len(l) + 1):
         gen = neclusters(l, K)
         for el in gen:
             yield el
@@ -86,6 +92,10 @@ def all_segmentations(l):
 
 def find_index(segmentation, stroke_id):
     """
+    Find the index of a stroke in a segmentation.
+
+    Examples
+    --------
     >>> find_index([[0, 1, 2], [3, 4], [5, 6, 7]], 0)
     0
     >>> find_index([[0, 1, 2], [3, 4], [5, 6, 7]], 1)
@@ -127,9 +137,9 @@ class TopFinder(object):
         insert_pos = 0
         for index, el in enumerate(self.tops):
             if not self.find_min and el[1] >= value:
-                insert_pos = index+1
+                insert_pos = index + 1
             elif self.find_min and el[1] <= value:
-                insert_pos = index+1
+                insert_pos = index + 1
         self.tops.insert(insert_pos, [element, value])
         self.tops = self.tops[:self.n]
 
@@ -142,7 +152,7 @@ def score_segmentation(segmentation, table):
     stroke_nr = sum(1 for symbol in segmentation for stroke in symbol)
     score = 1
     for i in range(stroke_nr):
-        for j in range(i+1, stroke_nr):
+        for j in range(i + 1, stroke_nr):
             qval = q(segmentation, i, j)
             if qval:
                 score *= table[i][j]
@@ -196,7 +206,8 @@ def main():
     for el, score in topfs:
         print("%0.10f: %s" % (score, el))
     for i in range(20):
-        logging.info("{0:>5}: {1:>10}".format(i, len(list(all_segmentations(list(range(i)))))))
+        logging.info("{0:>5}: {1:>10}"
+                     .format(i, len(list(all_segmentations(list(range(i)))))))
 
 
 if __name__ == '__main__':

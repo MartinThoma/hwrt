@@ -84,7 +84,7 @@ def chunk_math(text):
         elif char in breaking_chars:
             chunks.append(current_chunk)
             current_chunk = char
-        elif char in string.letters+string.digits and current_chunk[0] == '\\':
+        elif char in string.letters + string.digits and current_chunk[0] == '\\':
             current_chunk += char
         else:
             chunks.append(current_chunk)

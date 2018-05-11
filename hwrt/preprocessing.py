@@ -15,16 +15,19 @@ this:
     >>> a.preprocessing(preprocessing_queue)
 """
 
+# core modules
 import logging
-import sys
-import numpy
-from scipy.interpolate import interp1d
 import math
+import sys
+
+# 3rd party modules
+from scipy.interpolate import interp1d
+import numpy
 
 # hwrt modules
-from . import handwritten_data
-from . import utils
-from . import geometry
+from hwrt import handwritten_data
+from hwrt import utils
+from hwrt import geometry
 
 
 def euclidean_distance(p1, p2):
@@ -41,8 +44,11 @@ def euclidean_distance(p1, p2):
 
 
 def get_preprocessing_queue(preprocessing_list):
-    """Get preprocessing queue from a list of dictionaries
+    """
+    Get preprocessing queue from a list of dictionaries.
 
+    Examples
+    --------
     >>> l = [{'RemoveDuplicateTime': None},
              {'ScaleAndShift': [{'center': True}]}
             ]
@@ -81,9 +87,11 @@ def print_preprocessing_list(preprocessing_queue):
 
 
 class RemoveDuplicateTime(object):
-    """If a recording has two points with the same timestamp, than the second
-       point will be discarded. This is useful for a couple of algorithms that
-       don't expect two points at the same time."""
+    """
+    If a recording has two points with the same timestamp, than the second
+    point will be discarded. This is useful for a couple of algorithms that
+    don't expect two points at the same time.
+    """
     def __repr__(self):
         return "RemoveDuplicateTime"
 
@@ -115,8 +123,9 @@ class RemoveDuplicateTime(object):
 
 
 class RemoveDots(object):
-    """Remove all strokes that have only a single point (a dot) from the
-       recording, except if the whole recording consists of dots only.
+    """
+    Remove all strokes that have only a single point (a dot) from the
+    recording, except if the whole recording consists of dots only.
     """
     def __repr__(self):
         return "Remove_points"
@@ -143,11 +152,12 @@ class RemoveDots(object):
 
 
 class ScaleAndShift(object):
-    """ Scale a recording so that it fits into a unit square. This keeps the
-        aspect ratio. Then the recording is shifted. The default way is to
-        shift it so that the recording is in [0, 1] × [0,1]. However, it
-        can also be used to be centered within [-1, 1] × [-1, 1] around the
-        origin (0, 0) by setting center=True and center_other=True.
+    """
+    Scale a recording so that it fits into a unit square. This keeps the aspect
+    ratio. Then the recording is shifted. The default way is to shift it so
+    that the recording is in [0, 1] × [0,1]. However, it can also be used to be
+    centered within [-1, 1] × [-1, 1] around the origin (0, 0) by setting
+    center=True and center_other=True.
     """
     def __init__(self, center=False, max_width=1., max_height=1.,
                  width_add=0, height_add=0, center_other=False):
@@ -208,9 +218,12 @@ class ScaleAndShift(object):
         assert factor > 0, "factor > 0 is False. factor = %s" % str(factor)
         assert isinstance(addx, float), "addx is %s" % str(addx)
         assert isinstance(addy, float), "addy is %s" % str(addy)
-        assert isinstance(a['minx'], (int, float)), "minx is %s" % str(a['minx'])
-        assert isinstance(a['miny'], (int, float)), "miny is %s" % str(a['miny'])
-        assert isinstance(a['mint'], (int, float)), "mint is %s" % str(a['mint'])
+        assert isinstance(a['minx'], (int, float)), \
+            "minx is %s" % str(a['minx'])
+        assert isinstance(a['miny'], (int, float)), \
+            "miny is %s" % str(a['miny'])
+        assert isinstance(a['mint'], (int, float)), \
+            "mint is %s" % str(a['mint'])
         return {"factor": factor, "addx": addx, "addy": addy,
                 "minx": a['minx'], "miny": a['miny'], "mint": a['mint']}
 
@@ -698,8 +711,9 @@ class WeightedAverageSmoothing(object):
             self.theta
 
     def _calculate_average(self, points):
-        """Calculate the arithmetic mean of the points x and y coordinates
-           seperately.
+        """
+        Calculate the arithmetic mean of the points x and y coordinates
+        seperately.
         """
         assert len(self.theta) == len(points), \
             "points has length %i, but should have length %i" % \

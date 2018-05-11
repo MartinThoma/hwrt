@@ -3,22 +3,19 @@
 
 """Read and parse data from the MathBrush project."""
 
-import os
-from natsort import natsorted
+# core modules
 import glob
 import json
+import logging
+import os
 import re
 
-import logging
-import sys
-
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
+# 3rd party modules
+from natsort import natsorted
 
 # hwrt modules
-from .. import handwritten_data
-from .. import datasets
+from hwrt import handwritten_data
+from hwrt import datasets
 
 missing_stroke_segmentation = []
 double_segmentation = []
@@ -44,8 +41,9 @@ def mathbrush_formula_fix(latex):
 
 def remove_matching_braces(latex):
     """
-    If `latex` is surrounded by matching braces, remove them. They are not
-    necessary.
+    If `latex` is surrounded by matching braces, remove them.
+
+    Those braces are not necessary.
 
     Parameters
     ----------
@@ -107,6 +105,8 @@ def get_latex(ink_filename):
 
 def get_segmentation(recording, annotations, internal_id=None):
     """
+    Get the segmentation.
+
     Parameters
     ----------
     recording :
@@ -139,7 +139,8 @@ def get_segmentation(recording, annotations, internal_id=None):
             else:
                 needed.remove(el)
         segmentation.append(strokes)
-        symbol_stream.append(datasets.formula_to_dbid(mathbrush_formula_fix(symbol_string), True))
+        latex = mathbrush_formula_fix(symbol_string)
+        symbol_stream.append(datasets.formula_to_dbid(latex, True))
 
     if len(needed) > 0:
         # hw = handwritten_data.HandwrittenData(json.dumps(recording))
@@ -229,9 +230,10 @@ def parse_scg_ink_file(filename):
                 recording.append(current_stroke)
                 stroke_count -= 1
                 current_stroke = []
+    tmp = datasets.formula_to_dbid(mathbrush_formula_fix(formula_in_latex))
     hw = handwritten_data.HandwrittenData(json.dumps(recording),
                                           formula_in_latex=formula_in_latex,
-                                          formula_id=datasets.formula_to_dbid(mathbrush_formula_fix(formula_in_latex)))
+                                          formula_id=tmp)
     hw.internal_id = "/".join(filename.split("/")[-2:])
     hw.segmentation, hw.symbol_stream = get_segmentation(recording,
                                                          annotations,
@@ -248,8 +250,8 @@ def parse_scg_ink_file(filename):
 
 
 def read_folder(folder):
-    """Read all files of `folder` and return a list of HandwrittenData
-    objects.
+    """
+    Read all files of `folder` and return a list of HandwrittenData objects.
 
     Parameters
     ----------

@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Check if all necessary modules / programs / files for HWRT are there and
-   if the version is ok.
+"""
+Check if all necessary modules / programs / files for HWRT are there and if the
+version is ok.
 """
 
+# core modules
 import imp
 import sys
 import platform
@@ -12,11 +14,12 @@ import os
 import pkg_resources
 
 # hwrt
-from . import utils
+from hwrt import utils
 
 
 class Bcolors(object):
     """Terminal colors with ANSI escape codes."""
+
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKGREEN = '\033[92m'

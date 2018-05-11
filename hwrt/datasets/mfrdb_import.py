@@ -3,16 +3,17 @@
 
 """Script to import data into write-math.com"""
 
+# core modules
 import logging
 import sys
+
+# hwrt modules
+from hwrt.datasets import mfrdb
+# from .. import datasets
 
 logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
                     level=logging.DEBUG,
                     stream=sys.stdout)
-
-# hwrt modules
-from . import mfrdb
-# from .. import datasets
 
 
 def main(directory):

@@ -3,19 +3,17 @@
 
 """Testing script for write-math symbol classifier."""
 
-import logging
-import sys
+# core modules
 import json
+import logging
+
+# 3rd party modules
 import numpy
 
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
-
 # hwrt modules
-from ..classify import classify_segmented_recording as evaluate
-from ..datasets import mfrdb
-from ..utils import less_than
+from hwrt.classify import classify_segmented_recording as evaluate
+from hwrt.datasets import mfrdb
+from hwrt.utils import less_than
 
 
 def main(directory):
@@ -32,7 +30,8 @@ def main(directory):
             for i, result in enumerate(results):
                 if result['semantics'] == recording.formula_in_latex:
                     # if i > 5:
-                    #     logging.info("  Found '%s' place %i with probability %0.4f.",
+                    #     logging.info("  Found '%s' place %i with "
+                    #                  "probability %0.4f.",
                     #                  recording.formula_in_latex,
                     #                  i,
                     #                  result['probability'])

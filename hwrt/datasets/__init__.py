@@ -1,17 +1,13 @@
 """Utility functions to work with other datasets."""
 
+# core modules
 import logging
-import sys
 
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
-
-import pymysql
+# 3rd party modules
 import pymysql.cursors
 
 # hwrt modules
-from .. import utils
+from hwrt import utils
 
 __formula_to_dbid_cache = None
 username2id = {}
@@ -80,8 +76,11 @@ def formula_to_dbid(formula_str, backslash_fix=False):
 
 
 def getuserid(username, copyright_str):
-    """Get the ID of the user with `username` from write-math.com. If he
-    doesn't exist by now, create it. Add `copyright_str` as a description.
+    """
+    Get the ID of the user with `username` from write-math.com.
+
+    If he doesn't exist by now, create it. Add `copyright_str` as a
+    description.
 
     Parameters
     ----------

@@ -3,15 +3,10 @@
 
 """Evaluate a folder of InkML files for a CROHME competition."""
 
+# core modules
 import glob
-
 import json
 import logging
-import sys
-
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
 
 # HWRT modules
 from . import inkml
@@ -66,7 +61,8 @@ def evaluate_inkml(inkml_file_path):
 
 
 def generate_output_csv(evaluation_results, filename='results.csv'):
-    """Generate the evaluation results in the format
+    r"""
+    Generate the evaluation results in the format.
 
     Parameters
     ----------
@@ -88,10 +84,12 @@ def generate_output_csv(evaluation_results, filename='results.csv'):
                 if entry['semantics'] == ',':
                     result['results']['semantics'] = 'COMMA'
             f.write("%s, " % result['filename'])
-            f.write(", ".join([entry['semantics'] for entry in result['results']]))
+            f.write(", ".join([entry['semantics']
+                               for entry in result['results']]))
             f.write("\n")
             f.write("%s, " % "scores")
-            f.write(", ".join([str(entry['probability']) for entry in result['results']]))
+            f.write(", ".join([str(entry['probability'])
+                               for entry in result['results']]))
             f.write("\n")
 
 

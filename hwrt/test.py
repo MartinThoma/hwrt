@@ -1,22 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-""" Get the error of a model. This tool supports multiple error measures."""
+"""Get the error of a model. This tool supports multiple error measures."""
 
-import logging
-import sys
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
-import os
-import subprocess
-import time
-import yaml
+# core modules
+from collections import OrderedDict, Callable
 import csv
 import itertools
-from collections import OrderedDict, Callable
+import logging
+import os
 import pkg_resources
+import subprocess
+import sys
 import tempfile
+import time
+import yaml
 
 # hwrt modules
 import hwrt.utils as utils
@@ -107,6 +105,8 @@ def make_all(tuplelist):
 
 def create_report(true_data, eval_data, index2latex, n, merge=True):
     """
+    Create a report.
+
     Parameters
     ----------
     true_data : list
@@ -243,7 +243,8 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
     env = Environment()
     env.loader = FileSystemLoader(template_path)
     t = env.get_template('classification-error-report.html')
-    rendered = t.render(wrong=wrong, correct=correct,
+    rendered = t.render(wrong=wrong,
+                        correct=correct,
                         classification_error=classification_error,
                         errors_by_correct_classification=
                         errors_by_correct_classification,
@@ -257,6 +258,8 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
 def analyze_results(translation_csv, what_evaluated_file, evaluation_file, n,
                     merge=True):
     """
+    Analyze the results.
+
     Parameters
     ----------
     translation_csv : string
@@ -352,8 +355,13 @@ def main(model_folder, aset='test', n=3, merge=True):
 
 
 def is_valid_file(parser, arg):
-    """Check if arg is a valid file that already exists on the file
-       system.
+    """
+    Check if arg is a valid file that already exists on the file system.
+
+    Parameters
+    ----------
+    parser :
+    arg :
     """
     arg = os.path.abspath(arg)
     if not os.path.exists(arg):

@@ -1,29 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import logging
-import sys
-
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
+# core modules
 from copy import deepcopy
-import pkg_resources
-import os
-import yaml
 from decimal import Decimal, getcontext
-getcontext().prec = 100
+import os
+import pkg_resources
+import yaml
 
 # hwrt modules
-from .segmentation import single_clf
+from hwrt.segmentation.segmentation import single_clf
 # from ..handwritten_data import HandwrittenData
 # from .. import spacial_relationship
-from .. import language_model
-from ..utils import softmax
+from hwrt import language_model
+from hwrt.utils import softmax
 
 __all__ = [
     "Beam"
 ]
+getcontext().prec = 100
 
 
 stroke_prob = None
@@ -238,13 +233,13 @@ class Beam(object):
             for i in range(min(self.n, len(hyp['segmentation']))):
                 # Build stroke data
                 new_strokes = {'data': [], 'id': -1}
-                for stroke_index in hyp['segmentation'][-(i+1)]:
+                for stroke_index in hyp['segmentation'][-(i + 1)]:
                     curr_stroke = self.history['data'][stroke_index]
                     new_strokes['data'].append(curr_stroke)
                 new_strokes['data'].append(new_stroke)
 
                 new_seg = deepcopy(hyp['segmentation'])
-                new_seg[-(i+1)].append(stroke_nr)
+                new_seg[-(i + 1)].append(stroke_nr)
 
                 if new_seg in evaluated_segmentations:
                     continue
@@ -261,7 +256,7 @@ class Beam(object):
                     sym = {'symbol': guess['semantics'],
                            'probability': guess['probability']}
                     new_sym = deepcopy(hyp['symbols'])
-                    new_sym[-(i+1)] = sym
+                    new_sym[-(i + 1)] = sym
                     b = {'segmentation': new_seg,
                          'symbols': new_sym,
                          'geometry': deepcopy(hyp['geometry']),
@@ -340,7 +335,7 @@ class Beam(object):
         for hyp in self.hypotheses:
             symbols = [sym['symbol'] for sym in hyp['symbols']]
             symbols = str([sym.split(';')[1] for sym in symbols])
-            s += "\t%0.3f%%\t%s\n" % (hyp['probability']*100, symbols)
+            s += "\t%0.3f%%\t%s\n" % (hyp['probability'] * 100, symbols)
         return s
 
 

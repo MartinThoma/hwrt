@@ -1,14 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Representation of a recording of on-line handwritten data. On-line means
-   that the pen trajectory is given (and not online as in 'Internet').
+"""
+Representation of a recording of on-line handwritten data.
+
+On-line means that the pen trajectory is given (and not online as in
+'Internet').
 """
 
+# core module
 import logging
 import json
-import Image
-import ImageDraw
+
+# 3rd party modules
+from PIL import Image
+from PIL import ImageDraw
 import numpy
 
 
@@ -178,13 +184,13 @@ class HandwrittenData(object):
                    (p1['time'] > time or p2['time'] > time):
                     continue
                 y_from = int((-bb['miny'] + p1['y']) /
-                             max(self.get_height(), 1)*size)
+                             max(self.get_height(), 1) * size)
                 x_from = int((-bb['minx'] + p1['x']) /
-                             max(self.get_width(), 1)*size)
+                             max(self.get_width(), 1) * size)
                 y_to = int((-bb['miny'] + p2['y']) /
-                           max(self.get_height(), 1)*size)
+                           max(self.get_height(), 1) * size)
                 x_to = int((-bb['minx'] + p2['x']) /
-                           max(self.get_width(), 1)*size)
+                           max(self.get_width(), 1) * size)
                 draw.line([x_from, y_from, x_to, y_to],
                           fill='#ffffff',
                           width=1)
@@ -203,7 +209,7 @@ class HandwrittenData(object):
 
         Examples
         --------
-        >>> import preprocessing
+        >>> from hwrt import preprocessing
         >>> a = HandwrittenData(...)
         >>> preprocessing_queue = [(preprocessing.scale_and_shift, []),
         ...                        (preprocessing.connect_strokes, []),
@@ -333,8 +339,8 @@ class HandwrittenData(object):
         return single_symbols
 
     def __eq__(self, other):
-        return (isinstance(other, self.__class__)
-                and self.__dict__ == other.__dict__)
+        return (isinstance(other, self.__class__) and
+                self.__dict__ == other.__dict__)
 
     def __ne__(self, other):
         return not self.__eq__(other)

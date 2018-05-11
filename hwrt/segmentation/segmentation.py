@@ -16,20 +16,19 @@ might occur.
 This module contains algorithms for segmentation.
 """
 
-import logging
-import json
-
+# core modules
 import itertools
-import numpy
+import json
+import logging
 import os
-import sys
-
 import pickle
 import pkg_resources
-
+import sys
 import time
 
+# 3rd party modules
 import scipy.sparse.csgraph
+import numpy
 import numpy as np
 import lasagne
 from lasagne.nonlinearities import softmax
@@ -38,12 +37,12 @@ import theano.tensor as T
 import pymysql.cursors
 
 # hwrt modules
-from .. import utils
-from ..handwritten_data import HandwrittenData
-from .. import features
-from .. import geometry
-from .. import partitions
-from ..utils import less_than
+from hwrt import utils
+from hwrt.handwritten_data import HandwrittenData
+from hwrt import features
+from hwrt import geometry
+from hwrt import partitions
+from hwrt.utils import less_than
 
 
 def main():
@@ -57,7 +56,9 @@ def main():
     X, y, recordings = get_dataset()
     logging.info("Start training")
     nn = get_nn_classifier(X, y)
-    stroke_segmented_classifier = lambda X: nn(X)[0][1]
+
+    def stroke_segmented_classifier(X):
+        return nn(X)[0][1]
     y_predicted = numpy.argmax(nn(X), axis=1)
     classification = [yi == yip for yi, yip in zip(y, y_predicted)]
     err = float(sum([not i for i in classification])) / len(classification)
@@ -150,6 +151,8 @@ class SingleClassifier(object):
 
     def predict(self, parsed_json):
         """
+        Predict which symbol was drawn.
+
         Parameters
         ----------
         parsed_json : dict
@@ -500,15 +503,15 @@ def get_stroke_features(recording, strokeid1, strokeid2):
         X_i += hw.feature_extraction([feat1, feat2, feat3])
     X_i += [get_strokes_distance(stroke1, stroke2)]  # Distance of strokes
     X_i += [get_time_distance(stroke1, stroke2)]  # Time in between
-    X_i += [abs(strokeid2-strokeid1)]  # Strokes in between
+    X_i += [abs(strokeid2 - strokeid1)]  # Strokes in between
     # X_i += [get_black_percentage()]
     return X_i
 
 
 def get_median_stroke_distance(recording):
     dists = []
-    for s1_id in range(len(recording)-1):
-        for s2_id in range(s1_id+1, len(recording)):
+    for s1_id in range(len(recording) - 1):
+        for s2_id in range(s1_id + 1, len(recording)):
             dists.append(get_strokes_distance(recording[s1_id],
                                               recording[s2_id]))
     return numpy.median(dists)
@@ -563,7 +566,7 @@ def merge_segmentations(segs1, segs2, strokes=None):
         strokes = [i for i in range(len(segs2[0][0]))]
     topf = partitions.TopFinder(500)
     for s1, s2 in itertools.product(segs1, segs2):
-        topf.push(s1[0]+translate(s2[0], strokes), s1[1]*s2[1])
+        topf.push(s1[0] + translate(s2[0], strokes), s1[1] * s2[1])
     return list(topf)
 
 
@@ -1017,9 +1020,9 @@ def get_bb_intersections(recording):
     """
     intersections = numpy.zeros((len(recording), len(recording)),
                                 dtype=bool)
-    for i in range(len(recording)-1):
+    for i in range(len(recording) - 1):
         a = geometry.get_bounding_box(recording[i]).grow(0.2)
-        for j in range(i+1, len(recording)):
+        for j in range(i + 1, len(recording)):
             b = geometry.get_bounding_box(recording[j]).grow(0.2)
             intersections[i][j] = geometry.do_bb_intersect(a, b)
             intersections[j][i] = intersections[i][j]

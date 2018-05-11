@@ -5,25 +5,21 @@ Given a dataset and a vocabulary file, filter the recordings which are desired.
 """
 
 # This has to work with preprocess_dataset.py
+
+# core modules
 import pkg_resources
 import os
 import csv
 import yaml
-try:  # Python 2
-    import cPickle as pickle
-except ImportError:  # Python 3
-    import pickle
+import pickle
 import sys
 import logging
+
+# 3rd party modules
 from natsort import natsorted
 
 # hwrt modules
-from . import utils
-
-
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
+from hwrt import utils
 
 
 def main(symbol_yml_file, raw_pickle_file, pickle_dest_path):

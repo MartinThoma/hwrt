@@ -13,7 +13,7 @@ def read(file_name):
 
 config = {
     'name': 'hwrt',
-    'version': '0.1.223',
+    'version': '0.1.224',
     'author': 'Martin Thoma',
     'author_email': 'info@martin-thoma.de',
     'maintainer': 'Martin Thoma',

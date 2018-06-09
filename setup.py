@@ -1,9 +1,19 @@
+# core modules
 from setuptools import find_packages
 from setuptools import setup
+import io
+import os
+
+
+def read(file_name):
+    """Read a text file and return the content as a string."""
+    with io.open(os.path.join(os.path.dirname(__file__), file_name),
+                 encoding='utf-8') as f:
+        return f.read()
 
 config = {
     'name': 'hwrt',
-    'version': '0.1.222',
+    'version': '0.1.223',
     'author': 'Martin Thoma',
     'author_email': 'info@martin-thoma.de',
     'maintainer': 'Martin Thoma',
@@ -15,9 +25,8 @@ config = {
     'url': 'https://github.com/MartinThoma/hwrt',
     'license': 'MIT',
     'description': 'Handwriting Recognition Tools',
-    'long_description': ("A tookit for handwriting recognition. It was "
-                         "developed as part of the bachelors thesis of "
-                         "Martin Thoma."),
+    'long_description': read('README.md'),
+    'long_description_content_type': 'text/markdown',
     'install_requires': [
         'argparse',
         'Flask',
@@ -38,7 +47,7 @@ config = {
     ],
     'keywords': ['HWRT', 'recognition', 'handwriting', 'on-line'],
     'download_url': 'https://github.com/MartinThoma/hwrt',
-    'classifiers': ['Development Status :: 3 - Alpha',
+    'classifiers': ['Development Status :: 7 - Inactive',
                     'Environment :: Console',
                     'Intended Audience :: Developers',
                     'Intended Audience :: Science/Research',

@@ -2,14 +2,11 @@ docs:
 	python setup.py upload_docs --upload-dir docs/_build/html
 
 install:
-	sudo python setup.py install --user
-	sudo -H python setup.py install --user
-	sudo python setup.py install
-	sudo -H python setup.py install
+	pip install -e . --user
 
-update:
-	python setup.py sdist upload --sign
-	sudo -H pip install hwrt --upgrade
+upload:
+	make clean
+	python3 setup.py sdist bdist_wheel && twine upload dist/*
 
 test:
 	nosetests --with-coverage --cover-erase --cover-package hwrt --logging-level=INFO --cover-html

@@ -1,16 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Third party modules
-import nose
-
 # First party modules
 import hwrt.data_multiplication as data_multiplication
 import tests.testhelper as testhelper
 
 
-# Tests
-def data_multiplication_detection_test():
+def test_data_multiplication_detection():
     l = [
         {"Multiply": None},
         {"Multiply": [{"nr": 1}]},
@@ -23,12 +19,12 @@ def data_multiplication_detection_test():
     ]
     mult_queue = data_multiplication.get_data_multiplication_queue(l)
     # TODO: Not only compare lengths of lists but actual contents.
-    nose.tools.assert_equal(len(mult_queue), len(correct))
+    assert len(mult_queue) == len(correct)
 
 
-def rotate_test():
+def test_rotate():
     recording = testhelper.get_symbol_as_handwriting(292934)
     rotation = data_multiplication.Rotate(minimum=-3, maximum=3, num=3)
     new_recordings = rotation(recording)
     # TODO: Not only compare lengths of lists but actual contents.
-    nose.tools.assert_equal(len(new_recordings), 3)
+    assert len(new_recordings) == 3

@@ -5,7 +5,6 @@
 import os
 
 # Third party modules
-import nose
 import pkg_resources
 
 # First party modules
@@ -13,7 +12,7 @@ import hwrt.filter_dataset as filter_dataset
 
 
 # Tests
-def main_execution_test():
+def test_main_execution():
     misc_path = pkg_resources.resource_filename("hwrt", "misc/")
     tests_path = os.path.join(os.path.dirname(__file__), "data/")
     symbol_yml_file = os.path.join(misc_path, "symbols.yml")
@@ -24,10 +23,10 @@ def main_execution_test():
     filter_dataset.main(symbol_yml_file, raw_pickle_file, pickle_dest_path)
 
 
-def get_parser_execution_test():
+def test_get_parser_execution():
     filter_dataset.get_parser()
 
 
-def get_metadata_test():
+def test_get_metadata():
     metadata = filter_dataset.get_metadata()
-    nose.tools.assert_equal(len(metadata), 3)
+    assert len(metadata) == 3

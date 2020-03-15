@@ -7,8 +7,7 @@ import hwrt.features as features
 import tests.testhelper as testhelper
 
 
-# Tests
-def execution_test():
+def test_execution():
     """
     Test if analyze_data.filter_label and analyze_data.analyze_feature are
     executable at all.
@@ -24,6 +23,6 @@ def execution_test():
     analyze_data.analyze_feature(raw_datasets, feature, filename)
 
 
-def parser_test():
+def test_parser():
     """Test analyze_data.get_parser."""
     analyze_data.get_parser()

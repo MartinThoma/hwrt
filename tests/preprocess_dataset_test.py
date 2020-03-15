@@ -6,7 +6,7 @@ import os
 import shutil
 
 # Third party modules
-import nose
+import pytest
 
 # First party modules
 import hwrt.preprocess_dataset as preprocess_dataset
@@ -15,15 +15,15 @@ import hwrt.utils as utils
 
 
 # Tests
-@nose.tools.nottest
-def execution_test():
+@pytest.mark.skip
+def test_execution():
     # TODO: nose.proxy.UnicodeDecodeError: 'utf-8' codec can't decode byte 0x80
     #                                      in position 0: invalid start byte
     small = os.path.join(utils.get_project_root(), "preprocessed/small-baseline")
     preprocess_dataset.main(small)
 
 
-def dataset_preparation_test():
+def test_dataset_preparation():
     d = os.path.dirname(__file__)
     target = os.path.join(
         utils.get_project_root(), "raw-datasets/unittests-tiny-raw.pickle"
@@ -38,7 +38,7 @@ def dataset_preparation_test():
     )
 
 
-def get_parameters_test():
+def test_get_parameters():
     # TODO: nose.proxy.UnicodeDecodeError: 'utf-8' codec can't decode byte 0x80
     #                                      in position 0: invalid start byte
     small = os.path.join(utils.get_project_root(), "preprocessed/small-baseline")

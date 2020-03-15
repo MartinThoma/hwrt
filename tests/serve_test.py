@@ -4,10 +4,9 @@
 """Test the 'serve' module of the hwrt package."""
 
 # Third party modules
-import nose
+import pytest
 from flask import Flask
 from flask_bootstrap import Bootstrap
-from nose.plugins.skip import SkipTest
 
 # First party modules
 import hwrt.serve as serve
@@ -15,7 +14,7 @@ import hwrt.utils as utils
 
 
 # Tests
-def execution_test():
+def test_execution():
     """Just test if the function is executable."""
     results = [
         {"symbolnr": 32, "semantics": "\\alpha", "probability": 0.67},
@@ -27,8 +26,8 @@ def execution_test():
     serve.get_parser()
 
 
-@SkipTest
-def fix_fix_writemath_answer_test():
+@pytest.mark.skip
+def test_fix_fix_writemath_answer():
     """Test if the function which brings the data into the format wanted by
        write-math.com works.
     """
@@ -39,7 +38,7 @@ def fix_fix_writemath_answer_test():
     serve.fix_writemath_answer(results)
 
 
-def interactive_heartbeat_test():
+def test_interactive_heartbeat():
     """Test the 'heartbeat' function of the '/interactive' route."""
     template_path = utils.get_template_folder()
 
@@ -48,4 +47,4 @@ def interactive_heartbeat_test():
     app.config.from_object(__name__)
     with app.test_request_context("/interactive?heartbeat=Peter"):
         a = serve.interactive()
-        nose.tools.assert_equal(a, "Peter")
+        assert a == "Peter"

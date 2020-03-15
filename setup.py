@@ -40,7 +40,9 @@ config = {
         "matplotlib",
         "natsort",
         "nntoolkit",
-        "nose",
+        "pytest",
+        "pytest-cov",
+        "pytest-flake8",
         "Pillow",  # Image
         "pymysql",
         "PyYAML",

@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Third party modules
-import nose
-
 # First party modules
 import hwrt.preprocessing as preprocessing
 import tests.testhelper as testhelper
@@ -11,7 +8,7 @@ from hwrt.handwritten_data import HandwrittenData
 
 
 # Tests
-def preprocessing_detection_test():
+def test_preprocessing_detection_test():
     preprocessing_queue = [
         {"ScaleAndShift": None},
         {"StrokeConnect": None},
@@ -26,10 +23,10 @@ def preprocessing_detection_test():
     ]
     feature_list = preprocessing.get_preprocessing_queue(preprocessing_queue)
     # TODO: Not only compare lengths of lists but actual contents.
-    nose.tools.assert_equal(len(feature_list), len(correct))
+    assert len(feature_list) == len(correct)
 
 
-def simple_execution_test():
+def test_simple_execution_test():
     algorithms = [
         preprocessing.RemoveDuplicateTime(),
         preprocessing.RemoveDots(),
@@ -46,14 +43,14 @@ def simple_execution_test():
         algorithm(a)
 
 
-def euclidean_distance_test():
+def test_euclidean_distance_test():
     p1 = {"x": 12, "y": 15}
     p2 = {"x": 2, "y": 50}
     dist = preprocessing.euclidean_distance(p1, p2)
-    nose.tools.assert_equal(round(dist, 1), 36.4)
+    assert round(dist, 1) == 36.4
 
 
-def ScaleAndShift_test_all():
+def test_ScaleAndShift_test_all():
     preprocessing_queue = [preprocessing.ScaleAndShift()]
     for a in testhelper.get_all_symbols_as_handwriting():
         a.preprocessing(preprocessing_queue)
@@ -61,7 +58,7 @@ def ScaleAndShift_test_all():
         assert len(s) > 0
 
 
-def ScaleAndShift_test_simple_1():
+def test_ScaleAndShift_test_simple_1():
     preprocessing_queue = [preprocessing.ScaleAndShift()]
     s = '[[{"x":0, "y":0, "time": 0}]]'
     a = HandwrittenData(s)
@@ -71,7 +68,7 @@ def ScaleAndShift_test_simple_1():
     assert s == expectation, "Got: %s; expected %s" % (s, expectation)
 
 
-def ScaleAndShift_test_simple_2():
+def test_ScaleAndShift_test_simple_2():
     preprocessing_queue = [preprocessing.ScaleAndShift()]
     s = '[[{"x":10, "y":0, "time": 0}]]'
     a = HandwrittenData(s)
@@ -81,7 +78,7 @@ def ScaleAndShift_test_simple_2():
     assert s == expectation, "Got: %s; expected %s" % (s, expectation)
 
 
-def ScaleAndShift_test_simple_3():
+def test_ScaleAndShift_test_simple_3():
     preprocessing_queue = [preprocessing.ScaleAndShift()]
     s = '[[{"x":0, "y":10, "time": 0}]]'
     a = HandwrittenData(s)
@@ -91,7 +88,7 @@ def ScaleAndShift_test_simple_3():
     assert s == expectation, "Got: %s; expected %s" % (s, expectation)
 
 
-def ScaleAndShift_test_simple_4():
+def test_ScaleAndShift_test_simple_4():
     preprocessing_queue = [preprocessing.ScaleAndShift()]
     s = '[[{"x":0, "y":0, "time": 10}]]'
     a = HandwrittenData(s)
@@ -101,7 +98,7 @@ def ScaleAndShift_test_simple_4():
     assert s == expectation, "Got: %s; expected %s" % (s, expectation)
 
 
-def ScaleAndShift_test_simple_5():
+def test_ScaleAndShift_test_simple_5():
     preprocessing_queue = [preprocessing.ScaleAndShift()]
     s = '[[{"x":42, "y":12, "time": 10}]]'
     a = HandwrittenData(s)
@@ -111,7 +108,7 @@ def ScaleAndShift_test_simple_5():
     assert s == expectation, "Got: %s; expected %s" % (s, expectation)
 
 
-def ScaleAndShift_test_a():
+def test_ScaleAndShift_test_a():
     preprocessing_queue = [preprocessing.ScaleAndShift()]
     s = (
         '[[{"x":232,"y":423,"time":1407885913983},'
@@ -140,7 +137,7 @@ def ScaleAndShift_test_a():
     )
 
 
-def ScaleAndShift_test_a_center():
+def test_ScaleAndShift_test_a_center():
     preprocessing_queue = [preprocessing.ScaleAndShift(center=True)]
     s = (
         '[[{"y": 1.0, "x": -0.3655913978494625, "time": 0}, '
@@ -169,7 +166,7 @@ def ScaleAndShift_test_a_center():
     )
 
 
-def space_evenly_per_stroke_test_all():
+def test_space_evenly_per_stroke_test_all():
     preprocessing_queue = [preprocessing.SpaceEvenlyPerStroke(number=100, kind="cubic")]
     for a in testhelper.get_all_symbols_as_handwriting():
         a.preprocessing(preprocessing_queue)

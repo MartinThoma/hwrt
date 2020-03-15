@@ -9,11 +9,10 @@ import hwrt.create_model as create_model
 import hwrt.utils as utils
 
 
-# Tests
-def execution_test():
+def test_execution():
     small = os.path.join(utils.get_project_root(), "models/small-baseline")
     create_model.main(small)
 
 
-def parser_test():
+def test_parser():
     create_model.get_parser()

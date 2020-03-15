@@ -15,7 +15,7 @@ import hwrt.view as view
 
 # Tests
 @pytest.mark.skip
-def execution_test():
+def test_execution():
     view.get_parser()
     view._fetch_data_from_server(31, "mysql_online")
 
@@ -33,7 +33,7 @@ def execution_test():
 
 
 @pytest.mark.skip
-def execute_main_test():
+def test_execute_main():
     model_small = os.path.join(utils.get_project_root(), "models", "small-baseline")
     view.main(True, model_small, False, 31, False, "mysql_online")
     view.main(False, model_small, False, 31, False, "mysql_online")

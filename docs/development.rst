@@ -38,7 +38,7 @@ for more ideas how you can contribute.
 Tools
 -----
 
-* ``nosetests`` for unit testing
+* ``pytest`` for unit testing
 * ``pylint`` to find code smug
 * GitHub for hosting the source code
 * http://hwrt.readthedocs.org/ or https://pythonhosted.org/hwrt for hosting the documentation
@@ -48,7 +48,7 @@ Code coverage can be tested with
 
 .. code:: bash
 
-    $ nosetests --with-coverage --cover-erase --cover-package hwrt --logging-level=INFO --cover-html
+    $ pytest
 
 and uploaded to coveralls.io with
 
@@ -97,7 +97,7 @@ The project structure is
 
 where the folder ``bin`` contains all scripts that can directly be used,
 ``hwrt`` contains all modules and ``tests`` contains unittests written with
-nosetools.
+pytest.
 
 The symbols subfolder contains JSON files of recordings that are used for
 testing.

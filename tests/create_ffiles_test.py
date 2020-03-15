@@ -4,20 +4,15 @@
 # Core Library modules
 import os
 
-# Third party modules
-import nose
-
 # First party modules
 import hwrt.create_ffiles as create_ffiles
 import hwrt.data_multiplication as data_multiplication
 import hwrt.features as features
 import hwrt.utils as utils
 import tests.testhelper as th
-from hwrt.handwritten_data import HandwrittenData
 
 
-# Tests
-def training_set_multiplication_test():
+def test_training_set_multiplication():
     """Test the create_ffiles.training_set_multiplication method."""
     sample = th.get_symbol_as_handwriting(292934)
     training_set = [
@@ -31,10 +26,9 @@ def training_set_multiplication_test():
     ]
     mult_queue = [data_multiplication.Multiply()]
     create_ffiles.training_set_multiplication(training_set, mult_queue)
-    # nose.tools.assert_equal(len(feature_list), len(correct))
 
 
-def execution_test():
+def test_execution():
     formula_id2index = {1337: 1, 12: 2}
     feature_folder = "."
     index2latex = {1: "\\alpha", 2: "\\beta"}
@@ -43,12 +37,12 @@ def execution_test():
     )
 
 
-def parser_test():
+def test_parser():
     """Test create_ffiles.get_parser."""
     create_ffiles.get_parser()
 
 
-def prepare_dataset_test():
+def test_prepare_dataset():
     """Test create_ffiles.prepare_dataset."""
     dataset = []
     for i in range(200):
@@ -63,76 +57,74 @@ def prepare_dataset_test():
     create_ffiles.prepare_dataset(dataset, formula_id2index, feature_list, is_traindata)
 
 
-def normalize_features_one_test():
+def test_normalize_features_one():
     """Test create_ffiles._normalize_features with one point."""
     feature_list = [features.Width(), features.Height()]
     prepared = [([123], 1)]
     is_traindata = True
     out = create_ffiles._normalize_features(feature_list, prepared, is_traindata)
-    nose.tools.assert_equal(out, [([0.0], 1)])
+    assert out == [([0.0], 1)]
 
 
-def normalize_features_two_test():
+def test_normalize_features_two():
     """Test create_ffiles._normalize_features with two points."""
     feature_list = [features.Width(), features.Height()]
     prepared = [([123], 1), ([100], 1)]
     is_traindata = True
     out = create_ffiles._normalize_features(feature_list, prepared, is_traindata)
     # Mean: 111.5; Range: 23
-    nose.tools.assert_equal(out, [([0.5], 1), ([-0.5], 1)])
+    assert out == [([0.5], 1), ([-0.5], 1)]
 
     # Now the other set
     prepared = [([111.5], 1), ([90], 1), ([180], 1)]
     is_traindata = False
     out = create_ffiles._normalize_features(feature_list, prepared, is_traindata)
-    nose.tools.assert_equal(
-        out, [([0.0], 1), ([-0.93478260869565222], 1), ([2.9782608695652173], 1)]
-    )
+    assert out == [([0.0], 1), ([-0.93478260869565222], 1), ([2.9782608695652173], 1)]
 
 
-def normalize_features_two_feats_test():
+def test_normalize_features_two_feats():
     """Test create_ffiles._normalize_features with two points."""
     feature_list = [features.Width(), features.Height()]
     prepared = [([123, 123], 1), ([100, 100], 1)]
     is_traindata = True
     out = create_ffiles._normalize_features(feature_list, prepared, is_traindata)
     # Mean: 111.5; Range: 23
-    nose.tools.assert_equal(out, [([0.5, 0.5], 1), ([-0.5, -0.5], 1)])
+    assert out == [([0.5, 0.5], 1), ([-0.5, -0.5], 1)]
 
     # Now the other set
     prepared = [([111.5, 111.5], 1), ([146, 146], 1), ([54, 54], 1)]
     is_traindata = False
     out = create_ffiles._normalize_features(feature_list, prepared, is_traindata)
-    nose.tools.assert_equal(out, [([0.0, 0.0], 1), ([1.5, 1.5], 1), ([-2.5, -2.5], 1)])
+    assert out == [([0.0, 0.0], 1), ([1.5, 1.5], 1), ([-2.5, -2.5], 1)]
 
 
-def normalize_features_two_feats2_test():
+def test_normalize_features_two_feats2():
     """Test create_ffiles._normalize_features with two points."""
     feature_list = [features.Width(), features.Height()]
     prepared = [([123, 123], 1), ([100, 100], 1)]
     is_traindata = True
     out = create_ffiles._normalize_features(feature_list, prepared, is_traindata)
     # Mean: 111.5; Range: 23
-    nose.tools.assert_equal(out, [([0.5, 0.5], 1), ([-0.5, -0.5], 1)])
+    assert out == [([0.5, 0.5], 1), ([-0.5, -0.5], 1)]
 
     # Now the other set
     prepared = [([111.5, 146], 1), ([146, 111.5], 1), ([54, 54], 1)]
     is_traindata = False
     out = create_ffiles._normalize_features(feature_list, prepared, is_traindata)
-    nose.tools.assert_equal(out, [([0.0, 1.5], 1), ([1.5, 0.0], 1), ([-2.5, -2.5], 1)])
+    assert out == [([0.0, 1.5], 1), ([1.5, 0.0], 1), ([-2.5, -2.5], 1)]
 
 
-def normalize_features_two_classes_test():
+def test_normalize_features_two_classes():
     """Test create_ffiles._normalize_features with two classes."""
     feature_list = [features.Width(), features.Height()]
     prepared = [([123], 1), ([100], 1), ([500], 2)]
     is_traindata = True
     out = create_ffiles._normalize_features(feature_list, prepared, is_traindata)
     # Mean: 241; Range: 400
-    nose.tools.assert_equal(out, [([-0.295], 1), ([-0.3525], 1), ([0.6475], 2)])
+    assert out == [([-0.295], 1), ([-0.3525], 1), ([0.6475], 2)]
 
 
-def create_translation_file_test():
+def test_create_translation_file():
     """Test create_ffiles._create_translation_file."""
     feature_folder = os.path.join(
         utils.get_project_root(), "feature-files", "small-baseline"

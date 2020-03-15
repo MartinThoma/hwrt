@@ -5,7 +5,9 @@ PyYAML
 natsort
 coveralls
 Pillow
-nose
+pytest
+pytest-cov
+pytest-flake8
 Sphinx
 Pygments
 coverage

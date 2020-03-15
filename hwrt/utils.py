@@ -82,7 +82,7 @@ def get_project_configuration():
     if not os.path.isfile(rcfile):
         create_project_configuration(rcfile)
     with open(rcfile, "r") as ymlfile:
-        cfg = yaml.load(ymlfile)
+        cfg = yaml.safe_load(ymlfile)
     return cfg
 
 
@@ -232,7 +232,7 @@ def get_database_configuration():
     if db_config is None:
         return None
     with open(db_config, "r") as ymlfile:
-        cfg = yaml.load(ymlfile)
+        cfg = yaml.safe_load(ymlfile)
     return cfg
 
 
@@ -464,7 +464,7 @@ def get_recognizer_folders(model_folder):
         folders.append(folder)
         # Get info.yml
         with open(os.path.join(folder, "info.yml")) as ymlfile:
-            content = yaml.load(ymlfile)
+            content = yaml.safe_load(ymlfile)
         folder = os.path.join(get_project_root(), content["data-source"])
     return folders[::-1]  # Reverse order to get the most "basic one first"
 
@@ -483,14 +483,14 @@ def load_model(model_file):
 
     # Get the preprocessing
     with open(os.path.join(tarfolder, "preprocessing.yml"), "r") as ymlfile:
-        preprocessing_description = yaml.load(ymlfile)
+        preprocessing_description = yaml.safe_load(ymlfile)
     preprocessing_queue = preprocessing.get_preprocessing_queue(
         preprocessing_description["queue"]
     )
 
     # Get the features
     with open(os.path.join(tarfolder, "features.yml"), "r") as ymlfile:
-        feature_description = yaml.load(ymlfile)
+        feature_description = yaml.safe_load(ymlfile)
     feature_str_list = feature_description["features"]
     feature_list = features.get_features(feature_str_list)
 
@@ -756,7 +756,7 @@ def evaluate_model(recording, model_folder, verbose=False):
             logging.info("Create feature file...")
             infofile_path = os.path.join(target_folder, "info.yml")
             with open(infofile_path, "r") as ymlfile:
-                feature_description = yaml.load(ymlfile)
+                feature_description = yaml.safe_load(ymlfile)
             feature_str_list = feature_description["features"]
             feature_list = features.get_features(feature_str_list)
             feature_count = sum(map(lambda n: n.get_dimension(), feature_list))
@@ -880,7 +880,7 @@ def classify_single_recording(raw_data_json, model_folder, verbose=False):
     """
     evaluation_file = evaluate_model(raw_data_json, model_folder, verbose)
     with open(os.path.join(model_folder, "info.yml")) as ymlfile:
-        model_description = yaml.load(ymlfile)
+        model_description = yaml.safe_load(ymlfile)
 
     index2latex = get_index2latex(model_description)
 

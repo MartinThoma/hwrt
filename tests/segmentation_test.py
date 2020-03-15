@@ -7,11 +7,8 @@
 import hwrt.segmentation as segmentation
 import tests.testhelper as testhelper
 
-# import hwrt.utils as utils
 
-
-# Tests
-def prepare_beams():
+def test_prepare_beams():
     """
     Prepare one beam object for each recording.
 
@@ -30,20 +27,15 @@ def prepare_beams():
     return beams
 
 
-def get_results_test():
+def test_get_results():
     """Test the .get_results() method of beam objects."""
     beams = prepare_beams()
     for beam in beams:
         beam.get_results()
 
 
-def get_writemath_results_test():
+def test_get_writemath_results():
     """Test the .get_writemath_results method of beam objects."""
     beams = prepare_beams()
     for beam in beams:
         beam.get_writemath_results()
-
-
-# def p_strokes_test():
-#     nose.tools.assert_greater_equal(1.0, segmentation.p_strokes('A', 3))
-#     nose.tools.assert_greater_equal(segmentation.p_strokes('A', 3), 0.0)

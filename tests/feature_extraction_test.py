@@ -1,18 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Third party modules
-import nose
-
 # First party modules
-# import hwrt.preprocessing as preprocessing
 import hwrt.features as features
 import tests.testhelper as testhelper
 from hwrt.handwritten_data import HandwrittenData
 
 
-# Tests
-def feature_detection_test():
+def test_feature_detection():
     l = [
         {"StrokeCount": None},
         {
@@ -32,10 +27,10 @@ def feature_detection_test():
     ]
     feature_list = features.get_features(l)
     # TODO: Not only compare lengths of lists but actual contents.
-    nose.tools.assert_equal(len(feature_list), len(correct))
+    assert len(feature_list) == len(correct)
 
 
-def repr_and_str_test():
+def test_repr_and_str():
     l = [
         features.ConstantPointCoordinates(),
         features.FirstNPoints(),
@@ -47,7 +42,7 @@ def repr_and_str_test():
         repr(alg)
 
 
-def dimension_test():
+def test_dimension():
     l = [
         (features.ConstantPointCoordinates(), 160),
         (features.FirstNPoints(), 162),  # TODO: Check
@@ -55,17 +50,17 @@ def dimension_test():
         (features.Ink(), 1),
     ]
     for alg, dimension in l:
-        nose.tools.assert_equal(alg.get_dimension(), dimension)
+        assert alg.get_dimension() == dimension
 
 
-def height_test():
+def test_height():
     feature_list = [features.Height()]
     a = testhelper.get_symbol_as_handwriting(97705)
     # TODO: Check if this is correct
-    nose.tools.assert_equal(a.feature_extraction(feature_list), [263.0])
+    assert a.feature_extraction(feature_list) == [263.0]
 
 
-def stroke_count_test():
+def test_stroke_count():
     feature_list = [features.StrokeCount()]
     a = testhelper.get_symbol_as_handwriting(97705)
-    nose.tools.assert_equal(a.feature_extraction(feature_list), [1])
+    assert a.feature_extraction(feature_list) == [1]

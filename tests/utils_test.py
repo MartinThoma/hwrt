@@ -9,11 +9,11 @@ import json
 import os
 
 # Third party modules
-import nose
 import pkg_resources
+import pytest
 
 # First party modules
-import hwrt
+import hwrt.preprocessing
 import hwrt.utils as utils
 
 try:
@@ -22,34 +22,27 @@ except ImportError:
     import mock  # Python 2
 
 
-# Tests
-def execution_test():
+def test_execution():
     """Test if the functions execute at all."""
     utils.get_project_root()
     utils.get_latest_model(".", "model")
     utils.get_latest_working_model(".")
     utils.get_latest_successful_run(".")
-    nose.tools.assert_equal(utils.get_readable_time(123), "123ms")
-    nose.tools.assert_equal(utils.get_readable_time(1000 * 30), "30s 0ms")
-    nose.tools.assert_equal(utils.get_readable_time(1000 * 60), "1 minutes 0s 0ms")
-    nose.tools.assert_equal(
-        utils.get_readable_time(1000 * 60 * 60), "1h, 0 minutes 0s 0ms"
-    )
-    nose.tools.assert_equal(
-        utils.get_readable_time(2 * 1000 * 60 * 60), "2h, 0 minutes 0s 0ms"
-    )
-    nose.tools.assert_equal(
-        utils.get_readable_time(25 * 1000 * 60 * 60 + 3), "25h, 0 minutes 0s 3ms"
-    )
+    assert utils.get_readable_time(123) == "123ms"
+    assert utils.get_readable_time(1000 * 30) == "30s 0ms"
+    assert utils.get_readable_time(1000 * 60) == "1 minutes 0s 0ms"
+    assert utils.get_readable_time(1000 * 60 * 60) == "1h, 0 minutes 0s 0ms"
+    assert utils.get_readable_time(2 * 1000 * 60 * 60) == "2h, 0 minutes 0s 0ms"
+    assert utils.get_readable_time(25 * 1000 * 60 * 60 + 3) == "25h, 0 minutes 0s 3ms"
     utils.print_status(3, 1, 123)
     utils.get_nntoolkit()
     utils.get_database_config_file()
     utils.get_database_configuration()
-    nose.tools.assert_equal(utils.sizeof_fmt(1), "1.0 bytes")
-    nose.tools.assert_equal(utils.sizeof_fmt(1111), "1.1 KB")
+    assert utils.sizeof_fmt(1) == "1.0 bytes"
+    assert utils.sizeof_fmt(1111) == "1.1 KB"
 
 
-def parser_test():
+def test_parser():
     """Check the parser."""
     from argparse import ArgumentParser
 
@@ -68,7 +61,7 @@ def parser_test():
     parser.parse_args(["-m", rcfile])
 
 
-def get_class_test():
+def test_get_class():
     """The get_class function returns a class for feature and preprocessing
        algorithms.
     """
@@ -76,95 +69,95 @@ def get_class_test():
     utils.get_class("BongaBonga", "preprocessing", hwrt.preprocessing)
 
 
-def query_yes_no_test():
+def test_query_yes_no():
     """This function is used to get a binary decision by the user.
        Sadly, there are two different ways to use it due to Python 2 / 3.
     """
     try:
-        import __builtin__
+        import __builtin__  # noqa
 
         builtins_str = "__builtin__.raw_input"
     except ImportError:
         builtins_str = "builtins.input"
     with mock.patch("%s" % builtins_str, return_value="y"):
-        nose.tools.assert_equal(utils.query_yes_no("bla"), True)
-        nose.tools.assert_equal(utils.query_yes_no("bla", None), True)
-        nose.tools.assert_equal(utils.query_yes_no("bla", "yes"), True)
-        nose.tools.assert_equal(utils.query_yes_no("bla", "no"), True)
+        assert utils.query_yes_no("bla")
+        assert utils.query_yes_no("bla", None)
+        assert utils.query_yes_no("bla", "yes")
+        assert utils.query_yes_no("bla", "no")
     with mock.patch("%s" % builtins_str, return_value=""):
-        nose.tools.assert_equal(utils.query_yes_no("bla", "yes"), True)
-        nose.tools.assert_equal(utils.query_yes_no("bla", "no"), False)
+        assert utils.query_yes_no("bla", "yes")
+        assert not utils.query_yes_no("bla", "no")
 
 
-def input_string_test():
+def test_input_string():
     """Another Python 2/3 input hack."""
     try:
-        import __builtin__
+        import __builtin__  # noqa
 
         with mock.patch("__builtin__.raw_input", return_value="y"):
-            nose.tools.assert_equal(utils.input_string("bla"), "y")
+            assert utils.input_string("bla") == "y"
     except ImportError:
         with mock.patch("builtins.input", return_value="y"):
-            nose.tools.assert_equal(utils.input_string("bla"), "y")
+            assert utils.input_string("bla") == "y"
 
 
-def input_int_default_test():
+def test_input_int_default():
     """Another Python 2/3 input hack."""
     try:
-        import __builtin__
+        import __builtin__  # noqa
 
         builtins_str = "__builtin__.raw_input"
     except ImportError:
         builtins_str = "builtins.input"
     with mock.patch("%s" % builtins_str, return_value="yes"):
-        nose.tools.assert_equal(utils.input_int_default("bla"), 0)
-        nose.tools.assert_equal(utils.input_int_default("bla", 42), 42)
+        assert utils.input_int_default("bla") == 0
+        assert utils.input_int_default("bla", 42) == 42
     with mock.patch("%s" % builtins_str, return_value=1337):
-        nose.tools.assert_equal(utils.input_int_default("bla"), 1337)
-        nose.tools.assert_equal(utils.input_int_default("bla", 42), 1337)
+        assert utils.input_int_default("bla") == 1337
+        assert utils.input_int_default("bla", 42) == 1337
 
 
-@nose.tools.raises(Exception)
-def query_yes_no_exception_test():
+def test_query_yes_no_exception():
     """Another Python 2/3 input hack."""
-    try:
-        import __builtin__
+    with pytest.raises(Exception):
+        try:
+            import __builtin__  # noqa
 
-        builtins_str = "__builtin__"
-    except ImportError:
-        import builtins
+            builtins_str = "__builtin__"
+        except ImportError:
+            import builtins  # noqa
 
-        builtins_str = "builtins"
-    with mock.patch("%s.raw_input" % builtins_str, return_value=""):
-        utils.query_yes_no("bla", "asdf")
+            builtins_str = "builtins"
+        with mock.patch("%s.raw_input" % builtins_str, return_value=""):
+            utils.query_yes_no("bla", "asdf")
 
 
-@nose.tools.raises(SystemExit)
 def is_valid_file_test():
     """Check if a file exists. Do this check within ArgumentParser."""
-    parser = argparse.ArgumentParser()
+    with pytest.raises(SystemExit):
+        parser = argparse.ArgumentParser()
 
-    # Does exist
-    path = os.path.realpath(__file__)
-    nose.tools.assert_equal(utils.is_valid_file(parser, path), path)
+        # Does exist
+        path = os.path.realpath(__file__)
+        assert utils.is_valid_file(parser, path) == path
 
-    # Does not exist
-    utils.is_valid_file(parser, "/etc/nonexistingfile")
+        # Does not exist
+        utils.is_valid_file(parser, "/etc/nonexistingfile")
 
 
-@nose.tools.raises(SystemExit)
-def is_valid_folder_test():
+def test_is_valid_folder():
     """Similiar to is_valid_file."""
-    parser = argparse.ArgumentParser()
+    with pytest.raises(SystemExit):
+        parser = argparse.ArgumentParser()
 
-    # Does exist
-    nose.tools.assert_equal(utils.is_valid_folder(parser, "/etc"), "/etc")
+        # Does exist
+        assert utils.is_valid_folder(parser, "/etc") == "/etc"
 
-    # Does not exist
-    utils.is_valid_folder(parser, "/etc/nonexistingfoler")
+        # Does not exist
+        utils.is_valid_folder(parser, "/etc/nonexistingfoler")
 
 
-def create_project_configuration_test():
+def test_create_project_configuration():
     """Test if the creation of the project configuration works."""
     filename = "projectconftesttmp.txt"
     utils.create_project_configuration(filename)
@@ -172,28 +165,30 @@ def create_project_configuration_test():
         os.remove(filename)
 
 
-def get_latest_model_test():
+def test_get_latest_model():
     """Check if get_latest_model works."""
     model_folder = "/etc"
     basename = "model"
-    nose.tools.assert_equal(utils.get_latest_model(model_folder, basename), None)
+    assert utils.get_latest_model(model_folder, basename) is None
     small = os.path.join(utils.get_project_root(), "models/small-baseline")
     utils.get_latest_model(small, basename)
 
 
-def choose_raw_dataset_test():
+def test_choose_raw_dataset():
     """Check the interactive function choose_raw_dataset."""
     try:
-        import __builtin__
+        import __builtin__  # noqa
 
         with mock.patch("__builtin__.raw_input", return_value=0):
             utils.choose_raw_dataset()
     except ImportError:
+        import builtins  # noqa
+
         with mock.patch("builtins.input", return_value=0):
             utils.choose_raw_dataset()
 
 
-def get_recognizer_folders_test():
+def test_get_recognizer_folders():
     """Test if all folders are catched."""
     small = os.path.join(utils.get_project_root(), "models/small-baseline")
     folders = utils.get_recognizer_folders(small)
@@ -203,17 +198,17 @@ def get_recognizer_folders_test():
         "models/small-baseline",
     ]
     for folder, wanted_folder in zip(folders, wanted_folders):
-        nose.tools.assert_equal(folder.endswith(wanted_folder), True)
+        assert folder.endswith(wanted_folder)
 
 
-def load_model_test():
+def test_load_model():
     """Test if the packaged model can be loaded."""
     model_path = pkg_resources.resource_filename("hwrt", "misc/")
     model_file = os.path.join(model_path, "model.tar")
     utils.load_model(model_file)
 
 
-def evaluate_model_single_recording_preloaded_test():
+def test_evaluate_model_single_recording_preloaded():
     """Test if the packaged model can be used."""
     model_path = pkg_resources.resource_filename("hwrt", "misc/")
     model_file = os.path.join(model_path, "model.tar")

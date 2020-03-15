@@ -2,12 +2,16 @@
 # -*- coding: utf-8 -*-
 
 # Third party modules
-import mock
 import nose.tools
 
 # First party modules
 import tests.testhelper as testhelper
 from hwrt.handwritten_data import HandwrittenData
+
+try:
+    from unittest import mock  # Python 3
+except ImportError:
+    import mock  # Python 2
 
 
 # Tests

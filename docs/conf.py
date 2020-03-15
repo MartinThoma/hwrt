@@ -16,8 +16,10 @@
 import os
 import sys
 
-# Third party modules
-import mock
+try:
+    from unittest import mock  # Python 3
+except ImportError:
+    import mock  # Python 2
 
 MOCK_MODULES = [
     "numpy",

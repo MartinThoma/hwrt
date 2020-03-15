@@ -19,7 +19,7 @@ import hwrt.utils as utils
 try:
     from unittest import mock  # Python 3
 except ImportError:
-    import mock
+    import mock  # Python 2
 
 
 # Tests

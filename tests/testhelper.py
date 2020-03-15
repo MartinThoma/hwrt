@@ -18,9 +18,11 @@ def get_all_symbols():
     """
     current_folder = os.path.dirname(os.path.realpath(__file__))
     symbol_folder = os.path.join(current_folder, "symbols")
-    symbols = [os.path.join(symbol_folder, f)
-               for f in os.listdir(symbol_folder)
-               if os.path.isfile(os.path.join(symbol_folder, f))]
+    symbols = [
+        os.path.join(symbol_folder, f)
+        for f in os.listdir(symbol_folder)
+        if os.path.isfile(os.path.join(symbol_folder, f))
+    ]
     return symbols
 
 
@@ -36,14 +38,18 @@ def get_all_symbols_as_handwriting():
 def get_raw_datasets():
     raw_datasets = []
     for hwr in get_all_symbols_as_handwriting():
-        hwr.formula_in_latex = 'TESTHELPER'
+        hwr.formula_in_latex = "TESTHELPER"
         hwr.formula_id = 42
         hwr.raw_data_id = 1337
-        raw_datasets.append({'is_in_testset': 0,
-                             'formula_id': hwr.formula_id,
-                             'handwriting': hwr,
-                             'formula_in_latex': hwr.formula_in_latex,
-                             'id': hwr.raw_data_id})
+        raw_datasets.append(
+            {
+                "is_in_testset": 0,
+                "formula_id": hwr.formula_id,
+                "handwriting": hwr,
+                "formula_in_latex": hwr.formula_in_latex,
+                "id": hwr.raw_data_id,
+            }
+        )
     return raw_datasets
 
 
@@ -69,7 +75,7 @@ def compare_pointlists(a, b, epsilon=0.001):
         if len(stroke_a) != len(stroke_b):
             return False
         for point_a, point_b in zip(stroke_a, stroke_b):
-            keys = ['x', 'y', 'time']
+            keys = ["x", "y", "time"]
             for key in keys:
                 if abs(point_a[key] - point_b[key]) > epsilon:
                     return False

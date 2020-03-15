@@ -2,6 +2,7 @@
 
 """Normalize mathematical formulae written with LaTeX."""
 
+# Core Library modules
 import string
 
 
@@ -46,11 +47,11 @@ def chunk_math(text):
 
     # Fail when '{' and '}' don't match - be aware of escaped symbols!
     opened_braces = 0
-    last_char = ''
+    last_char = ""
     for char in text:
-        if char == '{' and last_char != '\\':
+        if char == "{" and last_char != "\\":
             opened_braces += 1
-        if char == '}' and last_char != '\\':
+        if char == "}" and last_char != "\\":
             opened_braces -= 1
             if opened_braces < 0:
                 raise ValueError("Braces don't match: %s" % text)
@@ -59,43 +60,43 @@ def chunk_math(text):
         raise ValueError("%i braces are still open" % opened_braces)
 
     # Parse
-    single_symbol = ['_', '^', '&', '{', '}']
-    breaking_chars = ['\\', ' '] + single_symbol
+    single_symbol = ["_", "^", "&", "{", "}"]
+    breaking_chars = ["\\", " "] + single_symbol
 
     chunks = []
-    current_chunk = ''
+    current_chunk = ""
 
     for char in text:
-        if current_chunk == '':
+        if current_chunk == "":
             current_chunk = char
             continue
-        if char == '\\':
-            if current_chunk == '\\':
+        if char == "\\":
+            if current_chunk == "\\":
                 current_chunk += char
                 chunks.append(current_chunk)
-                current_chunk = ''
+                current_chunk = ""
             else:
                 chunks.append(current_chunk)
                 current_chunk = char
-        elif current_chunk == '\\' and char in breaking_chars:  # escaped
+        elif current_chunk == "\\" and char in breaking_chars:  # escaped
             current_chunk += char
             chunks.append(current_chunk)
-            current_chunk = ''
+            current_chunk = ""
         elif char in breaking_chars:
             chunks.append(current_chunk)
             current_chunk = char
-        elif char in string.letters+string.digits and current_chunk[0] == '\\':
+        elif char in string.letters + string.digits and current_chunk[0] == "\\":
             current_chunk += char
         else:
             chunks.append(current_chunk)
             current_chunk = char
 
     # Add the last chunk
-    if current_chunk != '':
+    if current_chunk != "":
         chunks.append(current_chunk)
     filtered = []
     for chunk in chunks:
-        if len(filtered) > 0 and filtered[-1] == ' ' and chunk == ' ':
+        if len(filtered) > 0 and filtered[-1] == " " and chunk == " ":
             continue
         filtered.append(chunk)
     return filtered
@@ -121,15 +122,15 @@ def chunks_to_string(chunks):
     ...                   '2'])
     '\\\\sum_{i}^{n}i^{2}'
     """
-    string = ''
+    string = ""
     began_context = False
     context_depth = 0
-    context_triggers = ['_', '^']
+    context_triggers = ["_", "^"]
     for chunk in chunks:
-        if began_context and chunk != '{':
-            string += '{' + chunk + '}'
+        if began_context and chunk != "{":
+            string += "{" + chunk + "}"
             began_context = False
-        elif began_context and chunk == '{':
+        elif began_context and chunk == "{":
             began_context = False
             string += chunk
         else:
@@ -167,6 +168,7 @@ def normalize(latex):
     return chunks_to_string(chunk_math(latex))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

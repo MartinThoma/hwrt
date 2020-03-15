@@ -51,8 +51,9 @@ def main():
 
     logging.info("Get single classifier")
 
-    logging.info("Get stroke_segmented_classifier "
-                 "(decided if two strokes are in one symbol)")
+    logging.info(
+        "Get stroke_segmented_classifier " "(decided if two strokes are in one symbol)"
+    )
     logging.info("Start creation of training set")
     X, y, recordings = get_dataset()
     logging.info("Start training")
@@ -80,19 +81,21 @@ def main():
             print(("## %i " % nr) + "#" * 80)
 
         t0 = time.time()
-        seg_predict = get_segmentation(recording['data'],
-                                       single_clf,
-                                       single_stroke_clf,
-                                       stroke_segmented_classifier)
+        seg_predict = get_segmentation(
+            recording["data"],
+            single_clf,
+            single_stroke_clf,
+            stroke_segmented_classifier,
+        )
         t1 = time.time()
-        real_seg = recording['segmentation']
+        real_seg = recording["segmentation"]
         if all([has_wrong_break(real_seg, seg) for seg, score in seg_predict]):
             over_segmented_symbols += 1
         if all([has_missing_break(real_seg, seg) for seg, _ in seg_predict]):
             under_segmented_symbols += 1
-        if all([has_wrong_break(real_seg, seg) for seg, _ in seg_predict]) \
-           and all([has_missing_break(real_seg, seg)
-                    for seg, _ in seg_predict]):
+        if all([has_wrong_break(real_seg, seg) for seg, _ in seg_predict]) and all(
+            [has_missing_break(real_seg, seg) for seg, _ in seg_predict]
+        ):
             overunder_segmented_symbols += 1
         pred_str = ""
         for i, pred in enumerate(seg_predict):
@@ -105,10 +108,11 @@ def main():
                 break
         else:
             i = -1
-            score_place.append(10**6)
-        if all([has_wrong_break(real_seg, segmentation)
-                for segmentation, _ in seg_predict]):
-            print("## %i" % recording['id'])
+            score_place.append(10 ** 6)
+        if all(
+            [has_wrong_break(real_seg, segmentation) for segmentation, _ in seg_predict]
+        ):
+            print("## %i" % recording["id"])
             print("  Real segmentation:\t%s (got at place %i)" % (real_seg, i))
             print(pred_str)
             print("  Segmentation took %0.4f seconds." % (t1 - t0))
@@ -124,25 +128,31 @@ def main():
     logging.info("TOP-10: %0.2f", less_than(score_place, 10) / len(recordings))
     logging.info("TOP-20: %0.2f", less_than(score_place, 20) / len(recordings))
     logging.info("TOP-50: %0.2f", less_than(score_place, 50) / len(recordings))
-    logging.info("Over-segmented: %0.2f",
-                 float(over_segmented_symbols) / len(recordings))
-    logging.info("Under-segmented: %0.2f",
-                 float(under_segmented_symbols) / len(recordings))
-    logging.info("overUnder-segmented: %0.2f",
-                 float(overunder_segmented_symbols) / len(recordings))
+    logging.info(
+        "Over-segmented: %0.2f", float(over_segmented_symbols) / len(recordings)
+    )
+    logging.info(
+        "Under-segmented: %0.2f", float(under_segmented_symbols) / len(recordings)
+    )
+    logging.info(
+        "overUnder-segmented: %0.2f",
+        float(overunder_segmented_symbols) / len(recordings),
+    )
     logging.info("Out of order: %i", out_of_order_count)
     logging.info("Total: %i", len(recordings))
 
 
 class SingleClassifier(object):
     """Classifier for single symbols."""
+
     def __init__(self):
         logging.info("Start reading model (SingleClassifier)...")
-        model_path = pkg_resources.resource_filename('hwrt', 'misc/')
+        model_path = pkg_resources.resource_filename("hwrt", "misc/")
         model_file = os.path.join(model_path, "model.tar")
         logging.info("Model: %s", model_file)
-        (preprocessing_queue, feature_list, model,
-         output_semantics) = utils.load_model(model_file)
+        (preprocessing_queue, feature_list, model, output_semantics) = utils.load_model(
+            model_file
+        )
         self.preprocessing_queue = preprocessing_queue
         self.feature_list = feature_list
         self.model = model
@@ -157,12 +167,14 @@ class SingleClassifier(object):
             'id' is the id on write-math.com for debugging purposes
         """
         evaluate = utils.evaluate_model_single_recording_preloaded
-        results = evaluate(self.preprocessing_queue,
-                           self.feature_list,
-                           self.model,
-                           self.output_semantics,
-                           json.dumps(parsed_json['data']),
-                           parsed_json['id'])
+        results = evaluate(
+            self.preprocessing_queue,
+            self.feature_list,
+            self.model,
+            self.output_semantics,
+            json.dumps(parsed_json["data"]),
+            parsed_json["id"],
+        )
         return results
 
 
@@ -182,7 +194,7 @@ def get_dataset():
         X = numpy.load(seg_data)
         y = numpy.load(seg_labels)
 
-        with open('datasets.pickle', 'rb') as f:
+        with open("datasets.pickle", "rb") as f:
             datasets = pickle.load(f)
         return (X, y, datasets)
     datasets = get_segmented_raw_data()
@@ -190,10 +202,10 @@ def get_dataset():
     for i, data in enumerate(datasets):
         if i % 10 == 0:
             logging.info("[Create Dataset] i=%i/%i", i, len(datasets))
-        segmentation = json.loads(data['segmentation'])
-        recording = json.loads(data['data'])
+        segmentation = json.loads(data["segmentation"])
+        recording = json.loads(data["data"])
         X_symbol = [get_median_stroke_distance(recording)]
-        if len([p for s in recording for p in s if p['time'] is None]) > 0:
+        if len([p for s in recording for p in s if p["time"] is None]) > 0:
             continue
         combis = itertools.combinations(list(range(len(recording))), 2)
         for strokeid1, strokeid2 in combis:
@@ -202,17 +214,17 @@ def get_dataset():
             if len(stroke1) == 0 or len(stroke2) == 0:
                 logging.debug("stroke len 0. Skip.")
                 continue
-            X.append(get_stroke_features(recording, strokeid1, strokeid2) +
-                     X_symbol)
-            same_symbol = (_get_symbol_index(strokeid1, segmentation) ==
-                           _get_symbol_index(strokeid2, segmentation))
+            X.append(get_stroke_features(recording, strokeid1, strokeid2) + X_symbol)
+            same_symbol = _get_symbol_index(
+                strokeid1, segmentation
+            ) == _get_symbol_index(strokeid2, segmentation)
             y.append(int(same_symbol))
     X = numpy.array(X, dtype=numpy.float32)
     y = numpy.array(y, dtype=numpy.int32)
     numpy.save(seg_data, X)
     numpy.save(seg_labels, y)
     datasets = filter_recordings(datasets)
-    with open('datasets.pickle', 'wb') as f:
+    with open("datasets.pickle", "wb") as f:
         pickle.dump(datasets, f, protocol=pickle.HIGHEST_PROTOCOL)
     return (X, y, datasets)
 
@@ -254,31 +266,33 @@ def get_segmented_raw_data(top_n=10000):
         Number of data sets which get fetched from the server.
     """
     cfg = utils.get_database_configuration()
-    mysql = cfg['mysql_online']
-    connection = pymysql.connect(host=mysql['host'],
-                                 user=mysql['user'],
-                                 passwd=mysql['passwd'],
-                                 db=mysql['db'],
-                                 cursorclass=pymysql.cursors.DictCursor)
+    mysql = cfg["mysql_online"]
+    connection = pymysql.connect(
+        host=mysql["host"],
+        user=mysql["user"],
+        passwd=mysql["passwd"],
+        db=mysql["db"],
+        cursorclass=pymysql.cursors.DictCursor,
+    )
     cursor = connection.cursor()
-    sql = ("SELECT `id`, `data`, `segmentation` "
-           "FROM `wm_raw_draw_data` WHERE "
-           "(`segmentation` IS NOT NULL OR `accepted_formula_id` IS NOT NULL) "
-           "AND `wild_point_count` = 0 "
-           "AND `stroke_segmentable` = 1 "
-           "ORDER BY `id` LIMIT 0, %i") % top_n
+    sql = (
+        "SELECT `id`, `data`, `segmentation` "
+        "FROM `wm_raw_draw_data` WHERE "
+        "(`segmentation` IS NOT NULL OR `accepted_formula_id` IS NOT NULL) "
+        "AND `wild_point_count` = 0 "
+        "AND `stroke_segmentable` = 1 "
+        "ORDER BY `id` LIMIT 0, %i"
+    ) % top_n
     logging.info(sql)
     cursor.execute(sql)
     datasets = cursor.fetchall()
-    logging.info("Fetched %i recordings. Add missing segmentations.",
-                 len(datasets))
+    logging.info("Fetched %i recordings. Add missing segmentations.", len(datasets))
     for i in range(len(datasets)):
-        if datasets[i]['segmentation'] is None:
-            stroke_count = len(json.loads(datasets[i]['data']))
+        if datasets[i]["segmentation"] is None:
+            stroke_count = len(json.loads(datasets[i]["data"]))
             if stroke_count > 10:
                 print("Massive stroke count! %i" % stroke_count)
-            datasets[i]['segmentation'] = str([[s for s in
-                                                range(stroke_count)]])
+            datasets[i]["segmentation"] = str([[s for s in range(stroke_count)]])
     return datasets
 
 
@@ -296,14 +310,14 @@ def filter_recordings(recordings):
     """
     new_recordings = []
     for recording in recordings:
-        recording['data'] = json.loads(recording['data'])
-        tmp = json.loads(recording['segmentation'])
-        recording['segmentation'] = normalize_segmentation(tmp)
+        recording["data"] = json.loads(recording["data"])
+        tmp = json.loads(recording["segmentation"])
+        recording["segmentation"] = normalize_segmentation(tmp)
         had_none = False
-        for stroke in recording['data']:
+        for stroke in recording["data"]:
             for point in stroke:
-                if point['time'] is None:
-                    logging.debug("Had None-time: %i", recording['id'])
+                if point["time"] is None:
+                    logging.debug("Had None-time: %i", recording["id"])
                     had_none = True
                     break
             if had_none:
@@ -335,16 +349,16 @@ def get_nn_classifier(X, y):
     assert type(X) is numpy.ndarray
     assert type(y) is numpy.ndarray
     assert len(X) == len(y)
-    assert X.dtype == 'float32'
-    assert y.dtype == 'int32'
+    assert X.dtype == "float32"
+    assert y.dtype == "int32"
 
-    nn_pickled_filename = 'is_one_symbol_classifier.pickle'
+    nn_pickled_filename = "is_one_symbol_classifier.pickle"
     if os.path.isfile(nn_pickled_filename):
-        with open(nn_pickled_filename, 'rb') as handle:
+        with open(nn_pickled_filename, "rb") as handle:
             get_output = pickle.load(handle)
     else:
         get_output = train_nn_segmentation_classifier(X, y)
-        with open(nn_pickled_filename, 'wb') as handle:
+        with open(nn_pickled_filename, "wb") as handle:
             pickle.dump(get_output, handle, protocol=pickle.HIGHEST_PROTOCOL)
     return get_output
 
@@ -370,8 +384,7 @@ def train_nn_segmentation_classifier(X, y):
         n_classes = 2
         # First, construct an input layer. The shape parameter defines the
         # expected input shape, which is just the shape of our data matrix X.
-        l_in = lasagne.layers.InputLayer(shape=X.shape,
-                                         input_var=input_var)
+        l_in = lasagne.layers.InputLayer(shape=X.shape, input_var=input_var)
         # A dense layer implements a linear mix (xW + b) followed by a
         # nonlinear function.
         hiddens = [64, 64, 64]  # sollte besser als 0.12 sein (mit [32])
@@ -381,12 +394,14 @@ def train_nn_segmentation_classifier(X, y):
             l_hidden_1 = lasagne.layers.DenseLayer(
                 layers[-1],  # The first argument is the input to this layer
                 num_units=n_units,  # the layer's output dimensionality
-                nonlinearity=lasagne.nonlinearities.tanh)
+                nonlinearity=lasagne.nonlinearities.tanh,
+            )
             layers.append(l_hidden_1)
         # For our output layer, we'll use a dense layer with a softmax
         # nonlinearity.
-        l_output = lasagne.layers.DenseLayer(layers[-1], num_units=n_classes,
-                                             nonlinearity=softmax)
+        l_output = lasagne.layers.DenseLayer(
+            layers[-1], num_units=n_classes, nonlinearity=softmax
+        )
         return l_output
 
     # Batch iterator, Copied directly from the Lasagne example.
@@ -407,13 +422,13 @@ def train_nn_segmentation_classifier(X, y):
             np.random.shuffle(indices)
         for start_idx in range(0, len(inputs) - batchsize + 1, batchsize):
             if shuffle:
-                excerpt = indices[start_idx:start_idx + batchsize]
+                excerpt = indices[start_idx : start_idx + batchsize]
             else:
                 excerpt = slice(start_idx, start_idx + batchsize)
             yield inputs[excerpt], targets[excerpt]
 
-    input_var = T.matrix('inputs')
-    target_var = T.ivector('targets')
+    input_var = T.matrix("inputs")
+    target_var = T.ivector("targets")
     network = build_mlp(input_var)
     num_epochs = 7
 
@@ -432,10 +447,9 @@ def train_nn_segmentation_classifier(X, y):
     # parameters at each training step. Here, we'll use Stochastic Gradient
     # Descent (SGD) with Nesterov momentum, but Lasagne offers plenty more.
     params = lasagne.layers.get_all_params(network, trainable=True)
-    updates = lasagne.updates.nesterov_momentum(loss,
-                                                params,
-                                                learning_rate=0.01,
-                                                momentum=0.9)
+    updates = lasagne.updates.nesterov_momentum(
+        loss, params, learning_rate=0.01, momentum=0.9
+    )
 
     # Create a loss expression for validation/testing. The crucial difference
     # here is that we do a deterministic forward pass through the network,
@@ -460,12 +474,14 @@ def train_nn_segmentation_classifier(X, y):
             train_batches += 1
 
         # Then we print the results for this epoch:
-        print("Epoch {0} of {1} took {2:.3f}s".format(
-              epoch + 1, num_epochs, time.time() - start_time))
+        print(
+            "Epoch {0} of {1} took {2:.3f}s".format(
+                epoch + 1, num_epochs, time.time() - start_time
+            )
+        )
         print("  training loss:\t\t{0:.6f}".format(train_err / train_batches))
 
-    predict_fn = theano.function([input_var],
-                                 test_prediction)
+    predict_fn = theano.function([input_var], test_prediction)
     return predict_fn
 
 
@@ -492,32 +508,31 @@ def get_stroke_features(recording, strokeid1, strokeid2):
     X_i = []
     for s in [stroke1, stroke2]:
         hw = HandwrittenData(json.dumps([s]))
-        feat1 = features.ConstantPointCoordinates(strokes=1,
-                                                  points_per_stroke=20,
-                                                  fill_empty_with=0)
+        feat1 = features.ConstantPointCoordinates(
+            strokes=1, points_per_stroke=20, fill_empty_with=0
+        )
         feat2 = features.ReCurvature(strokes=1)
         feat3 = features.Ink()
         X_i += hw.feature_extraction([feat1, feat2, feat3])
     X_i += [get_strokes_distance(stroke1, stroke2)]  # Distance of strokes
     X_i += [get_time_distance(stroke1, stroke2)]  # Time in between
-    X_i += [abs(strokeid2-strokeid1)]  # Strokes in between
+    X_i += [abs(strokeid2 - strokeid1)]  # Strokes in between
     # X_i += [get_black_percentage()]
     return X_i
 
 
 def get_median_stroke_distance(recording):
     dists = []
-    for s1_id in range(len(recording)-1):
-        for s2_id in range(s1_id+1, len(recording)):
-            dists.append(get_strokes_distance(recording[s1_id],
-                                              recording[s2_id]))
+    for s1_id in range(len(recording) - 1):
+        for s2_id in range(s1_id + 1, len(recording)):
+            dists.append(get_strokes_distance(recording[s1_id], recording[s2_id]))
     return numpy.median(dists)
 
 
 def get_time_distance(s1, s2):
-    min_dist = abs(s1[0]['time'] - s2[0]['time'])
+    min_dist = abs(s1[0]["time"] - s2[0]["time"])
     for p1, p2 in zip(s1, s2):
-        dist = abs(p1['time'] - p2['time'])
+        dist = abs(p1["time"] - p2["time"])
         min_dist = min(min_dist, dist)
     return min_dist
 
@@ -551,6 +566,7 @@ def merge_segmentations(segs1, segs2, strokes=None):
     list of tuples :
         Segmentations with their score, combined from segs1 and segs2
     """
+
     def translate(segmentation, strokes):
         t = []
         for symbol in segmentation:
@@ -559,11 +575,12 @@ def merge_segmentations(segs1, segs2, strokes=None):
                 symbol_new.append(strokes[stroke])
             t.append(symbol_new)
         return t
+
     if strokes is None:
         strokes = [i for i in range(len(segs2[0][0]))]
     topf = partitions.TopFinder(500)
     for s1, s2 in itertools.product(segs1, segs2):
-        topf.push(s1[0]+translate(s2[0], strokes), s1[1]*s2[1])
+        topf.push(s1[0] + translate(s2[0], strokes), s1[1] * s2[1])
     return list(topf)
 
 
@@ -571,10 +588,9 @@ def update_segmentation_data(segmentation, add):
     return [[el + add for el in symbol] for symbol in segmentation]
 
 
-def get_segmentation(recording,
-                     single_clf,
-                     single_stroke_clf,
-                     stroke_segmented_classifier):
+def get_segmentation(
+    recording, single_clf, single_stroke_clf, stroke_segmented_classifier
+):
     """
     Get a list of segmentations of recording with the probability of the
     segmentation being correct.
@@ -609,8 +625,7 @@ def get_segmentation(recording,
     ]
     """
     mst_wood = get_mst_wood(recording, single_clf)
-    return [(normalize_segmentation([mst['strokes'] for mst in mst_wood]),
-             1.0)]
+    return [(normalize_segmentation([mst["strokes"] for mst in mst_wood]), 1.0)]
 
     # HandwrittenData(json.dumps(recording)).show()
     # return [([[i for i in range(len(recording))]], 1.0)]
@@ -634,12 +649,13 @@ def get_segmentation(recording,
     # range(int(math.ceil(float(len(recording))/8))):
     for chunk_part in mst_wood:
         # chunk = recording[8*chunk_part:8*(chunk_part+1)]
-        chunk = [recording[stroke] for stroke in chunk_part['strokes']]
+        chunk = [recording[stroke] for stroke in chunk_part["strokes"]]
 
         # Segment after pre-segmentation
         prob = [[1.0 for _ in chunk] for _ in chunk]
-        for strokeid1, strokeid2 in itertools.product(range(len(chunk)),
-                                                      range(len(chunk))):
+        for strokeid1, strokeid2 in itertools.product(
+            range(len(chunk)), range(len(chunk))
+        ):
             if strokeid1 == strokeid2:
                 continue
             X = get_stroke_features(chunk, strokeid1, strokeid2)
@@ -654,17 +670,20 @@ def get_segmentation(recording,
             min_top2 = partitions.TopFinder(1, find_min=True)
             for i, symbol in enumerate(symbols):
                 predictions = single_clf.predict(symbol)
-                min_top2.push("value-%i" % i,
-                              predictions[0]['probability'] +
-                              predictions[1]['probability'])
+                min_top2.push(
+                    "value-%i" % i,
+                    predictions[0]["probability"] + predictions[1]["probability"],
+                )
             ts[i][1] *= list(min_top2)[0][1]
         # for i, segmentation in enumerate(ts):
         #     ts[i][0] = update_segmentation_data(ts[i][0], 8*chunk_part)
-        g_top_segmentations = merge_segmentations(g_top_segmentations,
-                                                  ts,
-                                                  chunk_part['strokes'])
-    return [(normalize_segmentation(seg), probability)
-            for seg, probability in g_top_segmentations]
+        g_top_segmentations = merge_segmentations(
+            g_top_segmentations, ts, chunk_part["strokes"]
+        )
+    return [
+        (normalize_segmentation(seg), probability)
+        for seg, probability in g_top_segmentations
+    ]
 
 
 def get_mst_wood(recording, single_clf):
@@ -685,29 +704,31 @@ def get_mst_wood(recording, single_clf):
     """
     points = get_points(recording)
     mst = get_mst(points)
-    mst_wood = [{'mst': mst, 'strokes': list(range(len(mst)))}]
+    mst_wood = [{"mst": mst, "strokes": list(range(len(mst)))}]
     # TODO: break mst into wood of msts wherever possible by recognizing single
     # symbols by stroke
 
     bbintersections = get_bb_intersections(recording)
     for i, stroke in enumerate(recording):  # TODO
-        predictions = single_clf.predict({'id': 0, 'data': [stroke]})
+        predictions = single_clf.predict({"id": 0, "data": [stroke]})
         # TODO predictions[:20]
-        prob_sum = sum([p['probability'] for p in predictions[:1]])
+        prob_sum = sum([p["probability"] for p in predictions[:1]])
         # dots cannot be segmented into single symbols at this point
-        if prob_sum > 0.95 and not any([el for el in bbintersections[i]]) \
-           and len(stroke) > 2 \
-           and predictions[0]['semantics'].split(';')[1] != '-':
+        if (
+            prob_sum > 0.95
+            and not any([el for el in bbintersections[i]])
+            and len(stroke) > 2
+            and predictions[0]["semantics"].split(";")[1] != "-"
+        ):
             # Split mst here
             split_mst_index, split_node_i = find_split_node(mst_wood, i)
-            mst_wood_tmp = break_mst(mst_wood[split_mst_index],
-                                     split_node_i)
+            mst_wood_tmp = break_mst(mst_wood[split_mst_index], split_node_i)
             del mst_wood[split_mst_index]
             for mst in mst_wood_tmp:
                 mst_wood.append(mst)
             for mst in mst_wood:
-                if i in mst['strokes']:
-                    mst['pred'] = predictions[0]['semantics'].split(';')[1]
+                if i in mst["strokes"]:
+                    mst["pred"] = predictions[0]["semantics"].split(";")[1]
 
     # if any([True for mst in mst_wood if len(mst['strokes']) >= 8]):
     #     logging.debug([mst['pred'] for mst in mst_wood if 'pred' in mst])
@@ -776,9 +797,9 @@ def find_split_node(mst_wood, i):
         (mst index, node index)
     """
     for mst_index, mst in enumerate(mst_wood):
-        if i in mst['strokes']:
-            return (mst_index, mst['strokes'].index(i))
-    raise ValueError('%i was not found as stroke index.' % i)
+        if i in mst["strokes"]:
+            return (mst_index, mst["strokes"].index(i))
+    raise ValueError("%i was not found as stroke index." % i)
 
 
 def break_mst(mst, i):
@@ -794,41 +815,42 @@ def break_mst(mst, i):
     -------
     list of dictionarys ('mst' and 'strokes' are the keys)
     """
-    for j in range(len(mst['mst'])):
-        mst['mst'][i][j] = 0
-        mst['mst'][j][i] = 0
-    _, components = scipy.sparse.csgraph.connected_components(mst['mst'])
+    for j in range(len(mst["mst"])):
+        mst["mst"][i][j] = 0
+        mst["mst"][j][i] = 0
+    _, components = scipy.sparse.csgraph.connected_components(mst["mst"])
     comp_indices = {}
     for el in set(components):
-        comp_indices[el] = {'strokes': [], 'strokes_i': []}
+        comp_indices[el] = {"strokes": [], "strokes_i": []}
     for i, comp_nr in enumerate(components):
-        comp_indices[comp_nr]['strokes'].append(mst['strokes'][i])
-        comp_indices[comp_nr]['strokes_i'].append(i)
+        comp_indices[comp_nr]["strokes"].append(mst["strokes"][i])
+        comp_indices[comp_nr]["strokes_i"].append(i)
 
     mst_wood = []
 
     for key in comp_indices:
         matrix = []
-        for i, line in enumerate(mst['mst']):
+        for i, line in enumerate(mst["mst"]):
             line_add = []
-            if i not in comp_indices[key]['strokes_i']:
+            if i not in comp_indices[key]["strokes_i"]:
                 continue
             for j, el in enumerate(line):
-                if j in comp_indices[key]['strokes_i']:
+                if j in comp_indices[key]["strokes_i"]:
                     line_add.append(el)
             matrix.append(line_add)
-        assert len(matrix) > 0, \
-            ("len(matrix) == 0 (strokes: %s, mst=%s, i=%i)" %
-             (comp_indices[key]['strokes'], mst, i))
-        assert len(matrix) == len(matrix[0]), \
-            ("matrix was %i x %i, but should be square" %
-             (len(matrix), len(matrix[0])))
-        assert len(matrix) == len(comp_indices[key]['strokes']), \
-            (("stroke length was not equal to matrix length "
-              "(strokes=%s, len(matrix)=%i)") %
-             (comp_indices[key]['strokes'], len(matrix)))
-        mst_wood.append({'mst': matrix,
-                         'strokes': comp_indices[key]['strokes']})
+        assert len(matrix) > 0, "len(matrix) == 0 (strokes: %s, mst=%s, i=%i)" % (
+            comp_indices[key]["strokes"],
+            mst,
+            i,
+        )
+        assert len(matrix) == len(
+            matrix[0]
+        ), "matrix was %i x %i, but should be square" % (len(matrix), len(matrix[0]))
+        assert len(matrix) == len(comp_indices[key]["strokes"]), (
+            "stroke length was not equal to matrix length "
+            "(strokes=%s, len(matrix)=%i)"
+        ) % (comp_indices[key]["strokes"], len(matrix))
+        mst_wood.append({"mst": matrix, "strokes": comp_indices[key]["strokes"]})
     return mst_wood
 
 
@@ -856,16 +878,18 @@ def _is_out_of_order(segmentation):
 
 class SingleSymbolStrokeClassifier(object):
     """Classifier which decides if a single stroke is a single symbol."""
+
     def __init__(self):
         logging.info("Start reading model (single_symbol_stroke_clf)...")
-        model_path = pkg_resources.resource_filename('hwrt', 'misc/')
+        model_path = pkg_resources.resource_filename("hwrt", "misc/")
 
         # TODO
         model_file = os.path.join(model_path, "model-single-stroke.tar")
 
         logging.info("Model: %s", model_file)
-        (preprocessing_queue, feature_list, model,
-         output_semantics) = utils.load_model(model_file)
+        (preprocessing_queue, feature_list, model, output_semantics) = utils.load_model(
+            model_file
+        )
         self.preprocessing_queue = preprocessing_queue
         self.feature_list = feature_list
         self.model = model
@@ -873,12 +897,14 @@ class SingleSymbolStrokeClassifier(object):
 
     def predict(self, parsed_json):
         evaluate = utils.evaluate_model_single_recording_preloaded
-        results = evaluate(self.preprocessing_queue,
-                           self.feature_list,
-                           self.model,
-                           self.output_semantics,
-                           json.dumps(parsed_json['data']),
-                           parsed_json['id'])
+        results = evaluate(
+            self.preprocessing_queue,
+            self.feature_list,
+            self.model,
+            self.output_semantics,
+            json.dumps(parsed_json["data"]),
+            parsed_json["id"],
+        )
         return results
 
 
@@ -889,7 +915,7 @@ def apply_segmentation(recording, segmentation):
         symbol = []
         for index in symbol_indices:
             symbol.append(recording[index])
-        symbols.append({'data': symbol, 'id': 'symbol-%i' % index})
+        symbols.append({"data": symbol, "id": "symbol-%i" % index})
     return symbols
 
 
@@ -897,6 +923,7 @@ class Graph(object):
     """
     A graph class. It has nodes and vertices.
     """
+
     def __init__(self):
         self.nodes = []
 
@@ -925,8 +952,11 @@ class Graph(object):
                 current = queued.pop()
                 segment.append(current)
                 remaining_graph_nodes.remove(current)
-                queued = [n.identifier for n in self.nodes[current].neighbors
-                          if n.identifier in remaining_graph_nodes]
+                queued = [
+                    n.identifier
+                    for n in self.nodes[current].neighbors
+                    if n.identifier in remaining_graph_nodes
+                ]
             segments.append(segment)
         return segments
 
@@ -1015,11 +1045,10 @@ def get_bb_intersections(recording):
     -------
     A symmetrical matrix which indicates if two bounding boxes intersect.
     """
-    intersections = numpy.zeros((len(recording), len(recording)),
-                                dtype=bool)
-    for i in range(len(recording)-1):
+    intersections = numpy.zeros((len(recording), len(recording)), dtype=bool)
+    for i in range(len(recording) - 1):
         a = geometry.get_bounding_box(recording[i]).grow(0.2)
-        for j in range(i+1, len(recording)):
+        for j in range(i + 1, len(recording)):
             b = geometry.get_bounding_box(recording[j]).grow(0.2)
             intersections[i][j] = geometry.do_bb_intersect(a, b)
             intersections[j][i] = intersections[i][j]
@@ -1078,13 +1107,16 @@ def normalize_segmentation(seg):
 single_clf = SingleClassifier()
 
 
-if __name__ == '__main__':
-    logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                        level=logging.DEBUG,
-                        stream=sys.stdout)
+if __name__ == "__main__":
+    logging.basicConfig(
+        format="%(asctime)s %(levelname)s %(message)s",
+        level=logging.DEBUG,
+        stream=sys.stdout,
+    )
 
     logging.info("Start doctest")
     import doctest
+
     doctest.testmod()
 
     main()

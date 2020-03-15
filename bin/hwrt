@@ -10,29 +10,34 @@
 """
 
 
+# Core Library modules
 import argparse
-
 import logging
 import sys
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
 
+# First party modules
 # hwrt modules
 # Every HWR tool that should be available through
 #   hwrt TOOL
 # has to be added to ``get_parser()`` and to ``main``.
 import hwrt
-from hwrt import create_ffiles
-from hwrt import create_model
-from hwrt import selfcheck
-from hwrt import view
-from hwrt import download
-from hwrt import analyze_data
-from hwrt import serve
-from hwrt import filter_dataset
-from hwrt import test
-from hwrt import train
+from hwrt import (
+    analyze_data,
+    create_ffiles,
+    create_model,
+    download,
+    filter_dataset,
+    selfcheck,
+    serve,
+    test,
+    train,
+    view,
+)
+
+logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
+                    level=logging.DEBUG,
+                    stream=sys.stdout)
+
 
 
 def get_parser():

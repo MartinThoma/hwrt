@@ -3,20 +3,27 @@
 
 """Create and train a given model."""
 
-import logging
-import sys
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
-import os
-import yaml
+# Core Library modules
 import datetime
+import logging
+import os
+import sys
 
-# hwrt modules
-import hwrt.utils as utils
-import hwrt.preprocess_dataset as preprocess_dataset
+# Third party modules
+import yaml
+
+# First party modules
 import hwrt.create_ffiles as create_ffiles
 import hwrt.create_model as create_model
+import hwrt.preprocess_dataset as preprocess_dataset
+import hwrt.utils as utils
+
+logging.basicConfig(
+    format="%(asctime)s %(levelname)s %(message)s",
+    level=logging.DEBUG,
+    stream=sys.stdout,
+)
+
 
 
 def update_if_outdated(folder):
@@ -30,7 +37,7 @@ def update_if_outdated(folder):
         # Get info.yml
         with open(os.path.join(folder, "info.yml")) as ymlfile:
             content = yaml.load(ymlfile)
-        folder = os.path.join(utils.get_project_root(), content['data-source'])
+        folder = os.path.join(utils.get_project_root(), content["data-source"])
     raw_source_file = folder
     if not os.path.isfile(raw_source_file):
         logging.error("File '%s' was not found.", raw_source_file)
@@ -47,8 +54,9 @@ def update_if_outdated(folder):
             # refresh the target
             if "preprocessed" in target_folder:
                 logging.info("Preprocessed file was outdated. Update...")
-                preprocess_dataset.main(os.path.join(utils.get_project_root(),
-                                                     target_folder))
+                preprocess_dataset.main(
+                    os.path.join(utils.get_project_root(), target_folder)
+                )
             elif "feature-files" in target_folder:
                 logging.info("Feature file was outdated. Update...")
                 create_ffiles.main(target_folder)
@@ -67,21 +75,21 @@ def generate_training_command(model_folder):
     update_if_outdated(model_folder)
     model_description_file = os.path.join(model_folder, "info.yml")
     # Read the model description file
-    with open(model_description_file, 'r') as ymlfile:
+    with open(model_description_file, "r") as ymlfile:
         model_description = yaml.load(ymlfile)
 
     # Get the data paths (hdf5 files)
     project_root = utils.get_project_root()
     data = {}
-    data['training'] = os.path.join(project_root,
-                                    model_description["data-source"],
-                                    "traindata.hdf5")
-    data['testing'] = os.path.join(project_root,
-                                   model_description["data-source"],
-                                   "testdata.hdf5")
-    data['validating'] = os.path.join(project_root,
-                                      model_description["data-source"],
-                                      "validdata.hdf5")
+    data["training"] = os.path.join(
+        project_root, model_description["data-source"], "traindata.hdf5"
+    )
+    data["testing"] = os.path.join(
+        project_root, model_description["data-source"], "testdata.hdf5"
+    )
+    data["validating"] = os.path.join(
+        project_root, model_description["data-source"], "validdata.hdf5"
+    )
 
     # Get latest model file
     basename = "model"
@@ -94,14 +102,13 @@ def generate_training_command(model_folder):
         logging.info("Model '%s' found.", latest_model)
         i = int(latest_model.split("-")[-1].split(".")[0])
         model_src = os.path.join(model_folder, "%s-%i.json" % (basename, i))
-        model_target = os.path.join(model_folder,
-                                    "%s-%i.json" % (basename, i+1))
+        model_target = os.path.join(model_folder, "%s-%i.json" % (basename, i + 1))
 
     # generate the training command
-    training = model_description['training']
-    training = training.replace("{{testing}}", data['testing'])
-    training = training.replace("{{training}}", data['training'])
-    training = training.replace("{{validation}}", data['validating'])
+    training = model_description["training"]
+    training = training.replace("{{testing}}", data["testing"])
+    training = training.replace("{{training}}", data["training"])
+    training = training.replace("{{validation}}", data["validating"])
     training = training.replace("{{src_model}}", model_src)
     training = training.replace("{{target_model}}", model_target)
     training = training.replace("{{nntoolkit}}", utils.get_nntoolkit())
@@ -124,30 +131,36 @@ def main(model_folder):
     model_description_file = os.path.join(model_folder, "info.yml")
 
     # Read the model description file
-    with open(model_description_file, 'r') as ymlfile:
+    with open(model_description_file, "r") as ymlfile:
         model_description = yaml.load(ymlfile)
 
     # Analyze model
-    logging.info(model_description['model'])
+    logging.info(model_description["model"])
     data = {}
-    data['training'] = os.path.join(model_folder, "traindata.hdf5")
-    data['testing'] = os.path.join(model_folder, "testdata.hdf5")
-    data['validating'] = os.path.join(model_folder, "validdata.hdf5")
+    data["training"] = os.path.join(model_folder, "traindata.hdf5")
+    data["testing"] = os.path.join(model_folder, "testdata.hdf5")
+    data["validating"] = os.path.join(model_folder, "validdata.hdf5")
     train_model(model_folder)
 
 
 def get_parser():
     """Return the parser object for this script."""
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-    parser = ArgumentParser(description=__doc__,
-                            formatter_class=ArgumentDefaultsHelpFormatter)
-    parser.add_argument("-m", "--model",
-                        dest="model",
-                        help="where is the model folder (with a info.yml)?",
-                        metavar="FOLDER",
-                        type=lambda x: utils.is_valid_folder(parser, x),
-                        default=utils.default_model())
+
+    parser = ArgumentParser(
+        description=__doc__, formatter_class=ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument(
+        "-m",
+        "--model",
+        dest="model",
+        help="where is the model folder (with a info.yml)?",
+        metavar="FOLDER",
+        type=lambda x: utils.is_valid_folder(parser, x),
+        default=utils.default_model(),
+    )
     return parser
+
 
 if __name__ == "__main__":
     args = get_parser().parse_args()

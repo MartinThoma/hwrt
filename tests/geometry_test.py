@@ -14,8 +14,7 @@ def object_creation_test():
     nose.tools.assert_equal(str(p1), "p(0.00, 0.00)")
     geometry.LineSegment(p1, p2)
     geometry.BoundingBox(p1, p2)
-    geometry.PolygonalChain([{'x': 0, 'y': 0}, {'x': 10, 'y': 5},
-                             {'x': 2, 'y': 3}])
+    geometry.PolygonalChain([{"x": 0, "y": 0}, {"x": 10, "y": 5}, {"x": 2, "y": 3}])
 
 
 def point_distance_test():
@@ -221,30 +220,30 @@ def point_segment_distance_test():
     ap2 = geometry.Point(1, 1)
     line = geometry.LineSegment(ap1, ap2)
     point = geometry.Point(1, 0)
-    nose.tools.assert_equal(geometry.point_segment_distance(point, line),
-                            (2**0.5)/2.0)
+    nose.tools.assert_equal(
+        geometry.point_segment_distance(point, line), (2 ** 0.5) / 2.0
+    )
 
     # Test 6: Continued line
     ap1 = geometry.Point(0, 0)
     ap2 = geometry.Point(1, 1)
     line = geometry.LineSegment(ap1, ap2)
     point = geometry.Point(2, 2)
-    nose.tools.assert_equal(geometry.point_segment_distance(point, line),
-                            2**0.5)
+    nose.tools.assert_equal(geometry.point_segment_distance(point, line), 2 ** 0.5)
 
     ap1 = geometry.Point(0, 0)
     ap2 = geometry.Point(1, 1)
     line = geometry.LineSegment(ap1, ap2)
     point = geometry.Point(-1, -1)
-    nose.tools.assert_equal(geometry.point_segment_distance(point, line),
-                            2**0.5)
+    nose.tools.assert_equal(geometry.point_segment_distance(point, line), 2 ** 0.5)
 
 
 def segments_intersection_test():
     l1 = geometry.LineSegment(geometry.Point(0, 0), geometry.Point(2, 2))
     l2 = geometry.LineSegment(geometry.Point(1, 1), geometry.Point(3, 3))
-    nose.tools.assert_equal(geometry.get_segments_intersections(l1, l2),
-                            [geometry.Point(1, 1)])
+    nose.tools.assert_equal(
+        geometry.get_segments_intersections(l1, l2), [geometry.Point(1, 1)]
+    )
 
     l1 = geometry.LineSegment(geometry.Point(0, 0), geometry.Point(2, 2))
     l2 = geometry.LineSegment(geometry.Point(2.1, 2.1), geometry.Point(3, 3))
@@ -253,13 +252,15 @@ def segments_intersection_test():
     # 2 vertical line segments
     l1 = geometry.LineSegment(geometry.Point(42, 2), geometry.Point(42, 0))
     l2 = geometry.LineSegment(geometry.Point(42, 1), geometry.Point(42, -1))
-    nose.tools.assert_equal(geometry.get_segments_intersections(l1, l2),
-                            [geometry.Point(42, 0)])
+    nose.tools.assert_equal(
+        geometry.get_segments_intersections(l1, l2), [geometry.Point(42, 0)]
+    )
 
     l1 = geometry.LineSegment(geometry.Point(-1, 0), geometry.Point(1, 0))
     l2 = geometry.LineSegment(geometry.Point(0, -1), geometry.Point(0, 1))
-    nose.tools.assert_equal(geometry.get_segments_intersections(l1, l2),
-                            [geometry.Point(0, 0)])
+    nose.tools.assert_equal(
+        geometry.get_segments_intersections(l1, l2), [geometry.Point(0, 0)]
+    )
 
 
 def segment_intersection_test():
@@ -273,15 +274,17 @@ def segment_intersection_test():
 
 
 def stroke_selfintersection_test():
-    a = [{'y': 69, 'x': 289},
-         {'y': 69, 'x': 290},
-         {'y': 69, 'x': 291},
-         {'y': 69, 'x': 292},
-         {'y': 69, 'x': 293},
-         {'y': 69, 'x': 295},
-         {'y': 70, 'x': 297},
-         {'y': 70, 'x': 299},
-         {'y': 71, 'x': 302},
-         {'y': 72, 'x': 303}]
+    a = [
+        {"y": 69, "x": 289},
+        {"y": 69, "x": 290},
+        {"y": 69, "x": 291},
+        {"y": 69, "x": 292},
+        {"y": 69, "x": 293},
+        {"y": 69, "x": 295},
+        {"y": 70, "x": 297},
+        {"y": 70, "x": 299},
+        {"y": 71, "x": 302},
+        {"y": 72, "x": 303},
+    ]
     a = geometry.PolygonalChain(a)
     nose.tools.assert_equal(a.count_selfintersections(), 0)

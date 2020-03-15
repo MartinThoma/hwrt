@@ -2,10 +2,14 @@
 
 """Classify recordings."""
 
+# Core Library modules
 import logging
-import pkg_resources
 import os
 
+# Third party modules
+import pkg_resources
+
+# First party modules
 # hwrt modules
 from hwrt import utils
 
@@ -17,17 +21,18 @@ class SingleClassificer(object):
 
     def __init__(self):
         logging.info("Start reading model...")
-        model_path = pkg_resources.resource_filename('hwrt', 'misc/')
+        model_path = pkg_resources.resource_filename("hwrt", "misc/")
         model_file = os.path.join(model_path, "model.tar")
         logging.info("Model: %s", model_file)
-        (preprocessing_queue, feature_list, model,
-         output_semantics) = utils.load_model(model_file)
+        (preprocessing_queue, feature_list, model, output_semantics) = utils.load_model(
+            model_file
+        )
         self.preprocessing_queue = preprocessing_queue
         self.feature_list = feature_list
         self.model = model
         self.output_semantics_orig = output_semantics
         self.output_semantics = self.output_semantics_orig
-        if 'HWRT_ENV' in os.environ and os.environ['HWRT_ENV'] == 'dev':
+        if "HWRT_ENV" in os.environ and os.environ["HWRT_ENV"] == "dev":
             new_semantics = []
             for el in output_semantics:
                 new_semantics.append(el.split(";")[1])
@@ -48,17 +53,19 @@ class SingleClassificer(object):
         list
         """
         evaluate = utils.evaluate_model_single_recording_preloaded
-        results = evaluate(self.preprocessing_queue,
-                           self.feature_list,
-                           self.model,
-                           self.output_semantics,
-                           recording)
-        if result_format == 'LaTeX':
+        results = evaluate(
+            self.preprocessing_queue,
+            self.feature_list,
+            self.model,
+            self.output_semantics,
+            recording,
+        )
+        if result_format == "LaTeX":
             for i in range(len(results)):
-                results[i]['semantics'] = results[i]['semantics'].split(";")[1]
+                results[i]["semantics"] = results[i]["semantics"].split(";")[1]
         for i in range(len(results)):
-            splitted = results[i]['semantics'].split(";")
-            results[i]['complete_latex'] = splitted[1]
+            splitted = results[i]["semantics"].split(";")
+            results[i]["complete_latex"] = splitted[1]
         return results
 
 

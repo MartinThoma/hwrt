@@ -15,14 +15,16 @@ this:
 
 """
 
-import numpy
-import sys
+# Core Library modules
 import math
+import sys
 from copy import deepcopy
 
-# hwrt modules
-from . import handwritten_data
-from . import utils
+# Third party modules
+import numpy
+
+# Local modules
+from . import handwritten_data, utils
 
 
 def get_data_multiplication_queue(model_description_multiply):
@@ -33,9 +35,12 @@ def get_data_multiplication_queue(model_description_multiply):
     >>> get_data_multiplication_queue(l)
     [Multiply (1 times), Rotate (-30.00, 30.00, 5.00)]
     """
-    return utils.get_objectlist(model_description_multiply,
-                                config_key='data_multiplication',
-                                module=sys.modules[__name__])
+    return utils.get_objectlist(
+        model_description_multiply,
+        config_key="data_multiplication",
+        module=sys.modules[__name__],
+    )
+
 
 # Only data multiplication classes follow
 # Everyone must have a __str__, __repr__, __call__ and get_dimension function
@@ -61,9 +66,9 @@ class Multiply(object):
         return repr(self)
 
     def __call__(self, hwr_obj):
-        assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
-            "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(hwr_obj)
+        assert isinstance(
+            hwr_obj, handwritten_data.HandwrittenData
+        ), "handwritten data is not of type HandwrittenData, but of %r" % type(hwr_obj)
         new_trainging_set = []
         for _ in range(self.nr):
             new_trainging_set.append(hwr_obj)
@@ -87,9 +92,9 @@ class Rotate(object):
         return repr(self)
 
     def __call__(self, hwr_obj):
-        assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
-            "handwritten data is not of type HandwrittenData, but of %r" % \
-            type(hwr_obj)
+        assert isinstance(
+            hwr_obj, handwritten_data.HandwrittenData
+        ), "handwritten data is not of type HandwrittenData, but of %r" % type(hwr_obj)
         new_trainging_set = []
         xc, yc = hwr_obj.get_center_of_mass()
         pointlist = hwr_obj.get_pointlist()
@@ -103,22 +108,22 @@ class Rotate(object):
                     # xnew, ynew = xc, yc
                     # (xnew, ynew) += (x-xc, y-yc)* (cos(rot.)  -sin(rot.))
                     #                               (sin(rot.)   cos(rot.))
-                    x, y = point['x'], point['y']
+                    x, y = point["x"], point["y"]
                     cos = math.cos(math.radians(rotation))
                     sin = math.sin(math.radians(rotation))
-                    xnew = cos*(x-xc) - sin*(y-yc) + xc
-                    ynew = sin*(x-xc) + cos*(y-yc) + yc
-                    new_line.append({'x': xnew,
-                                     'y': ynew,
-                                     'time': point['time']})
+                    xnew = cos * (x - xc) - sin * (y - yc) + xc
+                    ynew = sin * (x - xc) + cos * (y - yc) + yc
+                    new_line.append({"x": xnew, "y": ynew, "time": point["time"]})
                 new_poinlist.append(new_line)
-            #create the new handwritten data object
+            # create the new handwritten data object
             hwd_tmp = deepcopy(hwr_obj)
             hwd_tmp.set_pointlist(new_poinlist)
             new_trainging_set.append(hwd_tmp)
         training_set = new_trainging_set
         return training_set
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

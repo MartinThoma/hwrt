@@ -5,28 +5,34 @@
    if the version is ok.
 """
 
+# Core Library modules
 import imp
-import sys
-import platform
 import os
+import platform
+import sys
+
+# Third party modules
 import pkg_resources
 
+# Local modules
 # hwrt
 from . import utils
 
 
 class Bcolors(object):
     """Terminal colors with ANSI escape codes."""
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
+
+    HEADER = "\033[95m"
+    OKBLUE = "\033[94m"
+    OKGREEN = "\033[92m"
+    WARNING = "\033[93m"
+    FAIL = "\033[91m"
+    ENDC = "\033[0m"
 
 
 def which(program):
     """Get the path of a program or ``None`` if ``program`` is not in path."""
+
     def is_exe(fpath):
         """Check for windows users."""
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
@@ -51,72 +57,95 @@ def check_python_version():
     req_version = (2, 7)
     cur_version = sys.version_info
     if cur_version >= req_version:
-        print("Python version... %sOK%s (found %s, requires %s)" %
-              (Bcolors.OKGREEN, Bcolors.ENDC, str(platform.python_version()),
-               str(req_version[0]) + "." + str(req_version[1])))
+        print(
+            "Python version... %sOK%s (found %s, requires %s)"
+            % (
+                Bcolors.OKGREEN,
+                Bcolors.ENDC,
+                str(platform.python_version()),
+                str(req_version[0]) + "." + str(req_version[1]),
+            )
+        )
     else:
-        print("Python version... %sFAIL%s (found %s, requires %s)" %
-              (Bcolors.FAIL, Bcolors.ENDC, str(cur_version),
-               str(req_version)))
+        print(
+            "Python version... %sFAIL%s (found %s, requires %s)"
+            % (Bcolors.FAIL, Bcolors.ENDC, str(cur_version), str(req_version))
+        )
 
 
 def check_python_modules():
     """Check if all necessary / recommended modules are installed."""
     print("\033[1mCheck modules\033[0m")
-    required_modules = ['argparse', 'matplotlib', 'natsort', 'pymysql',
-                        'cPickle', 'theano', 'dropbox', 'yaml',
-                        'webbrowser', 'hashlib', 'numpy',
-                        'jinja2']
+    required_modules = [
+        "argparse",
+        "matplotlib",
+        "natsort",
+        "pymysql",
+        "cPickle",
+        "theano",
+        "dropbox",
+        "yaml",
+        "webbrowser",
+        "hashlib",
+        "numpy",
+        "jinja2",
+    ]
     found = []
     for required_module in required_modules:
         try:
             imp.find_module(required_module)
-            check = "module '%s' ... %sfound%s" % (required_module,
-                                                   Bcolors.OKGREEN,
-                                                   Bcolors.ENDC)
+            check = "module '%s' ... %sfound%s" % (
+                required_module,
+                Bcolors.OKGREEN,
+                Bcolors.ENDC,
+            )
             print(check)
             found.append(required_module)
         except ImportError:
-            print("module '%s' ... %sNOT%s found" % (required_module,
-                                                     Bcolors.WARNING,
-                                                     Bcolors.ENDC))
+            print(
+                "module '%s' ... %sNOT%s found"
+                % (required_module, Bcolors.WARNING, Bcolors.ENDC)
+            )
 
     if "argparse" in found:
         import argparse
+
         print("argparse version: %s (1.1 tested)" % argparse.__version__)
     if "matplotlib" in found:
         import matplotlib
+
         print("matplotlib version: %s (1.2.1 tested)" % matplotlib.__version__)
     if "natsort" in found:
         import natsort
-        print("natsort version: %s (3.4.0 tested, 3.4.0 > required)" %
-              natsort.__version__)
+
+        print(
+            "natsort version: %s (3.4.0 tested, 3.4.0 > required)" % natsort.__version__
+        )
     if "pymysql" in found:
         import pymysql
-        print("pymysql version: %s (0.6.3 tested)" %
-              pymysql.__version__)
+
+        print("pymysql version: %s (0.6.3 tested)" % pymysql.__version__)
     if "theano" in found:
         import theano
-        print("theano version: %s (0.6.0 tested)" %
-              theano.__version__)
+
+        print("theano version: %s (0.6.0 tested)" % theano.__version__)
     if "numpy" in found:
         import numpy
-        print("numpy version: %s (1.8.1 tested)" %
-              numpy.__version__)
+
+        print("numpy version: %s (1.8.1 tested)" % numpy.__version__)
     if "yaml" in found:
         import yaml
-        print("yaml version: %s (3.11 tested)" %
-              yaml.__version__)
+
+        print("yaml version: %s (3.11 tested)" % yaml.__version__)
     if "jinja2" in found:
         import jinja2
-        print("jinja2 version: %s (2.7.3 tested)" %
-              jinja2.__version__)
+
+        print("jinja2 version: %s (2.7.3 tested)" % jinja2.__version__)
     if "cPickle" in found:
         import cPickle
-        print("cPickle version: %s (1.71 tested)" %
-              cPickle.__version__)
-        print("cPickle HIGHEST_PROTOCOL: %s (2 required)" %
-              cPickle.HIGHEST_PROTOCOL)
+
+        print("cPickle version: %s (1.71 tested)" % cPickle.__version__)
+        print("cPickle HIGHEST_PROTOCOL: %s (2 required)" % cPickle.HIGHEST_PROTOCOL)
 
 
 def check_executables():
@@ -126,11 +155,12 @@ def check_executables():
     for executable in required_executables:
         path = which(executable)
         if path is None:
-            print("%s ... %sNOT%s found" % (executable, Bcolors.WARNING,
-                                            Bcolors.ENDC))
+            print("%s ... %sNOT%s found" % (executable, Bcolors.WARNING, Bcolors.ENDC))
         else:
-            print("%s ... %sfound%s at %s" % (executable, Bcolors.OKGREEN,
-                                              Bcolors.ENDC, path))
+            print(
+                "%s ... %sfound%s at %s"
+                % (executable, Bcolors.OKGREEN, Bcolors.ENDC, path)
+            )
 
 
 def main():
@@ -142,14 +172,12 @@ def main():
     print("\033[1mCheck files\033[0m")
     rcfile = os.path.join(home, ".hwrtrc")
     if os.path.isfile(rcfile):
-        print("~/.hwrtrc... %sFOUND%s" %
-              (Bcolors.OKGREEN, Bcolors.ENDC))
+        print("~/.hwrtrc... %sFOUND%s" % (Bcolors.OKGREEN, Bcolors.ENDC))
     else:
-        print("~/.hwrtrc... %sNOT FOUND%s" %
-              (Bcolors.FAIL, Bcolors.ENDC))
-    misc_path = pkg_resources.resource_filename('hwrt', 'misc/')
+        print("~/.hwrtrc... %sNOT FOUND%s" % (Bcolors.FAIL, Bcolors.ENDC))
+    misc_path = pkg_resources.resource_filename("hwrt", "misc/")
     print("misc-path: %s" % misc_path)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

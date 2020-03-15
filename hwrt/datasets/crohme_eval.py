@@ -9,9 +9,11 @@ import json
 import logging
 import sys
 
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
+logging.basicConfig(
+    format="%(asctime)s %(levelname)s %(message)s",
+    level=logging.DEBUG,
+    stream=sys.stdout,
+)
 
 # HWRT modules
 from . import inkml
@@ -57,15 +59,16 @@ def evaluate_inkml(inkml_file_path):
         keys 'semantics' (which contains the latex command) and 'probability'
     """
     logging.info("Start evaluating '%s'...", inkml_file_path)
-    ret = {'filename': inkml_file_path}
+    ret = {"filename": inkml_file_path}
     recording = inkml.read(inkml_file_path)
-    results = evaluate(json.dumps(recording.get_sorted_pointlist()),
-                       result_format='LaTeX')
-    ret['results'] = results
+    results = evaluate(
+        json.dumps(recording.get_sorted_pointlist()), result_format="LaTeX"
+    )
+    ret["results"] = results
     return ret
 
 
-def generate_output_csv(evaluation_results, filename='results.csv'):
+def generate_output_csv(evaluation_results, filename="results.csv"):
     """Generate the evaluation results in the format
 
     Parameters
@@ -82,28 +85,35 @@ def generate_output_csv(evaluation_results, filename='results.csv'):
     MfrDB3907_85802, 1, |, l, COMMA, junk, x, X, \times
     scores, 10, 8.001, 2, 0.5, 0.1, 0,-0.5, -1, -100
     """
-    with open(filename, 'w') as f:
+    with open(filename, "w") as f:
         for result in evaluation_results:
-            for i, entry in enumerate(result['results']):
-                if entry['semantics'] == ',':
-                    result['results']['semantics'] = 'COMMA'
-            f.write("%s, " % result['filename'])
-            f.write(", ".join([entry['semantics'] for entry in result['results']]))
+            for i, entry in enumerate(result["results"]):
+                if entry["semantics"] == ",":
+                    result["results"]["semantics"] = "COMMA"
+            f.write("%s, " % result["filename"])
+            f.write(", ".join([entry["semantics"] for entry in result["results"]]))
             f.write("\n")
             f.write("%s, " % "scores")
-            f.write(", ".join([str(entry['probability']) for entry in result['results']]))
+            f.write(
+                ", ".join([str(entry["probability"]) for entry in result["results"]])
+            )
             f.write("\n")
 
 
 def get_parser():
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-    parser = ArgumentParser(description=__doc__,
-                            formatter_class=ArgumentDefaultsHelpFormatter)
-    parser.add_argument("-d", "--dir",
-                        dest="sample_dir",
-                        help="directory with data to evaluate",
-                        required=True,
-                        metavar="DIRECTORY")
+
+    parser = ArgumentParser(
+        description=__doc__, formatter_class=ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument(
+        "-d",
+        "--dir",
+        dest="sample_dir",
+        help="directory with data to evaluate",
+        required=True,
+        metavar="DIRECTORY",
+    )
     return parser
 
 

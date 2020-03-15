@@ -6,37 +6,63 @@
 """
 
 from __future__ import print_function
-import os
+
+# Core Library modules
 import logging
+import os
 import sys
+
+# Third party modules
+import numpy
+
+# Local modules
+# hwrt modules
+# HandwrittenData is necessary because of pickle
+from . import data_analyzation_metrics as dam
+from . import features, handwritten_data, utils
+
 try:  # Python 2
     import cPickle as pickle
 except ImportError:  # Python 3
     import pickle
-import numpy
 
-# hwrt modules
-# HandwrittenData is necessary because of pickle
-from . import handwritten_data
-sys.modules['HandwrittenData'] = handwritten_data
-from . import features
-from . import utils
-from . import data_analyzation_metrics as dam
+
+sys.modules["HandwrittenData"] = handwritten_data
 
 
 def filter_label(label, replace_by_similar=True):
     """Some labels currently don't work together because of LaTeX naming
        clashes. Those will be replaced by simple strings. """
-    bad_names = ['celsius', 'degree', 'ohm', 'venus', 'mars', 'astrosun',
-                 'fullmoon', 'leftmoon', 'female', 'male', 'checked',
-                 'diameter', 'sun', 'Bowtie', 'sqrt',
-                 'cong', 'copyright', 'dag', 'parr', 'notin', 'dotsc',
-                 'mathds', 'mathfrak']
+    bad_names = [
+        "celsius",
+        "degree",
+        "ohm",
+        "venus",
+        "mars",
+        "astrosun",
+        "fullmoon",
+        "leftmoon",
+        "female",
+        "male",
+        "checked",
+        "diameter",
+        "sun",
+        "Bowtie",
+        "sqrt",
+        "cong",
+        "copyright",
+        "dag",
+        "parr",
+        "notin",
+        "dotsc",
+        "mathds",
+        "mathfrak",
+    ]
     if any(label[1:].startswith(bad) for bad in bad_names):
-        if label == '\\dag' and replace_by_similar:
-            return '\\dagger'
-        elif label == '\\diameter' and replace_by_similar:
-            return '\\O'
+        if label == "\\dag" and replace_by_similar:
+            return "\\dagger"
+        elif label == "\\diameter" and replace_by_similar:
+            return "\\O"
         return label[1:]
     else:
         return label
@@ -60,11 +86,11 @@ def analyze_feature(raw_datasets, feature, basename="aspect_ratios"):
     """
 
     # Prepare files
-    csv_file = dam.prepare_file(basename + '.csv')
-    raw_file = dam.prepare_file(basename + '.raw')
+    csv_file = dam.prepare_file(basename + ".csv")
+    raw_file = dam.prepare_file(basename + ".raw")
 
-    csv_file = open(csv_file, 'a')
-    raw_file = open(raw_file, 'a')
+    csv_file = open(csv_file, "a")
+    raw_file = open(raw_file, "a")
 
     csv_file.write("label,mean,std\n")  # Write header
     raw_file.write("latex,raw_data_id,value\n")  # Write header
@@ -75,9 +101,10 @@ def analyze_feature(raw_datasets, feature, basename="aspect_ratios"):
         for data in datasets:
             value = feature(data)[0]
             values.append(value)
-            raw_file.write("%s,%i,%0.2f\n" % (datasets[0].formula_in_latex,
-                                              data.raw_data_id,
-                                              value))
+            raw_file.write(
+                "%s,%i,%0.2f\n"
+                % (datasets[0].formula_in_latex, data.raw_data_id, value)
+            )
         label = filter_label(datasets[0].formula_in_latex)
         print_data.append((label, numpy.mean(values), numpy.std(values)))
 
@@ -95,26 +122,28 @@ def main(handwriting_datasets_file, analyze_features):
     # Load from pickled file
     logging.info("Start loading data '%s' ...", handwriting_datasets_file)
     loaded = pickle.load(open(handwriting_datasets_file))
-    raw_datasets = loaded['handwriting_datasets']
+    raw_datasets = loaded["handwriting_datasets"]
     logging.info("%i datasets loaded.", len(raw_datasets))
     logging.info("Start analyzing...")
 
     if analyze_features:
-        featurelist = [(features.AspectRatio(), "aspect_ratio.csv"),
-                       (features.ReCurvature(1), "re_curvature.csv"),
-                       (features.Height(), "height.csv"),
-                       (features.Width(), "width.csv"),
-                       (features.Time(), "time.csv"),
-                       (features.Ink(), "ink.csv"),
-                       (features.StrokeCount(), "stroke-count.csv")]
+        featurelist = [
+            (features.AspectRatio(), "aspect_ratio.csv"),
+            (features.ReCurvature(1), "re_curvature.csv"),
+            (features.Height(), "height.csv"),
+            (features.Width(), "width.csv"),
+            (features.Time(), "time.csv"),
+            (features.Ink(), "ink.csv"),
+            (features.StrokeCount(), "stroke-count.csv"),
+        ]
         for feat, filename in featurelist:
             logging.info("create %s...", filename)
             analyze_feature(raw_datasets, feat, filename)
 
     # Analyze everything specified in configuration
     cfg = utils.get_project_configuration()
-    if 'data_analyzation_queue' in cfg:
-        metrics = dam.get_metrics(cfg['data_analyzation_queue'])
+    if "data_analyzation_queue" in cfg:
+        metrics = dam.get_metrics(cfg["data_analyzation_queue"])
         for metric in metrics:
             logging.info("Start metric %s...", str(metric))
             metric(raw_datasets)
@@ -131,22 +160,30 @@ def get_parser():
     latest_dataset = utils.get_latest_in_folder(dataset_folder, "raw.pickle")
 
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-    parser = ArgumentParser(description=__doc__,
-                            formatter_class=ArgumentDefaultsHelpFormatter)
-    parser.add_argument("-d", "--handwriting_datasets",
-                        dest="handwriting_datasets",
-                        help="where are the pickled handwriting_datasets?",
-                        metavar="FILE",
-                        type=lambda x: utils.is_valid_file(parser, x),
-                        default=latest_dataset)
-    parser.add_argument("-f", "--features",
-                        dest="analyze_features",
-                        help="analyze features",
-                        action="store_true",
-                        default=False)
+
+    parser = ArgumentParser(
+        description=__doc__, formatter_class=ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument(
+        "-d",
+        "--handwriting_datasets",
+        dest="handwriting_datasets",
+        help="where are the pickled handwriting_datasets?",
+        metavar="FILE",
+        type=lambda x: utils.is_valid_file(parser, x),
+        default=latest_dataset,
+    )
+    parser.add_argument(
+        "-f",
+        "--features",
+        dest="analyze_features",
+        help="analyze features",
+        action="store_true",
+        default=False,
+    )
     return parser
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = get_parser().parse_args()
     main(args.handwriting_datasets, args.analyze_features)

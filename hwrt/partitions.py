@@ -9,12 +9,15 @@
 # https://en.wikipedia.org/wiki/Partition_of_a_set
 # http://math.stackexchange.com/questions/1215983/how-can-i-get-the-maximum-score-without-iterating-all-possibilities
 
+# Core Library modules
 import logging
 import sys
 
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
+logging.basicConfig(
+    format="%(asctime)s %(levelname)s %(message)s",
+    level=logging.DEBUG,
+    stream=sys.stdout,
+)
 
 
 def prepare_table(table):
@@ -28,7 +31,7 @@ def prepare_table(table):
             if i == j:
                 table[i][i] = 0.0
             elif i > j:
-                table[i][j] = 1-table[j][i]
+                table[i][j] = 1 - table[j][i]
     return table
 
 
@@ -49,7 +52,7 @@ def clusters(l, K):
             if tup != prev:
                 prev = tup
                 for i in range(K):
-                    yield tup[:i] + [[l[0]] + tup[i], ] + tup[i+1:]
+                    yield tup[:i] + [[l[0]] + tup[i],] + tup[i + 1 :]
     else:
         yield [[] for _ in range(K)]
 
@@ -78,7 +81,7 @@ def all_segmentations(l):
     [[[0, 1, 2]], [[0, 1], [2]], [[1], [0, 2]], [[0], [1, 2]], [[0], [1], [2]]]
 
     """
-    for K in range(1, len(l)+1):
+    for K in range(1, len(l) + 1):
         gen = neclusters(l, K)
         for el in gen:
             yield el
@@ -113,6 +116,7 @@ def q(segmentation, s1, s2):
 
 class TopFinder(object):
     """Utility datastructure to find the top n elements."""
+
     def __init__(self, n, find_min=False):
         self.n = n
         self.tops = []
@@ -127,11 +131,11 @@ class TopFinder(object):
         insert_pos = 0
         for index, el in enumerate(self.tops):
             if not self.find_min and el[1] >= value:
-                insert_pos = index+1
+                insert_pos = index + 1
             elif self.find_min and el[1] <= value:
-                insert_pos = index+1
+                insert_pos = index + 1
         self.tops.insert(insert_pos, [element, value])
-        self.tops = self.tops[:self.n]
+        self.tops = self.tops[: self.n]
 
     def __iter__(self):
         return self.tops.__iter__()
@@ -142,7 +146,7 @@ def score_segmentation(segmentation, table):
     stroke_nr = sum(1 for symbol in segmentation for stroke in symbol)
     score = 1
     for i in range(stroke_nr):
-        for j in range(i+1, stroke_nr):
+        for j in range(i + 1, stroke_nr):
             qval = q(segmentation, i, j)
             if qval:
                 score *= table[i][j]
@@ -180,14 +184,16 @@ def get_top_segmentations(table, n):
 def main():
     # [0,1,2], [3,4,5] [6,7]
     #            0     1     2     3     4     5     6     7
-    table = [[0.00, 0.55, 0.43, 0.30, 0.28, 0.74, 0.28, 0.26],  # 0
-             [0.45, 0.00, 0.67, 0.40, 0.35, 0.77, 0.30, 0.31],  # 1
-             [0.57, 0.33, 0.00, 0.29, 0.28, 0.80, 0.21, 0.23],  # 2
-             [0.70, 0.60, 0.71, 0.00, 0.39, 0.76, 0.29, 0.29],  # 3
-             [0.72, 0.65, 0.72, 0.61, 0.00, 0.76, 0.25, 0.29],  # 4
-             [0.26, 0.23, 0.20, 0.24, 0.24, 0.00, 0.30, 0.31],  # 5
-             [0.72, 0.70, 0.19, 0.71, 0.75, 0.70, 0.00, 0.27],  # 6
-             [0.74, 0.69, 0.77, 0.71, 0.71, 0.69, 0.73, 0.00]]  # 7
+    table = [
+        [0.00, 0.55, 0.43, 0.30, 0.28, 0.74, 0.28, 0.26],  # 0
+        [0.45, 0.00, 0.67, 0.40, 0.35, 0.77, 0.30, 0.31],  # 1
+        [0.57, 0.33, 0.00, 0.29, 0.28, 0.80, 0.21, 0.23],  # 2
+        [0.70, 0.60, 0.71, 0.00, 0.39, 0.76, 0.29, 0.29],  # 3
+        [0.72, 0.65, 0.72, 0.61, 0.00, 0.76, 0.25, 0.29],  # 4
+        [0.26, 0.23, 0.20, 0.24, 0.24, 0.00, 0.30, 0.31],  # 5
+        [0.72, 0.70, 0.19, 0.71, 0.75, 0.70, 0.00, 0.27],  # 6
+        [0.74, 0.69, 0.77, 0.71, 0.71, 0.69, 0.73, 0.00],
+    ]  # 7
     #            0     1     2
     # table = [[0.00, 0.01, 0.99],
     #          [0.99, 0.00, 0.01],
@@ -196,10 +202,13 @@ def main():
     for el, score in topfs:
         print("%0.10f: %s" % (score, el))
     for i in range(20):
-        logging.info("{0:>5}: {1:>10}".format(i, len(list(all_segmentations(list(range(i)))))))
+        logging.info(
+            "{0:>5}: {1:>10}".format(i, len(list(all_segmentations(list(range(i))))))
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
     import doctest
+
     doctest.testmod()

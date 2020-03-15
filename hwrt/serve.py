@@ -3,28 +3,35 @@
 
 """Start a webserver which can record the data and work as a classifier."""
 
-import pkg_resources
-from flask import Flask, request, render_template
-from flask_bootstrap import Bootstrap
+# Core Library modules
+import json
+import logging
 import os
 import sys
-import json
-import requests
-import logging
 import uuid
+
+# Third party modules
+import pkg_resources
+import requests
+# Python 2 / 3 compatibility
+from six.moves.urllib.request import urlopen
+
+# First party modules
+import hwrt
+from flask import Flask, render_template, request
+from flask_bootstrap import Bootstrap
+
+# Local modules
+from . import classify
+from . import segmentation as se
+from . import utils
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 
-# Python 2 / 3 compatibility
-from six.moves.urllib.request import urlopen
+
 if sys.version_info[0] == 2:
     from future.builtins import open  # pylint: disable=W0622
 
-# hwrt modules
-import hwrt
-from . import utils
-from . import classify
-from . import segmentation as se
 
 # Global variables
 n = 10
@@ -45,12 +52,14 @@ def submit_recording(raw_data_json):
         If the internet connection is lost.
     """
     url = "http://www.martin-thoma.de/write-math/classify/index.php"
-    headers = {'User-Agent': 'Mozilla/5.0',
-               'Content-Type': 'application/x-www-form-urlencoded'}
-    payload = {'drawnJSON': raw_data_json}
+    headers = {
+        "User-Agent": "Mozilla/5.0",
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
+    payload = {"drawnJSON": raw_data_json}
 
     s = requests.Session()
-    req = requests.Request('POST', url, headers=headers, data=payload)
+    req = requests.Request("POST", url, headers=headers, data=payload)
     prepared = req.prepare()
     s.send(prepared)
 
@@ -61,8 +70,10 @@ def show_results(results, n=10):
     >>> show_results(results)
     """
     import nntoolkit.evaluate
+
     classification = nntoolkit.evaluate.show_results(results, n)
     return "<pre>" + classification.replace("\n", "<br/>") + "</pre>"
+
 
 # configuration
 DEBUG = True
@@ -74,25 +85,26 @@ Bootstrap(app)
 app.config.from_object(__name__)
 
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route("/", methods=["POST", "GET"])
 def index():
     """Start page."""
-    return ('<a href="interactive">interactive</a> - '
-            '<a href="work">Classify stuff on write-math.com</a>')
+    return (
+        '<a href="interactive">interactive</a> - '
+        '<a href="work">Classify stuff on write-math.com</a>'
+    )
 
 
-@app.route('/interactive', methods=['POST', 'GET'])
+@app.route("/interactive", methods=["POST", "GET"])
 def interactive():
     """Interactive classifier."""
     global n
-    if request.method == 'GET' and request.args.get('heartbeat', '') != "":
-        return request.args.get('heartbeat', '')
-    if request.method == 'POST':
-        logging.warning('POST to /interactive is deprecated. '
-                        'Use /worker instead')
+    if request.method == "GET" and request.args.get("heartbeat", "") != "":
+        return request.args.get("heartbeat", "")
+    if request.method == "POST":
+        logging.warning("POST to /interactive is deprecated. " "Use /worker instead")
     else:
         # Page where the user can enter a recording
-        return render_template('canvas.html')
+        return render_template("canvas.html")
 
 
 def get_json_result(results, n=10):
@@ -108,25 +120,25 @@ def get_json_result(results, n=10):
     """
     s = []
     last = -1
-    for res in results[:min(len(results), n)]:
-        if res['probability'] < last*0.5 and res['probability'] < 0.05:
+    for res in results[: min(len(results), n)]:
+        if res["probability"] < last * 0.5 and res["probability"] < 0.05:
             break
-        if res['probability'] < 0.01:
+        if res["probability"] < 0.01:
             break
         s.append(res)
-        last = res['probability']
+        last = res["probability"]
     return json.dumps(s)
 
 
-@app.route('/worker', methods=['POST', 'GET'])
+@app.route("/worker", methods=["POST", "GET"])
 def worker():
     """Implement a worker for write-math.com."""
     global n
     global use_segmenter_flag
-    if request.method == 'POST':
-        raw_data_json = request.form['classify']
+    if request.method == "POST":
+        raw_data_json = request.form["classify"]
         try:
-            secret_uuid = request.form['secret']
+            secret_uuid = request.form["secret"]
         except:
             logging.info("No secret uuid given. Create one.")
             secret_uuid = str(uuid.uuid4())
@@ -186,20 +198,20 @@ def _get_translate():
     semantics.
     """
     translate = {}
-    model_path = pkg_resources.resource_filename('hwrt', 'misc/')
-    translation_csv = os.path.join(model_path, 'latex2writemathindex.csv')
-    arguments = {'newline': '', 'encoding': 'utf8'}
-    with open(translation_csv, 'rt', **arguments) as csvfile:
+    model_path = pkg_resources.resource_filename("hwrt", "misc/")
+    translation_csv = os.path.join(model_path, "latex2writemathindex.csv")
+    arguments = {"newline": "", "encoding": "utf8"}
+    with open(translation_csv, "rt", **arguments) as csvfile:
         contents = csvfile.read()
     lines = contents.split("\n")
     for csvrow in lines:
-        csvrow = csvrow.split(',')
+        csvrow = csvrow.split(",")
         if len(csvrow) == 1:
             writemathid = csvrow[0]
             latex = ""
         else:
             writemathid, latex = csvrow[0], csvrow[1:]
-            latex = ','.join(latex)
+            latex = ",".join(latex)
         translate[latex] = writemathid
     return translate
 
@@ -217,7 +229,7 @@ def get_writemath_id(el, translate):
     int or None:
         ID of the symbol on write-math.com
     """
-    semantics = el['semantics'].split(";")[1]
+    semantics = el["semantics"].split(";")[1]
     if semantics not in translate:
         logging.debug("Could not find '%s' in translate.", semantics)
         logging.debug("el: %s", el)
@@ -248,22 +260,26 @@ def fix_writemath_answer(results):
         writemathid = get_writemath_id(el, translate)
         if writemathid is None:
             continue
-        new_results.append({'symbolnr': el['symbolnr'],
-                            'semantics': writemathid,
-                            'probability': el['probability']})
-        if i >= 10 or (i > 0 and el['probability'] < 0.20):
+        new_results.append(
+            {
+                "symbolnr": el["symbolnr"],
+                "semantics": writemathid,
+                "probability": el["probability"],
+            }
+        )
+        if i >= 10 or (i > 0 and el["probability"] < 0.20):
             break
     return new_results
 
 
-@app.route('/work', methods=['POST', 'GET'])
+@app.route("/work", methods=["POST", "GET"])
 def work():
     """Implement a worker for write-math.com."""
     global n
 
     cmd = utils.get_project_configuration()
-    if 'worker_api_key' not in cmd:
-        return ("You need to define a 'worker_api_key' in your ~/")
+    if "worker_api_key" not in cmd:
+        return "You need to define a 'worker_api_key' in your ~/"
 
     chunk_size = 1000
 
@@ -276,15 +292,17 @@ def work():
         parsed_json = json.loads(page_source)
         if parsed_json is False:
             return "Nothing left to classify"
-        raw_data_json = parsed_json['recording']
+        raw_data_json = parsed_json["recording"]
 
         # Classify
         # Check recording
         try:
             json.loads(raw_data_json)
         except ValueError:
-            return ("Raw Data ID %s; Invalid JSON string: %s" %
-                    (parsed_json['id'], raw_data_json))
+            return "Raw Data ID %s; Invalid JSON string: %s" % (
+                parsed_json["id"],
+                raw_data_json,
+            )
 
         # Classify
         if use_segmenter_flag:
@@ -300,25 +318,34 @@ def work():
             segmentation = [list(range(len(strokelist)))]
             translate = _get_translate()
             for symbol in results_sym:
-                s = {'id': get_writemath_id(symbol, translate),
-                     'probability': symbol['probability']}
-                results.append({'probability': symbol['probability'],
-                                'segmentation': segmentation,
-                                'symbols': [s]})
+                s = {
+                    "id": get_writemath_id(symbol, translate),
+                    "probability": symbol["probability"],
+                }
+                results.append(
+                    {
+                        "probability": symbol["probability"],
+                        "segmentation": segmentation,
+                        "symbols": [s],
+                    }
+                )
 
-        print("\thttp://write-math.com/view/?raw_data_id=%s" %
-              str(parsed_json['id']))
+        print("\thttp://write-math.com/view/?raw_data_id=%s" % str(parsed_json["id"]))
 
         # Submit classification to write-math.com server
         results_json = get_json_result(results, n=n)
-        headers = {'User-Agent': 'Mozilla/5.0',
-                   'Content-Type': 'application/x-www-form-urlencoded'}
-        payload = {'recording_id': parsed_json['id'],
-                   'results': results_json,
-                   'api_key': cmd['worker_api_key']}
+        headers = {
+            "User-Agent": "Mozilla/5.0",
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+        payload = {
+            "recording_id": parsed_json["id"],
+            "results": results_json,
+            "api_key": cmd["worker_api_key"],
+        }
 
         s = requests.Session()
-        req = requests.Request('POST', url, headers=headers, data=payload)
+        req = requests.Request("POST", url, headers=headers, data=payload)
         prepared = req.prepare()
         response = s.send(prepared)
         try:
@@ -326,7 +353,7 @@ def work():
         except ValueError:
             return "Invalid JSON response: %s" % response.text
 
-        if 'error' in response:
+        if "error" in response:
             logging.info(response)
             return str(response)
     return "Done - Classified %i recordings" % chunk_size
@@ -335,20 +362,25 @@ def work():
 def get_parser():
     """Return the parser object for this script."""
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-    parser = ArgumentParser(description=__doc__,
-                            formatter_class=ArgumentDefaultsHelpFormatter)
-    parser.add_argument("-n",
-                        dest="n", default=10, type=int,
-                        help="Show TOP-N results")
-    parser.add_argument("--port",
-                        dest="port", default=5000, type=int,
-                        help="where should the webserver run")
-    parser.add_argument("--use_segmenter",
-                        dest="use_segmenter",
-                        default=False,
-                        action='store_true',
-                        help=("try to segment the input for multiple symbol "
-                              "recognition"))
+
+    parser = ArgumentParser(
+        description=__doc__, formatter_class=ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument("-n", dest="n", default=10, type=int, help="Show TOP-N results")
+    parser.add_argument(
+        "--port",
+        dest="port",
+        default=5000,
+        type=int,
+        help="where should the webserver run",
+    )
+    parser.add_argument(
+        "--use_segmenter",
+        dest="use_segmenter",
+        default=False,
+        action="store_true",
+        help=("try to segment the input for multiple symbol " "recognition"),
+    )
     return parser
 
 
@@ -361,8 +393,8 @@ def main(port=8000, n_output=10, use_segmenter=False):
     logging.info("Start webserver...")
     app.run(port=port)
 
-if __name__ == '__main__':
-    global n
+
+if __name__ == "__main__":
     args = get_parser().parse_args()
-    n = args.n
+    globals()["n"] = args.n
     main(port=args.port, use_segmenter=args.use_segmenter)

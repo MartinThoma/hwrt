@@ -16,12 +16,10 @@ import hwrt.utils as utils
 # Tests
 def execution_test():
     """Just test if the function is executable."""
-    results = [{'symbolnr': 32,
-                'semantics': '\\alpha',
-                'probability': 0.67},
-               {'symbolnr': 124,
-                'semantics': '\\propto',
-                'probability': 0.25}]
+    results = [
+        {"symbolnr": 32, "semantics": "\\alpha", "probability": 0.67},
+        {"symbolnr": 124, "semantics": "\\propto", "probability": 0.25},
+    ]
     serve.show_results(results)
     serve.get_json_result(results)
     serve.index()
@@ -33,12 +31,10 @@ def fix_fix_writemath_answer_test():
     """Test if the function which brings the data into the format wanted by
        write-math.com works.
     """
-    results = [{'symbolnr': 32,
-                'semantics': '\\alpha',
-                'probability': 0.67},
-               {'symbolnr': 124,
-                'semantics': '\\propto',
-                'probability': 0.25}]
+    results = [
+        {"symbolnr": 32, "semantics": "\\alpha", "probability": 0.67},
+        {"symbolnr": 124, "semantics": "\\propto", "probability": 0.25},
+    ]
     serve.fix_writemath_answer(results)
 
 
@@ -49,6 +45,6 @@ def interactive_heartbeat_test():
     app = Flask(__name__, template_folder=template_path)
     Bootstrap(app)
     app.config.from_object(__name__)
-    with app.test_request_context('/interactive?heartbeat=Peter'):
+    with app.test_request_context("/interactive?heartbeat=Peter"):
         a = serve.interactive()
         nose.tools.assert_equal(a, "Peter")

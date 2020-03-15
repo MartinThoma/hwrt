@@ -4,26 +4,28 @@
 import logging
 import sys
 
-logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',
-                    level=logging.DEBUG,
-                    stream=sys.stdout)
+logging.basicConfig(
+    format="%(asctime)s %(levelname)s %(message)s",
+    level=logging.DEBUG,
+    stream=sys.stdout,
+)
 from copy import deepcopy
 import pkg_resources
 import os
 import yaml
 from decimal import Decimal, getcontext
+
 getcontext().prec = 100
 
 # hwrt modules
 from .segmentation import single_clf
+
 # from ..handwritten_data import HandwrittenData
 # from .. import spacial_relationship
 from .. import language_model
 from ..utils import softmax
 
-__all__ = [
-    "Beam"
-]
+__all__ = ["Beam"]
 
 
 stroke_prob = None
@@ -48,10 +50,9 @@ def p_strokes(symbol, count):
     assert count >= 1
     epsilon = 0.00000001
     if stroke_prob is None:
-        misc_path = pkg_resources.resource_filename('hwrt', 'misc/')
-        stroke_prob_file = os.path.join(misc_path,
-                                        'prob_stroke_count_by_symbol.yml')
-        with open(stroke_prob_file, 'r') as stream:
+        misc_path = pkg_resources.resource_filename("hwrt", "misc/")
+        stroke_prob_file = os.path.join(misc_path, "prob_stroke_count_by_symbol.yml")
+        with open(stroke_prob_file, "r") as stream:
             stroke_prob = yaml.load(stream)
     if symbol in stroke_prob:
         if count in stroke_prob[symbol]:
@@ -76,19 +77,21 @@ def _calc_hypothesis_probability(hypothesis):
         in [0.0, 1.0]
     """
     prob = 0.0
-    for symbol, seg in zip(hypothesis['symbols'], hypothesis['segmentation']):
+    for symbol, seg in zip(hypothesis["symbols"], hypothesis["segmentation"]):
         # symbol_latex = symbol['symbol'].split(";")[1]
         # TODO: Does p_strokes really improve the system?
-        prob += symbol['probability']  # * p_strokes(symbol_latex, len(seg))
+        prob += symbol["probability"]  # * p_strokes(symbol_latex, len(seg))
 
     # Use language model to update probabilities
-    pure_symbols = [symbol['symbol'].split(";")[1]
-                    for symbol in hypothesis['symbols']]
+    pure_symbols = [symbol["symbol"].split(";")[1] for symbol in hypothesis["symbols"]]
     pure_symbols = ["<s>"] + pure_symbols + ["</s>"]
     lm_prob = language_model.get_probability(pure_symbols)
-    hypothesis['lm_probability'] = 2**lm_prob
-    return (prob * float(hypothesis['lm_probability']) *
-            (1.0 / len(hypothesis['segmentation'])))
+    hypothesis["lm_probability"] = 2 ** lm_prob
+    return (
+        prob
+        * float(hypothesis["lm_probability"])
+        * (1.0 / len(hypothesis["segmentation"]))
+    )
 
 
 class Beam(object):
@@ -131,13 +134,10 @@ class Beam(object):
         self.m = m
         self.n = n
         self.k = k
-        self.history = {'data': [], 'id': -1}
+        self.history = {"data": [], "id": -1}
         self.hypotheses = []
 
-    def _add_hypotheses_assuming_new_stroke(self,
-                                            new_stroke,
-                                            stroke_nr,
-                                            new_beam):
+    def _add_hypotheses_assuming_new_stroke(self, new_stroke, stroke_nr, new_beam):
         """
         Get new guesses by assuming new_stroke is a new symbol.
 
@@ -150,31 +150,34 @@ class Beam(object):
             Number of the stroke for segmentation
         new_beam : beam object
         """
-        guesses = single_clf.predict({'data': [new_stroke],
-                                      'id': None})[:self.m]
+        guesses = single_clf.predict({"data": [new_stroke], "id": None})[: self.m]
         for hyp in self.hypotheses:
-            new_geometry = deepcopy(hyp['geometry'])
+            new_geometry = deepcopy(hyp["geometry"])
             most_right = new_geometry
-            if len(hyp['symbols']) == 0:
-                while 'right' in most_right:
-                    most_right = most_right['right']
-                most_right['right'] = {'symbol_index': len(hyp['symbols']),
-                                       'right': None}
+            if len(hyp["symbols"]) == 0:
+                while "right" in most_right:
+                    most_right = most_right["right"]
+                most_right["right"] = {
+                    "symbol_index": len(hyp["symbols"]),
+                    "right": None,
+                }
             else:
-                most_right = {'symbol_index': len(hyp['symbols']),
-                              'right': None}
+                most_right = {"symbol_index": len(hyp["symbols"]), "right": None}
             for guess in guesses:
-                sym = {'symbol': guess['semantics'],
-                       'probability': guess['probability']}
-                new_seg = deepcopy(hyp['segmentation'])
+                sym = {
+                    "symbol": guess["semantics"],
+                    "probability": guess["probability"],
+                }
+                new_seg = deepcopy(hyp["segmentation"])
                 new_seg.append([stroke_nr])
-                new_sym = deepcopy(hyp['symbols'])
+                new_sym = deepcopy(hyp["symbols"])
                 new_sym.append(sym)
-                b = {'segmentation': new_seg,
-                     'symbols': new_sym,
-                     'geometry': new_geometry,
-                     'probability': None
-                     }
+                b = {
+                    "segmentation": new_seg,
+                    "symbols": new_sym,
+                    "geometry": new_geometry,
+                    "probability": None,
+                }
 
                 # spacial_rels = []  # TODO
                 # for s1_indices, s2_indices in zip(b['segmentation'],
@@ -217,14 +220,17 @@ class Beam(object):
         """
         global single_clf
         if len(self.hypotheses) == 0:  # Don't put this in the constructor!
-            self.hypotheses = [{'segmentation': [],
-                                'symbols': [],
-                                'geometry': {},
-                                'probability': Decimal(1)
-                                }]
-        stroke_nr = len(self.history['data'])
+            self.hypotheses = [
+                {
+                    "segmentation": [],
+                    "symbols": [],
+                    "geometry": {},
+                    "probability": Decimal(1),
+                }
+            ]
+        stroke_nr = len(self.history["data"])
         new_history = deepcopy(self.history)
-        new_history['data'].append(new_stroke)
+        new_history["data"].append(new_stroke)
         new_beam = Beam()
         new_beam.history = new_history
 
@@ -235,16 +241,16 @@ class Beam(object):
         had_multisymbol = False
         for hyp in self.hypotheses:
             # Add stroke to last n symbols (seperately)
-            for i in range(min(self.n, len(hyp['segmentation']))):
+            for i in range(min(self.n, len(hyp["segmentation"]))):
                 # Build stroke data
-                new_strokes = {'data': [], 'id': -1}
-                for stroke_index in hyp['segmentation'][-(i+1)]:
-                    curr_stroke = self.history['data'][stroke_index]
-                    new_strokes['data'].append(curr_stroke)
-                new_strokes['data'].append(new_stroke)
+                new_strokes = {"data": [], "id": -1}
+                for stroke_index in hyp["segmentation"][-(i + 1)]:
+                    curr_stroke = self.history["data"][stroke_index]
+                    new_strokes["data"].append(curr_stroke)
+                new_strokes["data"].append(new_stroke)
 
-                new_seg = deepcopy(hyp['segmentation'])
-                new_seg[-(i+1)].append(stroke_nr)
+                new_seg = deepcopy(hyp["segmentation"])
+                new_seg[-(i + 1)].append(stroke_nr)
 
                 if new_seg in evaluated_segmentations:
                     continue
@@ -252,30 +258,31 @@ class Beam(object):
                     evaluated_segmentations.append(new_seg)
 
                 # Predict this new collection of strokes
-                guesses = single_clf.predict(new_strokes)[:self.m]
+                guesses = single_clf.predict(new_strokes)[: self.m]
                 for guess in guesses:
-                    if guess['semantics'].split(";")[1] == "::MULTISYMBOL::":
+                    if guess["semantics"].split(";")[1] == "::MULTISYMBOL::":
                         # This was a wrong segmentation. Ignore it.
                         had_multisymbol = True
                         continue
-                    sym = {'symbol': guess['semantics'],
-                           'probability': guess['probability']}
-                    new_sym = deepcopy(hyp['symbols'])
-                    new_sym[-(i+1)] = sym
-                    b = {'segmentation': new_seg,
-                         'symbols': new_sym,
-                         'geometry': deepcopy(hyp['geometry']),
-                         'probability': None
-                         }
+                    sym = {
+                        "symbol": guess["semantics"],
+                        "probability": guess["probability"],
+                    }
+                    new_sym = deepcopy(hyp["symbols"])
+                    new_sym[-(i + 1)] = sym
+                    b = {
+                        "segmentation": new_seg,
+                        "symbols": new_sym,
+                        "geometry": deepcopy(hyp["geometry"]),
+                        "probability": None,
+                    }
                     new_beam.hypotheses.append(b)
 
         if len(self.hypotheses) <= 1 or had_multisymbol:
-            self._add_hypotheses_assuming_new_stroke(new_stroke,
-                                                     stroke_nr,
-                                                     new_beam)
+            self._add_hypotheses_assuming_new_stroke(new_stroke, stroke_nr, new_beam)
 
         for hyp in new_beam.hypotheses:
-            hyp['probability'] = _calc_hypothesis_probability(hyp)
+            hyp["probability"] = _calc_hypothesis_probability(hyp)
 
         # Get probability again
 
@@ -289,24 +296,27 @@ class Beam(object):
         self.hypotheses = new_beam.hypotheses
         self.history = new_beam.history
         self._prune()
-        new_probs = softmax([h['probability']
-                             for h in self.hypotheses])
+        new_probs = softmax([h["probability"] for h in self.hypotheses])
         for hyp, prob in zip(self.hypotheses, new_probs):
-            hyp['probability'] = prob
+            hyp["probability"] = prob
 
     def _prune(self):
         """Shorten hypotheses to the best k ones."""
-        self.hypotheses = sorted(self.hypotheses,
-                                 key=lambda e: e['probability'],
-                                 reverse=True)[:self.k]
+        self.hypotheses = sorted(
+            self.hypotheses, key=lambda e: e["probability"], reverse=True
+        )[: self.k]
 
     def get_results(self):
         results = []
         for hyp in self.hypotheses:
-            results.append({'semantics': build_unicode(hyp),
-                            'complete_latex': build_latex(hyp),
-                            'probability': float(hyp['probability']),
-                            'symbol count': len(hyp['segmentation'])})
+            results.append(
+                {
+                    "semantics": build_unicode(hyp),
+                    "complete_latex": build_latex(hyp),
+                    "probability": float(hyp["probability"]),
+                    "symbol count": len(hyp["segmentation"]),
+                }
+            )
         return results
 
     def get_writemath_results(self):
@@ -327,20 +337,28 @@ class Beam(object):
         results = []
         for hyp in self.hypotheses:
             symbols = []
-            for sym in hyp['symbols']:
-                symbols.append({'id': sym['symbol'].split(';')[0],
-                                'probability': sym['probability']})
-            results.append({'probability': float(hyp['probability']),
-                            'segmentation': hyp['segmentation'],
-                            'symbols': symbols})
+            for sym in hyp["symbols"]:
+                symbols.append(
+                    {
+                        "id": sym["symbol"].split(";")[0],
+                        "probability": sym["probability"],
+                    }
+                )
+            results.append(
+                {
+                    "probability": float(hyp["probability"]),
+                    "segmentation": hyp["segmentation"],
+                    "symbols": symbols,
+                }
+            )
         return results
 
     def __str__(self):
         s = "Beam(n=%i, m=%i, k=%i)\n" % (self.n, self.m, self.k)
         for hyp in self.hypotheses:
-            symbols = [sym['symbol'] for sym in hyp['symbols']]
-            symbols = str([sym.split(';')[1] for sym in symbols])
-            s += "\t%0.3f%%\t%s\n" % (hyp['probability']*100, symbols)
+            symbols = [sym["symbol"] for sym in hyp["symbols"]]
+            symbols = str([sym.split(";")[1] for sym in symbols])
+            s += "\t%0.3f%%\t%s\n" % (hyp["probability"] * 100, symbols)
         return s
 
 
@@ -361,8 +379,8 @@ def build_unicode(hyp):
         }
     """
     latex = []
-    for symbol in hyp['symbols']:
-        latex.append(symbol['symbol'])
+    for symbol in hyp["symbols"]:
+        latex.append(symbol["symbol"])
     return ";;".join(latex)
 
 
@@ -383,6 +401,6 @@ def build_latex(hyp):
         }
     """
     latex = []
-    for symbol in hyp['symbols']:
-        latex.append(symbol['symbol'].split(";")[1])
+    for symbol in hyp["symbols"]:
+        latex.append(symbol["symbol"].split(";")[1])
     return " ".join(latex)

@@ -12,14 +12,20 @@ import hwrt.preprocessing as preprocessing
 
 # Tests
 def features_detection_test():
-    feature_queue = [{'StrokeCount': None},
-                     {'ConstantPointCoordinates': [{'strokes': 4,
-                                                    'points_per_stroke': 20,
-                                                    'fill_empty_with': 0}]}]
-    correct = [features.StrokeCount(),
-               features.ConstantPointCoordinates(strokes=4,
-                                                 points_per_stroke=20,
-                                                 fill_empty_with=0)]
+    feature_queue = [
+        {"StrokeCount": None},
+        {
+            "ConstantPointCoordinates": [
+                {"strokes": 4, "points_per_stroke": 20, "fill_empty_with": 0}
+            ]
+        },
+    ]
+    correct = [
+        features.StrokeCount(),
+        features.ConstantPointCoordinates(
+            strokes=4, points_per_stroke=20, fill_empty_with=0
+        ),
+    ]
     feature_list = features.get_features(feature_queue)
     # TODO: Not only compare lengths of lists but actual contents.
     nose.tools.assert_equal(len(feature_list), len(correct))
@@ -27,33 +33,34 @@ def features_detection_test():
 
 def print_featurelist_test():
     """Test features.print_featurelist."""
-    feature_list = [features.StrokeCount(),
-                    features.ConstantPointCoordinates(strokes=4,
-                                                      points_per_stroke=20,
-                                                      fill_empty_with=0),
-                    features.ConstantPointCoordinates(strokes=0,
-                                                      points_per_stroke=20,
-                                                      fill_empty_with=0),
-                    features.ConstantPointCoordinates(strokes=0,
-                                                      points_per_stroke=20,
-                                                      pen_down=False),
-                    features.AspectRatio(),
-                    features.Width(),
-                    features.Height(),
-                    features.Time(),
-                    features.CenterOfMass()
-                    ]
+    feature_list = [
+        features.StrokeCount(),
+        features.ConstantPointCoordinates(
+            strokes=4, points_per_stroke=20, fill_empty_with=0
+        ),
+        features.ConstantPointCoordinates(
+            strokes=0, points_per_stroke=20, fill_empty_with=0
+        ),
+        features.ConstantPointCoordinates(
+            strokes=0, points_per_stroke=20, pen_down=False
+        ),
+        features.AspectRatio(),
+        features.Width(),
+        features.Height(),
+        features.Time(),
+        features.CenterOfMass(),
+    ]
     features.print_featurelist(feature_list)
 
 
 def constant_point_coordinates_test():
     """Test features.ConstantPointCoordinates."""
-    f = features.ConstantPointCoordinates(strokes=0,
-                                          points_per_stroke=2,
-                                          pen_down=False)
-    g = features.ConstantPointCoordinates(strokes=0,
-                                          points_per_stroke=200,
-                                          pen_down=False)
+    f = features.ConstantPointCoordinates(
+        strokes=0, points_per_stroke=2, pen_down=False
+    )
+    g = features.ConstantPointCoordinates(
+        strokes=0, points_per_stroke=200, pen_down=False
+    )
     recording = testhelper.get_symbol_as_handwriting(292934)
     f._features_without_strokes(recording)
     g._features_without_strokes(recording)
@@ -70,42 +77,52 @@ def stroke_intersections_test():
 
 
 def dimensionality_test():
-    feature_list = [(features.StrokeCount(), 1),
-                    (features.ConstantPointCoordinates(strokes=4,
-                                                       points_per_stroke=20,
-                                                       fill_empty_with=0),
-                     160),
-                    (features.ConstantPointCoordinates(strokes=0,
-                                                       points_per_stroke=20,
-                                                       fill_empty_with=0), 60),
-                    (features.ConstantPointCoordinates(strokes=0,
-                                                       points_per_stroke=20,
-                                                       pen_down=False), 40),
-                    (features.AspectRatio(), 1),
-                    (features.Width(), 1),
-                    (features.Height(), 1),
-                    (features.Time(), 1),
-                    (features.CenterOfMass(), 2)
-                    ]
+    feature_list = [
+        (features.StrokeCount(), 1),
+        (
+            features.ConstantPointCoordinates(
+                strokes=4, points_per_stroke=20, fill_empty_with=0
+            ),
+            160,
+        ),
+        (
+            features.ConstantPointCoordinates(
+                strokes=0, points_per_stroke=20, fill_empty_with=0
+            ),
+            60,
+        ),
+        (
+            features.ConstantPointCoordinates(
+                strokes=0, points_per_stroke=20, pen_down=False
+            ),
+            40,
+        ),
+        (features.AspectRatio(), 1),
+        (features.Width(), 1),
+        (features.Height(), 1),
+        (features.Time(), 1),
+        (features.CenterOfMass(), 2),
+    ]
     for feat, dimension in feature_list:
         nose.tools.assert_equal(feat.get_dimension(), dimension)
 
 
 def simple_execution_test():
-    algorithms = [features.ConstantPointCoordinates(),
-                  features.ConstantPointCoordinates(strokes=0),
-                  features.FirstNPoints(),
-                  # features.Bitmap(),
-                  features.Ink(),
-                  features.AspectRatio(),
-                  features.Width(),
-                  features.Time(),
-                  features.CenterOfMass(),
-                  features.StrokeCenter(),
-                  features.StrokeCenter(8),
-                  features.StrokeIntersections(),
-                  features.ReCurvature()
-                  ]
+    algorithms = [
+        features.ConstantPointCoordinates(),
+        features.ConstantPointCoordinates(strokes=0),
+        features.FirstNPoints(),
+        # features.Bitmap(),
+        features.Ink(),
+        features.AspectRatio(),
+        features.Width(),
+        features.Time(),
+        features.CenterOfMass(),
+        features.StrokeCenter(),
+        features.StrokeCenter(8),
+        features.StrokeIntersections(),
+        features.ReCurvature(),
+    ]
     for algorithm in algorithms:
         recording = testhelper.get_symbol_as_handwriting(292934)
         algorithm(recording)

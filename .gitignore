@@ -72,3 +72,4 @@ cover/
 
 # Sublime
 *.sublime-workspace
+tests/reports/

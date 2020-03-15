@@ -69,20 +69,20 @@
 {% block header %}
 <!-- DataTables CSS -->
 <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.7/css/jquery.dataTables.css">
-  
+
 <!-- jQuery -->
 <script type="text/javascript" charset="utf8" src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-  
+
 <!-- DataTables -->
 <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.7/js/jquery.dataTables.js"></script>
 {% endblock %}
 
 {% block footer %}
 <script type="text/javascript" id="js">
-$(document).ready(function() 
-    { 
+$(document).ready(function()
+    {
         $("#statistical").DataTable();
-    } 
-); 
+    }
+);
 </script>
 {% endblock %}

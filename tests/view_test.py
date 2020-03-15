@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import pytest
-import shutil
+# Core Library modules
 import os
+import shutil
 
-# hwrt modules
-import hwrt.view as view
+# Third party modules
+import pytest
+
+# First party modules
 import hwrt.utils as utils
+import hwrt.view as view
 
 
 # Tests

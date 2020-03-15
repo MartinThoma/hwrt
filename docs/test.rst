@@ -10,9 +10,9 @@ The options `-n` and `--merge` should not be used together.
 
  $ test.py --help
  usage: test.py [-h] [-m FOLDER] [-s {test,train,valid}] [-n N] [--merge]
- 
+
  Get the error of a model. This tool supports multiple error measures.
- 
+
  optional arguments:
    -h, --help            show this help message and exit
    -m FOLDER, --model FOLDER
@@ -23,4 +23,3 @@ The options `-n` and `--merge` should not be used together.
    -n N                  Top-N error (default: 3)
    --merge               merge problem classes that are easy to confuse
                          (default: False)
-

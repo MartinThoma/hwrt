@@ -1,20 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import logging
-import sys
+# Core Library modules
 import datetime
+import logging
+import os
+import sys
+
+# Local modules
+from . import getuserid, inkml, insert_recording
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
     level=logging.DEBUG,
     stream=sys.stdout,
 )
-
-import os
-
-from . import inkml
-from . import getuserid, insert_recording
 
 
 def main(directory):

@@ -14,7 +14,6 @@ import sys
 import yaml
 
 # First party modules
-# hwrt modules
 import hwrt
 
 # Local modules

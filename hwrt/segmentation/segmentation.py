@@ -16,33 +16,28 @@ might occur.
 This module contains algorithms for segmentation.
 """
 
-import logging
-import json
-
+# Core Library modules
 import itertools
-import numpy
+import json
+import logging
 import os
-import sys
-
 import pickle
-import pkg_resources
-
+import sys
 import time
 
-import scipy.sparse.csgraph
-import numpy as np
+# Third party modules
 import lasagne
-from lasagne.nonlinearities import softmax
+import numpy as np
+import pkg_resources
+import pymysql.cursors
+import scipy.sparse.csgraph
 import theano
 import theano.tensor as T
-import pymysql.cursors
+from lasagne.nonlinearities import softmax
 
-# hwrt modules
-from .. import utils
+# Local modules
+from .. import features, geometry, partitions, utils
 from ..handwritten_data import HandwrittenData
-from .. import features
-from .. import geometry
-from .. import partitions
 from ..utils import less_than
 
 

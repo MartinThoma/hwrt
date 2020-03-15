@@ -3,9 +3,10 @@
 
 """Helper functions for tests."""
 
+# Core Library modules
 import os
 
-# hwrt modules
+# First party modules
 from hwrt.handwritten_data import HandwrittenData
 
 

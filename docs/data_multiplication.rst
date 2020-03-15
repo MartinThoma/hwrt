@@ -27,4 +27,3 @@ The automatic data multiplication works like this:
 
 .. automodule:: hwrt.data_multiplication
    :members:
-

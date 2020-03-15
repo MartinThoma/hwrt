@@ -16,7 +16,6 @@ import logging
 import sys
 
 # First party modules
-# hwrt modules
 # Every HWR tool that should be available through
 #   hwrt TOOL
 # has to be added to ``get_parser()`` and to ``main``.

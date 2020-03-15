@@ -1,16 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Core Library modules
 import os
-import nose
 import shutil
 
-import tests.testhelper as testhelper
+# Third party modules
+import nose
 
-# hwrt modules
-from hwrt.handwritten_data import HandwrittenData
+# First party modules
 import hwrt.data_analyzation_metrics as dam
 import hwrt.utils as utils
+import tests.testhelper as testhelper
+from hwrt.handwritten_data import HandwrittenData
 
 
 # Tests

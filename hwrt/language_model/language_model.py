@@ -5,12 +5,15 @@
 Utility functions and classes to deal with language models.
 """
 
-import pkg_resources
+# Core Library modules
+import logging
+import os
 import tarfile
 import tempfile
-import os
-import logging
 from decimal import Decimal, getcontext
+
+# Third party modules
+import pkg_resources
 
 getcontext().prec = 100
 

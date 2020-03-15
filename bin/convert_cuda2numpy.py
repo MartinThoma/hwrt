@@ -14,10 +14,8 @@ import sys
 import tarfile
 
 # Third party modules
-import numpy
-
-# First party modules
 import h5py
+import numpy
 from theano.sandbox import cuda
 
 logging.basicConfig(

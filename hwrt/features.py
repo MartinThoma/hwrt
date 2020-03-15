@@ -24,10 +24,7 @@ from itertools import combinations_with_replacement as combinations_wr
 
 # Third party modules
 import numpy
-
-# First party modules
-from PIL import Image
-from PIL import ImageDraw
+from PIL import Image, ImageDraw
 
 # Local modules
 from . import geometry, handwritten_data, preprocessing, utils

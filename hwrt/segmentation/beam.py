@@ -1,29 +1,32 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Core Library modules
 import logging
+import os
 import sys
+from copy import deepcopy
+from decimal import Decimal, getcontext
+
+# Third party modules
+import pkg_resources
+import yaml
+
+# Local modules
+# from ..handwritten_data import HandwrittenData
+# from .. import spacial_relationship
+from .. import language_model
+from ..utils import softmax
+from .segmentation import single_clf
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
     level=logging.DEBUG,
     stream=sys.stdout,
 )
-from copy import deepcopy
-import pkg_resources
-import os
-import yaml
-from decimal import Decimal, getcontext
 
 getcontext().prec = 100
 
-# hwrt modules
-from .segmentation import single_clf
-
-# from ..handwritten_data import HandwrittenData
-# from .. import spacial_relationship
-from .. import language_model
-from ..utils import softmax
 
 __all__ = ["Beam"]
 

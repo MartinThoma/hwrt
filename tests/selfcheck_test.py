@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Third party modules
 import nose
 
-# hwrt modules
+# First party modules
 import hwrt.selfcheck as selfcheck
 
 

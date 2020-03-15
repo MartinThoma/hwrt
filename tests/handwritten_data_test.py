@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import nose.tools
-import tests.testhelper as testhelper
+# Third party modules
 import mock
+import nose.tools
 
-# hwrt modules
+# First party modules
+import tests.testhelper as testhelper
 from hwrt.handwritten_data import HandwrittenData
 
 

@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Third party modules
 import nose
-import tests.testhelper as testhelper
 
-# hwrt modules
-from hwrt.handwritten_data import HandwrittenData
-
+# First party modules
 # import hwrt.preprocessing as preprocessing
 import hwrt.features as features
+import tests.testhelper as testhelper
+from hwrt.handwritten_data import HandwrittenData
 
 
 # Tests

@@ -3,19 +3,23 @@
 
 """Tests for the utility functions."""
 
+# Core Library modules
+import argparse
+import json
+import os
+
+# Third party modules
 import nose
+import pkg_resources
+
+# First party modules
+import hwrt
+import hwrt.utils as utils
+
 try:
     from unittest import mock  # Python 3
 except ImportError:
     import mock
-import os
-import argparse
-import pkg_resources
-import json
-
-# hwrt modules
-import hwrt
-import hwrt.utils as utils
 
 
 # Tests

@@ -3,8 +3,12 @@
 
 """Script to import data into write-math.com"""
 
+# Core Library modules
 import logging
 import sys
+
+# Local modules
+from . import mfrdb
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
@@ -12,8 +16,6 @@ logging.basicConfig(
     stream=sys.stdout,
 )
 
-# hwrt modules
-from . import mfrdb
 
 # from .. import datasets
 

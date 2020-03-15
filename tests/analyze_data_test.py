@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import tests.testhelper as testhelper
-
-# hwrt modules
+# First party modules
 import hwrt.analyze_data as analyze_data
 import hwrt.features as features
+import tests.testhelper as testhelper
 
 
 # Tests

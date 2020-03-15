@@ -28,8 +28,8 @@ It can be extended by a plugin system. To do so, the configuration file
 
 .. code:: bash
 
-    data_analyzation_plugins: /home/moose/Desktop/da.py 
-    data_analyzation_queue: 
+    data_analyzation_plugins: /home/moose/Desktop/da.py
+    data_analyzation_queue:
       - TrainingCount:
         - filename: trainingcount.csv
       - Creator: null

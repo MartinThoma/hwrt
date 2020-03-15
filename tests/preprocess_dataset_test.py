@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import nose
+# Core Library modules
 import os
 import shutil
 
-# hwrt modules
+# Third party modules
+import nose
+
+# First party modules
 import hwrt.preprocess_dataset as preprocess_dataset
-import hwrt.utils as utils
 import hwrt.preprocessing as preprocessing
+import hwrt.utils as utils
 
 
 # Tests

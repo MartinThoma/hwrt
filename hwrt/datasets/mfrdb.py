@@ -1,10 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Core Library modules
 import glob
+import json
 import logging
 import sys
-import json
+import unicodedata
+
+# Third party modules
+import pymysql
+import pymysql.cursors
+
+# Local modules
+from .. import datasets, handwritten_data, utils
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
@@ -12,14 +21,6 @@ logging.basicConfig(
     stream=sys.stdout,
 )
 
-import pymysql
-import pymysql.cursors
-import unicodedata
-
-# hwrt modules
-from .. import handwritten_data
-from .. import utils
-from .. import datasets
 
 replacements = [
     ("int", r"\int"),

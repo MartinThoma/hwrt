@@ -28,4 +28,3 @@ Module documentation
 
 .. automodule:: hwrt.segmentation
    :members:
-

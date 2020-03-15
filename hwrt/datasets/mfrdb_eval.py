@@ -3,21 +3,24 @@
 
 """Testing script for write-math symbol classifier."""
 
+# Core Library modules
+import json
 import logging
 import sys
-import json
+
+# Third party modules
 import numpy
+
+# Local modules
+from ..classify import classify_segmented_recording as evaluate
+from ..datasets import mfrdb
+from ..utils import less_than
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
     level=logging.DEBUG,
     stream=sys.stdout,
 )
-
-# hwrt modules
-from ..classify import classify_segmented_recording as evaluate
-from ..datasets import mfrdb
-from ..utils import less_than
 
 
 def main(directory):

@@ -9,19 +9,19 @@ import logging
 import os
 import tarfile
 from base64 import b64decode, b64encode
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
 
 # Third party modules
+import h5py
 import numpy as np
 import yaml
 
 # First party modules
-import h5py
-# hwrt modules
 import hwrt.utils as utils
+
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 
 def _array2cstr(arr):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# hwrt modules
+# First party modules
 import hwrt.download as download
 
 

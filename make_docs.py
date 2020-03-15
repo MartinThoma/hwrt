@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+# Core Library modules
 import os
 
 os.chdir("docs")

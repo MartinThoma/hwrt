@@ -14,8 +14,6 @@ import sys
 # Third party modules
 import pkg_resources
 import yaml
-
-# First party modules
 from natsort import natsorted
 
 # Local modules
@@ -25,7 +23,6 @@ try:  # Python 2
     import cPickle as pickle
 except ImportError:  # Python 3
     import pickle
-
 
 
 logging.basicConfig(

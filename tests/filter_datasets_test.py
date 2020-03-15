@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Core Library modules
 import os
-import pkg_resources
-import nose
 
-# hwrt modules
+# Third party modules
+import nose
+import pkg_resources
+
+# First party modules
 import hwrt.filter_dataset as filter_dataset
 
 

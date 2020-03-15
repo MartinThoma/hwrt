@@ -13,13 +13,12 @@ import uuid
 # Third party modules
 import pkg_resources
 import requests
-# Python 2 / 3 compatibility
+from flask import Flask, render_template, request
+from flask_bootstrap import Bootstrap
 from six.moves.urllib.request import urlopen
 
 # First party modules
 import hwrt
-from flask import Flask, render_template, request
-from flask_bootstrap import Bootstrap
 
 # Local modules
 from . import classify

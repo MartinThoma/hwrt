@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Third party modules
 import nose
 
-import tests.testhelper as testhelper
-
-# hwrt modules
+# First party modules
 import hwrt.data_multiplication as data_multiplication
+import tests.testhelper as testhelper
 
 
 # Tests

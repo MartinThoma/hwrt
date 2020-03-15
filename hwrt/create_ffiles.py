@@ -38,7 +38,6 @@ except ImportError:  # Python 3
     import pickle
 
 
-
 def _create_index_formula_lookup(formula_id2index, feature_folder, index2latex):
     """
     Create a lookup file where the index is mapped to the formula id and the

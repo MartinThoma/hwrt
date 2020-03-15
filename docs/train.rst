@@ -17,4 +17,3 @@ own implementation
                             where is the model folder (with a info.yml)? (default:
                             /home/moose/GitHub/hwr-experiments/models
                             /visualization-smooth-only)
-

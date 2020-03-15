@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Core Library modules
 import os
 
-# hwrt modules
+# First party modules
 import hwrt.create_model as create_model
 import hwrt.utils as utils
 

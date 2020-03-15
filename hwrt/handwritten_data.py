@@ -11,10 +11,7 @@ import logging
 
 # Third party modules
 import numpy
-
-# First party modules
-from PIL import Image
-from PIL import ImageDraw
+from PIL import Image, ImageDraw
 
 
 class HandwrittenData(object):

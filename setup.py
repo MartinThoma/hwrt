@@ -1,8 +1,9 @@
-# core modules
-from setuptools import find_packages
-from setuptools import setup
+# Core Library modules
 import io
 import os
+
+# Third party modules
+from setuptools import find_packages, setup
 
 
 def read(file_name):

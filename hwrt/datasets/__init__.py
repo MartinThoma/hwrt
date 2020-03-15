@@ -1,7 +1,15 @@
 """Utility functions to work with other datasets."""
 
+# Core Library modules
 import logging
 import sys
+
+# Third party modules
+import pymysql
+import pymysql.cursors
+
+# Local modules
+from .. import utils
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
@@ -9,11 +17,6 @@ logging.basicConfig(
     stream=sys.stdout,
 )
 
-import pymysql
-import pymysql.cursors
-
-# hwrt modules
-from .. import utils
 
 __formula_to_dbid_cache = None
 username2id = {}

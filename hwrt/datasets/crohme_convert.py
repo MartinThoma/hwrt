@@ -5,23 +5,27 @@
    list (Xs, ys) of single symbols. If it is a test folder, ys is None.
 """
 
-import logging
-import sys
+# Core Library modules
 import glob
+import logging
+import os
+import pickle
+import sys
+
+# Third party modules
 import natsort
 import numpy
-import pickle
-import os
 import pkg_resources
+
+# First party modules
+from hwrt import classify, utils
+from hwrt.datasets import inkml
+from hwrt.utils import less_than
 
 # Python 2 / 3 compatibility
 if sys.version_info[0] == 2:
     from future.builtins import open  # pylint: disable=W0622
 
-from hwrt import classify
-from hwrt import utils
-from hwrt.datasets import inkml
-from hwrt.utils import less_than
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",

@@ -3,14 +3,19 @@
 
 """Read and parse data from the MathBrush project."""
 
-import os
-from natsort import natsorted
+# Core Library modules
 import glob
 import json
-import re
-
 import logging
+import os
+import re
 import sys
+
+# Third party modules
+from natsort import natsorted
+
+# Local modules
+from .. import datasets, handwritten_data
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
@@ -18,9 +23,6 @@ logging.basicConfig(
     stream=sys.stdout,
 )
 
-# hwrt modules
-from .. import handwritten_data
-from .. import datasets
 
 missing_stroke_segmentation = []
 double_segmentation = []

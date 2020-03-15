@@ -3,12 +3,13 @@
 
 """Test the 'serve' module of the hwrt package."""
 
+# Third party modules
 import nose
 from flask import Flask
 from flask_bootstrap import Bootstrap
 from nose.plugins.skip import SkipTest
 
-# hwrt modules
+# First party modules
 import hwrt.serve as serve
 import hwrt.utils as utils
 

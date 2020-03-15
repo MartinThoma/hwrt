@@ -3,11 +3,9 @@
 
 """Tests for the segmentation subpackage."""
 
-# import nose
-import tests.testhelper as testhelper
-
-# hwrt modules
+# First party modules
 import hwrt.segmentation as segmentation
+import tests.testhelper as testhelper
 
 # import hwrt.utils as utils
 

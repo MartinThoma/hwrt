@@ -3,21 +3,21 @@
 
 """Evaluate a folder of InkML files for a CROHME competition."""
 
+# Core Library modules
 import glob
-
 import json
 import logging
 import sys
+
+# Local modules
+from ..classify import classify_segmented_recording as evaluate
+from . import inkml
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
     level=logging.DEBUG,
     stream=sys.stdout,
 )
-
-# HWRT modules
-from . import inkml
-from ..classify import classify_segmented_recording as evaluate
 
 
 def evaluate_dir(sample_dir):

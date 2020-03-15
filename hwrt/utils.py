@@ -23,18 +23,15 @@ from decimal import Decimal, getcontext
 from uuid import UUID
 
 # Third party modules
+import natsort
 import numpy
 import pkg_resources
 import yaml
-
-# First party modules
-import natsort
 
 # Local modules
 from . import handwritten_data
 
 getcontext().prec = 100
-
 
 
 def print_status(total, current, start_time=None):

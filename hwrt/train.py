@@ -25,7 +25,6 @@ logging.basicConfig(
 )
 
 
-
 def update_if_outdated(folder):
     """Check if the currently watched instance (model, feature or
         preprocessing) is outdated and update it eventually.

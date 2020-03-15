@@ -1,23 +1,25 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Core Library modules
 import json
+import logging
 import signal
 import sys
-import logging
+from xml.dom.minidom import parseString
+
+# Third party modules
+from natsort import natsorted
+
+# Local modules
+from .. import handwritten_data
+from ..datasets import formula_to_dbid
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
     level=logging.DEBUG,
     stream=sys.stdout,
 )
-
-from natsort import natsorted
-from xml.dom.minidom import parseString
-
-# hwrt modules
-from .. import handwritten_data
-from ..datasets import formula_to_dbid
 
 
 def beautify_xml(path):

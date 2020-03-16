@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-""" Get the error of a model. This tool supports multiple error measures."""
+"""Get the error of a model. This tool supports multiple error measures."""
 
 # Core Library modules
 import csv
@@ -19,14 +19,9 @@ import pkg_resources
 import yaml
 
 # First party modules
-# hwrt modules
 import hwrt.utils as utils
 
-logging.basicConfig(
-    format="%(asctime)s %(levelname)s %(message)s",
-    level=logging.DEBUG,
-    stream=sys.stdout,
-)
+logger = logging.getLogger(__name__)
 
 
 class DefaultOrderedDict(OrderedDict):
@@ -54,7 +49,7 @@ class DefaultOrderedDict(OrderedDict):
             args = tuple()
         else:
             args = (self.default_factory,)
-        return type(self), args, None, None, self.items()
+        return type(self), args, None, None, list(self.items())
 
     def copy(self):
         return self.__copy__()
@@ -65,7 +60,7 @@ class DefaultOrderedDict(OrderedDict):
     def __deepcopy__(self, memo):
         import copy
 
-        return type(self)(self.default_factory, copy.deepcopy(self.items()))
+        return type(self)(self.default_factory, copy.deepcopy(list(self.items())))
 
     def __repr__(self):
         return "OrderedDefaultDict(%s, %s)" % (
@@ -77,9 +72,7 @@ class DefaultOrderedDict(OrderedDict):
 def get_test_results(model_folder, basename, test_file):
     model_src = utils.get_latest_model(model_folder, basename)
     if model_src is None:
-        logging.error(
-            "No model with basename '%s' found in '%s'.", basename, model_folder
-        )
+        logger.error(f"No model with basename '{basename}' found in '{model_folder}'.")
     else:
         _, model_use = tempfile.mkstemp(suffix=".json", text=True)
         utils.create_adjusted_model_for_percentages(model_src, model_use)
@@ -87,11 +80,11 @@ def get_test_results(model_folder, basename, test_file):
         # Start evaluation
         project_root = utils.get_project_root()
         time_prefix = time.strftime("%Y-%m-%d-%H-%M")
-        logging.info("Evaluate '%s' with '%s'...", model_src, test_file)
+        logger.info(f"Evaluate '{model_src}' with '{test_file}'...")
         logfile = os.path.join(
             project_root, "logs/%s-error-evaluation.log" % time_prefix
         )
-        logging.info("Write log to %s...", logfile)
+        logger.info(f"Write log to {logfile}...")
         with open(logfile, "w") as log, open(model_use, "r") as model_src_p:
             p = subprocess.Popen(
                 [
@@ -107,7 +100,7 @@ def get_test_results(model_folder, basename, test_file):
             )
             ret = p.wait()
             if ret != 0:
-                logging.error("nntoolkit finished with ret code %s", str(ret))
+                logger.error(f"nntoolkit finished with ret code {ret}")
                 sys.exit(-1)
         os.remove(model_use)
         return logfile
@@ -142,7 +135,7 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
     # Get MER classes
     merge_cfg_path = pkg_resources.resource_filename("hwrt", "misc/")
     merge_cfg_file = os.path.join(merge_cfg_path, "merge.yml")
-    merge_data = yaml.load(open(merge_cfg_file, "r"))
+    merge_data = yaml.safe_load(open(merge_cfg_file, "r"))
     # Make classes
     confusing = make_all(merge_data)
     if not merge:
@@ -158,7 +151,7 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
         len(eval_data),
     )
     for known, evaluated in zip(true_data, eval_data):
-        evaluated_t1 = evaluated.keys()[0]
+        evaluated_t1 = list(evaluated.keys())[0]
         if known["index"] not in statistical:
             statistical[known["index"]] = {
                 "FP": 0,
@@ -168,16 +161,15 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
                 "latex": index2latex[known["index"]],
             }
             possible_keys.append(known["index"])
-        for key in evaluated.keys():
+        for key in list(evaluated.keys()):
             if key not in statistical:
                 if key not in index2latex:
-                    logging.error(
-                        "Key '%s' is not in index2latex. Did you "
+                    logger.error(
+                        f"Key '{key}' is not in index2latex. Did you "
                         "probaly define a too small number of "
-                        "outputnodes?",
-                        str(key),
+                        "outputnodes?"
                     )
-                    logging.error("index2latex.keys(): %s", str(index2latex.keys()))
+                    logger.error(f"index2latex.keys(): {index2latex.keys()}")
                     sys.exit(-1)
                 statistical[key] = {
                     "FP": 0,
@@ -187,7 +179,7 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
                     "latex": index2latex[key],
                 }
                 possible_keys.append(key)
-        if known["index"] in evaluated.keys()[:n]:
+        if known["index"] in list(evaluated.keys())[:n]:
             statistical[known["index"]]["TP"] += 1
             correct.append(known)
             for key in possible_keys:
@@ -203,7 +195,7 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
         else:
             for key in possible_keys:
                 if key != known["index"]:
-                    if key not in evaluated.keys()[:n]:
+                    if key not in list(evaluated.keys())[:n]:
                         statistical[key]["TN"] += 1
                     else:
                         statistical[key]["FP"] += 1
@@ -213,13 +205,9 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
             known["confused"] = formula_id  # That's an index!
             wrong.append(known)
     classification_error = len(wrong) / float(len(wrong) + len(correct))
-    logging.info(
-        "Classification error (n=%i, MER=%r): %0.4f (%i of %i wrong)",
-        n,
-        merge,
-        classification_error,
-        len(wrong),
-        len(eval_data),
+    logger.info(
+        f"Classification error (n={n}, MER={merge}): "
+        f"{classification_error:0.4f} ({len(wrong)} of {len(eval_data)} wrong)",
     )
 
     # Get the data
@@ -231,7 +219,7 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
 
     # Sort errors_by_correct_classification
     tmp = sorted(
-        errors_by_correct_classification.iteritems(),
+        iter(errors_by_correct_classification.items()),
         key=lambda n: len(n[1]),
         reverse=True,
     )
@@ -241,7 +229,7 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
         errors_by_correct_classification[key] = tmp
     # Sort errors_by_wrong_classification
     tmp = sorted(
-        errors_by_wrong_classification.iteritems(),
+        iter(errors_by_wrong_classification.items()),
         key=lambda n: len(n[1]),
         reverse=True,
     )
@@ -316,14 +304,14 @@ def analyze_results(
         splitted = eval_data[i].split(" ")
         if len(splitted) == 0:
             continue  # Skip empty lines
-        eval_data[i] = map(float, splitted)
+        eval_data[i] = list(map(float, splitted))
 
         # index -> probability dictionary
         d = OrderedDict()
         for index, prob in enumerate(eval_data[i]):
             d[index] = prob
         # Sort descending by probability
-        d = OrderedDict(sorted(d.iteritems(), key=lambda n: n[1], reverse=True))
+        d = OrderedDict(sorted(iter(d.items()), key=lambda n: n[1], reverse=True))
         eval_data[i] = d
 
     true_data = []
@@ -351,7 +339,7 @@ def main(model_folder, aset="test", n=3, merge=True):
     model_description_file = os.path.join(model_folder, "info.yml")
     # Read the model description file
     with open(model_description_file, "r") as ymlfile:
-        model_description = yaml.load(ymlfile)
+        model_description = yaml.safe_load(ymlfile)
 
     # Get the data paths (hdf5)
     project_root = utils.get_project_root()
@@ -375,54 +363,3 @@ def main(model_folder, aset="test", n=3, merge=True):
         project_root, model_description["data-source"], "translation-%s.csv" % key_file
     )
     analyze_results(translation_csv, what_evaluated_file, evaluation_file, n, merge)
-
-
-def is_valid_file(parser, arg):
-    """Check if arg is a valid file that already exists on the file
-       system.
-    """
-    arg = os.path.abspath(arg)
-    if not os.path.exists(arg):
-        parser.error("The file %s does not exist!" % arg)
-    else:
-        return arg
-
-
-def get_parser():
-    """Return the parser object for this script."""
-    from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-
-    parser = ArgumentParser(
-        description=__doc__, formatter_class=ArgumentDefaultsHelpFormatter
-    )
-    parser.add_argument(
-        "-m",
-        "--model",
-        dest="model",
-        help="where is the model folder (with the info.yml)?",
-        metavar="FOLDER",
-        type=lambda x: utils.is_valid_folder(parser, x),
-        default=utils.default_model(),
-    )
-    parser.add_argument(
-        "-s",
-        "--set",
-        dest="aset",
-        choices=["test", "train", "valid"],
-        help="which set should get analyzed?",
-        default="test",
-    )
-    parser.add_argument("-n", dest="n", default=1, type=int, help="Top-N error")
-    parser.add_argument(
-        "--merge",
-        action="store_true",
-        dest="merge",
-        default=False,
-        help="merge problem classes that are easy to confuse",
-    )
-    return parser
-
-
-if __name__ == "__main__":
-    args = get_parser().parse_args()
-    main(args.model, args.aset, args.n, args.merge)

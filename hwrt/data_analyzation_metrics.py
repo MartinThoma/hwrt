@@ -25,7 +25,7 @@ this:
 >>> creator_metric = Creator('creator.csv')
 >>> creator_metric(a)
 """
-from __future__ import print_function
+
 
 # Core Library modules
 import logging
@@ -43,6 +43,8 @@ import numpy
 from . import handwritten_data  # pylint: disable=W0611
 from . import preprocessing  # pylint: disable=W0611
 from . import utils
+
+logger = logging.getLogger(__name__)
 
 
 def get_metrics(metrics_description):
@@ -138,7 +140,7 @@ class Creator(object):
         print("\r100%" + "\033[K\n")
 
         # Sort the data by highest value, descending
-        print_data = sorted(print_data.items(), key=lambda n: n[1], reverse=True)
+        print_data = sorted(list(print_data.items()), key=lambda n: n[1], reverse=True)
 
         # Write data to file
         write_file.write("total,%i\n" % sum([value for _, value in print_data]))
@@ -186,8 +188,8 @@ class InstrokeSpeed(object):
         for value in print_data:
             write_file.write("%0.8f\n" % (value))
 
-        logging.info("instroke speed mean: %0.8f", numpy.mean(print_data))
-        logging.info("instroke speed std: %0.8f", numpy.std(print_data))
+        logger.info("instroke speed mean: %0.8f", numpy.mean(print_data))
+        logger.info("instroke speed std: %0.8f", numpy.std(print_data))
         write_file.close()
 
 
@@ -228,8 +230,8 @@ class InterStrokeDistance(object):
         for value in print_data:
             write_file.write("%0.8f\n" % (value))
 
-        logging.info("dist_between_strokes mean:\t%0.8fpx", numpy.mean(print_data))
-        logging.info("dist_between_strokes std: \t%0.8fpx", numpy.std(print_data))
+        logger.info("dist_between_strokes mean:\t%0.8fpx", numpy.mean(print_data))
+        logger.info("dist_between_strokes std: \t%0.8fpx", numpy.std(print_data))
         write_file.close()
 
 

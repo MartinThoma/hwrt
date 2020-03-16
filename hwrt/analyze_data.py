@@ -5,29 +5,22 @@
    similar features.
 """
 
-from __future__ import print_function
 
 # Core Library modules
 import logging
 import os
+import pickle
 import sys
 
 # Third party modules
 import numpy
 
 # Local modules
-# hwrt modules
-# HandwrittenData is necessary because of pickle
 from . import data_analyzation_metrics as dam
 from . import features, handwritten_data, utils
 
-try:  # Python 2
-    import cPickle as pickle
-except ImportError:  # Python 3
-    import pickle
-
-
-sys.modules["HandwrittenData"] = handwritten_data
+logger = logging.getLogger(__name__)
+sys.modules["hwrt.HandwrittenData"] = handwritten_data
 
 
 def filter_label(label, replace_by_similar=True):
@@ -120,11 +113,12 @@ def analyze_feature(raw_datasets, feature, basename="aspect_ratios"):
 def main(handwriting_datasets_file, analyze_features):
     """Start the creation of the wanted metric."""
     # Load from pickled file
-    logging.info("Start loading data '%s' ...", handwriting_datasets_file)
-    loaded = pickle.load(open(handwriting_datasets_file))
+    logger.info(f"Start loading data '{handwriting_datasets_file}' ...")
+    with open(handwriting_datasets_file, "rb") as f:
+        loaded = pickle.load(f)
     raw_datasets = loaded["handwriting_datasets"]
-    logging.info("%i datasets loaded.", len(raw_datasets))
-    logging.info("Start analyzing...")
+    logger.info(f"{len(raw_datasets)} datasets loaded.")
+    logger.info("Start analyzing...")
 
     if analyze_features:
         featurelist = [
@@ -137,7 +131,7 @@ def main(handwriting_datasets_file, analyze_features):
             (features.StrokeCount(), "stroke-count.csv"),
         ]
         for feat, filename in featurelist:
-            logging.info("create %s...", filename)
+            logger.info("create %s...", filename)
             analyze_feature(raw_datasets, feat, filename)
 
     # Analyze everything specified in configuration
@@ -145,45 +139,7 @@ def main(handwriting_datasets_file, analyze_features):
     if "data_analyzation_queue" in cfg:
         metrics = dam.get_metrics(cfg["data_analyzation_queue"])
         for metric in metrics:
-            logging.info("Start metric %s...", str(metric))
+            logger.info("Start metric %s...", str(metric))
             metric(raw_datasets)
     else:
-        logging.info("No 'data_analyzation_queue' in ~/.hwrtrc")
-
-
-def get_parser():
-    """Return the parser object for this script."""
-    project_root = utils.get_project_root()
-
-    # Get latest (raw) dataset
-    dataset_folder = os.path.join(project_root, "raw-datasets")
-    latest_dataset = utils.get_latest_in_folder(dataset_folder, "raw.pickle")
-
-    from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-
-    parser = ArgumentParser(
-        description=__doc__, formatter_class=ArgumentDefaultsHelpFormatter
-    )
-    parser.add_argument(
-        "-d",
-        "--handwriting_datasets",
-        dest="handwriting_datasets",
-        help="where are the pickled handwriting_datasets?",
-        metavar="FILE",
-        type=lambda x: utils.is_valid_file(parser, x),
-        default=latest_dataset,
-    )
-    parser.add_argument(
-        "-f",
-        "--features",
-        dest="analyze_features",
-        help="analyze features",
-        action="store_true",
-        default=False,
-    )
-    return parser
-
-
-if __name__ == "__main__":
-    args = get_parser().parse_args()
-    main(args.handwriting_datasets, args.analyze_features)
+        logger.info("No 'data_analyzation_queue' in ~/.hwrtrc")

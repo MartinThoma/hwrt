@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Core Library modules
+from unittest import mock
+
 # First party modules
 import tests.testhelper as testhelper
 from hwrt.handwritten_data import HandwrittenData
-
-try:
-    from unittest import mock  # Python 3
-except ImportError:
-    import mock  # Python 2
 
 
 def test_load_symbol():

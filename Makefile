@@ -25,10 +25,12 @@ countt:
 	cloc tests
 
 clean:
+	python setup.py clean --all
 	rm -f *.hdf5 *.yml *.csv
 	find . -name "*.pyc" -exec rm -rf {} \;
 	find . -type d -name "__pycache__" -delete
-	sudo rm -rf build
-	sudo rm -rf cover
-	sudo rm -rf dist
-	sudo rm -rf hwrt.egg-info
+	rm -rf build
+	rm -rf cover
+	rm -rf dist
+	rm -rf hwrt.egg-info
+	rm -rf tests/reports

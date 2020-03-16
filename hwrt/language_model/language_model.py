@@ -154,7 +154,7 @@ class NgramLanguageModel(object):
             return Decimal(10) ** log_prob
 
     def print_all(self):
-        for n, data in sorted(self.ngrams.items(), key=lambda n: n[0]):
+        for n, data in sorted(list(self.ngrams.items()), key=lambda n: n[0]):
             print("n=%i" % n)
             for key, value in data["data"].items():
                 print("%s\t%s" % (key, value))

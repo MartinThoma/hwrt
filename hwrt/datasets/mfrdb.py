@@ -77,7 +77,7 @@ def elementtree_to_dict(element):
     if hasattr(element, "text") and element.text is not None:
         d["text"] = element.text
 
-    d.update(element.items())  # element's attributes
+    d.update(list(element.items()))  # element's attributes
 
     for c in list(element):  # element's children
         if c.tag not in d:
@@ -102,7 +102,7 @@ def strip_end(text, suffix):
 
 def remove_accents(input_str):
     nkfd_form = unicodedata.normalize("NFKD", input_str)
-    return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
+    return "".join([c for c in nkfd_form if not unicodedata.combining(c)])
 
 
 def get_recordings(directory):
@@ -160,14 +160,14 @@ def get_recordings(directory):
             info = {}
             if "text" in example["FormulaInputInfo"]["Username"]:
                 uname = example["FormulaInputInfo"]["Username"]["text"].strip()
-                info["username"] = "MfrDB::%s" % remove_accents(unicode(uname))
+                info["username"] = "MfrDB::%s" % remove_accents(str(uname))
                 info["username"] = info["username"].replace("+", "PLUS")
                 info["username"] = info["username"].replace("...", "DOTS")
                 info["username"] = info["username"].replace(
-                    u"\u0432\u044b\u0444", "BBEF"
+                    "\u0432\u044b\u0444", "BBEF"
                 )
                 info["username"] = info["username"].replace(
-                    u"\u0437\u0438\u0438", "Zeii"
+                    "\u0437\u0438\u0438", "Zeii"
                 )
             else:
                 info["username"] = "MfrDB::unknown"

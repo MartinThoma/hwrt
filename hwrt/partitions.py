@@ -13,11 +13,7 @@
 import logging
 import sys
 
-logging.basicConfig(
-    format="%(asctime)s %(levelname)s %(message)s",
-    level=logging.DEBUG,
-    stream=sys.stdout,
-)
+logger = logging.getLogger(__name__)
 
 
 def prepare_table(table):
@@ -202,13 +198,6 @@ def main():
     for el, score in topfs:
         print("%0.10f: %s" % (score, el))
     for i in range(20):
-        logging.info(
+        logger.info(
             "{0:>5}: {1:>10}".format(i, len(list(all_segmentations(list(range(i))))))
         )
-
-
-if __name__ == "__main__":
-    main()
-    import doctest
-
-    doctest.testmod()

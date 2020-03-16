@@ -16,7 +16,6 @@ import hwrt.view as view
 # Tests
 @pytest.mark.skip
 def test_execution():
-    view.get_parser()
     view._fetch_data_from_server(31, "mysql_online")
 
     d = os.path.dirname(__file__)

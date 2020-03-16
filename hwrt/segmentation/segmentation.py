@@ -73,7 +73,7 @@ def main():
 
     for nr, recording in enumerate(recordings):
         if nr % 100 == 0:
-            print(("## %i " % nr) + "#" * 80)
+            print((("## %i " % nr) + "#" * 80))
 
         t0 = time.time()
         seg_predict = get_segmentation(
@@ -107,10 +107,10 @@ def main():
         if all(
             [has_wrong_break(real_seg, segmentation) for segmentation, _ in seg_predict]
         ):
-            print("## %i" % recording["id"])
-            print("  Real segmentation:\t%s (got at place %i)" % (real_seg, i))
+            print(("## %i" % recording["id"]))
+            print(("  Real segmentation:\t%s (got at place %i)" % (real_seg, i)))
             print(pred_str)
-            print("  Segmentation took %0.4f seconds." % (t1 - t0))
+            print(("  Segmentation took %0.4f seconds." % (t1 - t0)))
             if has_wrong_break(real_seg, seg_predict[0][0]):
                 print("  over-segmented")
             if has_missing_break(real_seg, seg_predict[0][0]):
@@ -286,7 +286,7 @@ def get_segmented_raw_data(top_n=10000):
         if datasets[i]["segmentation"] is None:
             stroke_count = len(json.loads(datasets[i]["data"]))
             if stroke_count > 10:
-                print("Massive stroke count! %i" % stroke_count)
+                print(("Massive stroke count! %i" % stroke_count))
             datasets[i]["segmentation"] = str([[s for s in range(stroke_count)]])
     return datasets
 
@@ -470,11 +470,13 @@ def train_nn_segmentation_classifier(X, y):
 
         # Then we print the results for this epoch:
         print(
-            "Epoch {0} of {1} took {2:.3f}s".format(
-                epoch + 1, num_epochs, time.time() - start_time
+            (
+                "Epoch {0} of {1} took {2:.3f}s".format(
+                    epoch + 1, num_epochs, time.time() - start_time
+                )
             )
         )
-        print("  training loss:\t\t{0:.6f}".format(train_err / train_batches))
+        print(("  training loss:\t\t{0:.6f}".format(train_err / train_batches)))
 
     predict_fn = theano.function([input_var], test_prediction)
     return predict_fn
@@ -649,7 +651,7 @@ def get_segmentation(
         # Segment after pre-segmentation
         prob = [[1.0 for _ in chunk] for _ in chunk]
         for strokeid1, strokeid2 in itertools.product(
-            range(len(chunk)), range(len(chunk))
+            list(range(len(chunk))), list(range(len(chunk)))
         ):
             if strokeid1 == strokeid2:
                 continue

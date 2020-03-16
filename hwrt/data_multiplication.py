@@ -121,9 +121,3 @@ class Rotate(object):
             new_trainging_set.append(hwd_tmp)
         training_set = new_trainging_set
         return training_set
-
-
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()

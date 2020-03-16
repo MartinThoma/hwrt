@@ -23,10 +23,6 @@ def test_main_execution():
     filter_dataset.main(symbol_yml_file, raw_pickle_file, pickle_dest_path)
 
 
-def test_get_parser_execution():
-    filter_dataset.get_parser()
-
-
 def test_get_metadata():
     metadata = filter_dataset.get_metadata()
     assert len(metadata) == 3

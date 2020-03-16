@@ -7,7 +7,6 @@
 import json
 import logging
 import os
-import sys
 import uuid
 
 # Third party modules
@@ -25,11 +24,8 @@ from . import classify
 from . import segmentation as se
 from . import utils
 
+logger = logging.getLogger(__name__)
 logging.getLogger("requests").setLevel(logging.WARNING)
-
-
-if sys.version_info[0] == 2:
-    from future.builtins import open  # pylint: disable=W0622
 
 
 # Global variables
@@ -100,7 +96,7 @@ def interactive():
     if request.method == "GET" and request.args.get("heartbeat", "") != "":
         return request.args.get("heartbeat", "")
     if request.method == "POST":
-        logging.warning("POST to /interactive is deprecated. " "Use /worker instead")
+        logger.warning("POST to /interactive is deprecated. " "Use /worker instead")
     else:
         # Page where the user can enter a recording
         return render_template("canvas.html")
@@ -139,7 +135,7 @@ def worker():
         try:
             secret_uuid = request.form["secret"]
         except:
-            logging.info("No secret uuid given. Create one.")
+            logger.info("No secret uuid given. Create one.")
             secret_uuid = str(uuid.uuid4())
 
         # Check recording
@@ -230,8 +226,8 @@ def get_writemath_id(el, translate):
     """
     semantics = el["semantics"].split(";")[1]
     if semantics not in translate:
-        logging.debug("Could not find '%s' in translate.", semantics)
-        logging.debug("el: %s", el)
+        logger.debug("Could not find '%s' in translate.", semantics)
+        logger.debug("el: %s", el)
         return None
     else:
         writemathid = translate[semantics]
@@ -282,7 +278,7 @@ def work():
 
     chunk_size = 1000
 
-    logging.info("Start working with n=%i", n)
+    logger.info("Start working with n=%i", n)
     for _ in range(chunk_size):
         # contact the write-math server and get something to classify
         url = "http://www.martin-thoma.de/write-math/api/get_unclassified.php"
@@ -353,34 +349,9 @@ def work():
             return "Invalid JSON response: %s" % response.text
 
         if "error" in response:
-            logging.info(response)
+            logger.info(response)
             return str(response)
     return "Done - Classified %i recordings" % chunk_size
-
-
-def get_parser():
-    """Return the parser object for this script."""
-    from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-
-    parser = ArgumentParser(
-        description=__doc__, formatter_class=ArgumentDefaultsHelpFormatter
-    )
-    parser.add_argument("-n", dest="n", default=10, type=int, help="Show TOP-N results")
-    parser.add_argument(
-        "--port",
-        dest="port",
-        default=5000,
-        type=int,
-        help="where should the webserver run",
-    )
-    parser.add_argument(
-        "--use_segmenter",
-        dest="use_segmenter",
-        default=False,
-        action="store_true",
-        help=("try to segment the input for multiple symbol " "recognition"),
-    )
-    return parser
 
 
 def main(port=8000, n_output=10, use_segmenter=False):
@@ -389,11 +360,5 @@ def main(port=8000, n_output=10, use_segmenter=False):
     global use_segmenter_flag
     n = n_output
     use_segmenter_flag = use_segmenter
-    logging.info("Start webserver...")
+    logger.info("Start webserver...")
     app.run(port=port)
-
-
-if __name__ == "__main__":
-    args = get_parser().parse_args()
-    globals()["n"] = args.n
-    main(port=args.port, use_segmenter=args.use_segmenter)

@@ -27,6 +27,8 @@ from scipy.interpolate import interp1d
 # Local modules
 from . import geometry, handwritten_data, utils
 
+logger = logging.getLogger(__name__)
+
 
 def euclidean_distance(p1, p2):
     """Calculate the euclidean distance of two 2D points.
@@ -430,10 +432,10 @@ class SpaceEvenlyPerStroke(object):
             fy = interp1d(t, y, kind=kind)
         except Exception as e:  # pylint: disable=W0703
             if hwr_obj.raw_data_id is not None:
-                logging.debug("spline failed for raw_data_id %i", hwr_obj.raw_data_id)
+                logger.debug("spline failed for raw_data_id %i", hwr_obj.raw_data_id)
             else:
-                logging.debug("spline failed")
-            logging.debug(e)
+                logger.debug("spline failed")
+            logger.debug(e)
             failed = True
 
         tnew = numpy.linspace(t[0], t[-1], self.number)
@@ -446,10 +448,10 @@ class SpaceEvenlyPerStroke(object):
                 fy = interp1d(t, y, kind="linear")
                 failed = False
             except Exception as e:
-                logging.debug("len(stroke) = %i", len(stroke))
-                logging.debug("len(x) = %i", len(x))
-                logging.debug("len(y) = %i", len(y))
-                logging.debug("stroke=%s", stroke)
+                logger.debug("len(stroke) = %i", len(stroke))
+                logger.debug("len(x) = %i", len(x))
+                logger.debug("len(y) = %i", len(y))
+                logger.debug("stroke=%s", stroke)
                 raise e
 
         for x, y, t in zip(fx(tnew), fy(tnew), tnew):
@@ -755,9 +757,3 @@ class WeightedAverageSmoothing(object):
                     new_pointlist[-1].append(p)
                 new_pointlist[-1].append(stroke[-1])
         hwr_obj.set_pointlist(new_pointlist)
-
-
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()

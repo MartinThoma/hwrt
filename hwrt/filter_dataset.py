@@ -9,6 +9,7 @@ Given a dataset and a vocabulary file, filter the recordings which are desired.
 import csv
 import logging
 import os
+import pickle
 import sys
 
 # Third party modules
@@ -19,17 +20,7 @@ from natsort import natsorted
 # Local modules
 from . import utils
 
-try:  # Python 2
-    import cPickle as pickle
-except ImportError:  # Python 3
-    import pickle
-
-
-logging.basicConfig(
-    format="%(asctime)s %(levelname)s %(message)s",
-    level=logging.DEBUG,
-    stream=sys.stdout,
-)
+logger = logging.getLogger(__name__)
 
 
 def main(symbol_yml_file, raw_pickle_file, pickle_dest_path):
@@ -90,13 +81,13 @@ def get_symbol_ids(symbol_yml_file, metadata):
     ```
     """
     with open(symbol_yml_file, "r") as stream:
-        symbol_cfg = yaml.load(stream)
+        symbol_cfg = yaml.safe_load(stream)
     symbol_ids = []
     symbol_ids_set = set()
 
     for symbol in symbol_cfg:
         if "latex" not in symbol:
-            logging.error(
+            logger.error(
                 "Key 'latex' not found for a symbol in %s (%s)", symbol_yml_file, symbol
             )
             sys.exit(-1)
@@ -106,7 +97,7 @@ def get_symbol_ids(symbol_yml_file, metadata):
             if el["formula_in_latex"] == symbol["latex"]
         ]
         if len(results) != 1:
-            logging.warning(
+            logger.warning(
                 "Found %i results for %s: %s", len(results), symbol["latex"], results
             )
             if len(results) > 1:
@@ -122,7 +113,7 @@ def get_symbol_ids(symbol_yml_file, metadata):
                     if el["formula_in_latex"] == msymbol["latex"]
                 ]
                 if len(filtered) != 1:
-                    logging.error(
+                    logger.error(
                         "Found %i results for %s: %s", len(filtered), msymbol, filtered
                     )
                     if len(filtered) > 1:
@@ -144,7 +135,7 @@ def get_symbol_ids(symbol_yml_file, metadata):
                 for symbol_tmp in symbol_ids:
                     if id_tmp in symbol_tmp["mappings"]:
                         break
-                logging.error("Symbol id %s is already used: %s", id_tmp, symbol_tmp)
+                logger.error("Symbol id %s is already used: %s", id_tmp, symbol_tmp)
                 sys.exit(-1)
 
     # print(metadata.keys())
@@ -156,7 +147,7 @@ def get_symbol_ids(symbol_yml_file, metadata):
     #                  any other class get assigned to this class
     # - ::TAG/arrow:: - meaning all ids of the tag arrow get assigned here
     # - exclude
-    logging.info(
+    logger.info(
         "%i base classes and %i write-math ids.", len(symbol_ids), len(symbol_ids_set)
     )
     return symbol_ids
@@ -227,7 +218,7 @@ def load_raw(raw_pickle_file):
     """
     with open(raw_pickle_file, "rb") as f:
         raw = pickle.load(f)
-    logging.info("Loaded %i recordings.", len(raw["handwriting_datasets"]))
+    logger.info("Loaded %i recordings.", len(raw["handwriting_datasets"]))
     return raw
 
 
@@ -242,7 +233,7 @@ def filter_and_save(raw, symbol_ids, destination_path):
     destination_path : str
         Path where the filtered dict 'raw' will be saved
     """
-    logging.info("Start filtering...")
+    logger.info("Start filtering...")
     new_hw_ds = []
     for el in raw["handwriting_datasets"]:
         if el["formula_id"] in symbol_ids:
@@ -252,46 +243,5 @@ def filter_and_save(raw, symbol_ids, destination_path):
     raw["handwriting_datasets"] = new_hw_ds
 
     # pickle
-    logging.info("Start dumping %i recordings...", len(new_hw_ds))
+    logger.info("Start dumping %i recordings...", len(new_hw_ds))
     pickle.dump(raw, open(destination_path, "wb"), 2)
-
-
-def get_parser():
-    """Return the parser object for this script."""
-    from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-
-    parser = ArgumentParser(
-        description=__doc__, formatter_class=ArgumentDefaultsHelpFormatter
-    )
-    parser.add_argument(
-        "-s",
-        "--symbol",
-        dest="symbol_filename",
-        type=lambda x: utils.is_valid_file(parser, x),
-        required=True,
-        help="symbol yml file",
-        metavar="FILE",
-    )
-    parser.add_argument(
-        "-r",
-        "--raw",
-        dest="raw_filename",
-        type=lambda x: utils.is_valid_file(parser, x),
-        required=True,
-        help="raw pickle file",
-        metavar="FILE",
-    )
-    parser.add_argument(
-        "-d",
-        "--dest",
-        dest="pickle_dest_path",
-        required=True,
-        help="pickle destination file",
-        metavar="FILE",
-    )
-    return parser
-
-
-if __name__ == "__main__":
-    args = get_parser().parse_args()
-    main(args.symbol_filename, args.raw_filename, args.pickle_dest_path)

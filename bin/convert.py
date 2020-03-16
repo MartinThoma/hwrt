@@ -9,19 +9,17 @@ import logging
 import os
 import tarfile
 from base64 import b64decode, b64encode
+from io import StringIO
 
 # Third party modules
+import click
 import h5py
 import numpy as np
 import yaml
 
 # First party modules
+import hwrt.cli
 import hwrt.utils as utils
-
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
 
 
 def _array2cstr(arr):
@@ -53,7 +51,7 @@ def _as_ndarray(dct):
     return dct
 
 
-def create_output_semantics(model_folder, outputs):
+def create_output_semantics(model_folder: str, outputs: int):
     """
     Create a 'output_semantics.csv' file which contains information what the
     output of the single output neurons mean.
@@ -68,7 +66,7 @@ def create_output_semantics(model_folder, outputs):
     with open("output_semantics.csv", "wb") as csvfile:
         model_description_file = os.path.join(model_folder, "info.yml")
         with open(model_description_file, "r") as ymlfile:
-            model_description = yaml.load(ymlfile)
+            model_description = yaml.safe_load(ymlfile)
 
         logging.info("Start fetching translation dict...")
         translation_dict = utils.get_index2data(model_description)
@@ -96,7 +94,7 @@ def main(model_folder):
     model_folder : str
         Path to a folder in which a model (json file) is.
     """
-    a = yaml.load(open(utils.get_latest_in_folder(model_folder, ".json")))
+    a = yaml.safe_load(open(utils.get_latest_in_folder(model_folder, ".json")))
 
     layers = []
     filenames = [
@@ -154,14 +152,14 @@ def main(model_folder):
     # Get model folder
     model_description_file = os.path.join(model_folder, "info.yml")
     with open(model_description_file, "r") as ymlfile:
-        model_description = yaml.load(ymlfile)
+        model_description = yaml.safe_load(ymlfile)
 
     # Get feature folder
     feature_description_file = os.path.join(
         utils.get_project_root(), model_description["data-source"], "info.yml"
     )
     with open(feature_description_file, "r") as ymlfile:
-        feature_description = yaml.load(ymlfile)
+        feature_description = yaml.safe_load(ymlfile)
 
     with open("features.yml", "w") as f:
         yaml.dump(feature_description, f, default_flow_style=False)
@@ -171,7 +169,7 @@ def main(model_folder):
         utils.get_project_root(), feature_description["data-source"], "info.yml"
     )
     with open(preprocessing_description_file, "r") as ymlfile:
-        preprocessing_description = yaml.load(ymlfile)
+        preprocessing_description = yaml.safe_load(ymlfile)
 
     with open("preprocessing.yml", "w") as f:
         yaml.dump(preprocessing_description, f, default_flow_style=False)
@@ -185,25 +183,11 @@ def main(model_folder):
         os.remove(filename)
 
 
-def get_parser():
-    """Return the parser object for this script."""
-    from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-
-    parser = ArgumentParser(
-        description=__doc__, formatter_class=ArgumentDefaultsHelpFormatter
-    )
-    parser.add_argument(
-        "-m",
-        "--model",
-        dest="model",
-        help="where is the model folder (with a info.yml)?",
-        metavar="FOLDER",
-        type=lambda x: utils.is_valid_folder(parser, x),
-        default=utils.default_model(),
-    )
-    return parser
+@click.command()
+@hwrt.cli.model_option
+def entry_point(model):
+    main(model)
 
 
 if __name__ == "__main__":
-    args = get_parser().parse_args()
-    main(args.model)
+    entry_point()

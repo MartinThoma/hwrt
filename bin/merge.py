@@ -5,12 +5,13 @@
 
 # Core Library modules
 import pickle
+from typing import Dict
 
-# First party modules
-from hwrt.utils import is_valid_file
+# Third party modules
+import click
 
 
-def main(dataset1, dataset2, target):
+def main(dataset1: str, dataset2: str, target: str):
     """
     Parameters
     ----------
@@ -25,7 +26,7 @@ def main(dataset1, dataset2, target):
         pickle.dump(merged, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-def read_raw(data_path):
+def read_raw(data_path: str):
     """
     Parameters
     ----------
@@ -36,17 +37,17 @@ def read_raw(data_path):
     return data
 
 
-def merge(d1, d2):
+def merge(d1: Dict, d2: Dict) -> Dict:
     """Merge two raw datasets into one.
 
     Parameters
     ----------
-    d1 : dict
-    d2 : dict
+    d1 : Dict
+    d2 : Dict
 
     Returns
     -------
-    dict
+    Dict
     """
     if d1["formula_id2latex"] is None:
         formula_id2latex = {}
@@ -62,34 +63,28 @@ def merge(d1, d2):
     }
 
 
-def get_parser():
-    from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-
-    parser = ArgumentParser(
-        description=__doc__, formatter_class=ArgumentDefaultsHelpFormatter
-    )
-    parser.add_argument(
-        "-d1",
-        dest="d1",
-        type=lambda x: is_valid_file(parser, x),
-        help="dataset 1",
-        metavar="FILE",
-        required=True,
-    )
-    parser.add_argument(
-        "-d2",
-        dest="d2",
-        type=lambda x: is_valid_file(parser, x),
-        help="dataset 2",
-        metavar="FILE",
-        required=True,
-    )
-    parser.add_argument(
-        "-t", "--target", dest="target", help="target", metavar="FILE", required=True
-    )
-    return parser
+@click.command()
+@click.option(
+    "-d1",
+    type=click.Path(dir_okay=False, file_okay=True, exists=True),
+    help="dataset 1",
+    required=True,
+)
+@click.option(
+    "-d2",
+    type=click.Path(dir_okay=False, file_okay=True, exists=True),
+    help="dataset 2",
+    required=True,
+)
+@click.option(
+    "-t",
+    "--target",
+    type=click.Path(dir_okay=False, file_okay=True, exists=False),
+    required=True,
+)
+def entry_point(d1, d2, target):
+    main(d1, d2, target)
 
 
 if __name__ == "__main__":
-    args = get_parser().parse_args()
-    main(args.d1, args.d2, args.target)
+    entry_point()

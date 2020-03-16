@@ -129,7 +129,7 @@ def get_segmentation(recording, annotations, internal_id=None):
     segmentation = []
     symbol_stream = []
     needed = list(range(len(recording)))
-    annotations = filter(lambda n: n.startswith("SYMBOL "), annotations)
+    annotations = [n for n in annotations if n.startswith("SYMBOL ")]
     for line in annotations:
         tmp = line.split("<")[1]
         tmp, symbol_string = tmp.split(">")

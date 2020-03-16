@@ -7,6 +7,7 @@
 import argparse
 import json
 import os
+from unittest import mock
 
 # Third party modules
 import pkg_resources
@@ -15,11 +16,6 @@ import pytest
 # First party modules
 import hwrt.preprocessing
 import hwrt.utils as utils
-
-try:
-    from unittest import mock  # Python 3
-except ImportError:
-    import mock  # Python 2
 
 
 def test_execution():
@@ -42,25 +38,6 @@ def test_execution():
     assert utils.sizeof_fmt(1111) == "1.1 KB"
 
 
-def test_parser():
-    """Check the parser."""
-    from argparse import ArgumentParser
-
-    parser = ArgumentParser()
-    home = os.path.expanduser("~")
-    rcfile = os.path.join(home, ".hwrtrc")
-    parser.add_argument(
-        "-m", "--model", dest="model", type=lambda x: utils.is_valid_folder(parser, x)
-    )
-    parser.parse_args(["-m", home])
-
-    parser = ArgumentParser()
-    parser.add_argument(
-        "-m", "--model", dest="model", type=lambda x: utils.is_valid_file(parser, x)
-    )
-    parser.parse_args(["-m", rcfile])
-
-
 def test_get_class():
     """The get_class function returns a class for feature and preprocessing
        algorithms.
@@ -70,91 +47,35 @@ def test_get_class():
 
 
 def test_query_yes_no():
-    """This function is used to get a binary decision by the user.
-       Sadly, there are two different ways to use it due to Python 2 / 3.
-    """
-    try:
-        import __builtin__  # noqa
-
-        builtins_str = "__builtin__.raw_input"
-    except ImportError:
-        builtins_str = "builtins.input"
-    with mock.patch("%s" % builtins_str, return_value="y"):
+    """Get a binary decision by the user."""
+    builtins_str = "builtins.input"
+    with mock.patch(builtins_str, return_value="y"):
         assert utils.query_yes_no("bla")
         assert utils.query_yes_no("bla", None)
         assert utils.query_yes_no("bla", "yes")
         assert utils.query_yes_no("bla", "no")
-    with mock.patch("%s" % builtins_str, return_value=""):
+    with mock.patch(builtins_str, return_value=""):
         assert utils.query_yes_no("bla", "yes")
         assert not utils.query_yes_no("bla", "no")
 
 
-def test_input_string():
-    """Another Python 2/3 input hack."""
-    try:
-        import __builtin__  # noqa
-
-        with mock.patch("__builtin__.raw_input", return_value="y"):
-            assert utils.input_string("bla") == "y"
-    except ImportError:
-        with mock.patch("builtins.input", return_value="y"):
-            assert utils.input_string("bla") == "y"
-
-
 def test_input_int_default():
-    """Another Python 2/3 input hack."""
-    try:
-        import __builtin__  # noqa
-
-        builtins_str = "__builtin__.raw_input"
-    except ImportError:
-        builtins_str = "builtins.input"
-    with mock.patch("%s" % builtins_str, return_value="yes"):
+    builtins_str = "builtins.input"
+    with mock.patch(builtins_str, return_value="yes"):
         assert utils.input_int_default("bla") == 0
         assert utils.input_int_default("bla", 42) == 42
-    with mock.patch("%s" % builtins_str, return_value=1337):
+    with mock.patch(builtins_str, return_value=1337):
         assert utils.input_int_default("bla") == 1337
         assert utils.input_int_default("bla", 42) == 1337
 
 
 def test_query_yes_no_exception():
-    """Another Python 2/3 input hack."""
     with pytest.raises(Exception):
-        try:
-            import __builtin__  # noqa
+        import builtins  # noqa
 
-            builtins_str = "__builtin__"
-        except ImportError:
-            import builtins  # noqa
-
-            builtins_str = "builtins"
+        builtins_str = "builtins"
         with mock.patch("%s.raw_input" % builtins_str, return_value=""):
             utils.query_yes_no("bla", "asdf")
-
-
-def is_valid_file_test():
-    """Check if a file exists. Do this check within ArgumentParser."""
-    with pytest.raises(SystemExit):
-        parser = argparse.ArgumentParser()
-
-        # Does exist
-        path = os.path.realpath(__file__)
-        assert utils.is_valid_file(parser, path) == path
-
-        # Does not exist
-        utils.is_valid_file(parser, "/etc/nonexistingfile")
-
-
-def test_is_valid_folder():
-    """Similiar to is_valid_file."""
-    with pytest.raises(SystemExit):
-        parser = argparse.ArgumentParser()
-
-        # Does exist
-        assert utils.is_valid_folder(parser, "/etc") == "/etc"
-
-        # Does not exist
-        utils.is_valid_folder(parser, "/etc/nonexistingfoler")
 
 
 def test_create_project_configuration():
@@ -176,16 +97,10 @@ def test_get_latest_model():
 
 def test_choose_raw_dataset():
     """Check the interactive function choose_raw_dataset."""
-    try:
-        import __builtin__  # noqa
+    import builtins  # noqa
 
-        with mock.patch("__builtin__.raw_input", return_value=0):
-            utils.choose_raw_dataset()
-    except ImportError:
-        import builtins  # noqa
-
-        with mock.patch("builtins.input", return_value=0):
-            utils.choose_raw_dataset()
+    with mock.patch("builtins.input", return_value=0):
+        utils.choose_raw_dataset()
 
 
 def test_get_recognizer_folders():

@@ -13,6 +13,7 @@ import pickle
 import sys
 
 # Third party modules
+import click
 import natsort
 import numpy
 import pkg_resources
@@ -21,11 +22,6 @@ import pkg_resources
 from hwrt import classify, utils
 from hwrt.datasets import inkml
 from hwrt.utils import less_than
-
-# Python 2 / 3 compatibility
-if sys.version_info[0] == 2:
-    from future.builtins import open  # pylint: disable=W0622
-
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
@@ -53,7 +49,9 @@ def main(folder):
     print("#" * 80)
     print_report(score_place)
     print("#" * 80)
-    for key, value in sorted(wrong_counter.items(), reverse=True, key=lambda n: n[1]):
+    for key, value in sorted(
+        list(wrong_counter.items()), reverse=True, key=lambda n: n[1]
+    ):
         print(
             "http://www.martin-thoma.de/write-math/symbol/?id=%i :%i count"
             % (key, value)
@@ -158,24 +156,17 @@ def get_position(results, correct, default=10000):
         return default
 
 
-def get_parser():
-    from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-
-    parser = ArgumentParser(
-        description=__doc__, formatter_class=ArgumentDefaultsHelpFormatter
-    )
-    parser.add_argument(
-        "-f",
-        "--folder",
-        dest="folder",
-        type=lambda x: utils.is_valid_folder(parser, x),
-        help="read data from FOLDER",
-        required=True,
-        metavar="FOLDER",
-    )
-    return parser
+@click.command()
+@click.option(
+    "-f",
+    "--folder",
+    type=click.Path(dir_okay=True, file_okay=False, exists=True),
+    help="read data from FOLDER",
+    requred=True,
+)
+def entry_point(folder):
+    main(folder)
 
 
 if __name__ == "__main__":
-    args = get_parser().parse_args()
-    main(args.folder)
+    entry_point()

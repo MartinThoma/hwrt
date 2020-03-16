@@ -13,6 +13,7 @@ import pkg_resources
 # hwrt modules
 from hwrt import utils
 
+logger = logging.getLogger(__name__)
 single_symbol_classifier = None
 
 
@@ -20,10 +21,10 @@ class SingleClassificer(object):
     """Classifier for single (and hence perfectly segmented) symbols."""
 
     def __init__(self):
-        logging.info("Start reading model...")
+        logger.info("Start reading model...")
         model_path = pkg_resources.resource_filename("hwrt", "misc/")
         model_file = os.path.join(model_path, "model.tar")
-        logging.info("Model: %s", model_file)
+        logger.info("Model: %s", model_file)
         (preprocessing_queue, feature_list, model, output_semantics) = utils.load_model(
             model_file
         )

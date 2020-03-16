@@ -37,11 +37,6 @@ def test_execution():
     )
 
 
-def test_parser():
-    """Test create_ffiles.get_parser."""
-    create_ffiles.get_parser()
-
-
 def test_prepare_dataset():
     """Test create_ffiles.prepare_dataset."""
     dataset = []

@@ -6,8 +6,6 @@ Functions to estimate the spacial relationship of
 two symbols.
 """
 
-# import logging
-
 
 def estimate(s1, s2):
     """

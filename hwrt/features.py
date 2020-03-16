@@ -29,6 +29,8 @@ from PIL import Image, ImageDraw
 # Local modules
 from . import geometry, handwritten_data, preprocessing, utils
 
+logger = logging.getLogger(__name__)
+
 
 def get_features(model_description_features):
     """Get features from a list of dictionaries
@@ -69,7 +71,7 @@ def print_featurelist(feature_list):
     feature_list : list
         feature objects
     """
-    input_features = sum(map(lambda n: n.get_dimension(), feature_list))
+    input_features = sum([n.get_dimension() for n in feature_list])
     print("## Features (%i)" % input_features)
     print("```")
     for algorithm in feature_list:
@@ -77,11 +79,9 @@ def print_featurelist(feature_list):
     print("```")
 
 
-class Feature(object):
+class Feature(object, metaclass=abc.ABCMeta):
 
     """Abstract class which defines which methods to implement for features."""
-
-    __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
     def __call__(self, hwr_obj):
@@ -292,7 +292,7 @@ class ConstantPointCoordinates(Feature):
             x.append(point["y"])
             if self.pen_down:
                 if "pen_down" not in point:
-                    logging.error(
+                    logger.error(
                         "The "
                         "ConstantPointCoordinates(strokes=0) "
                         "feature should only be used after "
@@ -797,9 +797,3 @@ class ReCurvature(Feature):
             % (str(self), self.get_dimension(), len(x))
         )
         return x
-
-
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()

@@ -122,13 +122,13 @@ def test_ScaleAndShift_test_a():
     s = a.get_pointlist()
     expectation = [
         [
-            {u"y": 1.0, u"x": 0.0, u"time": 0},
-            {u"y": 0.0, u"x": 0.2174, u"time": 332},
-            {u"y": 0.9565, u"x": 0.5776, u"time": 667},
+            {"y": 1.0, "x": 0.0, "time": 0},
+            {"y": 0.0, "x": 0.2174, "time": 332},
+            {"y": 0.9565, "x": 0.5776, "time": 667},
         ],
         [
-            {u"y": 0.5776, u"x": 0.1242, u"time": 1692},
-            {u"y": 0.5528, u"x": 0.4534, u"time": 2378},
+            {"y": 0.5776, "x": 0.1242, "time": 1692},
+            {"y": 0.5528, "x": 0.4534, "time": 2378},
         ],
     ]
     assert testhelper.compare_pointlists(s, expectation), "Got: %s; expected %s" % (
@@ -151,13 +151,13 @@ def test_ScaleAndShift_test_a_center():
     s = a.get_pointlist()
     expectation = [
         [
-            {u"y": 1.0, u"x": -0.2888198757763975, u"time": 0},
-            {u"y": 0.0, u"x": -0.07142857142857142, u"time": 332},
-            {u"y": 0.9565, u"x": 0.2888198757763975, u"time": 667},
+            {"y": 1.0, "x": -0.2888198757763975, "time": 0},
+            {"y": 0.0, "x": -0.07142857142857142, "time": 332},
+            {"y": 0.9565, "x": 0.2888198757763975, "time": 667},
         ],
         [
-            {u"y": 0.5776, u"x": -0.16459627329192547, u"time": 1692},
-            {u"y": 0.5528, u"x": 0.16459627329192544, u"time": 2378},
+            {"y": 0.5776, "x": -0.16459627329192547, "time": 1692},
+            {"y": 0.5528, "x": 0.16459627329192544, "time": 2378},
         ],
     ]
     assert testhelper.compare_pointlists(s, expectation), "Got: %s; expected %s" % (

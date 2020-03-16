@@ -13,13 +13,8 @@
 # serve to show the default.
 
 # Core Library modules
-import os
 import sys
-
-try:
-    from unittest import mock  # Python 3
-except ImportError:
-    import mock  # Python 2
+from unittest import mock
 
 MOCK_MODULES = [
     "numpy",
@@ -70,8 +65,8 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = u"hwrt"
-copyright = u"2014, Martin Thoma"
+project = "hwrt"
+copyright = "2014, Martin Thoma"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -210,18 +205,18 @@ htmlhelp_basename = "hwrtdoc"
 
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
-    #'papersize': 'letterpaper',
+    # 'papersize': 'letterpaper',
     # The font size ('10pt', '11pt' or '12pt').
-    #'pointsize': '10pt',
+    # 'pointsize': '10pt',
     # Additional stuff for the LaTeX preamble.
-    #'preamble': '',
+    # 'preamble': '',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    ("index", "hwrt.tex", u"hwrt Documentation", u"Martin Thoma", "manual"),
+    ("index", "hwrt.tex", "hwrt Documentation", "Martin Thoma", "manual"),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -249,7 +244,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [("index", "hwrt", u"hwrt Documentation", [u"Martin Thoma"], 1)]
+man_pages = [("index", "hwrt", "hwrt Documentation", ["Martin Thoma"], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -264,8 +259,8 @@ texinfo_documents = [
     (
         "index",
         "hwrt",
-        u"hwrt Documentation",
-        u"Martin Thoma",
+        "hwrt Documentation",
+        "Martin Thoma",
         "hwrt",
         "One line description of project.",
         "Miscellaneous",

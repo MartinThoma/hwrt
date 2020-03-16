@@ -13,6 +13,8 @@ import logging
 import numpy
 from PIL import Image, ImageDraw
 
+logger = logging.getLogger(__name__)
+
 
 class HandwrittenData(object):
     """Represents a handwritten symbol."""
@@ -85,13 +87,13 @@ class HandwrittenData(object):
         try:
             pointlist = json.loads(self.raw_data_json)
         except Exception as inst:
-            logging.debug("pointStrokeList: strokelistP")
-            logging.debug(self.raw_data_json)
-            logging.debug("didn't work")
+            logger.debug("pointStrokeList: strokelistP")
+            logger.debug(self.raw_data_json)
+            logger.debug("didn't work")
             raise inst
 
         if len(pointlist) == 0:
-            logging.warning(
+            logger.warning(
                 "Pointlist was empty. Search for '"
                 + self.raw_data_json
                 + "' in `wm_raw_draw_data`."

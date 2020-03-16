@@ -23,7 +23,6 @@ def test_execution():
     serve.show_results(results)
     serve.get_json_result(results)
     serve.index()
-    serve.get_parser()
 
 
 @pytest.mark.skip

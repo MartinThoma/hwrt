@@ -8,6 +8,7 @@ and the data multiplication steps that get applied.
 # Core Library modules
 import logging
 import os
+import pickle
 import sys
 
 # Third party modules
@@ -26,10 +27,7 @@ from . import (
     utils,
 )
 
-try:  # Python 2
-    import cPickle as pickle
-except ImportError:  # Python 3
-    import pickle
+logger = logging.getLogger(__name__)
 
 
 sys.modules["HandwrittenData"] = handwritten_data
@@ -54,7 +52,7 @@ def _fetch_data_from_server(raw_data_id, mysql_cfg):
         db=cfg[mysql_cfg]["db"],
         cursorclass=pymysql.cursors.DictCursor,
     )
-    logging.info("Connection: %s", str(connection))
+    logger.info(f"Connection: {connection}")
     cursor = connection.cursor()
 
     # Download dataset
@@ -99,14 +97,13 @@ def _get_description(prev_description):
         utils.get_project_root(), prev_description["data-source"], "info.yml"
     )
     if not os.path.isfile(current_desc_file):
-        logging.error(
-            "You are probably not in the folder of a model, because "
-            "%s is not a file.",
-            current_desc_file,
+        logger.error(
+            f"You are probably not in the folder of a model, because "
+            f"{current_desc_file} is not a file."
         )
         sys.exit(-1)
     with open(current_desc_file, "r") as ymlfile:
-        current_description = yaml.load(ymlfile)
+        current_description = yaml.safe_load(ymlfile)
     return current_description
 
 
@@ -117,14 +114,13 @@ def _get_system(model_folder):
     # Get model description
     model_description_file = os.path.join(model_folder, "info.yml")
     if not os.path.isfile(model_description_file):
-        logging.error(
-            "You are probably not in the folder of a model, because "
-            "%s is not a file. (-m argument)",
-            model_description_file,
+        logger.error(
+            f"You are probably not in the folder of a model, because "
+            f"{model_description_file} is not a file. (-m argument)"
         )
         sys.exit(-1)
     with open(model_description_file, "r") as ymlfile:
-        model_desc = yaml.load(ymlfile)
+        model_desc = yaml.safe_load(ymlfile)
 
     # Get the feature and the preprocessing description
     feature_desc = _get_description(model_desc)
@@ -190,66 +186,9 @@ def display_data(raw_data_string, raw_data_id, model_folder, show_raw):
     training_set = create_ffiles.training_set_multiplication(training_set, mult_queue)
 
     # Display it
-    logging.info("Show %i recordings...", len(training_set))
+    logger.info(f"Show {len(training_set)} recordings...")
     for recording in training_set:
         recording["handwriting"].show()
-
-
-def get_parser():
-    """Return the parser object for this script."""
-    from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-
-    parser = ArgumentParser(
-        description=__doc__, formatter_class=ArgumentDefaultsHelpFormatter
-    )
-    parser.add_argument(
-        "-i",
-        "--id",
-        dest="id",
-        default=292293,
-        type=int,
-        help="which RAW_DATA_ID do you want?",
-    )
-    parser.add_argument(
-        "--mysql",
-        dest="mysql",
-        default="mysql_online",
-        help="which mysql configuration should be used?",
-    )
-    parser.add_argument(
-        "-m",
-        "--model",
-        dest="model",
-        help="where is the model folder (with a info.yml)?",
-        metavar="FOLDER",
-        type=lambda x: utils.is_valid_folder(parser, x),
-        default=utils.default_model(),
-    )
-    parser.add_argument(
-        "-l",
-        "--list",
-        dest="list",
-        help="list all raw data IDs / symbol IDs",
-        action="store_true",
-        default=False,
-    )
-    parser.add_argument(
-        "-s",
-        "--server",
-        dest="server",
-        help="contact the MySQL server",
-        action="store_true",
-        default=False,
-    )
-    parser.add_argument(
-        "-r",
-        "--raw",
-        dest="show_raw",
-        help="show the raw recording (without preprocessing)",
-        action="store_true",
-        default=False,
-    )
-    return parser
 
 
 def main(
@@ -269,9 +208,10 @@ def main(
             if data is not None:
                 display_data(data["data"], data["id"], model, show_raw)
         else:
-            logging.info(
-                "RAW_DATA_ID %i does not exist or " "database connection did not work.",
-                raw_data_id,
+            logger.info(
+                f"RAW_DATA_ID {raw_data_id} does not exist or "
+                "database "
+                f"connection did not work."
             )
             # The data was not on the server / the connection to the server did
             # not work. So try it again with the model data
@@ -281,18 +221,12 @@ def main(
             )
             handwriting = _get_data_from_rawfile(raw_datapath, raw_data_id)
             if handwriting is None:
-                logging.info(
-                    "Recording with ID %i was not found in %s",
-                    raw_data_id,
-                    raw_datapath,
+                logger.info(
+                    f"Recording with ID {raw_data_id} was not found in "
+                    f"{raw_datapath}"
                 )
             else:
                 print("hwrt version: %s" % hwrt.__version__)
                 display_data(
                     handwriting.raw_data_json, handwriting.formula_id, model, show_raw
                 )
-
-
-if __name__ == "__main__":
-    args = get_parser().parse_args()
-    main(args.list, args.model, args.server, args.id, args.show_raw, args.mysql)

@@ -9,6 +9,7 @@ import os
 import pickle
 import tarfile
 from base64 import b64decode, b64encode
+from io import StringIO
 
 # Third party modules
 import h5py
@@ -17,11 +18,6 @@ import yaml
 
 # First party modules
 import hwrt.utils as utils
-
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
 
 
 def get_parser():

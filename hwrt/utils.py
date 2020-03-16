@@ -3,7 +3,6 @@
 
 """Utility functions that can be used in multiple scripts."""
 
-from __future__ import print_function
 
 # Core Library modules
 import csv
@@ -20,6 +19,7 @@ import tarfile
 import tempfile
 import time
 from decimal import Decimal, getcontext
+from functools import reduce
 from uuid import UUID
 
 # Third party modules
@@ -31,6 +31,7 @@ import yaml
 # Local modules
 from . import handwritten_data
 
+logger = logging.getLogger(__name__)
 getcontext().prec = 100
 
 
@@ -55,24 +56,6 @@ def print_status(total, current, start_time=None):
         tmp = datetime.timedelta(seconds=remaining_seconds)
         sys.stdout.write("(%s remaining)   " % str(tmp))
     sys.stdout.flush()
-
-
-def is_valid_file(parser, arg):
-    """Check if arg is a valid file that already exists on the file system."""
-    arg = os.path.abspath(arg)
-    if not os.path.exists(arg):
-        parser.error("The file %s does not exist!" % arg)
-    else:
-        return arg
-
-
-def is_valid_folder(parser, arg):
-    """Check if arg is a valid file that already exists on the file system."""
-    arg = os.path.abspath(arg)
-    if not os.path.isdir(arg):
-        parser.error("The folder %s does not exist!" % arg)
-    else:
-        return arg
 
 
 def get_project_configuration():
@@ -196,7 +179,7 @@ def get_latest_folder(folder):
     folders = natsort.natsorted(folders, reverse=True)
     if len(folders) == 0:
         # No model folder!
-        logging.error(
+        logger.error(
             "You don't have any model folder. I suggest you "
             "have a look at "
             "https://github.com/MartinThoma/hwr-experiments and "
@@ -214,12 +197,13 @@ def get_database_config_file():
         if os.path.isfile(cfg["dbconfig"]):
             return cfg["dbconfig"]
         else:
-            logging.info(
-                "File '%s' was not found. Adjust 'dbconfig' in your " "~/.hwrtrc file.",
-                cfg["dbconfig"],
+            logger.info(
+                f"File '{cfg['dbconfig']}' was not found. Adjust 'dbconfig' "
+                f"in your "
+                "~/.hwrtrc file."
             )
     else:
-        logging.info(
+        logger.info(
             "No database connection file found. "
             "Specify 'dbconfig' in your ~/.hwrtrc file."
         )
@@ -244,21 +228,11 @@ def sizeof_fmt(num):
         num /= 1024.0
 
 
-def input_string(question=""):
-    """A function that works for both, Python 2.x and Python 3.x.
-       It asks the user for input and returns it as a string.
-    """
-    if sys.version_info[0] == 2:
-        return raw_input(question)
-    else:
-        return input(question)
-
-
 def input_int_default(question="", default=0):
     """A function that works for both, Python 2.x and Python 3.x.
        It asks the user for input and returns it as a string.
     """
-    answer = input_string(question)
+    answer = input(question)
     if answer == "" or answer == "yes":
         return default
     else:
@@ -287,7 +261,7 @@ def query_yes_no(question, default="yes"):
 
     while True:
         sys.stdout.write(question + prompt)
-        choice = input_string().lower()
+        choice = input().lower()
         if default is not None and choice == "":
             return valid[default]
         elif choice in valid:
@@ -299,8 +273,8 @@ def query_yes_no(question, default="yes"):
 def get_latest_model(model_folder, basename):
     """Get the latest model (determined by the name of the model in
        natural sorted order) which begins with `basename`."""
-    models = filter(lambda n: n.endswith(".json"), os.listdir(model_folder))
-    models = filter(lambda n: n.startswith(basename), models)
+    models = [n for n in os.listdir(model_folder) if n.endswith(".json")]
+    models = [n for n in models if n.startswith(basename)]
     models = natsort.natsorted(models, reverse=True)
     if len(models) == 0:
         return None
@@ -441,7 +415,7 @@ def create_hdf5(output_filename, feature_count, data):
     """
     import h5py
 
-    logging.info("Start creating of %s hdf file", output_filename)
+    logger.info(f"Start creating of {output_filename} hdf file")
     x = []
     y = []
     for features, label in data:
@@ -604,7 +578,7 @@ def evaluate_model_single_recording_preloaded_multisymbol(
     import nntoolkit.evaluate
 
     recording = json.loads(recording)
-    logging.info(("## start (%i strokes)" % len(recording)) + "#" * 80)
+    logger.info(f"## start ({len(recording)} strokes)" + "#" * 80)
     hypotheses = []  # [[{'score': 0.123, symbols: [123, 123]}]  # split0
     #  []] # Split i...
     for split in get_possible_splits(len(recording)):
@@ -642,7 +616,7 @@ def evaluate_model_single_recording_preloaded_multisymbol(
     hypotheses = sorted(hypotheses, key=lambda n: n["min_part"], reverse=True)[:10]
     for i, hyp in enumerate(hypotheses):
         if hyp["score"] > 0.001:
-            logging.info(
+            logger.info(
                 "%0.4f: %s (seg: %s)", hyp["score"], hyp["symbols"], hyp["segmentation"]
             )
     return nntoolkit.evaluate.get_results(model_output, output_semantics)
@@ -663,8 +637,8 @@ def evaluate_model_single_recording_multisymbol(model_file, recording):
     (preprocessing_queue, feature_list, model, output_semantics) = load_model(
         model_file
     )
-    logging.info("multiple symbol mode")
-    logging.info(recording)
+    logger.info("multiple symbol mode")
+    logger.info(recording)
     results = evaluate_model_single_recording_preloaded(
         preprocessing_queue, feature_list, model, output_semantics, recording
     )
@@ -702,18 +676,18 @@ def _evaluate_model_single_file(target_folder, test_file):
     test_file : string
         The test file (.hdf5)
     """
-    logging.info("Create running model...")
+    logger.info("Create running model...")
     model_src = get_latest_model(target_folder, "model")
     model_file_pointer = tempfile.NamedTemporaryFile(delete=False)
     model_use = model_file_pointer.name
     model_file_pointer.close()
-    logging.info("Adjusted model is in %s.", model_use)
+    logger.info(f"Adjusted model is in {model_use}.")
     create_adjusted_model_for_percentages(model_src, model_use)
 
     # Run evaluation
     project_root = get_project_root()
     time_prefix = time.strftime("%Y-%m-%d-%H-%M")
-    logging.info("Evaluate '%s' with '%s'...", model_src, test_file)
+    logger.info(f"Evaluate '{model_src}' with '{test_file}'...")
     logfilefolder = os.path.join(project_root, "logs/")
     if not os.path.exists(logfilefolder):
         os.makedirs(logfilefolder)
@@ -726,7 +700,7 @@ def _evaluate_model_single_file(target_folder, test_file):
         )
         ret = p.wait()
         if ret != 0:
-            logging.error("nntoolkit finished with ret code %s", str(ret))
+            logger.error(f"nntoolkit finished with ret code {ret}")
             sys.exit()
     return (logfile, model_use)
 
@@ -740,7 +714,7 @@ def evaluate_model(recording, model_folder, verbose=False):
         # The source is later than the target. That means we need to
         # refresh the target
         if "preprocessed" in target_folder:
-            logging.info("Start applying preprocessing methods...")
+            logger.info("Start applying preprocessing methods...")
             t = target_folder
             _, _, preprocessing_queue = preprocess_dataset.get_parameters(t)
             handwriting = handwritten_data.HandwrittenData(recording)
@@ -748,18 +722,18 @@ def evaluate_model(recording, model_folder, verbose=False):
                 handwriting.show()
             handwriting.preprocessing(preprocessing_queue)
             if verbose:
-                logging.debug(
+                logger.debug(
                     "After preprocessing: %s", handwriting.get_sorted_pointlist()
                 )
                 handwriting.show()
         elif "feature-files" in target_folder:
-            logging.info("Create feature file...")
+            logger.info("Create feature file...")
             infofile_path = os.path.join(target_folder, "info.yml")
             with open(infofile_path, "r") as ymlfile:
                 feature_description = yaml.safe_load(ymlfile)
             feature_str_list = feature_description["features"]
             feature_list = features.get_features(feature_str_list)
-            feature_count = sum(map(lambda n: n.get_dimension(), feature_list))
+            feature_count = sum([n.get_dimension() for n in feature_list])
             x = handwriting.feature_extraction(feature_list)
 
             # Create hdf5
@@ -771,7 +745,7 @@ def evaluate_model(recording, model_folder, verbose=False):
             )
             return logfile
         else:
-            logging.info("'%s' not found", target_folder)
+            logger.info("'%s' not found", target_folder)
     os.remove(output_filename)
     os.remove(model_use)
 
@@ -887,7 +861,7 @@ def classify_single_recording(raw_data_json, model_folder, verbose=False):
     # Map line to probabilites for LaTeX commands
     with open(evaluation_file) as f:
         probabilities = f.read()
-    probabilities = map(float, probabilities.split(" "))
+    probabilities = list(map(float, probabilities.split(" ")))
     results = []
     for index, probability in enumerate(probabilities):
         results.append((index2latex[index], probability))
@@ -943,12 +917,12 @@ def get_class(name, config_key, module):
                 if string_name == name:
                     return act_class
         else:
-            logging.warning(
+            logger.warning(
                 "File '%s' does not exist. Adjust ~/.hwrtrc.",
                 cfg["data_analyzation_plugins"],
             )
 
-    logging.debug("Unknown class '%s'.", name)
+    logger.debug(f"Unknown class '{name}'.")
     return None
 
 

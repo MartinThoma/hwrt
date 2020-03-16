@@ -166,9 +166,3 @@ def normalize(latex):
     'y^{2}'
     """
     return chunks_to_string(chunk_math(latex))
-
-
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()

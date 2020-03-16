@@ -56,7 +56,7 @@ def p_strokes(symbol, count):
         misc_path = pkg_resources.resource_filename("hwrt", "misc/")
         stroke_prob_file = os.path.join(misc_path, "prob_stroke_count_by_symbol.yml")
         with open(stroke_prob_file, "r") as stream:
-            stroke_prob = yaml.load(stream)
+            stroke_prob = yaml.safe_load(stream)
     if symbol in stroke_prob:
         if count in stroke_prob[symbol]:
             return stroke_prob[symbol][count]

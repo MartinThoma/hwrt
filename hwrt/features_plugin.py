@@ -5,7 +5,7 @@
 
 # Core Library modules
 import os
-import urllib
+import urllib.request
 
 # Local modules
 from . import handwritten_data, utils
@@ -40,7 +40,7 @@ class Bitmap(object):
         raw_data_id = hwr_obj.raw_data_id
         project_root = utils.get_project_root()
         foldername = os.path.jon(project_root, "bitmaps")
-        f = urllib.urlopen("{url}{id}.svg".format(url=url, id=raw_data_id))
+        f = urllib.request.urlopen("{url}{id}.svg".format(url=url, id=raw_data_id))
         with open("%s%i.svg" % (foldername, raw_data_id), "wb") as imgFile:
             imgFile.write(f.read())
 

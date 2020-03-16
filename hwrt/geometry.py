@@ -7,6 +7,8 @@ import itertools
 import logging
 import math
 
+logger = logging.getLogger(__name__)
+
 
 class Point(object):
     """A two dimensional point."""
@@ -94,7 +96,7 @@ class PolygonalChain(object):
         """ Get the number of self-intersections of this polygonal chain."""
         # This can be solved more efficiently with sweep line
         counter = 0
-        for i, j in itertools.combinations(range(len(self.lineSegments)), 2):
+        for i, j in itertools.combinations(list(range(len(self.lineSegments))), 2):
             inters = get_segments_intersections(
                 self.lineSegments[i], self.lineSegments[j]
             )
@@ -323,9 +325,9 @@ def get_segments_intersections(segment1, segment2):
     try:
         x = (t2 - t1) / (m1 - m2)
     except Exception as inst:
-        logging.debug(inst)
-        logging.debug("m1=%s", repr(m1))
-        logging.debug("m2=%s", repr(m2))
+        logger.debug(inst)
+        logger.debug("m1=%s", repr(m1))
+        logger.debug("m2=%s", repr(m2))
         return []
     if segment1.p1.x > segment1.p2.x:
         segment1.p1, segment1.p2 = segment1.p2, segment1.p1
@@ -443,9 +445,3 @@ def perpendicular_distance(p3, p1, p2):
 
     dist = math.sqrt(dx * dx + dy * dy)
     return dist
-
-
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()

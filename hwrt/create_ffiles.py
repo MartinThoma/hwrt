@@ -10,13 +10,13 @@ be present in the feature files and only raw_data that might get used for the
 test-, validation- and training set.
 """
 
-from __future__ import print_function, unicode_literals
 
 # Core Library modules
 import csv
 import gc
 import logging
 import os
+import pickle
 import sys
 import time
 from collections import defaultdict
@@ -26,16 +26,11 @@ import numpy
 import yaml
 
 # Local modules
-# hwrt modules
 # HandwrittenData and preprocessing are needed because of pickle
-from . import handwritten_data  # pylint: disable=W0611
+from . import handwritten_data  # noqa
 from . import data_multiplication, features, preprocessing, utils
 
-try:  # Python 2
-    import cPickle as pickle
-    from future.builtins import open
-except ImportError:  # Python 3
-    import pickle
+logger = logging.getLogger(__name__)
 
 
 def _create_index_formula_lookup(formula_id2index, feature_folder, index2latex):
@@ -45,14 +40,14 @@ def _create_index_formula_lookup(formula_id2index, feature_folder, index2latex):
 
     Parameters
     ----------
-    formula_id2index : dict
+    formula_id2index : Dict
     feature_folder : str
         Path to a folder in which a feature file as well as an
         index2formula_id.csv is.
     index2latex : dict
         Maps an integer index to a LaTeX command
     """
-    index2formula_id = sorted(formula_id2index.items(), key=lambda n: n[1])
+    index2formula_id = sorted(list(formula_id2index.items()), key=lambda n: n[1])
     index2formula_file = os.path.join(feature_folder, "index2formula_id.csv")
     with open(index2formula_file, "w") as f:
         f.write("index,formula_id,latex\n")
@@ -88,7 +83,7 @@ def main(feature_folder, create_learning_curve=False):
 
     # Read the feature description file
     with open(os.path.join(feature_folder, "info.yml"), "r") as ymlfile:
-        feature_description = yaml.load(ymlfile)
+        feature_description = yaml.safe_load(ymlfile)
 
     # Get preprocessed .pickle file from model description file
     path_to_data = os.path.join(
@@ -111,8 +106,8 @@ def main(feature_folder, create_learning_curve=False):
     # training).
 
     os.chdir(feature_folder)
-    logging.info("Start creation of hdf5-files...")
-    logging.info("Get sets from '%s' ...", path_to_data)
+    logger.info("Start creation of hdf5-files...")
+    logger.info("Get sets from '%s' ...", path_to_data)
     (
         training_set,
         validation_set,
@@ -130,10 +125,10 @@ def main(feature_folder, create_learning_curve=False):
     preprocessing.print_preprocessing_list(preprocessing_queue)
     features.print_featurelist(feature_list)
 
-    logging.info("Start creating hdf5 files")
+    logger.info("Start creating hdf5 files")
 
     # Get the dimension of the feature vector
-    input_features = sum(map(lambda n: n.get_dimension(), feature_list))
+    input_features = sum([n.get_dimension() for n in feature_list])
 
     # Traindata has to come first because of feature normalization
     for dataset_name, dataset, is_traindata in [
@@ -142,12 +137,12 @@ def main(feature_folder, create_learning_curve=False):
         ("validdata", validation_set, False),
     ]:
         t0 = time.time()
-        logging.info("Start preparing '%s' ...", dataset_name)
+        logger.info("Start preparing '%s' ...", dataset_name)
         prepared, translation = prepare_dataset(
             dataset, formula_id2index, feature_list, is_traindata
         )
-        logging.info("%s length: %i", dataset_name, len(prepared))
-        logging.info("start 'make_hdf5'x ...")
+        logger.info("%s length: %i", dataset_name, len(prepared))
+        logger.info("start 'make_hdf5'x ...")
         make_hdf5(
             dataset_name,
             input_features,
@@ -161,7 +156,7 @@ def main(feature_folder, create_learning_curve=False):
         )
 
         t1 = time.time() - t0
-        logging.info("%s was written. Needed %0.2f seconds", dataset_name, t1)
+        logger.info("%s was written. Needed %0.2f seconds", dataset_name, t1)
         gc.collect()
     utils.create_run_logfile(feature_folder)
 
@@ -182,7 +177,7 @@ def training_set_multiplication(training_set, mult_queue):
     -------
     mutliple recordings
     """
-    logging.info("Multiply data...")
+    logger.info("Multiply data...")
     for algorithm in mult_queue:
         new_trning_set = []
         for recording in training_set:
@@ -405,42 +400,3 @@ def make_hdf5(
             utils.create_hdf5(output_filename, feature_count, new_data)
     else:
         utils.create_hdf5(output_filename, feature_count, data)
-
-
-def get_parser():
-    """Return the parser object for this script."""
-    project_root = utils.get_project_root()
-
-    # Get latest model description file
-    feature_folder = os.path.join(project_root, "feature-files")
-    latest_featurefolder = utils.get_latest_folder(feature_folder)
-
-    # Get command line arguments
-    from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-
-    parser = ArgumentParser(
-        description=__doc__, formatter_class=ArgumentDefaultsHelpFormatter
-    )
-    parser.add_argument(
-        "-f",
-        "--folder",
-        dest="folder",
-        help="where is the feature file folder " "(that contains a info.yml)?",
-        metavar="FOLDER",
-        type=lambda x: utils.is_valid_folder(parser, x),
-        default=latest_featurefolder,
-    )
-    parser.add_argument(
-        "-l",
-        "--learning-curve",
-        dest="create_learning_curve",
-        help="create hdf5 files for a learning curve",
-        action="store_true",
-        default=False,
-    )
-    return parser
-
-
-if __name__ == "__main__":
-    args = get_parser().parse_args()
-    main(args.folder, args.create_learning_curve)

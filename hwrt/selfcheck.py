@@ -77,18 +77,18 @@ def check_python_modules():
     """Check if all necessary / recommended modules are installed."""
     print("\033[1mCheck modules\033[0m")
     required_modules = [
-        "argparse",
+        "click",
+        "cPickle",
+        "dropbox",
+        "hashlib",
+        "jinja2",
         "matplotlib",
         "natsort",
-        "pymysql",
-        "cPickle",
-        "theano",
-        "dropbox",
-        "yaml",
-        "webbrowser",
-        "hashlib",
         "numpy",
-        "jinja2",
+        "pymysql",
+        "theano",
+        "webbrowser",
+        "yaml",
     ]
     found = []
     for required_module in required_modules:
@@ -107,10 +107,10 @@ def check_python_modules():
                 % (required_module, Bcolors.WARNING, Bcolors.ENDC)
             )
 
-    if "argparse" in found:
-        import argparse
+    if "click" in found:
+        import click
 
-        print("argparse version: %s (1.1 tested)" % argparse.__version__)
+        print("click version: %s (NONE tested)" % click.__version__)
     if "matplotlib" in found:
         import matplotlib
 
@@ -177,7 +177,3 @@ def main():
         print("~/.hwrtrc... %sNOT FOUND%s" % (Bcolors.FAIL, Bcolors.ENDC))
     misc_path = pkg_resources.resource_filename("hwrt", "misc/")
     print("misc-path: %s" % misc_path)
-
-
-if __name__ == "__main__":
-    main()

@@ -4,7 +4,6 @@
 """Tests for the utility functions."""
 
 # Core Library modules
-import argparse
 import json
 import os
 from unittest import mock

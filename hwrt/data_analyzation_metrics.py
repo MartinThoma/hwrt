@@ -6,24 +6,28 @@
 Each algorithm works on a set of handwritings. They have to be applied like
 this:
 
->>> import data_analyzation_metrics
+>>> import hwrt.data_analyzation_metrics
+>>> from hwrt.handwritten_data import HandwrittenData
+>>> data_json = '[[{"time": 123, "x": 45, "y": 67}]]'
 >>> a = [{'is_in_testset': 0,
-...    'formula_id': 31L,
-...    'handwriting': HandwrittenData(raw_data_id=2953),
+...    'formula_id': "31L",
+...    'handwriting': HandwrittenData(raw_data_id=2953, raw_data_json=data_json),
 ...    'formula_in_latex': 'A',
-...    'id': 2953L},
+...    'id': "2953L"},
 ...   {'is_in_testset': 0,
-...    'formula_id': 31L,
-...    'handwriting': HandwrittenData(raw_data_id=4037),
+...    'formula_id': "31L",
+...    'handwriting': HandwrittenData(raw_data_id=4037, raw_data_json=data_json),
 ...    'formula_in_latex': 'A',
-...    'id': 4037L},
+...    'id': "4037L"},
 ...   {'is_in_testset': 0,
-...    'formula_id': 31L,
-...    'handwriting': HandwrittenData(raw_data_id=4056),
+...    'formula_id': "31L",
+...    'handwriting': HandwrittenData(raw_data_id=4056, raw_data_json=data_json),
 ...    'formula_in_latex': 'A',
-...    'id': 4056L}]
+...    'id': "4056L"}]
 >>> creator_metric = Creator('creator.csv')
 >>> creator_metric(a)
+100%
+
 """
 
 
@@ -45,6 +49,7 @@ from . import preprocessing  # pylint: disable=W0611
 from . import utils
 
 logger = logging.getLogger(__name__)
+sys.modules["hwrt.HandwrittenData"] = handwritten_data
 
 
 def get_metrics(metrics_description):
@@ -83,22 +88,24 @@ def sort_by_formula_id(raw_datasets):
     --------
     The parameter `raw_datasets` has to be of the format
 
+    >>> from hwrt.handwritten_data import HandwrittenData
+    >>> data = '[[{"time": 123, "x": 45, "y": 67}]]'
     >>> rd = [{'is_in_testset': 0,
     ...        'formula_id': 31,
-    ...        'handwriting': HandwrittenData(raw_data_id=2953),
+    ...        'handwriting': HandwrittenData(raw_data_id=2953, raw_data_json=data),
     ...        'formula_in_latex': 'A',
     ...        'id': 2953},
     ...       {'is_in_testset': 0,
     ...        'formula_id': 31,
-    ...        'handwriting': HandwrittenData(raw_data_id=4037),
+    ...        'handwriting': HandwrittenData(raw_data_id=4037, raw_data_json=data),
     ...        'formula_in_latex': 'A',
     ...        'id': 4037},
     ...       {'is_in_testset': 0,
     ...        'formula_id': 31,
-    ...        'handwriting': HandwrittenData(raw_data_id=4056),
+    ...        'handwriting': HandwrittenData(raw_data_id=4056, raw_data_json=data),
     ...        'formula_in_latex': 'A',
     ...        'id': 4056}]
-    >>> sort_by_formula_id(rd)
+    >>> _ = sort_by_formula_id(rd)
     """
     by_formula_id = defaultdict(list)
     for el in raw_datasets:
@@ -137,7 +144,7 @@ class Creator(object):
             if i % 100 == 0 and i > 0:
                 utils.print_status(len(raw_datasets), i, start_time)
             print_data[raw_dataset["handwriting"].user_id] += 1
-        print("\r100%" + "\033[K\n")
+        print("100%")
 
         # Sort the data by highest value, descending
         print_data = sorted(list(print_data.items()), key=lambda n: n[1], reverse=True)
@@ -181,7 +188,7 @@ class InstrokeSpeed(object):
                     if time_delta == 0:
                         continue
                     print_data.append(space_dist / time_delta)
-        print("\r100%" + "\033[K\n")
+        print("100%")
         # Sort the data by highest value, descending
         print_data = sorted(print_data, reverse=True)
         # Write data to file
@@ -223,7 +230,7 @@ class InterStrokeDistance(object):
                     point1["x"] - point2["x"], point1["y"] - point2["y"]
                 )
                 print_data.append(space_dist)
-        print("\r100%" + "\033[K\n")
+        print("100%")
         # Sort the data by highest value, descending
         print_data = sorted(print_data, reverse=True)
         # Write data to file
@@ -286,7 +293,7 @@ class TimeBetweenPointsAndStrokes(object):
             if len(times_between_strokes) > 0:
                 tmp = times_between_strokes
                 average_between_strokes.write("%0.2f\n" % numpy.average(tmp))
-        print("\r100%" + "\033[K\n")
+        print("100%")
         average_between_points.close()
         average_between_strokes.close()
 
@@ -300,8 +307,8 @@ class AnalyzeErrors(object):
         self.dot_symbols = [
             "i",
             "j",
-            "\cdot",
-            "\div",
+            r"\cdot",
+            r"\div",
             "\\because",
             "\\therefore",
         ]  # TODO: Use the tags!

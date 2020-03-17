@@ -19,7 +19,7 @@ import numpy
 import pkg_resources
 
 # First party modules
-from hwrt import classify, utils
+from hwrt import classify
 from hwrt.datasets import inkml
 from hwrt.utils import less_than
 
@@ -162,7 +162,7 @@ def get_position(results, correct, default=10000):
     "--folder",
     type=click.Path(dir_okay=True, file_okay=False, exists=True),
     help="read data from FOLDER",
-    requred=True,
+    required=True,
 )
 def entry_point(folder):
     main(folder)

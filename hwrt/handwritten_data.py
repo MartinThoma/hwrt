@@ -41,11 +41,11 @@ class HandwrittenData(object):
         self.user_name = user_name
         self.segmentation = segmentation
         assert type(json.loads(self.raw_data_json)) is list, (
-            "raw_data_json is not JSON: %r" % self.raw_data_json
+            "raw_data_json is not JSON list: %r" % self.raw_data_json
         )
         assert len(self.get_pointlist()) >= 1, (
-            "The pointlist of formula_id %i is %s"
-            % (self.formula_id, self.get_pointlist())
+            f"The pointlist of formula_id {self.formula_id} "
+            f"is {self.get_pointlist()}"
         )
         if segmentation is None:
             # If no segmentation is given, assume all strokes belong to the
@@ -94,9 +94,8 @@ class HandwrittenData(object):
 
         if len(pointlist) == 0:
             logger.warning(
-                "Pointlist was empty. Search for '"
-                + self.raw_data_json
-                + "' in `wm_raw_draw_data`."
+                f"Pointlist was empty. Search for '{self.raw_data_json}' "
+                f"in `wm_raw_draw_data`."
             )
         return pointlist
 

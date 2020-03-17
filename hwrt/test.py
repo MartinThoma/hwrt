@@ -115,7 +115,7 @@ def make_all(tuplelist):
 
 
 def create_report(true_data, eval_data, index2latex, n, merge=True):
-    """
+    r"""
     Parameters
     ----------
     true_data : list
@@ -275,7 +275,7 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
 def analyze_results(
     translation_csv, what_evaluated_file, evaluation_file, n, merge=True
 ):
-    """
+    r"""
     Parameters
     ----------
     translation_csv : string

@@ -16,7 +16,6 @@ import tarfile
 # Third party modules
 import h5py
 import numpy
-from theano.sandbox import cuda
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
@@ -43,6 +42,8 @@ def get_matrices():
     list
         List of all matrices.
     """
+    from theano.sandbox import cuda
+
     with open("hwrt/misc/is_one_symbol_classifier.pickle", "rb") as f:
         a = pickle.load(f)
 

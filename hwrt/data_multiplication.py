@@ -6,12 +6,12 @@
 Each algorithm works on the HandwrittenData class. They have to be applied like
 this:
 
- >>> import data_multiplication as multiply
- >>> a = HandwrittenData(...)
- >>> multiplication_queue = [multiply.copy(10),
-                            mulitply.rotate(-30, 30, 5)
-                            ]
- >>> x = a.multiply(multiplication_queue)
+>>> from hwrt.handwritten_data import HandwrittenData
+>>> data_json = '[[{"time": 123, "x": 45, "y": 67}]]'
+>>> a = HandwrittenData(raw_data_id=2953, raw_data_json=data_json)
+>>> multiplication_queue = [Multiply(10),
+...                         Rotate(-30, 30, 5)]
+>>> x = [f(a) for f in multiplication_queue]
 
 """
 
@@ -31,7 +31,7 @@ def get_data_multiplication_queue(model_description_multiply):
     """Get features from a list of dictionaries
 
     >>> l = [{'Multiply': [{'nr': 1}]}, \
-             {'Rotate': [{'minimum':-30}, {'maximum': 30}, {'step': 5}]}]
+             {'Rotate': [{'minimum':-30}, {'maximum': 30}, {'num': 5}]}]
     >>> get_data_multiplication_queue(l)
     [Multiply (1 times), Rotate (-30.00, 30.00, 5.00)]
     """

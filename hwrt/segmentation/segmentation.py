@@ -26,14 +26,10 @@ import sys
 import time
 
 # Third party modules
-import lasagne
 import numpy as np
 import pkg_resources
 import pymysql.cursors
 import scipy.sparse.csgraph
-import theano
-import theano.tensor as T
-from lasagne.nonlinearities import softmax
 
 # Local modules
 from .. import features, geometry, partitions, utils
@@ -53,8 +49,11 @@ def main():
     X, y, recordings = get_dataset()
     logging.info("Start training")
     nn = get_nn_classifier(X, y)
-    stroke_segmented_classifier = lambda X: nn(X)[0][1]
-    y_predicted = numpy.argmax(nn(X), axis=1)
+
+    def stroke_segmented_classifier(x):
+        return nn(x)[0][1]
+
+    y_predicted = np.argmax(nn(X), axis=1)
     classification = [yi == yip for yi, yip in zip(y, y_predicted)]
     err = float(sum([not i for i in classification])) / len(classification)
     logging.info("Error: %0.2f (for %i training examples)", err, len(y))
@@ -116,8 +115,8 @@ def main():
             if has_missing_break(real_seg, seg_predict[0][0]):
                 print("  under-segmented")
         out_of_order_count += _is_out_of_order(real_seg)
-    logging.info("mean: %0.2f", numpy.mean(score_place))
-    logging.info("median: %0.2f", numpy.median(score_place))
+    logging.info("mean: %0.2f", np.mean(score_place))
+    logging.info("median: %0.2f", np.median(score_place))
     logging.info("TOP-1: %0.2f", less_than(score_place, 1) / len(recordings))
     logging.info("TOP-3: %0.2f", less_than(score_place, 3) / len(recordings))
     logging.info("TOP-10: %0.2f", less_than(score_place, 10) / len(recordings))
@@ -186,8 +185,8 @@ def get_dataset():
     seg_labels = "segmentation-y.npy"
     # seg_ids = "segmentation-ids.npy"
     if os.path.isfile(seg_data) and os.path.isfile(seg_labels):
-        X = numpy.load(seg_data)
-        y = numpy.load(seg_labels)
+        X = np.load(seg_data)
+        y = np.load(seg_labels)
 
         with open("datasets.pickle", "rb") as f:
             datasets = pickle.load(f)
@@ -214,10 +213,10 @@ def get_dataset():
                 strokeid1, segmentation
             ) == _get_symbol_index(strokeid2, segmentation)
             y.append(int(same_symbol))
-    X = numpy.array(X, dtype=numpy.float32)
-    y = numpy.array(y, dtype=numpy.int32)
-    numpy.save(seg_data, X)
-    numpy.save(seg_labels, y)
+    X = np.array(X, dtype=np.float32)
+    y = np.array(y, dtype=np.int32)
+    np.save(seg_data, X)
+    np.save(seg_labels, y)
     datasets = filter_recordings(datasets)
     with open("datasets.pickle", "wb") as f:
         pickle.dump(datasets, f, protocol=pickle.HIGHEST_PROTOCOL)
@@ -331,18 +330,17 @@ def get_nn_classifier(X, y):
 
     Parameters
     ----------
-    X : numpy array
+    X : np.ndarray
         A list of feature vectors
-    y : numpy array
+    y : np.ndarray
         A list of labels
 
     Returns
     -------
-    Theano expression :
-        The trained neural network
+    get_output : The trained neural network
     """
-    assert type(X) is numpy.ndarray
-    assert type(y) is numpy.ndarray
+    assert type(X) is np.ndarray
+    assert type(y) is np.ndarray
     assert len(X) == len(y)
     assert X.dtype == "float32"
     assert y.dtype == "int32"
@@ -364,16 +362,19 @@ def train_nn_segmentation_classifier(X, y):
 
     Parameters
     ----------
-    X : numpy array
+    X : np.ndarray
         A list of feature vectors
-    y : numpy array
+    y : np.ndarray
         A list of labels
 
     Returns
     -------
-    Theano expression :
-        The trained neural network
+    l_output : the trained neural network
     """
+    import lasagne
+    from lasagne.nonlinearities import softmax
+    import theano
+    import theano.tensor as T
 
     def build_mlp(input_var=None):
         n_classes = 2
@@ -428,8 +429,8 @@ def train_nn_segmentation_classifier(X, y):
     num_epochs = 7
 
     # We reserve the last 100 training examples for validation.
-    X_train, X_val = X[:-100], X[-100:]
-    y_train, y_val = y[:-100], y[-100:]
+    X_train, X_val = X[:-100], X[-100:]  # noqa
+    y_train, y_val = y[:-100], y[-100:]  # noqa
 
     # Create a loss expression for training, i.e., a scalar objective we want
     # to minimize (for our multi-class problem, it is the cross-entropy loss):
@@ -523,7 +524,7 @@ def get_median_stroke_distance(recording):
     for s1_id in range(len(recording) - 1):
         for s2_id in range(s1_id + 1, len(recording)):
             dists.append(get_strokes_distance(recording[s1_id], recording[s2_id]))
-    return numpy.median(dists)
+    return np.median(dists)
 
 
 def get_time_distance(s1, s2):
@@ -657,7 +658,7 @@ def get_segmentation(
                 continue
             X = get_stroke_features(chunk, strokeid1, strokeid2)
             X += X_symbol
-            X = numpy.array([X], dtype=numpy.float32)
+            X = np.array([X], dtype=np.float32)
             prob[strokeid1][strokeid2] = stroke_segmented_classifier(X)
 
         # Top segmentations
@@ -959,7 +960,7 @@ class Graph(object):
 
     def generate_euclidean_edges(self):
         n = len(self.nodes)
-        self.w = numpy.zeros(shape=(n, n))
+        self.w = np.zeros(shape=(n, n))
         for i in range(n):
             for j in range(n):
                 self.w[i][j] = self.nodes[i].get().dist_to(self.nodes[j].get())
@@ -1042,7 +1043,7 @@ def get_bb_intersections(recording):
     -------
     A symmetrical matrix which indicates if two bounding boxes intersect.
     """
-    intersections = numpy.zeros((len(recording), len(recording)), dtype=bool)
+    intersections = np.zeros((len(recording), len(recording)), dtype=bool)
     for i in range(len(recording) - 1):
         a = geometry.get_bounding_box(recording[i]).grow(0.2)
         for j in range(i + 1, len(recording)):

@@ -8,12 +8,8 @@ import logging
 import sys
 import unicodedata
 
-# Third party modules
-import pymysql
-import pymysql.cursors
-
 # Local modules
-from .. import datasets, handwritten_data, utils
+from .. import datasets, handwritten_data
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s",
@@ -40,8 +36,8 @@ replacements = [
     ("inf", r"\infty"),
     ("root", r"\sqrt{}"),
     ("pi", r"\pi"),
-    ("{", "\{"),
-    ("}", "\}"),
+    ("{", r"\{"),
+    ("}", r"\}"),
     ("leftSquareBracket", "["),
     ("rightSquareBracket", "]"),
     ("sum", r"\sum"),
@@ -202,7 +198,8 @@ def get_recordings(directory):
             info["description"] = (
                 "This dataset was contributed by MfrDB. "
                 "You can download their complete dataset "
-                "at [mfr.felk.cvut.cz/Database.html](http://mfr.felk.cvut.cz/Database.html)"
+                "at [mfr.felk.cvut.cz/Database.html]"
+                "(http://mfr.felk.cvut.cz/Database.html)"
             )
             symbol_recordings.append((hw, info))
         recordings.append((name, symbol_recordings))

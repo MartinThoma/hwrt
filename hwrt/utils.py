@@ -149,8 +149,8 @@ def get_template_folder():
     return cfg["templates"]
 
 
-def get_nntoolkit():
-    """Get the project root folder as a string."""
+def get_nntoolkit() -> str:
+    """Get the nntoolkit as a string."""
     cfg = get_project_configuration()
     return cfg["nntoolkit"]
 
@@ -424,10 +424,10 @@ def create_hdf5(output_filename, feature_count, data):
         ), "Expected %i features, got %i features" % (feature_count, len(features))
         x.append(features)
         y.append(int(label))
-    Wfile = h5py.File(output_filename, "w")
-    Wfile.create_dataset("data", data=x, dtype="float32")
-    Wfile.create_dataset("labels", data=y, dtype="int32")
-    Wfile.close()
+    wfile = h5py.File(output_filename, "w")
+    wfile.create_dataset("data", data=x, dtype="float32")
+    wfile.create_dataset("labels", data=y, dtype="int32")
+    wfile.close()
 
 
 def get_recognizer_folders(model_folder):

@@ -32,6 +32,8 @@ class Bcolors(object):
 
 def which(program):
     """Get the path of a program or ``None`` if ``program`` is not in path."""
+    if program is None:
+        return None
 
     def is_exe(fpath):
         """Check for windows users."""
@@ -86,7 +88,6 @@ def check_python_modules():
         "natsort",
         "numpy",
         "pymysql",
-        "theano",
         "webbrowser",
         "yaml",
     ]
@@ -125,10 +126,6 @@ def check_python_modules():
         import pymysql
 
         print("pymysql version: %s (0.6.3 tested)" % pymysql.__version__)
-    if "theano" in found:
-        import theano
-
-        print("theano version: %s (0.6.0 tested)" % theano.__version__)
     if "numpy" in found:
         import numpy
 
@@ -151,11 +148,14 @@ def check_python_modules():
 def check_executables():
     """Check if all necessary / recommended executables are installed."""
     print("\033[1mCheck executables\033[0m")
-    required_executables = [utils.get_nntoolkit()]
-    for executable in required_executables:
+    required_executables = [("nntoolkit", utils.get_nntoolkit())]
+    for name, executable in required_executables:
         path = which(executable)
         if path is None:
-            print("%s ... %sNOT%s found" % (executable, Bcolors.WARNING, Bcolors.ENDC))
+            print(
+                "%s (%s) ... %sNOT%s found"
+                % (name, executable, Bcolors.WARNING, Bcolors.ENDC)
+            )
         else:
             print(
                 "%s ... %sfound%s at %s"

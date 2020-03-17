@@ -7,7 +7,7 @@ import string
 
 
 def chunk_math(text):
-    """
+    r"""
     Parameters
     ----------
     text : string
@@ -21,28 +21,28 @@ def chunk_math(text):
     Examples
     --------
     >>> chunk_math('\sum_i^n i^2')
-    ['\\\\sum', '_', 'i', '^', 'n', ' ', 'i', '^', '2']
+    ['\\sum', '_', 'i', '^', 'n', ' ', 'i', '^', '2']
 
     >>> chunk_math('\sum_{i}^n i^2')
-    ['\\\\sum', '_', '{', 'i', '}', '^', 'n', ' ', 'i', '^', '2']
+    ['\\sum', '_', '{', 'i', '}', '^', 'n', ' ', 'i', '^', '2']
 
-    >>> chunk_math((r'\\Delta F_0 &= \\sqrt{\\sum_{i=1}^n\\left('
-    ...             r'\\frac{\delta F_0}{\delta x_i}'
-    ...             r'\Delta x_i\\right)^2}\\[0.2cm]'
-    ...             r'\Delta F_0 &= \sqrt{6.044 \cdot  10^{-6}\\text{m}^2}'))
-    ['\\\\Delta', ' ', 'F', '_', '0', ' ', '&', '=', ' ', '\\\\sqrt', '{', '\\\\sum', '_', '{', 'i', '=', '1', '}', '^', 'n', '\\\\left', '(', '\\\\frac', '{', '\\\\delta', ' ', 'F', '_', '0', '}', '{', '\\\\delta', ' ', 'x', '_', 'i', '}', '\\\\Delta', ' ', 'x', '_', 'i', '\\\\right', ')', '^', '2', '}', '\\\\', '[', '0', '.', '2', 'c', 'm', ']', '\\\\Delta', ' ', 'F', '_', '0', ' ', '&', '=', ' ', '\\\\sqrt', '{', '6', '.', '0', '4', '4', ' ', '\\\\cdot', ' ', '1', '0', '^', '{', '-', '6', '}', '\\\\text', '{', 'm', '}', '^', '2', '}']
+    >>> chunk_math(('\\Delta F_0 &= \\sqrt{\\sum_{i=1}^n\\left('
+    ...             '\\frac{\delta F_0}{\delta x_i}'
+    ...             '\Delta x_i\\right)^2}\\[0.2cm]'
+    ...             '\Delta F_0 &= \sqrt{6.044 \cdot  10^{-6}\\text{m}^2}'))
+    ['\\Delta', ' ', 'F', '_', '0', ' ', '&', '=', ' ', '\\sqrt', '{', '\\sum', '_', '{', 'i', '=', '1', '}', '^', 'n', '\\left', '(', '\\frac', '{', '\\delta', ' ', 'F', '_', '0', '}', '{', '\\delta', ' ', 'x', '_', 'i', '}', '\\Delta', ' ', 'x', '_', 'i', '\\right', ')', '^', '2', '}', '\\', '[', '0', '.', '2', 'c', 'm', ']', '\\Delta', ' ', 'F', '_', '0', ' ', '&', '=', ' ', '\\sqrt', '{', '6', '.', '0', '4', '4', ' ', '\\cdot', ' ', '1', '0', '^', '{', '-', '6', '}', '\\text', '{', 'm', '}', '^', '2', '}']
 
-    >>> chunk_math(r'\\left\\{a\\right\\}')
-    ['\\\\left', '\\\\{', 'a', '\\\\right', '\\\\}']
+    >>> chunk_math('\\left\\{a\\right\\}')
+    ['\\left', '\\{', 'a', '\\right', '\\}']
 
-    >>> chunk_math(r'\\sqrt{b^2-4ac}')
-    ['\\\\sqrt', '{', 'b', '^', '2', '-', '4', 'a', 'c', '}']
+    >>> chunk_math('\\sqrt{b^2-4ac}')
+    ['\\sqrt', '{', 'b', '^', '2', '-', '4', 'a', 'c', '}']
 
     >>> chunk_math('y^{2}')
     ['y', '^', '{', '2', '}']
 
-    >>> chunk_math(r'2+3\\\\6 5 4')
-    ['2', '+', '3', '\\\\\\\\', '6', ' ', '5', ' ', '4']
+    >>> chunk_math('2+3\\\\6 5 4')
+    ['2', '+', '3', '\\\\', '6', ' ', '5', ' ', '4']
     """
 
     # Fail when '{' and '}' don't match - be aware of escaped symbols!
@@ -85,7 +85,7 @@ def chunk_math(text):
         elif char in breaking_chars:
             chunks.append(current_chunk)
             current_chunk = char
-        elif char in string.letters + string.digits and current_chunk[0] == "\\":
+        elif char in string.ascii_letters + string.digits and current_chunk[0] == "\\":
             current_chunk += char
         else:
             chunks.append(current_chunk)
@@ -142,7 +142,7 @@ def chunks_to_string(chunks):
 
 
 def normalize(latex):
-    """Normalize a math-mode LaTeX string.
+    r"""Normalize a math-mode LaTeX string.
 
     Parameters
     ----------
@@ -155,13 +155,13 @@ def normalize(latex):
     Examples
     --------
     >>> normalize('\sum_i n^i')
-    '\\\\sum_{i} n^{i}'
+    '\\sum_{i} n^{i}'
     >>> normalize('Carsten Wilhelm')
     'Carsten Wilhelm'
-    >>> normalize(r'\\Delta F')
-    '\\\\Delta F'
-    >>> normalize(r'\\sqrt{b^2-4ac}')
-    '\\\\sqrt{b^{2}-4ac}'
+    >>> normalize(r'\Delta F')
+    '\\Delta F'
+    >>> normalize(r'\sqrt{b^2-4ac}')
+    '\\sqrt{b^{2}-4ac}'
     >>> normalize(r'y^{2}')
     'y^{2}'
     """

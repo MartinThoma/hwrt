@@ -11,7 +11,6 @@
 
 # Core Library modules
 import logging
-import sys
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +30,7 @@ def prepare_table(table):
     return table
 
 
-def clusters(l, K):
+def clusters(l, K):  # noqa
     """Partition list ``l`` in ``K`` partitions.
     >>> l = [0, 1, 2]
     >>> list(clusters(l, K=3))
@@ -53,7 +52,7 @@ def clusters(l, K):
         yield [[] for _ in range(K)]
 
 
-def neclusters(l, K):
+def neclusters(l, K):  # noqa
     """Partition list ``l`` in ``K`` partitions, without empty parts.
 
     >>> l = [0, 1, 2]

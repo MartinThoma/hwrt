@@ -17,9 +17,6 @@ import pkg_resources
 import yaml
 from natsort import natsorted
 
-# Local modules
-from . import utils
-
 logger = logging.getLogger(__name__)
 
 
@@ -62,7 +59,7 @@ def get_symbol_ids(symbol_yml_file, metadata):
 
     Examples
     --------
-    >>> get_symbol_ids('symbols.yml')
+    >>> get_symbol_ids('symbols.yml', metadata={})
     [{'id': 42, 'mappings': [1, 42, 456, 1337]}, {'id': 2, 'mappings': [2]}]
 
     The yml file has to be of the structure

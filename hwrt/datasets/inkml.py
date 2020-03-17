@@ -37,13 +37,15 @@ def beautify_xml(path):
     with open(path) as f:
         content = f.read()
 
-    pretty_print = lambda data: "\n".join(
-        [
-            line
-            for line in parseString(data).toprettyxml(indent=" " * 2).split("\n")
-            if line.strip()
-        ]
-    )
+    def pretty_print(data):
+        return "\n".join(
+            [
+                line
+                for line in parseString(data).toprettyxml(indent=" " * 2).split("\n")
+                if line.strip()
+            ]
+        )
+
     return pretty_print(content)
 
 
@@ -63,14 +65,14 @@ def normalize_symbol_name(symbol_name):
         return "\\frac{}{}"
     elif symbol_name == "\\sqrt":
         return "\\sqrt{}"
-    elif symbol_name in ["&lt;", "\lt"]:
+    elif symbol_name in ["&lt;", r"\lt"]:
         return "<"
-    elif symbol_name in ["&gt;", "\gt"]:
+    elif symbol_name in ["&gt;", r"\gt"]:
         return ">"
     elif symbol_name == "{":
-        return "\{"
+        return r"\{"
     elif symbol_name == "}":
-        return "\}"
+        return r"\}"
     return symbol_name
 
 

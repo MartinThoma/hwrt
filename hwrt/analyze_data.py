@@ -8,7 +8,6 @@
 
 # Core Library modules
 import logging
-import os
 import pickle
 import sys
 

@@ -6,14 +6,15 @@
 Each algorithm works on the HandwrittenData class. They have to be applied like
 this:
 
- >>> import features
- >>> a = HandwrittenData(...)
- >>> feature_list = [features.StrokeCount(),
-                     features.ConstantPointCoordinates(strokes=4,
-                                                       points_per_stroke=20,
-                                                       fill_empty_with=0)
-                    ]
- >>> x = a.feature_extraction(feature_list)
+>>> import hwrt.features
+>>> from hwrt.handwritten_data import HandwrittenData
+>>> data_json = '[[{"time": 123, "x": 45, "y": 67}]]'
+>>> a = HandwrittenData(raw_data_id=2953, raw_data_json=data_json)
+>>> feature_list = [StrokeCount(),
+...                 ConstantPointCoordinates(strokes=4,
+...                                          points_per_stroke=20,
+...                                          fill_empty_with=0)]
+>>> x = a.feature_extraction(feature_list)
 """
 
 # Core Library modules
@@ -55,6 +56,7 @@ def get_features(model_description_features):
      - points per stroke: 81
      - fill empty with: 0
      - pen down feature: False
+     - pixel_env: 0
     ]
     """
     return utils.get_objectlist(

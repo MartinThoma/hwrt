@@ -120,13 +120,13 @@ def main(model_folder):
 
     # Write layers
     for layer_index, layer in enumerate(a["layers"]):
-        W = _as_ndarray(layer["params"]["W"])
-        Wfile = h5py.File("W%i.hdf5" % layer_index, "w")
-        Wfile.create_dataset(Wfile.id.name, data=W)
-        Wfile.close()
+        w = _as_ndarray(layer["params"]["W"])
+        wfile = h5py.File(f"W{layer_index}.hdf5", "w")
+        wfile.create_dataset(wfile.id.name, data=w)
+        wfile.close()
 
         b = _as_ndarray(layer["params"]["b"])
-        bfile = h5py.File("b%i.hdf5" % layer_index, "w")
+        bfile = h5py.File(f"b{layer_index}.hdf5", "w")
         bfile.create_dataset(bfile.id.name, data=b)
         bfile.close()
 
@@ -135,13 +135,13 @@ def main(model_folder):
         activation = activation.replace("softmax", "Softmax")
         layers.append(
             {
-                "W": {"size": list(W.shape), "filename": "W%i.hdf5" % layer_index},
+                "W": {"size": list(w.shape), "filename": "W%i.hdf5" % layer_index},
                 "b": {"size": list(b.shape), "filename": "b%i.hdf5" % layer_index},
                 "activation": activation,
             }
         )
-        filenames.append("W%i.hdf5" % layer_index)
-        filenames.append("b%i.hdf5" % layer_index)
+        filenames.append(f"W{layer_index}.hdf5")
+        filenames.append(f"b{layer_index}.hdf5")
 
     model = {"type": "mlp", "layers": layers}
 

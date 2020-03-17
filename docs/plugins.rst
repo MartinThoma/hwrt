@@ -49,13 +49,13 @@ Preprocessing Plugin Example
             return "Nullify"
 
         def __call__(self, hwr_obj):
-            assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
-                "handwritten data is not of type HandwrittenData, but of %r" % \
-                type(hwr_obj)
+            assert isinstance(
+                hwr_obj, handwritten_data.HandwrittenData
+            ), "handwritten data is not of type HandwrittenData, but of %r" % type(hwr_obj)
             # pointlist = hwr_obj.get_pointlist()
             new_pointlist = []
             new_stroke = []
-            new_stroke.append({'x': 0, 'y': 0, 'time': 0})
+            new_stroke.append({"x": 0, "y": 0, "time": 0})
             new_pointlist.append(new_stroke)
             hwr_obj.set_pointlist(new_pointlist)
 
@@ -86,7 +86,7 @@ Feature Plugin Example
             return 1
 
         def __call__(self, hwr_obj):
-            assert isinstance(hwr_obj, handwritten_data.HandwrittenData), \
-                "handwritten data is not of type HandwrittenData, but of %r" % \
-                type(hwr_obj)
+            assert isinstance(
+                hwr_obj, handwritten_data.HandwrittenData
+            ), "handwritten data is not of type HandwrittenData, but of %r" % type(hwr_obj)
             return [len(hwr_obj.get_pointlist())]

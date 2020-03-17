@@ -74,15 +74,12 @@ self-written data analyzation classes is located. Could could looke like this:
             for i, raw_dataset in enumerate(raw_datasets):
                 if i % 100 == 0 and i > 0:
                     utils.print_status(len(raw_datasets), i, start_time)
-                print_data[raw_dataset['handwriting'].formula_in_latex] += 1
-            print("\r100%"+"\033[K\n")
+                print_data[raw_dataset["handwriting"].formula_in_latex] += 1
+            print("\r100%" + "\033[K\n")
             # Sort the data by highest value, descending
-            print_data = sorted(print_data.items(),
-                                key=lambda n: n[1],
-                                reverse=True)
+            print_data = sorted(print_data.items(), key=lambda n: n[1], reverse=True)
             # Write data to file
-            write_file.write("total,%i\n" %
-                             sum([value for _, value in print_data]))
+            write_file.write("total,%i\n" % sum([value for _, value in print_data]))
             for userid, value in print_data:
                 write_file.write("%s,%i\n" % (userid, value))
             write_file.close()

@@ -71,7 +71,7 @@ def _create_translation_file(
     translation : list of triples
         (raw data id, formula in latex, formula id)
     """
-    translationfilename = "%s/translation-%s.csv" % (feature_folder, dataset_name)
+    translationfilename = f"{feature_folder}/translation-{dataset_name}.csv"
     with open(translationfilename, "w") as f:
         f.write("index,raw_data_id,latex,formula_id\n")
         for el in translation:

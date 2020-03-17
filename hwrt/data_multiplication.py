@@ -86,7 +86,7 @@ class Rotate(object):
         self.num = num
 
     def __repr__(self):
-        return "Rotate (%0.2f, %0.2f, %0.2f)" % (self.min, self.max, self.num)
+        return f"Rotate ({self.min:0.2f}, {self.max:0.2f}, {self.num:0.2f})"
 
     def __str__(self):
         return repr(self)

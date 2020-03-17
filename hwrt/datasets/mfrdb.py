@@ -188,7 +188,7 @@ def get_recordings(directory):
             info["creation_date"] = parse(example["FormulaInputInfo"]["Time"]["text"])
             info["device_type"] = example["FormulaInputInfo"]["Device"]["text"].lower()
             info["sample_id"] = example["FormulaInputInfo"]["SampleId"]["text"]
-            info["rec_desc"] = "%s::%s::%s::%s::%s" % (
+            info["rec_desc"] = "{}::{}::{}::{}::{}".format(
                 filepath,
                 example["Id"],
                 info["sample_id"],

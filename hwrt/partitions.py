@@ -195,8 +195,8 @@ def main():
     #          [0.01, 0.99, 0.00]]
     topfs = get_top_segmentations(table, 5)
     for el, score in topfs:
-        print("%0.10f: %s" % (score, el))
+        print(f"{score:0.10f}: {el}")
     for i in range(20):
         logger.info(
-            "{0:>5}: {1:>10}".format(i, len(list(all_segmentations(list(range(i))))))
+            "{i:>5}: {len(list(all_segmentations(list(range(i))))):>10}"
         )

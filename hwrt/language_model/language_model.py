@@ -157,7 +157,7 @@ class NgramLanguageModel(object):
         for n, data in sorted(list(self.ngrams.items()), key=lambda n: n[0]):
             print("n=%i" % n)
             for key, value in data["data"].items():
-                print("%s\t%s" % (key, value))
+                print(f"{key}\t{value}")
 
 
 def load_model():

@@ -95,7 +95,7 @@ def check_python_modules():
     for required_module in required_modules:
         try:
             imp.find_module(required_module)
-            check = "module '%s' ... %sfound%s" % (
+            check = "module '{}' ... {}found{}".format(
                 required_module,
                 Bcolors.OKGREEN,
                 Bcolors.ENDC,
@@ -172,8 +172,8 @@ def main():
     print("\033[1mCheck files\033[0m")
     rcfile = os.path.join(home, ".hwrtrc")
     if os.path.isfile(rcfile):
-        print("~/.hwrtrc... %sFOUND%s" % (Bcolors.OKGREEN, Bcolors.ENDC))
+        print(f"~/.hwrtrc... {Bcolors.OKGREEN}FOUND{Bcolors.ENDC}")
     else:
-        print("~/.hwrtrc... %sNOT FOUND%s" % (Bcolors.FAIL, Bcolors.ENDC))
+        print(f"~/.hwrtrc... {Bcolors.FAIL}NOT FOUND{Bcolors.ENDC}")
     misc_path = pkg_resources.resource_filename("hwrt", "misc/")
     print("misc-path: %s" % misc_path)

@@ -294,7 +294,7 @@ def work():
         try:
             json.loads(raw_data_json)
         except ValueError:
-            return "Raw Data ID %s; Invalid JSON string: %s" % (
+            return "Raw Data ID {}; Invalid JSON string: {}".format(
                 parsed_json["id"],
                 raw_data_json,
             )

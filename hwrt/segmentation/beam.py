@@ -361,7 +361,7 @@ class Beam(object):
         for hyp in self.hypotheses:
             symbols = [sym["symbol"] for sym in hyp["symbols"]]
             symbols = str([sym.split(";")[1] for sym in symbols])
-            s += "\t%0.3f%%\t%s\n" % (hyp["probability"] * 100, symbols)
+            s += f"\t{hyp['probability'] * 100:0.3f}%\t{symbols}\n"
         return s
 
 

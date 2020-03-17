@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Analyze data in a pickle file by maximum time / width / height and
-   similar features.
+"""
+Analyze data in a pickle file by maximum time / width / height and
+similar features.
 """
 
 
@@ -105,7 +106,7 @@ def analyze_feature(raw_datasets, feature, basename="aspect_ratios"):
 
     # Write data to file
     for label, mean, std in print_data:
-        csv_file.write("%s,%0.2f,%0.2f\n" % (label, mean, std))
+        csv_file.write(f"{label},{mean:0.2f},{std:0.2f}\n")
     csv_file.close()
 
 

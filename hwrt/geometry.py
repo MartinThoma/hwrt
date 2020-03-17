@@ -28,7 +28,7 @@ class Point(object):
         return hash((self.x, self.y))
 
     def __repr__(self):
-        return "p(%0.2f, %0.2f)" % (self.x, self.y)
+        return "p({self.x:0.2f}, {self.y:0.2f})"
 
     def __str__(self):
         return repr(self)
@@ -58,7 +58,7 @@ class LineSegment(object):
         return self.p1.y - self.get_slope() * self.p1.x
 
     def __repr__(self):
-        return "line[%s -> %s]" % (str(self.p1), str(self.p2))
+        return f"line[{str(self.p1)} -> {str(self.p2)}]"
 
     def __str__(self):
         return repr(self)
@@ -133,13 +133,13 @@ class BoundingBox(object):
     def __init__(self, p1, p2):
         assert isinstance(p1, Point), "p1 is not of type Point, but of %r" % type(p1)
         assert isinstance(p2, Point), "p2 is not of type Point, but of %r" % type(p2)
-        assert p1.x <= p2.x, "p1.x <= p2.x (%0.2f and %0.2f)" % (p1.x, p2.x)
-        assert p1.y <= p2.y, "p1.y <= p2.y (%0.2f and %0.2f)" % (p1.y, p2.y)
+        assert p1.x <= p2.x, f"p1.x <= p2.x ({p1.x:0.2f} and {p2.x:0.2f})"
+        assert p1.y <= p2.y, f"p1.y <= p2.y ({p1.y:0.2f} and {p2.y:0.2f})"
         self.p1 = p1
         self.p2 = p2
 
     def __repr__(self):
-        return "BoundingBox[%s, %s]" % (str(self.p1), str(self.p2))
+        return f"BoundingBox[{str(self.p1)}, {str(self.p2)}]"
 
     def __str__(self):
         return repr(self)

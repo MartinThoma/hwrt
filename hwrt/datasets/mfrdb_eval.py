@@ -55,8 +55,8 @@ def main(directory):
                     symbols_showed.append(recording.formula_in_latex)
         logging.info(
             (
-                "{0:>10}: TOP-1: {1:0.2f} | TOP-3: {2:0.2f} | "
-                "TOP-10: {3:0.2f} | TOP-50: {4:0.2f} | {5}"
+                "{:>10}: TOP-1: {:0.2f} | TOP-3: {:0.2f} | "
+                "TOP-10: {:0.2f} | TOP-50: {:0.2f} | {}"
             ).format(
                 latex,
                 less_than(score_place_symbol, 1) / len(symbol_recording),

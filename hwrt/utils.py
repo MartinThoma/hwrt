@@ -224,7 +224,7 @@ def sizeof_fmt(num):
     """Takes the a filesize in bytes and returns a nicely formatted string. """
     for x in ["bytes", "KB", "MB", "GB", "TB"]:
         if num < 1024.0:
-            return "%3.1f %s" % (num, x)
+            return f"{num:3.1f} {x}"
         num /= 1024.0
 
 

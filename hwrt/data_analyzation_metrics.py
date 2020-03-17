@@ -256,13 +256,13 @@ class TimeBetweenPointsAndStrokes(object):
         self.filename_strokes = prepare_file(filename_strokes)
 
     def __repr__(self):
-        return "TimeBetweenPointsAndStrokes(%s, %s)" % (
+        return "TimeBetweenPointsAndStrokes({}, {})".format(
             self.filename_points,
             self.filename_strokes,
         )
 
     def __str__(self):
-        return "TimeBetweenPointsAndStrokes(%s, %s)" % (
+        return "TimeBetweenPointsAndStrokes({}, {})".format(
             self.filename_points,
             self.filename_strokes,
         )

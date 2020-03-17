@@ -25,7 +25,7 @@ def main(directory):
     logging.info("Got recordings for %i symbols.", len(recordings))
     recordings = sorted(recordings, key=lambda n: len(n[1]))
     for symbol, symbol_recs in recordings:
-        logging.info("{0:>10}: {1} recordings".format(symbol, len(symbol_recs)))
+        logging.info(f"{symbol:>10}: {len(symbol_recs)} recordings")
         for hw, info in symbol_recs:
             pass
             # datasets.insert_recording(hw, info)

@@ -32,7 +32,7 @@ The following is an example ``~/.hwrtrc`` configuration file:
 .. code-block:: yaml
 
     root: /home/moose/GitHub/hwr-experiments
-    nntoolkit: nntoolkitfancyname
+    nntoolkit: nntoolkit
     preprocessing: /home/moose/hwrt-config/preprocessing.py
     features: /home/moose/hwrt-config/features.py
     dbconfig: /home/moose/hwrt-config/db.config.yml

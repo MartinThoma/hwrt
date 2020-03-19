@@ -60,7 +60,7 @@ def update_if_outdated(folder):
                 create_model.main(target_folder, True)
             target_mtime = datetime.datetime.utcnow()
         else:
-            logger.info("'%s' is up-to-date.", target_folder)
+            logger.info(f"'{target_folder}' is up-to-date.")
         source_mtime = target_mtime
 
 
@@ -91,13 +91,15 @@ def generate_training_command(model_folder):
     latest_model = utils.get_latest_working_model(model_folder)
 
     if latest_model == "":
-        logger.error("There is no model with basename '%s'.", basename)
+        logger.error(
+            f"There is no model with basename '{basename}' " f"in {model_folder}"
+        )
         return None
     else:
-        logger.info("Model '%s' found.", latest_model)
+        logger.info(f"Model '{latest_model}' found.")
         i = int(latest_model.split("-")[-1].split(".")[0])
-        model_src = os.path.join(model_folder, "%s-%i.json" % (basename, i))
-        model_target = os.path.join(model_folder, "%s-%i.json" % (basename, i + 1))
+        model_src = os.path.join(model_folder, f"{basename}-{i}.json")
+        model_target = os.path.join(model_folder, f"{basename}-{i + 1}.json")
 
     # generate the training command
     training = model_description["training"]

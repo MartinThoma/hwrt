@@ -22,6 +22,7 @@ import abc
 import logging
 import sys
 from itertools import combinations_with_replacement as combinations_wr
+from typing import Any, Dict, List
 
 # Third party modules
 import numpy
@@ -33,12 +34,12 @@ from . import geometry, handwritten_data, preprocessing, utils
 logger = logging.getLogger(__name__)
 
 
-def get_features(model_description_features):
+def get_features(model_description_features: List[Dict[str, Any]]):
     """Get features from a list of dictionaries
 
     Parameters
     ----------
-    model_description_features : list of dictionaries
+    model_description_features : List[Dict[str, Any]]
 
     Examples
     --------

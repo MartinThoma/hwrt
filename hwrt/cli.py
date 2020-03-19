@@ -38,6 +38,7 @@ model_option = click.option(
     "-m",
     "--model",
     default=hwrt.utils.default_model(),
+    show_default=True,
     type=click.Path(dir_okay=True, file_okay=False, exists=True),
     help="where is the model folder (with a info.yml)?",
 )

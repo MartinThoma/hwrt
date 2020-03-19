@@ -15,28 +15,28 @@ from . import features, utils
 logger = logging.getLogger(__name__)
 
 
-def create_model(model_folder, model_type, topology, override):
+def create_model(model_folder: str, model_type: str, topology: str, override: bool):
     """
     Create a model if it doesn't exist already.
 
     Parameters
     ----------
-    model_folder :
+    model_folder : str
         The path to the folder where the model is described with an `info.yml`
-    model_type :
+    model_type : {'MLP'}
         MLP
-    topology :
+    topology : str
         Something like 160:500:369 - that means the first layer has 160
         neurons, the second layer has 500 neurons and the last layer has 369
         neurons.
-    override : boolean
+    override : bool
         If a model exists, override it.
     """
     latest_model = utils.get_latest_in_folder(model_folder, ".json")
     if (latest_model == "") or override:
         logger.info("Create a base model...")
         model_src = os.path.join(model_folder, "model-0.json")
-        command = "{} make {} {} > {}".format(
+        command = "{} create {} {} > {}".format(
             utils.get_nntoolkit(), model_type, topology, model_src,
         )
         logger.info(command)

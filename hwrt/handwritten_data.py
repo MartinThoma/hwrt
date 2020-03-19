@@ -255,13 +255,6 @@ class HandwrittenData(object):
 
     def show(self):
         """Show the data graphically in a new pop-up window."""
-
-        # prevent the following error:
-        # '_tkinter.TclError: no display name and no $DISPLAY environment
-        #    variable'
-        # import matplotlib
-        # matplotlib.use('GTK3Agg', warn=False)
-
         import matplotlib.pyplot as plt
 
         pointlist = self.get_pointlist()

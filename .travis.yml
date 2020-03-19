@@ -2,7 +2,6 @@ language: python
 python:
   - 3.6
   - 3.7
-  - 3.8
 before_install:
   - sudo apt-get install libblas-dev liblapack-dev gfortran
   - sudo apt-get install python-scipy python-numpy

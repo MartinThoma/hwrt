@@ -19,15 +19,15 @@ def test_get_metrics_test():
 
 def test_execution_test():
     raw_datasets = testhelper.get_raw_datasets()
-    l = [
+    algorithms = [
         dam.Creator(),
         dam.InstrokeSpeed(),
         dam.InterStrokeDistance(),
         dam.TimeBetweenPointsAndStrokes(),
         dam.AnalyzeErrors(),
     ]
-    for alg in l:
-        alg(raw_datasets)
+    for algorithm in algorithms:
+        algorithm(raw_datasets)
 
 
 def test_execution_test2():

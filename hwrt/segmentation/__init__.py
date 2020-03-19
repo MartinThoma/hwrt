@@ -1,3 +1,3 @@
 # Local modules
-from .beam import *
-from .segmentation import *
+from .beam import *  # noqa
+from .segmentation import *  # noqa

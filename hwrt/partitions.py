@@ -197,6 +197,4 @@ def main():
     for el, score in topfs:
         print(f"{score:0.10f}: {el}")
     for i in range(20):
-        logger.info(
-            "{i:>5}: {len(list(all_segmentations(list(range(i))))):>10}"
-        )
+        logger.info("{i:>5}: {len(list(all_segmentations(list(range(i))))):>10}")

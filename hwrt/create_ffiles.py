@@ -310,8 +310,7 @@ def _calculate_feature_stats(
 
 
 def _normalize_features(feature_list, prepared, is_traindata):
-    """Normalize features (mean subtraction, division by variance or range).
-    """
+    """Normalize features (subtract mean, division by variance or range)."""
     if is_traindata:
         _calculate_feature_stats(feature_list, prepared, "featurenormalization.csv")
 

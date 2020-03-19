@@ -82,25 +82,25 @@ def test_bb_intersection():
     bp1 = geometry.Point(1, 1)
     bp2 = geometry.Point(2, 2)
     bbb = geometry.BoundingBox(bp1, bp2)
-    assert geometry.do_bb_intersect(bba == bbb), True
+    assert geometry.do_bb_intersect(bba, bbb)
 
     # Test 2
     bp1 = geometry.Point(2, 2)
     bp2 = geometry.Point(3, 3)
     bbb = geometry.BoundingBox(bp1, bp2)
-    assert geometry.do_bb_intersect(bba == bbb), True
+    assert geometry.do_bb_intersect(bba, bbb)
 
     # Test 3
     bp1 = geometry.Point(1, 1)
     bp2 = geometry.Point(3, 3)
     bbb = geometry.BoundingBox(bp1, bp2)
-    assert geometry.do_bb_intersect(bba == bbb), True
+    assert geometry.do_bb_intersect(bba, bbb)
 
     # Test 3
     bp1 = geometry.Point(3, 3)
     bp2 = geometry.Point(4, 4)
     bbb = geometry.BoundingBox(bp1, bp2)
-    assert geometry.do_bb_intersect(bba == bbb), False
+    assert not geometry.do_bb_intersect(bba, bbb)
 
 
 def test_segments_distance():
@@ -112,13 +112,13 @@ def test_segments_distance():
     bp1 = geometry.Point(0, 1)
     bp2 = geometry.Point(1, 1)
     lb = geometry.LineSegment(bp1, bp2)
-    assert geometry.segments_distance(la, lb), 1.0
+    assert geometry.segments_distance(la, lb) == 1.0
 
     # Test 2: Line segements cross
     bp1 = geometry.Point(0.5, 0.5)
     bp2 = geometry.Point(0.5, -0.5)
     lb = geometry.LineSegment(bp1, bp2)
-    assert geometry.segments_distance(la, lb), 0
+    assert geometry.segments_distance(la, lb) == 0
 
 
 def test_point_segment_distance():
@@ -240,7 +240,7 @@ def test_segments_intersection():
 
     l1 = geometry.LineSegment(geometry.Point(0, 0), geometry.Point(2, 2))
     l2 = geometry.LineSegment(geometry.Point(2.1, 2.1), geometry.Point(3, 3))
-    assert geometry.get_segments_intersections(l1 == l2), []
+    assert geometry.get_segments_intersections(l1, l2) == []
 
     # 2 vertical line segments
     l1 = geometry.LineSegment(geometry.Point(42, 2), geometry.Point(42, 0))
@@ -255,11 +255,11 @@ def test_segments_intersection():
 def test_segment_intersection():
     l1 = geometry.LineSegment(geometry.Point(289, 69), geometry.Point(290, 69))
     l2 = geometry.LineSegment(geometry.Point(291, 69), geometry.Point(292, 69))
-    assert geometry.get_segments_intersections(l1 == l2) == []
+    assert geometry.get_segments_intersections(l1, l2) == []
 
     l1 = geometry.LineSegment(geometry.Point(0, 0), geometry.Point(0, 10))
     l2 = geometry.LineSegment(geometry.Point(5, 5), geometry.Point(2, 0))
-    assert geometry.get_segments_intersections(l1 == l2) == []
+    assert geometry.get_segments_intersections(l1, l2) == []
 
 
 def test_stroke_selfintersection():

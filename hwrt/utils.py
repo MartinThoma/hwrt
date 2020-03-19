@@ -7,7 +7,7 @@
 # Core Library modules
 import csv
 import datetime
-import imp
+import importlib.machinery
 import inspect
 import logging
 import os
@@ -20,6 +20,7 @@ import tempfile
 import time
 from decimal import Decimal, getcontext
 from functools import reduce
+from typing import Any, Dict, List, Type
 from uuid import UUID
 
 # Third party modules
@@ -869,25 +870,27 @@ def classify_single_recording(raw_data_json, model_folder, verbose=False):
     return results
 
 
-def get_objectlist(description, config_key, module):
+def get_objectlist(
+    description: List[Dict[str, Any]], config_key: str, module
+) -> List[Any]:
     """
     Take a description and return a list of classes.
 
     Parameters
     ----------
-    description : list of dictionaries
+    description : List[Dict[str, Any]]
         Each dictionary has only one entry. The key is the name of a class. The
         value of that entry is a list of dictionaries again. Those dictionaries
         are paramters.
 
     Returns
     -------
-    List of objects.
+    object_list : List[Any]
     """
     object_list = []
     for feature in description:
-        for feat, params in feature.items():
-            feat = get_class(feat, config_key, module)
+        for feat_name, params in feature.items():
+            feat = get_class(feat_name, config_key, module)
             if params is None:
                 object_list.append(feat())
             else:
@@ -899,7 +902,7 @@ def get_objectlist(description, config_key, module):
     return object_list
 
 
-def get_class(name, config_key, module):
+def get_class(name, config_key, module) -> Type:
     """Get the class by its name as a string."""
     clsmembers = inspect.getmembers(module, inspect.isclass)
     for string_name, act_class in clsmembers:
@@ -911,7 +914,9 @@ def get_class(name, config_key, module):
     if config_key in cfg:
         modname = os.path.splitext(os.path.basename(cfg[config_key]))[0]
         if os.path.isfile(cfg[config_key]):
-            usermodule = imp.load_source(modname, cfg[config_key])
+            usermodule = importlib.machinery.SourceFileLoader(
+                modname, cfg[config_key]
+            ).load_module()
             clsmembers = inspect.getmembers(usermodule, inspect.isclass)
             for string_name, act_class in clsmembers:
                 if string_name == name:
@@ -922,8 +927,7 @@ def get_class(name, config_key, module):
                 cfg["data_analyzation_plugins"],
             )
 
-    logger.debug(f"Unknown class '{name}'.")
-    return None
+    raise ValueError(f"Class '{name}' is unknown")
 
 
 def less_than(l, n):

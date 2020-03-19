@@ -364,9 +364,9 @@ class HandwrittenData(object):
 
     def __repr__(self):
         if self.raw_data_id is None and self.formula_in_latex is not None:
-            return "HwD(%s)" % str(self.formula_in_latex)
+            return "HandwrittenData(%s)" % str(self.formula_in_latex)
         else:
-            return "HwD(raw_data_id=%s)" % str(self.raw_data_id)
+            return "HandwrittenData(raw_data_id=%s)" % str(self.raw_data_id)
 
     def __str__(self):
         return repr(self)

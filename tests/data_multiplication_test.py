@@ -7,7 +7,7 @@ import tests.testhelper as testhelper
 
 
 def test_data_multiplication_detection():
-    l = [
+    queue = [
         {"Multiply": None},
         {"Multiply": [{"nr": 1}]},
         {"Rotate": [{"minimum": -3}, {"maximum": +3}, {"num": 3}]},
@@ -17,7 +17,7 @@ def test_data_multiplication_detection():
         data_multiplication.Multiply(nr=1),
         data_multiplication.Rotate(minimum=-3, maximum=3, num=3),
     ]
-    mult_queue = data_multiplication.get_data_multiplication_queue(l)
+    mult_queue = data_multiplication.get_data_multiplication_queue(queue)
     # TODO: Not only compare lengths of lists but actual contents.
     assert len(mult_queue) == len(correct)
 

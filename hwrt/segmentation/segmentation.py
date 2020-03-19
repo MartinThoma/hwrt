@@ -471,9 +471,9 @@ def train_nn_segmentation_classifier(X, y):
 
         # Then we print the results for this epoch:
         print(
-                "Epoch {} of {} took {:.3f}s".format(
-                    epoch + 1, num_epochs, time.time() - start_time
-                )
+            "Epoch {} of {} took {:.3f}s".format(
+                epoch + 1, num_epochs, time.time() - start_time
+            )
         )
         print(f"  training loss:\t\t{train_err / train_batches:.6f}")
 

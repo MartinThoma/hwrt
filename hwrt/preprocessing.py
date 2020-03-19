@@ -258,10 +258,14 @@ class ScaleAndShift(object):
         hwr_obj.set_pointlist(pointlist)
         assert (
             self.max_width - hwr_obj.get_width() >= -0.00001
-        ), "max_width: {:0.5f}; width: {:0.5f}".format(self.max_width, hwr_obj.get_width())
+        ), "max_width: {:0.5f}; width: {:0.5f}".format(
+            self.max_width, hwr_obj.get_width()
+        )
         assert (
             self.max_height - hwr_obj.get_height() >= -0.00001
-        ), "max_height: {:0.5f}; height: {:0.5f}".format(self.max_height, hwr_obj.get_height())
+        ), "max_height: {:0.5f}; height: {:0.5f}".format(
+            self.max_height, hwr_obj.get_height()
+        )
 
 
 class SpaceEvenly(object):

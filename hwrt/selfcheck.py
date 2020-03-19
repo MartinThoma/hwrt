@@ -6,7 +6,7 @@
 """
 
 # Core Library modules
-import imp
+import importlib
 import os
 import platform
 import sys
@@ -93,20 +93,21 @@ def check_python_modules():
     ]
     found = []
     for required_module in required_modules:
-        try:
-            imp.find_module(required_module)
-            check = "module '{}' ... {}found{}".format(
-                required_module,
-                Bcolors.OKGREEN,
-                Bcolors.ENDC,
-            )
-            print(check)
-            found.append(required_module)
-        except ImportError:
+        toolbox_specs = importlib.util.find_spec(required_module)
+        if toolbox_specs is None:
             print(
                 "module '%s' ... %sNOT%s found"
                 % (required_module, Bcolors.WARNING, Bcolors.ENDC)
             )
+        else:
+            toolbox = importlib.util.module_from_spec(toolbox_specs)
+            toolbox_specs.loader.exec_module(toolbox)
+
+            check = "module '{}' ... {}found{}".format(
+                required_module, Bcolors.OKGREEN, Bcolors.ENDC,
+            )
+            print(check)
+            found.append(required_module)
 
     if "click" in found:
         import click

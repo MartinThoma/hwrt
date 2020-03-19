@@ -3,6 +3,7 @@
 # Core Library modules
 import logging
 import sys
+from typing import Dict
 
 # Third party modules
 import pymysql
@@ -19,7 +20,7 @@ logging.basicConfig(
 
 
 __formula_to_dbid_cache = None
-username2id = {}
+username2id: Dict[str, str] = {}
 
 
 def formula_to_dbid(formula_str, backslash_fix=False):

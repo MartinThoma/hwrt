@@ -42,7 +42,9 @@ def test_get_class():
        algorithms.
     """
     utils.get_class("ScaleAndShift", "preprocessing", hwrt.preprocessing)
-    utils.get_class("BongaBonga", "preprocessing", hwrt.preprocessing)
+
+    with pytest.raises(ValueError):
+        utils.get_class("BongaBonga", "preprocessing", hwrt.preprocessing)
 
 
 def test_query_yes_no():
@@ -102,6 +104,7 @@ def test_choose_raw_dataset():
         utils.choose_raw_dataset()
 
 
+@pytest.mark.skip(reason="This is an integration test with hwr-experiments")
 def test_get_recognizer_folders():
     """Test if all folders are catched."""
     small = os.path.join(utils.get_project_root(), "models/small-baseline")

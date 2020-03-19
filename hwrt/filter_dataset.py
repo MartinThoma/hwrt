@@ -178,21 +178,21 @@ def get_metadata():
     }
 
 
-def read_csv(filepath):
+def read_csv(filepath: str):
     """
     Read a CSV into a list of dictionarys. The first line of the CSV determines
     the keys of the dictionary.
 
     Parameters
     ----------
-    filepath : string
+    filepath : str
 
     Returns
     -------
     list of dictionaries
     """
     symbols = []
-    with open(filepath, "rb") as csvfile:
+    with open(filepath, "rt") as csvfile:
         spamreader = csv.DictReader(csvfile, delimiter=",", quotechar='"')
         for row in spamreader:
             symbols.append(row)

@@ -64,8 +64,7 @@ class DefaultOrderedDict(OrderedDict):
 
     def __repr__(self):
         return "OrderedDefaultDict({}, {})".format(
-            self.default_factory,
-            OrderedDict.__repr__(self),
+            self.default_factory, OrderedDict.__repr__(self),
         )
 
 

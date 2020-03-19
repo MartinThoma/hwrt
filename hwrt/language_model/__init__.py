@@ -1,2 +1,2 @@
 # Local modules
-from .language_model import *
+from .language_model import *  # noqa

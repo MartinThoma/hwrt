@@ -28,7 +28,7 @@ class Point(object):
         return hash((self.x, self.y))
 
     def __repr__(self):
-        return "p({self.x:0.2f}, {self.y:0.2f})"
+        return f"p({self.x:0.2f}, {self.y:0.2f})"
 
     def __str__(self):
         return repr(self)

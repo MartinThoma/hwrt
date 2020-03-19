@@ -34,7 +34,7 @@ __all__ = ["Beam"]
 stroke_prob = None
 
 
-def p_strokes(symbol, count):
+def p_strokes(symbol: str, count: int) -> float:
     """
     Get the probability of a written `symbol` having `count` strokes.
 
@@ -46,7 +46,7 @@ def p_strokes(symbol, count):
 
     Returns
     -------
-    float
+    epsilon : float
         In [0.0, 1.0]
     """
     global stroke_prob

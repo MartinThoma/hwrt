@@ -21,8 +21,3 @@ def test_execution():
     feature = features.AspectRatio()
     filename = "aspect_ratio.csv"
     analyze_data.analyze_feature(raw_datasets, feature, filename)
-
-
-def test_parser():
-    """Test analyze_data.get_parser."""
-    analyze_data.get_parser()

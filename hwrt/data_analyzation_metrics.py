@@ -257,14 +257,12 @@ class TimeBetweenPointsAndStrokes(object):
 
     def __repr__(self):
         return "TimeBetweenPointsAndStrokes({}, {})".format(
-            self.filename_points,
-            self.filename_strokes,
+            self.filename_points, self.filename_strokes,
         )
 
     def __str__(self):
         return "TimeBetweenPointsAndStrokes({}, {})".format(
-            self.filename_points,
-            self.filename_strokes,
+            self.filename_points, self.filename_strokes,
         )
 
     def __call__(self, raw_datasets):

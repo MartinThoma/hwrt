@@ -37,10 +37,7 @@ def create_model(model_folder, model_type, topology, override):
         logger.info("Create a base model...")
         model_src = os.path.join(model_folder, "model-0.json")
         command = "{} make {} {} > {}".format(
-            utils.get_nntoolkit(),
-            model_type,
-            topology,
-            model_src,
+            utils.get_nntoolkit(), model_type, topology, model_src,
         )
         logger.info(command)
         os.system(command)

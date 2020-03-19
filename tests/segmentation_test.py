@@ -8,7 +8,7 @@ import hwrt.segmentation as segmentation
 import tests.testhelper as testhelper
 
 
-def test_prepare_beams():
+def prepare_beams():
     """
     Prepare one beam object for each recording.
 

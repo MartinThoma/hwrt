@@ -4,11 +4,12 @@
 # First party modules
 import hwrt.features as features
 import tests.testhelper as testhelper
-from hwrt.handwritten_data import HandwrittenData
+
+# from hwrt.handwritten_data import HandwrittenData
 
 
 def test_feature_detection():
-    l = [
+    queue = [
         {"StrokeCount": None},
         {
             "ConstantPointCoordinates": [
@@ -25,32 +26,32 @@ def test_feature_detection():
             strokes=4, points_per_stroke=81, fill_empty_with=0, pen_down=False
         ),
     ]
-    feature_list = features.get_features(l)
+    feature_list = features.get_features(queue)
     # TODO: Not only compare lengths of lists but actual contents.
     assert len(feature_list) == len(correct)
 
 
 def test_repr_and_str():
-    l = [
+    algorithms = [
         features.ConstantPointCoordinates(),
         features.FirstNPoints(),
         features.StrokeCount(),
         features.Ink(),
     ]
-    for alg in l:
-        str(alg)
-        repr(alg)
+    for algorithm in algorithms:
+        str(algorithm)
+        repr(algorithm)
 
 
 def test_dimension():
-    l = [
+    algorithms = [
         (features.ConstantPointCoordinates(), 160),
         (features.FirstNPoints(), 162),  # TODO: Check
         (features.StrokeCount(), 1),
         (features.Ink(), 1),
     ]
-    for alg, dimension in l:
-        assert alg.get_dimension() == dimension
+    for algorithm, dimension in algorithms:
+        assert algorithm.get_dimension() == dimension
 
 
 def test_height():

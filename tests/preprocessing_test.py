@@ -131,7 +131,9 @@ def test_ScaleAndShift_test_a():
             {"y": 0.5528, "x": 0.4534, "time": 2378},
         ],
     ]
-    assert testhelper.compare_pointlists(s, expectation), f"Got: {s}; expected {expectation}"
+    assert testhelper.compare_pointlists(
+        s, expectation
+    ), f"Got: {s}; expected {expectation}"
 
 
 def test_ScaleAndShift_test_a_center():
@@ -157,7 +159,9 @@ def test_ScaleAndShift_test_a_center():
             {"y": 0.5528, "x": 0.16459627329192544, "time": 2378},
         ],
     ]
-    assert testhelper.compare_pointlists(s, expectation), f"Got: {s}; expected {expectation}"
+    assert testhelper.compare_pointlists(
+        s, expectation
+    ), f"Got: {s}; expected {expectation}"
 
 
 def test_space_evenly_per_stroke_test_all():

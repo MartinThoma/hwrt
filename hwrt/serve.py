@@ -132,9 +132,8 @@ def worker():
     global use_segmenter_flag
     if request.method == "POST":
         raw_data_json = request.form["classify"]
-        try:
-            secret_uuid = request.form["secret"]
-        except:
+        secret_uuid = request.form.get("secret", None)
+        if secret_uuid is None:
             logger.info("No secret uuid given. Create one.")
             secret_uuid = str(uuid.uuid4())
 
@@ -295,8 +294,7 @@ def work():
             json.loads(raw_data_json)
         except ValueError:
             return "Raw Data ID {}; Invalid JSON string: {}".format(
-                parsed_json["id"],
-                raw_data_json,
+                parsed_json["id"], raw_data_json,
             )
 
         # Classify

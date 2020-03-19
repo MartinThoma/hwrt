@@ -36,6 +36,8 @@ from .. import features, geometry, partitions, utils
 from ..handwritten_data import HandwrittenData
 from ..utils import less_than
 
+logger = logging.getLogger(__name__)
+
 
 def main():
     global single_clf
@@ -48,12 +50,12 @@ def main():
     logging.info("Start creation of training set")
     X, y, recordings = get_dataset()
     logging.info("Start training")
-    nn = get_nn_classifier(X, y)
+    model = get_nn_classifier(X, y)
 
     def stroke_segmented_classifier(x):
-        return nn(x)[0][1]
+        return model.predict(x)[0][1]
 
-    y_predicted = np.argmax(nn(X), axis=1)
+    y_predicted = np.argmax(model.predict(X), axis=1)
     classification = [yi == yip for yi, yip in zip(y, y_predicted)]
     err = float(sum([not i for i in classification])) / len(classification)
     logging.info("Error: %0.2f (for %i training examples)", err, len(y))
@@ -337,26 +339,28 @@ def get_nn_classifier(X, y):
 
     Returns
     -------
-    get_output : The trained neural network
+    model : The trained neural network
     """
+    from keras.models import load_model
+
     assert type(X) is np.ndarray
     assert type(y) is np.ndarray
     assert len(X) == len(y)
     assert X.dtype == "float32"
     assert y.dtype == "int32"
 
-    nn_pickled_filename = "is_one_symbol_classifier.pickle"
-    if os.path.isfile(nn_pickled_filename):
-        with open(nn_pickled_filename, "rb") as handle:
-            get_output = pickle.load(handle)
+    model_filename = "is_one_symbol_classifier.pickle"  # TODO: h5?
+    if os.path.isfile(model_filename):
+        model = load_model(model_filename)
     else:
-        get_output = train_nn_segmentation_classifier(X, y)
-        with open(nn_pickled_filename, "wb") as handle:
-            pickle.dump(get_output, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    return get_output
+        model = train_nn_segmentation_classifier(X, y)
+        if model_filename.endswith(".h5"):
+            logger.warning("Keras models are HDF5 files and should end in h5")
+        model.save(model_filename)
+    return model
 
 
-def train_nn_segmentation_classifier(X, y):
+def train_nn_segmentation_classifier(X: np.ndarray, y: np.ndarray):
     """
     Train a neural network classifier.
 
@@ -369,116 +373,44 @@ def train_nn_segmentation_classifier(X, y):
 
     Returns
     -------
-    l_output : the trained neural network
+    model : the trained neural network
     """
-    import lasagne
-    from lasagne.nonlinearities import softmax
-    import theano
-    import theano.tensor as T
+    from keras import optimizers
+    from keras.models import Model
+    from keras.layers import Input, Dense
 
-    def build_mlp(input_var=None):
+    def build_mlp():
         n_classes = 2
         # First, construct an input layer. The shape parameter defines the
         # expected input shape, which is just the shape of our data matrix X.
-        l_in = lasagne.layers.InputLayer(shape=X.shape, input_var=input_var)
+        l_in = Input(shape=(X.shape[0],))
         # A dense layer implements a linear mix (xW + b) followed by a
         # nonlinear function.
-        hiddens = [64, 64, 64]  # sollte besser als 0.12 sein (mit [32])
+        hiddens = [64, 64, 64]  # should be better than 0.12 (with [32])
         layers = [l_in]
 
         for n_units in hiddens:
-            l_hidden_1 = lasagne.layers.DenseLayer(
-                layers[-1],  # The first argument is the input to this layer
-                num_units=n_units,  # the layer's output dimensionality
-                nonlinearity=lasagne.nonlinearities.tanh,
-            )
+            l_hidden_1 = Dense(n_units, activation="tanh",)(layers[-1])
             layers.append(l_hidden_1)
         # For our output layer, we'll use a dense layer with a softmax
         # nonlinearity.
-        l_output = lasagne.layers.DenseLayer(
-            layers[-1], num_units=n_classes, nonlinearity=softmax
-        )
-        return l_output
+        l_output = Dense(n_classes, activation="softmax")(layers[-1])
+        model = Model(inputs=l_in, outputs=l_output)
+        return model
 
-    # Batch iterator, Copied directly from the Lasagne example.
-    def iterate_minibatches(inputs, targets, batchsize, shuffle=False):
-        """
-        This is just a simple helper function iterating over training data in
-        mini-batches of a particular size, optionally in random order. It
-        assumes data is available as numpy arrays. For big datasets, you could
-        load numpy arrays as memory-mapped files (np.load(..., mmap_mode='r')),
-        or write your own custom data iteration function. For small datasets,
-        you can also copy them to GPU at once for slightly improved
-        performance. This would involve several changes in the main program,
-        though, and is not demonstrated here.
-        """
-        assert len(inputs) == len(targets)
-        if shuffle:
-            indices = np.arange(len(inputs))
-            np.random.shuffle(indices)
-        for start_idx in range(0, len(inputs) - batchsize + 1, batchsize):
-            if shuffle:
-                excerpt = indices[start_idx : start_idx + batchsize]
-            else:
-                excerpt = slice(start_idx, start_idx + batchsize)
-            yield inputs[excerpt], targets[excerpt]
+    model = build_mlp()
+    optimizer = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+    model.compile(loss="categorical_crossentropy", optimizer=optimizer)
 
-    input_var = T.matrix("inputs")
-    target_var = T.ivector("targets")
-    network = build_mlp(input_var)
     num_epochs = 7
 
     # We reserve the last 100 training examples for validation.
     X_train, X_val = X[:-100], X[-100:]  # noqa
     y_train, y_val = y[:-100], y[-100:]  # noqa
 
-    # Create a loss expression for training, i.e., a scalar objective we want
-    # to minimize (for our multi-class problem, it is the cross-entropy loss):
-    prediction = lasagne.layers.get_output(network)
-    loss = lasagne.objectives.categorical_crossentropy(prediction, target_var)
-    loss = loss.mean()
-    # We could add some weight decay as well here, see lasagne.regularization.
+    model.fit(X_train, y_train, epochs=num_epochs, validation_data=(X_val, y_val))
 
-    # Create update expressions for training, i.e., how to modify the
-    # parameters at each training step. Here, we'll use Stochastic Gradient
-    # Descent (SGD) with Nesterov momentum, but Lasagne offers plenty more.
-    params = lasagne.layers.get_all_params(network, trainable=True)
-    updates = lasagne.updates.nesterov_momentum(
-        loss, params, learning_rate=0.01, momentum=0.9
-    )
-
-    # Create a loss expression for validation/testing. The crucial difference
-    # here is that we do a deterministic forward pass through the network,
-    # disabling dropout layers.
-    test_prediction = lasagne.layers.get_output(network, deterministic=True)
-
-    # Compile a function performing a training step on a mini-batch (by giving
-    # the updates dictionary) and returning the corresponding training loss:
-    train_fn = theano.function([input_var, target_var], loss, updates=updates)
-
-    # Finally, launch the training loop.
-    print("Starting training...")
-    # We iterate over epochs:
-    for epoch in range(num_epochs):
-        # In each epoch, we do a full pass over the training data:
-        train_err = 0
-        train_batches = 0
-        start_time = time.time()
-        for batch in iterate_minibatches(X_train, y_train, 20, shuffle=True):
-            inputs, targets = batch
-            train_err += train_fn(inputs, targets)
-            train_batches += 1
-
-        # Then we print the results for this epoch:
-        print(
-            "Epoch {} of {} took {:.3f}s".format(
-                epoch + 1, num_epochs, time.time() - start_time
-            )
-        )
-        print(f"  training loss:\t\t{train_err / train_batches:.6f}")
-
-    predict_fn = theano.function([input_var], test_prediction)
-    return predict_fn
+    return model
 
 
 def get_stroke_features(recording, strokeid1, strokeid2):

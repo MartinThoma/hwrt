@@ -134,9 +134,8 @@ The `hwrt` toolset is independent of the way the training command is
 formatted as the training command gets inserted directly into the configuration
 file ``info.yml`` of the model.
 
-In order to implement such a neural network executable one can use Theano,
-cuDNN_ or Caffe_. Deeplearning_ contains example code for multilayer perceptrons
-written with Theano (Python).
+In order to implement such a neural network executable one can use Tensorflow,
+cuDNN_ or Caffe_.
 
 
 Upgrading hwrt
@@ -151,5 +150,4 @@ Upgrading hwrt to the latest version is much easier:
 .. _Python: http://www.python.org/
 .. _Caffe: http://caffe.berkeleyvision.org/
 .. _cuDNN: https://developer.nvidia.com/cuDNN
-.. _Deeplearning: http://www.deeplearning.net/tutorial/
 .. _pillow: http://python-pillow.github.io/

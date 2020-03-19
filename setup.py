@@ -9,7 +9,6 @@ config = {
         "flask-bootstrap",
         "future",
         "h5py",
-        "lasagne==0.1",
         "matplotlib",
         "natsort",
         "nntoolkit",
@@ -21,7 +20,7 @@ config = {
         "PyYAML",
         "requests",
         "six",
-        "theano==0.7.0",
+        "keras",
     ],
 }
 

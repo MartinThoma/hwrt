@@ -916,7 +916,7 @@ def get_class(name, config_key, module) -> Type:
         if os.path.isfile(cfg[config_key]):
             usermodule = importlib.machinery.SourceFileLoader(
                 modname, cfg[config_key]
-            ).load_module(modname)  # TODO: check if this works
+            ).load_module(modname)
             clsmembers = inspect.getmembers(usermodule, inspect.isclass)
             for string_name, act_class in clsmembers:
                 if string_name == name:

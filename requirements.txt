@@ -9,14 +9,13 @@ attrs==19.3.0             # via pytest
 certifi==2019.11.28       # via requests
 chardet==3.0.4            # via requests
 click==7.1.1              # via flask, hwrt (setup.py)
-cython==0.29.15           # via nntoolkit
+cython==0.29.16           # via nntoolkit
 dominate==2.5.1           # via flask-bootstrap
-dropbox==9.4.0            # via hwrt (setup.py)
+dropbox==9.5.0            # via hwrt (setup.py)
 flask-bootstrap==3.3.7.1  # via hwrt (setup.py)
 flask==1.1.1              # via flask-bootstrap, hwrt (setup.py)
 h5py==2.10.0              # via hwrt (setup.py), keras, keras-applications, nntoolkit
 idna==2.9                 # via requests
-importlib-metadata==1.5.0  # via pluggy, pytest
 itsdangerous==1.1.0       # via flask
 jinja2==2.11.1            # via flask
 keras-applications==1.0.8  # via keras
@@ -40,6 +39,5 @@ scipy==1.4.1              # via keras
 six==1.14.0               # via dropbox, h5py, hwrt (setup.py), keras, keras-preprocessing, packaging
 urllib3==1.25.8           # via requests
 visitor==0.1.3            # via flask-bootstrap
-wcwidth==0.1.8            # via pytest
+wcwidth==0.1.9            # via pytest
 werkzeug==1.0.0           # via flask
-zipp==3.1.0               # via importlib-metadata

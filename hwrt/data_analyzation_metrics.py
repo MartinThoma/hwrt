@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Data analyzation metrics
 
@@ -122,7 +121,7 @@ def sort_by_formula_id(raw_datasets):
 # prepare_file should be applied to every file in the constructor
 
 
-class Creator(object):
+class Creator:
     """Analyze who created most of the data."""
 
     def __init__(self, filename="creator.csv"):
@@ -156,7 +155,7 @@ class Creator(object):
         write_file.close()
 
 
-class InstrokeSpeed(object):
+class InstrokeSpeed:
     """Analyze how fast the points were in pixel/ms."""
 
     def __init__(self, filename="instroke_speed.csv"):
@@ -200,7 +199,7 @@ class InstrokeSpeed(object):
         write_file.close()
 
 
-class InterStrokeDistance(object):
+class InterStrokeDistance:
     """Analyze how much distance in px is between strokes."""
 
     def __init__(self, filename="dist_between_strokes.csv"):
@@ -242,7 +241,7 @@ class InterStrokeDistance(object):
         write_file.close()
 
 
-class TimeBetweenPointsAndStrokes(object):
+class TimeBetweenPointsAndStrokes:
     """For each recording: Store the average time between controll points of
        one stroke / controll points of two different strokes.
     """
@@ -296,7 +295,7 @@ class TimeBetweenPointsAndStrokes(object):
         average_between_strokes.close()
 
 
-class AnalyzeErrors(object):
+class AnalyzeErrors:
     """Analyze the number of errors in the dataset."""
 
     def __init__(self, filename="errors.txt", time_max_threshold=30 * 1000):

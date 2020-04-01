@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Convert an old-style DETL model to a nntoolkit model."""
 
@@ -65,7 +64,7 @@ def create_output_semantics(model_folder: str, outputs: int):
     """
     with open("output_semantics.csv", "wb") as csvfile:
         model_description_file = os.path.join(model_folder, "info.yml")
-        with open(model_description_file, "r") as ymlfile:
+        with open(model_description_file) as ymlfile:
             model_description = yaml.safe_load(ymlfile)
 
         logging.info("Start fetching translation dict...")
@@ -151,14 +150,14 @@ def main(model_folder):
     logging.info("Get preprocessing.yml")
     # Get model folder
     model_description_file = os.path.join(model_folder, "info.yml")
-    with open(model_description_file, "r") as ymlfile:
+    with open(model_description_file) as ymlfile:
         model_description = yaml.safe_load(ymlfile)
 
     # Get feature folder
     feature_description_file = os.path.join(
         utils.get_project_root(), model_description["data-source"], "info.yml"
     )
-    with open(feature_description_file, "r") as ymlfile:
+    with open(feature_description_file) as ymlfile:
         feature_description = yaml.safe_load(ymlfile)
 
     with open("features.yml", "w") as f:
@@ -168,7 +167,7 @@ def main(model_folder):
     preprocessing_description_file = os.path.join(
         utils.get_project_root(), feature_description["data-source"], "info.yml"
     )
-    with open(preprocessing_description_file, "r") as ymlfile:
+    with open(preprocessing_description_file) as ymlfile:
         preprocessing_description = yaml.safe_load(ymlfile)
 
     with open("preprocessing.yml", "w") as f:

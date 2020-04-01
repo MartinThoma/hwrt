@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 Segmentation is the task of splitting a data sequence into chuncks which can
@@ -138,7 +137,7 @@ def main():
     logging.info("Total: %i", len(recordings))
 
 
-class SingleClassifier(object):
+class SingleClassifier:
     """Classifier for single symbols."""
 
     def __init__(self):
@@ -804,7 +803,7 @@ def _is_out_of_order(segmentation):
     return False
 
 
-class SingleSymbolStrokeClassifier(object):
+class SingleSymbolStrokeClassifier:
     """Classifier which decides if a single stroke is a single symbol."""
 
     def __init__(self):
@@ -847,7 +846,7 @@ def apply_segmentation(recording, segmentation):
     return symbols
 
 
-class Graph(object):
+class Graph:
     """
     A graph class. It has nodes and vertices.
     """
@@ -896,7 +895,7 @@ class Graph(object):
                 self.w[i][j] = self.nodes[i].get().dist_to(self.nodes[j].get())
 
 
-class Node(object):
+class Node:
     """
     A node class.
 

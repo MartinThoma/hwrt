@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Data multiplication algorithms.
 
@@ -52,7 +51,7 @@ def get_data_multiplication_queue(model_description_multiply):
 # Local features
 
 
-class Multiply(object):
+class Multiply:
 
     """Copy the data n times."""
 
@@ -76,7 +75,7 @@ class Multiply(object):
         return training_set
 
 
-class Rotate(object):
+class Rotate:
 
     """Add rotational variants of the recording."""
 

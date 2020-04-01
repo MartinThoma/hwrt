@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Create and train a given model."""
 
@@ -70,7 +69,7 @@ def generate_training_command(model_folder):
     update_if_outdated(model_folder)
     model_description_file = os.path.join(model_folder, "info.yml")
     # Read the model description file
-    with open(model_description_file, "r") as ymlfile:
+    with open(model_description_file) as ymlfile:
         model_description = yaml.safe_load(ymlfile)
 
     # Get the data paths (hdf5 files)
@@ -128,7 +127,7 @@ def main(model_folder):
     model_description_file = os.path.join(model_folder, "info.yml")
 
     # Read the model description file
-    with open(model_description_file, "r") as ymlfile:
+    with open(model_description_file) as ymlfile:
         model_description = yaml.safe_load(ymlfile)
 
     # Analyze model

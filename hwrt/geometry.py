@@ -10,7 +10,7 @@ import math
 logger = logging.getLogger(__name__)
 
 
-class Point(object):
+class Point:
     """A two dimensional point."""
 
     def __init__(self, x, y):
@@ -34,7 +34,7 @@ class Point(object):
         return repr(self)
 
 
-class LineSegment(object):
+class LineSegment:
     """A line segment in a two dimensional space."""
 
     def __init__(self, p1, p2):
@@ -64,7 +64,7 @@ class LineSegment(object):
         return repr(self)
 
 
-class PolygonalChain(object):
+class PolygonalChain:
     """A list of line segments."""
 
     def __init__(self, pointlist):
@@ -127,7 +127,7 @@ class PolygonalChain(object):
         return len(set(intersection_points))
 
 
-class BoundingBox(object):
+class BoundingBox:
     """A rectangle whichs sides are in parallel to the axes."""
 
     def __init__(self, p1, p2):

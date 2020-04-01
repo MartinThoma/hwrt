@@ -77,7 +77,7 @@ def get_symbol_ids(symbol_yml_file, metadata):
        exclude: ['\rightarrow']}
     ```
     """
-    with open(symbol_yml_file, "r") as stream:
+    with open(symbol_yml_file) as stream:
         symbol_cfg = yaml.safe_load(stream)
     symbol_ids = []
     symbol_ids_set = set()
@@ -192,7 +192,7 @@ def read_csv(filepath: str):
     list of dictionaries
     """
     symbols = []
-    with open(filepath, "rt") as csvfile:
+    with open(filepath) as csvfile:
         spamreader = csv.DictReader(csvfile, delimiter=",", quotechar='"')
         for row in spamreader:
             symbols.append(row)

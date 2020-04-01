@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 # First party modules
 import hwrt.selfcheck as selfcheck

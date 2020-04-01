@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 Create feature files.
@@ -82,7 +81,7 @@ def main(feature_folder, create_learning_curve=False):
     """main function of create_ffiles.py"""
 
     # Read the feature description file
-    with open(os.path.join(feature_folder, "info.yml"), "r") as ymlfile:
+    with open(os.path.join(feature_folder, "info.yml")) as ymlfile:
         feature_description = yaml.safe_load(ymlfile)
 
     # Get preprocessed .pickle file from model description file
@@ -296,7 +295,7 @@ def _calculate_feature_stats(
         arguments = {}
     with open(serialization_file, mode, **arguments) as csvfile:
         spamwriter = csv.writer(
-            csvfile, delimiter=str(";"), quotechar=str('"'), quoting=csv.QUOTE_MINIMAL
+            csvfile, delimiter=";", quotechar='"', quoting=csv.QUOTE_MINIMAL
         )
         for feature in feature_list:
             end = start + feature.get_dimension()

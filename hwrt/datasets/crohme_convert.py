@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Get all data in a CROHME folder as a feature vector list and a label
    list (Xs, ys) of single symbols. If it is a test folder, ys is None.

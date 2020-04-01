@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 # Core Library modules
 import logging
@@ -55,7 +54,7 @@ def p_strokes(symbol: str, count: int) -> float:
     if stroke_prob is None:
         misc_path = pkg_resources.resource_filename("hwrt", "misc/")
         stroke_prob_file = os.path.join(misc_path, "prob_stroke_count_by_symbol.yml")
-        with open(stroke_prob_file, "r") as stream:
+        with open(stroke_prob_file) as stream:
             stroke_prob = yaml.safe_load(stream)
     if symbol in stroke_prob:
         if count in stroke_prob[symbol]:
@@ -97,7 +96,7 @@ def _calc_hypothesis_probability(hypothesis):
     )
 
 
-class Beam(object):
+class Beam:
     """
 
     Parameters

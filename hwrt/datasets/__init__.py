@@ -197,7 +197,7 @@ def insert_recording(hw):
             insert_symbol_mapping(cursor.lastrowid, symbol_id, hw.user_id, strokes)
         logging.info("Insert raw data.")
     except pymysql.err.IntegrityError as e:
-        print("Error: {} (can probably be ignored)".format(e))
+        print(f"Error: {e} (can probably be ignored)")
 
 
 def insert_symbol_mapping(raw_data_id, symbol_id, user_id, strokes):

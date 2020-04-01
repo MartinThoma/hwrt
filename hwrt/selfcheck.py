@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Check if all necessary modules / programs / files for HWRT are there and
    if the version is ok.
@@ -19,7 +18,7 @@ import pkg_resources
 from . import utils
 
 
-class Bcolors(object):
+class Bcolors:
     """Terminal colors with ANSI escape codes."""
 
     HEADER = "\033[95m"

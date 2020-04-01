@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 Utility functions and classes to deal with language models.
@@ -20,7 +19,7 @@ getcontext().prec = 100
 ngram_model = None
 
 
-class NgramLanguageModel(object):
+class NgramLanguageModel:
     def __init__(self):
         self.ngrams = {}
 

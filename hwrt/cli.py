@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 hwrt, the handwriting recognition toolkit, is a set of executable scripts

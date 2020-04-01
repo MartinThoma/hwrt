@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Feature extraction algorithms.
 
@@ -82,7 +81,7 @@ def print_featurelist(feature_list):
     print("```")
 
 
-class Feature(object, metaclass=abc.ABCMeta):
+class Feature(metaclass=abc.ABCMeta):
 
     """Abstract class which defines which methods to implement for features."""
 

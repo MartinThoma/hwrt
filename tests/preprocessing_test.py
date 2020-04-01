@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 # First party modules
 import hwrt.preprocessing as preprocessing
@@ -95,7 +94,7 @@ def test_ScaleAndShift_test_simple_4():
     a.preprocessing(preprocessing_queue)
     s = a.get_pointlist()
     expectation = [[{"x": 0, "y": 0, "time": 0}]]
-    assert s == expectation, "Got: {}; expected {}".format(s, expectation)
+    assert s == expectation, f"Got: {s}; expected {expectation}"
 
 
 def test_ScaleAndShift_test_simple_5():

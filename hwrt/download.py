@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Check if data files are here and which version they have. Contact the
    server for the latest version and update them if they are outdated.
@@ -34,7 +33,7 @@ def main():
     project_root = utils.get_project_root()
     infofile = os.path.join(project_root, "raw-datasets/info.yml")
     logger.info("Read '%s'...", infofile)
-    with open(infofile, "r") as ymlfile:
+    with open(infofile) as ymlfile:
         datasets = yaml.safe_load(ymlfile)
     for dataset in datasets:
         local_path_file = os.path.join(project_root, dataset["online_path"])

@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 single_symbol_classifier = None
 
 
-class SingleClassificer(object):
+class SingleClassificer:
     """Classifier for single (and hence perfectly segmented) symbols."""
 
     def __init__(self):

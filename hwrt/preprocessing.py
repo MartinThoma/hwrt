@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 Preprocessing algorithms.
@@ -84,7 +83,7 @@ def print_preprocessing_list(preprocessing_queue):
 # * __call__ must call the Handwriting.set_points
 
 
-class RemoveDuplicateTime(object):
+class RemoveDuplicateTime:
     """If a recording has two points with the same timestamp, than the second
        point will be discarded. This is useful for a couple of algorithms that
        don't expect two points at the same time."""
@@ -119,7 +118,7 @@ class RemoveDuplicateTime(object):
         hwr_obj.set_pointlist(new_pointlist)
 
 
-class RemoveDots(object):
+class RemoveDots:
     """Remove all strokes that have only a single point (a dot) from the
        recording, except if the whole recording consists of dots only.
     """
@@ -148,7 +147,7 @@ class RemoveDots(object):
             hwr_obj.set_pointlist(new_pointlist)
 
 
-class ScaleAndShift(object):
+class ScaleAndShift:
     """ Scale a recording so that it fits into a unit square. This keeps the
         aspect ratio. Then the recording is shifted. The default way is to
         shift it so that the recording is in [0, 1] × [0,1]. However, it
@@ -268,7 +267,7 @@ class ScaleAndShift(object):
         )
 
 
-class SpaceEvenly(object):
+class SpaceEvenly:
     """Space the points evenly in time over the complete recording. The
        parameter 'number' defines how many."""
 
@@ -392,7 +391,7 @@ class SpaceEvenly(object):
         hwr_obj.set_pointlist([new_pointlist])
 
 
-class SpaceEvenlyPerStroke(object):
+class SpaceEvenlyPerStroke:
     """Space the points evenly for every single stroke separately. The
        parameter `number` defines how many points are used per stroke and the
        parameter `kind` defines which kind of interpolation is used. Possible
@@ -482,7 +481,7 @@ class SpaceEvenlyPerStroke(object):
         hwr_obj.set_pointlist(new_pointlist)
 
 
-class DouglasPeucker(object):
+class DouglasPeucker:
     """Apply the Douglas-Peucker stroke simplification algorithm separately to
        each stroke of the recording. The algorithm has a threshold parameter
        `epsilon` that indicates how much the stroke is simplified. The smaller
@@ -543,7 +542,7 @@ class DouglasPeucker(object):
         hwr_obj.preprocessing([RemoveDuplicateTime()])
 
 
-class StrokeConnect(object):
+class StrokeConnect:
     """`StrokeConnect`: Detect if strokes were probably accidentally
        disconnected. If that is the case, connect them. This is detected by the
        threshold parameter `minimum_distance`. If the distance between the end
@@ -588,7 +587,7 @@ class StrokeConnect(object):
             hwr_obj.set_pointlist(strokes)
 
 
-class DotReduction(object):
+class DotReduction:
     """
     Reduce strokes where the maximum distance between points is below a
     `threshold` to a single dot.
@@ -666,7 +665,7 @@ class DotReduction(object):
         hwr_obj.set_pointlist(new_pointlist)
 
 
-class WildPointFilter(object):
+class WildPointFilter:
     """Find wild points and remove them. The threshold means
        speed in pixels / ms.
     """
@@ -706,7 +705,7 @@ class WildPointFilter(object):
         # more than 1/5 of the whole size, it is a wild point
 
 
-class WeightedAverageSmoothing(object):
+class WeightedAverageSmoothing:
     """Smooth every stroke by a weighted average. This algorithm takes a list
        `theta` of 3 numbers that are the weights used for smoothing."""
 

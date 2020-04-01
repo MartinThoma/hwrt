@@ -49,13 +49,13 @@ def main(model_folder, override=False):
     """Parse the info.yml from ``model_folder`` and create the model file."""
     model_description_file = os.path.join(model_folder, "info.yml")
     # Read the model description file
-    with open(model_description_file, "r") as ymlfile:
+    with open(model_description_file) as ymlfile:
         model_description = yaml.safe_load(ymlfile)
 
     project_root = utils.get_project_root()
     # Read the feature description file
     feature_folder = os.path.join(project_root, model_description["data-source"])
-    with open(os.path.join(feature_folder, "info.yml"), "r") as ymlfile:
+    with open(os.path.join(feature_folder, "info.yml")) as ymlfile:
         feature_description = yaml.safe_load(ymlfile)
     # Get a list of all used features
     feature_list = features.get_features(feature_description["features"])

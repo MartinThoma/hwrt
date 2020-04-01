@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Utility functions that can be used in multiple scripts."""
 
@@ -65,7 +64,7 @@ def get_project_configuration():
     rcfile = os.path.join(home, ".hwrtrc")
     if not os.path.isfile(rcfile):
         create_project_configuration(rcfile)
-    with open(rcfile, "r") as ymlfile:
+    with open(rcfile) as ymlfile:
         cfg = yaml.safe_load(ymlfile)
     return cfg
 
@@ -216,7 +215,7 @@ def get_database_configuration():
     db_config = get_database_config_file()
     if db_config is None:
         return None
-    with open(db_config, "r") as ymlfile:
+    with open(db_config) as ymlfile:
         cfg = yaml.safe_load(ymlfile)
     return cfg
 
@@ -457,14 +456,14 @@ def load_model(model_file):
     from . import preprocessing
 
     # Get the preprocessing
-    with open(os.path.join(tarfolder, "preprocessing.yml"), "r") as ymlfile:
+    with open(os.path.join(tarfolder, "preprocessing.yml")) as ymlfile:
         preprocessing_description = yaml.safe_load(ymlfile)
     preprocessing_queue = preprocessing.get_preprocessing_queue(
         preprocessing_description["queue"]
     )
 
     # Get the features
-    with open(os.path.join(tarfolder, "features.yml"), "r") as ymlfile:
+    with open(os.path.join(tarfolder, "features.yml")) as ymlfile:
         feature_description = yaml.safe_load(ymlfile)
     feature_str_list = feature_description["features"]
     feature_list = features.get_features(feature_str_list)
@@ -693,7 +692,7 @@ def _evaluate_model_single_file(target_folder, test_file):
     if not os.path.exists(logfilefolder):
         os.makedirs(logfilefolder)
     logfile = os.path.join(project_root, "logs/%s-error-evaluation.log" % time_prefix)
-    with open(logfile, "w") as log, open(model_use, "r") as modl_src_p:
+    with open(logfile, "w") as log, open(model_use) as modl_src_p:
         p = subprocess.Popen(
             [get_nntoolkit(), "run", "--batch-size", "1", "-f%0.4f", test_file],
             stdin=modl_src_p,
@@ -730,7 +729,7 @@ def evaluate_model(recording, model_folder, verbose=False):
         elif "feature-files" in target_folder:
             logger.info("Create feature file...")
             infofile_path = os.path.join(target_folder, "info.yml")
-            with open(infofile_path, "r") as ymlfile:
+            with open(infofile_path) as ymlfile:
                 feature_description = yaml.safe_load(ymlfile)
             feature_str_list = feature_description["features"]
             feature_list = features.get_features(feature_str_list)

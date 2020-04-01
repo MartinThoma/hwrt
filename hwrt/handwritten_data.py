@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Representation of a recording of on-line handwritten data. On-line means
    that the pen trajectory is given (and not online as in 'Internet').
@@ -16,7 +15,7 @@ from PIL import Image, ImageDraw
 logger = logging.getLogger(__name__)
 
 
-class HandwrittenData(object):
+class HandwrittenData:
     """Represents a handwritten symbol."""
 
     def __init__(

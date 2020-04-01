@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Display a recorded handwritten symbol as well as the preprocessing methods
 and the data multiplication steps that get applied.
@@ -102,7 +101,7 @@ def _get_description(prev_description):
             f"{current_desc_file} is not a file."
         )
         sys.exit(-1)
-    with open(current_desc_file, "r") as ymlfile:
+    with open(current_desc_file) as ymlfile:
         current_description = yaml.safe_load(ymlfile)
     return current_description
 
@@ -119,7 +118,7 @@ def _get_system(model_folder):
             f"{model_description_file} is not a file. (-m argument)"
         )
         sys.exit(-1)
-    with open(model_description_file, "r") as ymlfile:
+    with open(model_description_file) as ymlfile:
         model_desc = yaml.safe_load(ymlfile)
 
     # Get the feature and the preprocessing description

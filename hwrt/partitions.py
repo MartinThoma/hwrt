@@ -78,8 +78,7 @@ def all_segmentations(l):
     """
     for K in range(1, len(l) + 1):
         gen = neclusters(l, K)
-        for el in gen:
-            yield el
+        yield from gen
 
 
 def find_index(segmentation, stroke_id):
@@ -109,7 +108,7 @@ def q(segmentation, s1, s2):
     return index1 == index2
 
 
-class TopFinder(object):
+class TopFinder:
     """Utility datastructure to find the top n elements."""
 
     def __init__(self, n, find_min=False):

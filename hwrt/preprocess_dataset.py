@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Create preprocessed dataset."""
 
@@ -37,7 +36,7 @@ def get_parameters(folder):
     """
 
     # Read the model description file
-    with open(os.path.join(folder, "info.yml"), "r") as ymlfile:
+    with open(os.path.join(folder, "info.yml")) as ymlfile:
         preprocessing_description = yaml.safe_load(ymlfile)
 
     # Get the path of the raw data

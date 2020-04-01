@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # hwrt documentation build configuration file, created by
 # sphinx-quickstart on Mon Oct 20 16:23:32 2014.

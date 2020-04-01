@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Features in development."""
 
@@ -11,7 +10,7 @@ import urllib.request
 from . import handwritten_data, utils
 
 
-class Bitmap(object):
+class Bitmap:
 
     """n × n grayscale bitmap of the recording."""
 
@@ -40,7 +39,7 @@ class Bitmap(object):
         raw_data_id = hwr_obj.raw_data_id
         project_root = utils.get_project_root()
         foldername = os.path.jon(project_root, "bitmaps")
-        f = urllib.request.urlopen("{url}{id}.svg".format(url=url, id=raw_data_id))
+        f = urllib.request.urlopen(f"{url}{raw_data_id}.svg")
         with open("%s%i.svg" % (foldername, raw_data_id), "wb") as imgFile:
             imgFile.write(f.read())
 

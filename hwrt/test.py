@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """Get the error of a model. This tool supports multiple error measures."""
 
@@ -84,7 +83,7 @@ def get_test_results(model_folder, basename, test_file):
             project_root, "logs/%s-error-evaluation.log" % time_prefix
         )
         logger.info(f"Write log to {logfile}...")
-        with open(logfile, "w") as log, open(model_use, "r") as model_src_p:
+        with open(logfile, "w") as log, open(model_use) as model_src_p:
             p = subprocess.Popen(
                 [
                     utils.get_nntoolkit(),
@@ -134,7 +133,7 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
     # Get MER classes
     merge_cfg_path = pkg_resources.resource_filename("hwrt", "misc/")
     merge_cfg_file = os.path.join(merge_cfg_path, "merge.yml")
-    merge_data = yaml.safe_load(open(merge_cfg_file, "r"))
+    merge_data = yaml.safe_load(open(merge_cfg_file))
     # Make classes
     confusing = make_all(merge_data)
     if not merge:
@@ -337,7 +336,7 @@ def main(model_folder, aset="test", n=3, merge=True):
     # Get model description
     model_description_file = os.path.join(model_folder, "info.yml")
     # Read the model description file
-    with open(model_description_file, "r") as ymlfile:
+    with open(model_description_file) as ymlfile:
         model_description = yaml.safe_load(ymlfile)
 
     # Get the data paths (hdf5)

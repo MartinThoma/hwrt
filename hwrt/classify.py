@@ -5,12 +5,12 @@
 # Core Library modules
 import logging
 import os
+from typing import Any, Dict, List, Optional
 
 # Third party modules
 import pkg_resources
 
 # First party modules
-# hwrt modules
 from hwrt import utils
 
 logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ class SingleClassificer:
         logger.info("Start reading model...")
         model_path = pkg_resources.resource_filename("hwrt", "misc/")
         model_file = os.path.join(model_path, "model.tar")
-        logger.info("Model: %s", model_file)
+        logger.info(f"Model: {model_file}")
         (preprocessing_queue, feature_list, model, output_semantics) = utils.load_model(
             model_file
         )
@@ -39,19 +39,22 @@ class SingleClassificer:
                 new_semantics.append(el.split(";")[1])
             self.output_semantics = new_semantics
 
-    def predict(self, recording, result_format=None):
-        """Predict the class of the given recording.
+    def predict(
+        self, recording: str, result_format: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
+        """
+        Predict the class of the given recording.
 
         Parameters
         ----------
-        recording : string
+        recording : str
             Recording of a single handwritten dataset in JSON format.
-        result_format : string, optional
+        result_format : Optional[str]
             If it is 'LaTeX', then only the latex code will be returned
 
         Returns
         -------
-        list
+        predictions : List[Dict]
         """
         evaluate = utils.evaluate_model_single_recording_preloaded
         results = evaluate(
@@ -70,7 +73,7 @@ class SingleClassificer:
         return results
 
 
-def classify_segmented_recording(recording, result_format=None):
+def classify_segmented_recording(recording, result_format=None) -> List[Dict[str, Any]]:
     """Use this function if you are sure you have a single symbol.
 
     Parameters
@@ -80,7 +83,7 @@ def classify_segmented_recording(recording, result_format=None):
 
     Returns
     -------
-    list of dictionaries
+    predictions : List[Dict[str, Any]]
         Each dictionary contains the keys 'symbol' and 'probability'. The list
         is sorted descending by probability.
     """

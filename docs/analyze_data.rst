@@ -41,12 +41,12 @@ self-written data analyzation classes is located. Could could looke like this:
 .. code:: python
 
     #!/usr/bin/env python
-    # -*- coding: utf-8 -*-
 
+    # Core Library modules
     import time
     from collections import defaultdict
 
-    # hwrt modules
+    # First party modules
     from hwrt import HandwrittenData
     from hwrt import utils
     from hwrt import data_analyzation_metrics

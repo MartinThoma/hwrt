@@ -7,28 +7,46 @@
        overflow-y: scroll;
     }
 
-    @media(min-width: 800px) {
-        .container {
-            display: grid;
-            grid-template-columns: 1fr 402px 398px 1fr;
-            grid-template-rows: auto 500px;
-            grid-gap: 10px;
+    /* default */
+    @media not all and (max-width: 1200px) {
+    .container {
+        display: grid;
+        grid-template-columns: 1fr 402px 398px 1fr;
+        grid-template-rows: auto 500px;
+        grid-gap: 10px;
 
-            grid-template-areas:
-            ". header   header  ."
-            ". classify results .";
-        }
+        grid-template-areas:
+        ". header   header  ."
+        ". classify results .";
     }
 
-    @media only screen and (max-width: 800px) {
+    #sheet {
+        border:1px solid black;
+        width:400px;
+        height:400px;
+        -ms-touch-action: none;
+        touch-action: none;
+    }
+    }
+
+    /* mobile phone */
+    @media all and (max-width: 1200px) {
         .container {
             display: grid;
-            grid-template-columns: 402px;
+            grid-template-columns: auto;
 
             grid-template-areas:
             "header"
             "classify"
             "results";
+        }
+
+        #sheet {
+            border:1px solid black;
+            width: 100%;
+            height: 400px;
+            -ms-touch-action: none;
+            touch-action: none;
         }
     }
 
@@ -103,7 +121,7 @@
 {% block scripts %}
 {{super()}}
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min.js'></script>
+<script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.3/fabric.min.js'></script>
 <script type="text/javascript">
   window.MathJax = {
     tex2jax: {
@@ -128,6 +146,9 @@
     }
 
     window.onload = function() {
+        var canvas = document.getElementsByTagName('canvas')[0];
+        canvas.width  = $('#sheet').parent().width();
+
         var canvas = new fabric.Canvas('sheet');
         canvas.isDrawingMode = true;
         canvas.freeDrawingBrush.width = 5;
@@ -250,8 +271,7 @@
 
     <form method="post" onsubmit="$('button').prop('disabled', true);return addCanvas();" id="form">
     <input type="hidden" id="drawnJSON" name="drawnJSON" value="" />
-    <canvas id="sheet" width="400" height="400" style="border:1px solid black;width:400px;height:400px;-ms-touch-action: none;
-touch-action: none;"></canvas>
+    <canvas id="sheet" width="400" height="400"></canvas>
     <a href="/" class="btn btn-danger" style="display: block;margin-top: 2px;">Clear</a>
     </form>
     </grid-item>

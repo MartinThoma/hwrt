@@ -64,13 +64,13 @@ def get_features(model_description_features: List[Dict[str, Any]]):
     )
 
 
-def print_featurelist(feature_list):
+def print_featurelist(feature_list: List):
     """
     Print the feature_list in a human-readable form.
 
     Parameters
     ----------
-    feature_list : list
+    feature_list : List
         feature objects
     """
     input_features = sum([n.get_dimension() for n in feature_list])

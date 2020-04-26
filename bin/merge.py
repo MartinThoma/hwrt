@@ -4,7 +4,7 @@
 
 # Core Library modules
 import pickle
-from typing import Dict
+from typing import Any, Dict
 
 # Third party modules
 import click
@@ -49,7 +49,7 @@ def merge(d1: Dict, d2: Dict) -> Dict:
     Dict
     """
     if d1["formula_id2latex"] is None:
-        formula_id2latex = {}
+        formula_id2latex: Dict[str, Any] = {}
     else:
         formula_id2latex = d1["formula_id2latex"].copy()
     formula_id2latex.update(d2["formula_id2latex"])

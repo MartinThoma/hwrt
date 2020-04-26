@@ -8,17 +8,6 @@
        overflow-y: scroll;
     }
     </style>
-<script type="text/javascript">
-  window.MathJax = {
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
-    }
-  };
-</script>
-<script type="text/javascript"
-  src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
 {% endblock %}
 
 {% block title %}Classify{% endblock %}
@@ -31,6 +20,17 @@
 {{super()}}
 <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min.js'></script>
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript">
+  window.MathJax = {
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  };
+</script>
+<script type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
 <script>
     var lines = [];
     var secret = get_secret();
@@ -117,7 +117,7 @@
                                 var unicode_code_point = arr[2];
                                 var font = arr[3];
                                 var font_style = arr[4];
-                                rendered += "<a href='http://write-math.com/symbol/?id="+system_id+"' style='font-family:"+font+";font-style:"+font_style+"'>&#" + unicode_code_point + ";</a>";
+                                rendered += "&#" + unicode_code_point + ";";
                             };
 
                             content += "<tr><td>"+rendered+"</td><td>$$"+ latex_complete + "$$</td><td><input id=\"inptxt"+system_id+"\" class=\"form-control\" value='"+ latex_complete + "' disabled/></td><td style='text-align:right'>" + parseFloat(probability*100).toFixed(2) + "</td></tr>";
@@ -167,7 +167,7 @@
     <form method="post" onsubmit="$('button').prop('disabled', true);return addCanvas();" id="form">
     <input type="hidden" id="drawnJSON" name="drawnJSON" value="" />
     <canvas id="sheet" width="400" height="400" style="border:1px solid black;width:400px;height:400px;"></canvas>
-    <a href="?formula_id=" class="btn btn-danger">Clear</a>
+    <a href="/" class="btn btn-danger">Clear</a>
     </form>
 </div>
 {% endblock %}

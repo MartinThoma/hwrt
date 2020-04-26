@@ -13,6 +13,8 @@ setup(
         "dropbox",
         "Flask",
         "flask-bootstrap",
+        "gevent",
+        "gunicorn",
         "h5py",
         "keras",
         "natsort",

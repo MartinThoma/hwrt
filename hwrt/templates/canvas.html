@@ -1,11 +1,95 @@
-{% extends "bootstrap/base.html" %}
+{% extends "base.html" %}
 {% block styles %}
 <!-- Bootstrap -->
-    <link href="{{bootstrap_find_resource('css/bootstrap.css', cdn='bootstrap')}}" rel="stylesheet">
     <!-- prevent centering jumps-->
     <style>
     html {
        overflow-y: scroll;
+    }
+
+    @media(min-width: 800px) {
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 402px 398px 1fr;
+            grid-template-rows: auto 500px;
+            grid-gap: 10px;
+
+            grid-template-areas:
+            ". header   header  ."
+            ". classify results .";
+        }
+    }
+
+    @media only screen and (max-width: 800px) {
+        .container {
+            display: grid;
+            grid-template-columns: 402px;
+
+            grid-template-areas:
+            "header"
+            "classify"
+            "results";
+        }
+    }
+
+    grid-item {
+        /*background-color: lightgreen;*/
+    }
+
+    body {
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #333;
+        background-color: #fff;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    h1 {
+        display: block;
+        font-size: 2em;
+    }
+
+    .table {
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .table>thead>tr>th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 6px 12px;
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        -ms-touch-action: manipulation;
+        touch-action: manipulation;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        background-image: none;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+
+    .btn-danger {
+        color: #fff;
+        background-color: #d9534f;
+        border-color: #d43f3a;
     }
     </style>
 {% endblock %}
@@ -18,8 +102,8 @@
 
 {% block scripts %}
 {{super()}}
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min.js'></script>
-<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script type="text/javascript">
   window.MathJax = {
     tex2jax: {
@@ -159,15 +243,20 @@
 
 {% block content %}
 <div class="container">
-    <div class="page-header"><h1>Classify</h1></div>
+    <div class="page-header" style="grid-area: header;"><h1>Classify</h1></div>
+    <grid-item style="grid-area: classify;">
 
-    <div id="classification-results" style="float:right">
-    </div>
+
 
     <form method="post" onsubmit="$('button').prop('disabled', true);return addCanvas();" id="form">
     <input type="hidden" id="drawnJSON" name="drawnJSON" value="" />
-    <canvas id="sheet" width="400" height="400" style="border:1px solid black;width:400px;height:400px;"></canvas>
-    <a href="/" class="btn btn-danger">Clear</a>
+    <canvas id="sheet" width="400" height="400" style="border:1px solid black;width:400px;height:400px;-ms-touch-action: none;
+touch-action: none;"></canvas>
+    <a href="/" class="btn btn-danger" style="display: block;margin-top: 2px;">Clear</a>
     </form>
+    </grid-item>
+    <grid-item style="grid-area: results;">
+        <div id="classification-results"></div>
+    </grid-item>
 </div>
 {% endblock %}

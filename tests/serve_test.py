@@ -21,7 +21,6 @@ def test_execution():
     ]
     serve.show_results(results)
     serve.get_json_result(results)
-    serve.index()
 
 
 @pytest.mark.skip

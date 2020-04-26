@@ -1,2 +1,2 @@
 # First party modules
-from hwrt.serve import app
+from hwrt.serve import app  # noqa

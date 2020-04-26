@@ -79,26 +79,12 @@ Bootstrap(app)
 app.config.from_object(__name__)
 
 
-@app.route("/", methods=["POST", "GET"])
-def index():
-    """Start page."""
-    return (
-        '<a href="interactive">interactive</a> - '
-        '<a href="work">Classify stuff on write-math.com</a>'
-    )
-
-
-@app.route("/interactive", methods=["POST", "GET"])
+@app.route("/", methods=["GET"])
 def interactive():
     """Interactive classifier."""
-    global n
     if request.method == "GET" and request.args.get("heartbeat", "") != "":
         return request.args.get("heartbeat", "")
-    if request.method == "POST":
-        logger.warning("POST to /interactive is deprecated. " "Use /worker instead")
-    else:
-        # Page where the user can enter a recording
-        return render_template("canvas.html")
+    return render_template("canvas.html")
 
 
 def get_json_result(results, n=10):

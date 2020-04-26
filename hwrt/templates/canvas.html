@@ -4,6 +4,7 @@
     <style>
     html {
        overflow-y: scroll;
+       font-family: sans-serif;
     }
 
     /* default */
@@ -65,15 +66,11 @@
         text-decoration: none;
     }
 
-    h1 {
-        display: block;
-        font-size: 2em;
-    }
-
     .table {
         width: 100%;
         max-width: 100%;
         margin-bottom: 20px;
+        font-size: 2em;
     }
 
     .table>thead>tr>th {
@@ -85,7 +82,6 @@
         display: inline-block;
         padding: 6px 12px;
         margin-bottom: 0;
-        font-size: 14px;
         font-weight: 400;
         line-height: 1.42857143;
         text-align: center;
@@ -119,7 +115,7 @@
 
 {% block scripts %}
 {{super()}}
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
 <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.3/fabric.min.js'></script>
 <script type="text/javascript">
   window.MathJax = {

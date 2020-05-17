@@ -25,6 +25,7 @@ countt:
 	cloc tests
 
 clean:
+	rm -rf .tox
 	python setup.py clean --all
 	rm -f *.hdf5 *.yml *.csv
 	find . -name "*.pyc" -exec rm -rf {} \;

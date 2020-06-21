@@ -131,7 +131,7 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
     correct = []
     wrong = []
     # Get MER classes
-    merge_cfg_path = pkg_resources.resource_filename("hwrt", "misc/")
+    merge_cfg_path = pkg_resources.resource_filename(__name__, "misc/")
     merge_cfg_file = os.path.join(merge_cfg_path, "merge.yml")
     merge_data = yaml.safe_load(open(merge_cfg_file))
     # Make classes

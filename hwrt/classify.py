@@ -22,7 +22,7 @@ class SingleClassificer:
 
     def __init__(self):
         logger.info("Start reading model...")
-        model_path = pkg_resources.resource_filename("hwrt", "misc/")
+        model_path = pkg_resources.resource_filename(__name__, "misc/")
         model_file = os.path.join(model_path, "model.tar")
         logger.info(f"Model: {model_file}")
         (preprocessing_queue, feature_list, model, output_semantics) = utils.load_model(

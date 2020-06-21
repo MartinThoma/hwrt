@@ -104,7 +104,7 @@ def get_project_root():
         if not os.path.exists(directory):
             os.makedirs(directory)
 
-    raw_yml_path = pkg_resources.resource_filename("hwrt", "misc/")
+    raw_yml_path = pkg_resources.resource_filename(__name__, "misc/")
 
     # TODO: How to check for updates if it already exists?
     raw_data_dst = os.path.join(cfg["root"], "raw-datasets/info.yml")
@@ -1065,7 +1065,7 @@ def is_valid_uuid(uuid_to_test, version=4):
 
 
 def get_symbols_filepath(testing: bool = False) -> str:
-    misc_path = pkg_resources.resource_filename("hwrt", "misc/")
+    misc_path = pkg_resources.resource_filename(__name__, "misc/")
     if testing:
         symbol_yml_file = os.path.join(misc_path, "symbols_tiny.yml")
     else:

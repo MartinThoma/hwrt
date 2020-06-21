@@ -11,6 +11,7 @@ import logging
 import os
 import pickle
 import sys
+from typing import Any, Dict, List, Sequence, Set
 
 # Third party modules
 import pkg_resources
@@ -20,7 +21,7 @@ from natsort import natsorted
 logger = logging.getLogger(__name__)
 
 
-def main(symbol_yml_file, raw_pickle_file, pickle_dest_path):
+def main(symbol_yml_file: str, raw_pickle_file: str, pickle_dest_path: str):
     """
     Parameters
     ----------
@@ -38,31 +39,42 @@ def main(symbol_yml_file, raw_pickle_file, pickle_dest_path):
     filter_and_save(raw, symbol_ids, pickle_dest_path)
 
 
-def get_symbol_ids(symbol_yml_file, metadata):
-    """
+def get_symbol_ids(
+    symbol_yml_file: str, metadata: Dict[Any, Any]
+) -> List[Dict[str, Any]]:
+    r"""
     Get a list of ids which describe which class they get mapped to.
 
     Parameters
     ----------
-    symbol_yml_file : string
+    symbol_yml_file : str
         Path to a YAML file.
-    metadata : dict
+    metadata : Dict[Any, Any]
         Metainformation of symbols, like the id on write-math.com.
         Has keys 'symbols', 'tags', 'tags2symbols'.
 
     Returns
     -------
-    list of dictionaries : Each dictionary represents one output class and has
+    symbol_ids : List[Dict[str, Any]]
+        Each dictionary represents one output class and has
         to have the keys 'id' (which is an id on write-math.com) and
         'mappings' (which is a list of ids on write-math.com). The mappings
         list should at least contain the id itself, but can contain more.
 
     Examples
     --------
-    >>> get_symbol_ids('symbols.yml', metadata={})
-    [{'id': 42, 'mappings': [1, 42, 456, 1337]}, {'id': 2, 'mappings': [2]}]
+    >>> from hwrt.utils import get_symbols_filepath
+    >>> metadata = {"symbols": [{"formula_in_latex": r"\alpha", "id": 42},
+    ...                         {"formula_in_latex": r"\beta", "id": 1337}]}
+    >>> out = get_symbol_ids(get_symbols_filepath(testing=True), metadata=metadata)
+    >>> len(out)
+    2
+    >>> out[0]
+    {'id': 42, 'formula_in_latex': '\\alpha', 'mappings': [42]}
+    >>> out[1]
+    {'id': 1337, 'formula_in_latex': '\\beta', 'mappings': [1337]}
 
-    The yml file has to be of the structure
+    The YAML file has to be of the structure
 
     ```
     - {latex: 'A'}
@@ -80,7 +92,7 @@ def get_symbol_ids(symbol_yml_file, metadata):
     with open(symbol_yml_file) as stream:
         symbol_cfg = yaml.safe_load(stream)
     symbol_ids = []
-    symbol_ids_set = set()
+    symbol_ids_set: Set[str] = set()
 
     for symbol in symbol_cfg:
         if "latex" not in symbol:
@@ -158,14 +170,10 @@ def transform_sids(symbol_ids):
     return new_sids
 
 
-def get_metadata():
+def get_metadata() -> Dict[str, Any]:
     """
     Get metadata of symbols, like their tags, id on write-math.com, LaTeX
     command and unicode code point.
-
-    Returns
-    -------
-    dict
     """
     misc_path = pkg_resources.resource_filename("hwrt", "misc/")
     wm_symbols = os.path.join(misc_path, "wm_symbols.csv")
@@ -178,7 +186,7 @@ def get_metadata():
     }
 
 
-def read_csv(filepath: str):
+def read_csv(filepath: str) -> Sequence[Dict[Any, Any]]:
     """
     Read a CSV into a list of dictionarys. The first line of the CSV determines
     the keys of the dictionary.
@@ -189,7 +197,7 @@ def read_csv(filepath: str):
 
     Returns
     -------
-    list of dictionaries
+    symbols : List[Dict]
     """
     symbols = []
     with open(filepath) as csvfile:
@@ -199,7 +207,7 @@ def read_csv(filepath: str):
     return symbols
 
 
-def load_raw(raw_pickle_file):
+def load_raw(raw_pickle_file: str) -> Dict[Any, Any]:
     """
     Load a pickle file of raw recordings.
 
@@ -210,7 +218,7 @@ def load_raw(raw_pickle_file):
 
     Returns
     -------
-    dict
+    raw : Dict[Any, Any]
         The loaded pickle file.
     """
     with open(raw_pickle_file, "rb") as f:
@@ -219,13 +227,15 @@ def load_raw(raw_pickle_file):
     return raw
 
 
-def filter_and_save(raw, symbol_ids, destination_path):
+def filter_and_save(
+    raw: Dict[Any, Any], symbol_ids: List[Dict[str, Any]], destination_path: str
+):
     """
     Parameters
     ----------
-    raw : dict
+    raw : Dict[Any, Any]
         with key 'handwriting_datasets'
-    symbol_ids : dict
+    symbol_ids : Dict[str, Any]
         Maps LaTeX to write-math.com id
     destination_path : str
         Path where the filtered dict 'raw' will be saved

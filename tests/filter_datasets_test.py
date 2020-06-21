@@ -3,18 +3,15 @@
 # Core Library modules
 import os
 
-# Third party modules
-import pkg_resources
-
 # First party modules
 import hwrt.filter_dataset as filter_dataset
+from hwrt.utils import get_symbols_filepath
 
 
 # Tests
 def test_main_execution():
-    misc_path = pkg_resources.resource_filename("hwrt", "misc/")
     tests_path = os.path.join(os.path.dirname(__file__), "data/")
-    symbol_yml_file = os.path.join(misc_path, "symbols.yml")
+    symbol_yml_file = get_symbols_filepath()
     raw_pickle_file = os.path.join(tests_path, "unittests-tiny-raw.pickle")
     pickle_dest_path = os.path.join(
         tests_path, "unittests-tiny-raw-filtered-tmp.pickle"

@@ -7,6 +7,7 @@ import json
 import logging
 import os
 import uuid
+from typing import Any, Dict, List, Optional
 
 # Third party modules
 import pkg_resources
@@ -58,10 +59,17 @@ def submit_recording(raw_data_json):
     s.send(prepared)
 
 
-def show_results(results, n=10):
-    """Show the TOP n results of a classification.
-    >>> results = [{'\\alpha': 0.67}, {'\\propto': 0.25}]
-    >>> show_results(results)
+def show_results(results: List[Dict[str, float]], n: int = 10) -> str:
+    r"""Show the TOP n results of a classification.
+    >>> results = [{'\\alpha': 0.67, 'semantics': '\\alpha', 'probability': 0.67},
+    ... {'\\propto': 0.25, 'semantics': '\\propto', 'probability': 0.33}]
+    >>> result_str = show_results(results)
+    Class              Prob
+    ##################################################
+    \alpha             67.0000%
+    \propto            33.0000%
+    ##################################################
+
     """
     import nntoolkit.evaluate
 
@@ -87,16 +95,19 @@ def interactive():
     return render_template("canvas.html")
 
 
-def get_json_result(results, n=10):
+def get_json_result(results: List[Dict[str, Any]], n: int = 10) -> str:
     """Return the top `n` results as a JSON list.
+
+    Examples
+    --------
     >>> results = [{'probability': 0.65,
     ...             'whatever': 'bar'},
     ...            {'probability': 0.21,
     ...             'whatever': 'bar'},
     ...            {'probability': 0.05,
     ...             'whatever': 'bar'},]
-    >>> get_json_result(results, n=10)
-    [{'\\alpha': 0.65}, {'\\propto': 0.25}, {'\\varpropto': 0.0512}]
+    >>> get_json_result(results, n=2)
+    '[{"probability": 0.65, "whatever": "bar"}, {"probability": 0.21, "whatever": "bar"}]'
     """
     s = []
     last = -1
@@ -171,7 +182,7 @@ def _get_part(pointlist, strokes):
     return result
 
 
-def _get_translate():
+def _get_translate() -> Dict[str, str]:
     """
     Get a dictionary which translates from a neural network output to
     semantics.
@@ -179,46 +190,44 @@ def _get_translate():
     translate = {}
     model_path = pkg_resources.resource_filename("hwrt", "misc/")
     translation_csv = os.path.join(model_path, "latex2writemathindex.csv")
-    arguments = {"newline": "", "encoding": "utf8"}
-    with open(translation_csv, "rt", **arguments) as csvfile:
+    with open(translation_csv, newline="", encoding="utf8") as csvfile:
         contents = csvfile.read()
     lines = contents.split("\n")
-    for csvrow in lines:
-        csvrow = csvrow.split(",")
+    for csvrow_str in lines:
+        csvrow = csvrow_str.split(",")
         if len(csvrow) == 1:
             writemathid = csvrow[0]
             latex = ""
         else:
-            writemathid, latex = csvrow[0], csvrow[1:]
-            latex = ",".join(latex)
+            writemathid, latex_list = csvrow[0], csvrow[1:]
+            latex = ",".join(latex_list)
         translate[latex] = writemathid
     return translate
 
 
-def get_writemath_id(el, translate):
+def get_writemath_id(el: Dict[Any, Any], translate) -> Optional[int]:
     """
     Parameters
     ----------
-    el : dict
+    el : Dict
         with key 'semantics'
         results element
 
     Returns
     -------
-    int or None:
+    writemathid: Optional[int]
         ID of the symbol on write-math.com
     """
     semantics = el["semantics"].split(";")[1]
     if semantics not in translate:
-        logger.debug("Could not find '%s' in translate.", semantics)
-        logger.debug("el: %s", el)
+        logger.debug(f"Could not find '{semantics}' in translate. el={el}")
         return None
     else:
         writemathid = translate[semantics]
     return writemathid
 
 
-def fix_writemath_answer(results):
+def fix_writemath_answer(results: List[Dict[str, Any]]):
     """
     Bring ``results`` into a format that is accepted by write-math.com. This
     means using the ID for the formula that is used by the write-math server.
@@ -226,10 +235,10 @@ def fix_writemath_answer(results):
     Examples
     --------
     >>> results = [{'symbolnr': 214,
-    ...             'semantics': '\\triangleq',
-    ...             'probability': 0.03}, ...]
+    ...             'semantics': 'foobar;A',
+    ...             'probability': 0.03}]
     >>> fix_writemath_answer(results)
-    [{123: 0.03}, ...]
+    [{'symbolnr': 214, 'semantics': '31', 'probability': 0.03}]
     """
     new_results = []
     # Read csv

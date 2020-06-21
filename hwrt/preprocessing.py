@@ -6,11 +6,12 @@ Preprocessing algorithms.
 Each algorithm works on the HandwrittenData class. They have to be applied like
 this:
 
-    >>> a = HandwrittenData(...)
+    >>> from hwrt.handwritten_data import HandwrittenData
+    >>> a = HandwrittenData.generate()
     >>> preprocessing_queue = [ScaleAndShift(),
-                               StrokeConnect(),
-                               DouglasPeucker(epsilon=0.2),
-                               SpaceEvenly(number=100)]
+    ...                        StrokeConnect(),
+    ...                        DouglasPeucker(epsilon=0.2),
+    ...                        SpaceEvenly(number=100)]
     >>> a.preprocessing(preprocessing_queue)
 """
 
@@ -46,8 +47,7 @@ def get_preprocessing_queue(preprocessing_list):
     """Get preprocessing queue from a list of dictionaries
 
     >>> l = [{'RemoveDuplicateTime': None},
-             {'ScaleAndShift': [{'center': True}]}
-            ]
+    ...      {'ScaleAndShift': [{'center': True}]}]
     >>> get_preprocessing_queue(l)
     [RemoveDuplicateTime, ScaleAndShift
      - center: True

@@ -958,12 +958,15 @@ def get_mysql_cfg():
     return mysql
 
 
-def softmax(w, t=1.0):
-    """Calculate the softmax of a list of numbers w.
+def softmax(w: List[float], t: float = 1.0):
+    """
+    Calculate the softmax of a list of numbers w.
 
     Parameters
     ----------
-    w : list of numbers
+    w : List[float]
+    t : float
+        The temperature
 
     Returns
     -------
@@ -971,17 +974,17 @@ def softmax(w, t=1.0):
 
     Examples
     --------
-    >>> softmax([0.1, 0.2])
-    array([ 0.47502081,  0.52497919])
-    >>> softmax([-0.1, 0.2])
-    array([ 0.42555748,  0.57444252])
-    >>> softmax([0.9, -10])
-    array([  9.99981542e-01,   1.84578933e-05])
-    >>> softmax([0, 10])
-    array([  4.53978687e-05,   9.99954602e-01])
+    >>> ["{:.8f}".format(el) for el in softmax([0.1, 0.2])]
+    ['0.47502081', '0.52497919']
+    >>> ["{:.8f}".format(el) for el in softmax([-0.1, 0.2])]
+    ['0.42555748', '0.57444252']
+    >>> ["{:.8f}".format(el) for el in softmax([0.9, -10])]
+    ['0.99998154', '0.00001846']
+    >>> ["{:.8f}".format(el) for el in softmax([0, 10])]
+    ['0.00004540', '0.99995460']
     """
-    w = [Decimal(el) for el in w]
-    e = numpy.exp(numpy.array(w) / Decimal(t))
+    w_tmp = [Decimal(el) for el in w]
+    e = numpy.exp(numpy.array(w_tmp) / Decimal(t))
     dist = e / numpy.sum(e)
     return dist
 
@@ -1059,3 +1062,12 @@ def is_valid_uuid(uuid_to_test, version=4):
         return False
 
     return str(uuid_obj) == uuid_to_test
+
+
+def get_symbols_filepath(testing: bool = False) -> str:
+    misc_path = pkg_resources.resource_filename("hwrt", "misc/")
+    if testing:
+        symbol_yml_file = os.path.join(misc_path, "symbols_tiny.yml")
+    else:
+        symbol_yml_file = os.path.join(misc_path, "symbols.yml")
+    return symbol_yml_file

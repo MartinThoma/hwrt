@@ -7,6 +7,7 @@
 # Core Library modules
 import json
 import logging
+from typing import Callable, List
 
 # Third party modules
 import numpy
@@ -55,6 +56,15 @@ class HandwrittenData:
         assert wild_point_count >= 0
         assert missing_stroke >= 0
         self.fix_times()
+
+    @classmethod
+    def generate(cls):
+        """Generate a HandwrittenData object for testing and documentation."""
+        return HandwrittenData(
+            '[[{"x":678,"y":195,"time":1592756126416},'
+            '{"x":677,"y":199,"time":1592756126420},'
+            '{"x":675,"y":203,"time":1592756126427}]]'
+        )
 
     def fix_times(self):
         """
@@ -212,7 +222,7 @@ class HandwrittenData:
             img.save(store_path)
         return numpy.asarray(img)
 
-    def preprocessing(self, algorithms):
+    def preprocessing(self, algorithms: List[Callable]):
         """Apply preprocessing algorithms.
 
         Parameters
@@ -222,15 +232,13 @@ class HandwrittenData:
 
         Examples
         --------
-        >>> import preprocessing
-        >>> a = HandwrittenData(...)
-        >>> preprocessing_queue = [(preprocessing.scale_and_shift, []),
-        ...                        (preprocessing.connect_strokes, []),
-        ...                        (preprocessing.douglas_peucker,
-        ...                         {'EPSILON': 0.2}),
-        ...                        (preprocessing.space_evenly,
-        ...                         {'number': 100,
-        ...                          'KIND': 'cubic'})]
+        >>> from hwrt import preprocessing
+        >>> a = HandwrittenData.generate()
+        >>> preprocessing_queue = [preprocessing.ScaleAndShift(),
+        ...                        preprocessing.StrokeConnect(),
+        ...                        preprocessing.DouglasPeucker(epsilon=0.2),
+        ...                        preprocessing.SpaceEvenly(number=100,
+        ...                         kind='cubic')]
         >>> a.preprocessing(preprocessing_queue)
         """
         assert type(algorithms) is list

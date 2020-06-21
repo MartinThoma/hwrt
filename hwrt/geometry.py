@@ -6,6 +6,7 @@
 import itertools
 import logging
 import math
+from typing import Dict, List
 
 logger = logging.getLogger(__name__)
 
@@ -144,35 +145,35 @@ class BoundingBox:
     def __str__(self):
         return repr(self)
 
-    def get_area(self):
+    def get_area(self) -> float:
         """Calculate area of bounding box."""
         return (self.p2.x - self.p1.x) * (self.p2.y - self.p1.y)
 
-    def get_width(self):
+    def get_width(self) -> float:
         """
         >>> BoundingBox(Point(0,0), Point(3,2)).get_width()
         3.0
         """
         return self.p2.x - self.p1.x
 
-    def get_height(self):
+    def get_height(self) -> float:
         """
         >>> BoundingBox(Point(0,0), Point(3,2)).get_height()
         2.0
         """
         return self.p2.y - self.p1.y
 
-    def get_center(self):
+    def get_center(self) -> Point:
         """
         Get the center point of this bounding box.
         """
         return Point((self.p1.x + self.p2.x) / 2.0, (self.p1.y + self.p2.y) / 2.0)
 
-    def get_largest_dimension(self):
+    def get_largest_dimension(self) -> float:
         """Get the larger dimension of the bounding box."""
         return max(self.get_height(), self.get_width())
 
-    def grow(self, percent=0.05):
+    def grow(self, percent: float = 0.05):
         width = (self.p2.x - self.p1.x) * percent
         height = (self.p2.y - self.p1.y) * percent
         self.p1.x -= width / 2.0
@@ -182,12 +183,13 @@ class BoundingBox:
         return self
 
 
-def get_bounding_box(points):
-    """Get the bounding box of a list of points.
+def get_bounding_box(points: List[Dict[str, float]]) -> BoundingBox:
+    """
+    Get the bounding box of a list of points.
 
     Parameters
     ----------
-    points : list of points
+    points : List[Dict[str, float]]
 
     Returns
     -------
@@ -204,15 +206,16 @@ def get_bounding_box(points):
     return BoundingBox(p1, p2)
 
 
-def do_bb_intersect(a, b):
+def do_bb_intersect(a: BoundingBox, b: BoundingBox) -> bool:
     """Check if BoundingBox a intersects with BoundingBox b."""
     return (
         a.p1.x <= b.p2.x and a.p2.x >= b.p1.x and a.p1.y <= b.p2.y and a.p2.y >= b.p1.y
     )
 
 
-def segments_distance(segment1, segment2):
-    """Calculate the distance between two line segments in the plane.
+def segments_distance(segment1: LineSegment, segment2: LineSegment) -> float:
+    """
+    Calculate the distance between two line segments in the plane.
 
     >>> a = LineSegment(Point(1,0), Point(2,0))
     >>> b = LineSegment(Point(0,1), Point(0,2))
@@ -248,7 +251,7 @@ def get_segments_intersections(segment1, segment2):
        intersection exists. Otherwise, return an empty list.
     >>> get_segments_intersections(LineSegment(Point(0,0), Point(1,0)), \
                                    LineSegment(Point(0,0), Point(1,0)))
-    [Point(0,0)]
+    [p(0.00, 0.00)]
     """
     dx1 = segment1.p2.x - segment1.p1.x
     dy1 = segment1.p2.y - segment1.p1.y
@@ -340,7 +343,7 @@ def get_segments_intersections(segment1, segment2):
         return []
 
 
-def point_segment_distance(point, segment):
+def point_segment_distance(point: Point, segment: LineSegment) -> float:
     """
     >>> a = LineSegment(Point(1,0), Point(2,0))
     >>> b = LineSegment(Point(2,0), Point(0,2))
@@ -398,7 +401,9 @@ def point_segment_distance(point, segment):
     return math.hypot(dx, dy)
 
 
-def perpendicular_distance(p3, p1, p2):
+def perpendicular_distance(
+    p3: Dict[str, float], p1: Dict[str, float], p2: Dict[str, float]
+) -> float:
     """
     Calculate the distance from p3 to the stroke defined by p1 and p2.
     The distance is the length of the perpendicular from p3 on p1.

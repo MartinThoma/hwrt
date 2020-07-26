@@ -1,13 +1,11 @@
-#!/usr/bin/env python
-
 """Utility functions that can be used in multiple scripts."""
-
 
 # Core Library modules
 import csv
 import datetime
 import importlib.machinery
 import inspect
+import json
 import logging
 import os
 import pickle
@@ -19,7 +17,7 @@ import tempfile
 import time
 from decimal import Decimal, getcontext
 from functools import reduce
-from typing import Any, Dict, List, Type
+from typing import Any, Dict, List, Optional, Type
 from uuid import UUID
 
 # Third party modules
@@ -84,8 +82,8 @@ def create_project_configuration(filename):
         "worker_api_key": "1234567890abc",
         "environment": "development",
     }
-    with open(filename, "w") as f:
-        yaml.dump(config, f, default_flow_style=False)
+    with open(filename, "w") as fp:
+        yaml.dump(config, fp, default_flow_style=False)
 
 
 def get_project_root():
@@ -144,8 +142,8 @@ def get_template_folder():
         home = os.path.expanduser("~")
         rcfile = os.path.join(home, ".hwrtrc")
         cfg["templates"] = pkg_resources.resource_filename("hwrt", "templates/")
-        with open(rcfile, "w") as f:
-            yaml.dump(cfg, f, default_flow_style=False)
+        with open(rcfile, "w") as fp:
+            yaml.dump(cfg, fp, default_flow_style=False)
     return cfg["templates"]
 
 
@@ -210,7 +208,7 @@ def get_database_config_file():
     return None
 
 
-def get_database_configuration():
+def get_database_configuration() -> Optional[Dict]:
     """Get database configuration as dictionary."""
     db_config = get_database_config_file()
     if db_config is None:
@@ -296,26 +294,26 @@ def get_latest_working_model(model_folder):
     return latest_model
 
 
-def get_latest_successful_run(folder):
+def get_latest_successful_run(folder: str) -> Optional[datetime.datetime]:
     """Get the latest successful run timestamp."""
     runfile = os.path.join(folder, "run.log")
     if not os.path.isfile(runfile):
         return None
-    with open(runfile) as f:
-        content = f.readlines()
+    with open(runfile) as fp:
+        content = fp.readlines()
     return datetime.datetime.strptime(content[0], "timestamp: '%Y-%m-%d %H:%M:%S'")
 
 
-def create_run_logfile(folder):
+def create_run_logfile(folder: str) -> None:
     """Create a 'run.log' within folder. This file contains the time of the
        latest successful run.
     """
-    with open(os.path.join(folder, "run.log"), "w") as f:
+    with open(os.path.join(folder, "run.log"), "w") as fp:
         datestring = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
-        f.write("timestamp: '%s'" % datestring)
+        fp.write("timestamp: '%s'" % datestring)
 
 
-def choose_raw_dataset(currently=""):
+def choose_raw_dataset(currently: str = ""):
     """Let the user choose a raw dataset. Return the absolute path."""
     folder = os.path.join(get_project_root(), "raw-datasets")
     files = [
@@ -335,13 +333,13 @@ def choose_raw_dataset(currently=""):
     return files[i]
 
 
-def get_readable_time(t):
+def get_readable_time(duration: int) -> str:
     """
     Format the time to a readable format.
 
     Parameters
     ----------
-    t : int
+    duration : int
         Time in ms
 
     Returns
@@ -349,24 +347,24 @@ def get_readable_time(t):
     string
         The time splitted to highest used time (minutes, hours, ...)
     """
-    ms = t % 1000
-    t -= ms
-    t /= 1000
+    ms = duration % 1000
+    duration -= ms
+    duration //= 1000
 
-    s = t % 60
-    t -= s
-    t /= 60
+    sec = duration % 60
+    duration -= sec
+    duration //= 60
 
-    minutes = t % 60
-    t -= minutes
-    t /= 60
+    minutes = duration % 60
+    duration -= minutes
+    duration //= 60
 
-    if t != 0:
-        return "%ih, %i minutes %is %ims" % (t, minutes, s, ms)
+    if duration != 0:
+        return "%ih, %i minutes %is %ims" % (duration, minutes, sec, ms)
     elif minutes != 0:
-        return "%i minutes %is %ims" % (minutes, s, ms)
-    elif s != 0:
-        return "%is %ims" % (s, ms)
+        return "%i minutes %is %ims" % (minutes, sec, ms)
+    elif sec != 0:
+        return "%is %ims" % (sec, ms)
     else:
         return "%ims" % ms
 
@@ -392,11 +390,11 @@ def create_adjusted_model_for_percentages(model_src, model_use):
     # Copy model file
     shutil.copyfile(model_src, model_use)
     # Adjust model file
-    with open(model_src) as f:
-        content = f.read()
+    with open(model_src) as fp:
+        content = fp.read()
     content = content.replace("logreg", "sigmoid")
-    with open(model_use, "w") as f:
-        f.write(content)
+    with open(model_use, "w") as fp:
+        fp.write(content)
 
 
 def create_hdf5(output_filename, feature_count, data):
@@ -413,6 +411,7 @@ def create_hdf5(output_filename, feature_count, data):
         list of (x, y) tuples, where x is the feature vector of dimension
         ``feature_count`` and y is a label.
     """
+    # Third party modules
     import h5py
 
     logger.info(f"Start creating of {output_filename} hdf file")
@@ -452,8 +451,8 @@ def load_model(model_file):
         tarfolder = tempfile.mkdtemp()
         tar.extractall(path=tarfolder)
 
-    from . import features
-    from . import preprocessing
+    # Local modules
+    from . import features, preprocessing
 
     # Get the preprocessing
     with open(os.path.join(tarfolder, "preprocessing.yml")) as ymlfile:
@@ -469,6 +468,7 @@ def load_model(model_file):
     feature_list = features.get_features(feature_str_list)
 
     # Get the model
+    # Third party modules
     import nntoolkit.utils
 
     model = nntoolkit.utils.get_model(model_file)
@@ -511,6 +511,7 @@ def evaluate_model_single_recording_preloaded(
     handwriting = handwritten_data.HandwrittenData(recording, raw_data_id=recording_id)
     handwriting.preprocessing(preprocessing_queue)
     x = handwriting.feature_extraction(feature_list)
+    # Third party modules
     import nntoolkit.evaluate
 
     model_output = nntoolkit.evaluate.get_model_output(model, [x])
@@ -574,7 +575,7 @@ def evaluate_model_single_recording_preloaded_multisymbol(
     recording :
         The handwritten recording in JSON format.
     """
-    import json
+    # Third party modules
     import nntoolkit.evaluate
 
     recording = json.loads(recording)
@@ -584,7 +585,7 @@ def evaluate_model_single_recording_preloaded_multisymbol(
     for split in get_possible_splits(len(recording)):
         recording_segmented = segment_by_split(split, recording)
         cur_split_results = []
-        for i, symbol in enumerate(recording_segmented):
+        for symbol in recording_segmented:
             handwriting = handwritten_data.HandwrittenData(json.dumps(symbol))
             handwriting.preprocessing(preprocessing_queue)
             x = handwriting.feature_extraction(feature_list)
@@ -599,6 +600,7 @@ def evaluate_model_single_recording_preloaded_multisymbol(
 
         # Now that I have all symbols of this split, I have to get all
         # combinations of the hypothesis
+        # Core Library modules
         import itertools
 
         for hyp in itertools.product(*cur_split_results):
@@ -707,8 +709,8 @@ def _evaluate_model_single_file(target_folder, test_file):
 
 def evaluate_model(recording, model_folder, verbose=False):
     """Evaluate model for a single recording."""
-    from . import preprocess_dataset
-    from . import features
+    # Local modules
+    from . import features, preprocess_dataset
 
     for target_folder in get_recognizer_folders(model_folder):
         # The source is later than the target. That means we need to
@@ -822,6 +824,7 @@ def get_index2data(model_description):
 
 def get_online_symbol_data(database_id):
     """Get from the server."""
+    # Third party modules
     import pymysql
     import pymysql.cursors
 
@@ -843,8 +846,7 @@ def get_online_symbol_data(database_id):
     datasets = cursor.fetchall()
     if len(datasets) == 1:
         return datasets[0]
-    else:
-        return None
+    return None
 
 
 def classify_single_recording(raw_data_json, model_folder, verbose=False):
@@ -859,8 +861,8 @@ def classify_single_recording(raw_data_json, model_folder, verbose=False):
     index2latex = get_index2latex(model_description)
 
     # Map line to probabilites for LaTeX commands
-    with open(evaluation_file) as f:
-        probabilities = f.read()
+    with open(evaluation_file) as fp:
+        probabilities = fp.read()
     probabilities = list(map(float, probabilities.split(" ")))
     results = []
     for index, probability in enumerate(probabilities):
@@ -929,20 +931,21 @@ def get_class(name, config_key, module) -> Type:
     raise ValueError(f"Class '{name}' is unknown")
 
 
-def less_than(l, n):
-    """Get number of symbols in list `l` which have a value less than `n`.
+def less_than(list_: List[float], n: int) -> float:
+    """
+    Get number of symbols in `list_` which have a value less than `n`.
 
     Parameters
     ----------
-    l : list of numbers
+    list_ : List[float]
     n : int
 
     Returns
     -------
     float :
-        Number of elements of the list l which are strictly less than n.
+        Number of elements of the list_ which are strictly less than n.
     """
-    return float(len([1 for el in l if el < n]))
+    return float(len([1 for el in list_ if el < n]))
 
 
 def get_mysql_cfg():
@@ -958,7 +961,7 @@ def get_mysql_cfg():
     return mysql
 
 
-def softmax(w: List[float], t: float = 1.0):
+def softmax(w: List[float], t: float = 1.0) -> List[float]:
     """
     Calculate the softmax of a list of numbers w.
 
@@ -970,7 +973,8 @@ def softmax(w: List[float], t: float = 1.0):
 
     Returns
     -------
-    a list of the same length as w of non-negative numbers
+    result : List[float]
+        a list of the same length as w of non-negative numbers
 
     Examples
     --------
@@ -984,8 +988,8 @@ def softmax(w: List[float], t: float = 1.0):
     ['0.00004540', '0.99995460']
     """
     w_tmp = [Decimal(el) for el in w]
-    e = numpy.exp(numpy.array(w_tmp) / Decimal(t))
-    dist = e / numpy.sum(e)
+    exp = numpy.exp(numpy.array(w_tmp) / Decimal(t))
+    dist = exp / numpy.sum(exp)
     return dist
 
 
@@ -1025,18 +1029,18 @@ def get_beam(secret_uuid):
         with open(beam_filename, "rb") as handle:
             beam = pickle.load(handle)
         return beam
-    else:
-        return None
+    return None
 
 
-def store_beam(beam, secret_uuid):
+def store_beam(beam, secret_uuid: str) -> None:
+    """Save the beam to a pickle file."""
     beam_dir = get_beam_cache_directory()
     beam_filename = os.path.join(beam_dir, secret_uuid)
     with open(beam_filename, "wb") as pfile:
         pickle.dump(beam, pfile, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-def is_valid_uuid(uuid_to_test, version=4):
+def is_valid_uuid(uuid_to_test: str, version: int = 4) -> bool:
     """
     Check if uuid_to_test is a valid UUID.
 
@@ -1065,6 +1069,7 @@ def is_valid_uuid(uuid_to_test, version=4):
 
 
 def get_symbols_filepath(testing: bool = False) -> str:
+    """Get the filepath of the symbols YAML file."""
     misc_path = pkg_resources.resource_filename(__name__, "misc/")
     if testing:
         symbol_yml_file = os.path.join(misc_path, "symbols_tiny.yml")

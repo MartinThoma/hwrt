@@ -322,6 +322,7 @@ def main(directory):
 
 
 if __name__ == "__main__":
+    # Core Library modules
     import doctest
 
     doctest.testmod()

@@ -340,6 +340,7 @@ def get_nn_classifier(X, y):
     -------
     model : The trained neural network
     """
+    # Third party modules
     from keras.models import load_model
 
     assert type(X) is np.ndarray
@@ -374,9 +375,10 @@ def train_nn_segmentation_classifier(X: np.ndarray, y: np.ndarray):
     -------
     model : the trained neural network
     """
+    # Third party modules
     from keras import optimizers
+    from keras.layers import Dense, Input
     from keras.models import Model
-    from keras.layers import Input, Dense
 
     def build_mlp():
         n_classes = 2
@@ -1042,6 +1044,7 @@ if __name__ == "__main__":
     )
 
     logging.info("Start doctest")
+    # Core Library modules
     import doctest
 
     doctest.testmod()

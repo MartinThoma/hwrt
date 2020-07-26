@@ -109,36 +109,44 @@ def check_python_modules():
             found.append(required_module)
 
     if "click" in found:
+        # Third party modules
         import click
 
         print("click version: %s (NONE tested)" % click.__version__)
     if "matplotlib" in found:
+        # Third party modules
         import matplotlib
 
         print("matplotlib version: %s (1.2.1 tested)" % matplotlib.__version__)
     if "natsort" in found:
+        # Third party modules
         import natsort
 
         print(
             "natsort version: %s (3.4.0 tested, 3.4.0 > required)" % natsort.__version__
         )
     if "pymysql" in found:
+        # Third party modules
         import pymysql
 
         print("pymysql version: %s (0.6.3 tested)" % pymysql.__version__)
     if "numpy" in found:
+        # Third party modules
         import numpy
 
         print("numpy version: %s (1.8.1 tested)" % numpy.__version__)
     if "yaml" in found:
+        # Third party modules
         import yaml
 
         print("yaml version: %s (3.11 tested)" % yaml.__version__)
     if "jinja2" in found:
+        # Third party modules
         import jinja2
 
         print("jinja2 version: %s (2.7.3 tested)" % jinja2.__version__)
     if "cPickle" in found:
+        # Third party modules
         import cPickle
 
         print("cPickle version: %s (1.71 tested)" % cPickle.__version__)

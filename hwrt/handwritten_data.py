@@ -262,6 +262,7 @@ class HandwrittenData:
 
     def show(self):
         """Show the data graphically in a new pop-up window."""
+        # Third party modules
         import matplotlib.pyplot as plt
 
         pointlist = self.get_pointlist()

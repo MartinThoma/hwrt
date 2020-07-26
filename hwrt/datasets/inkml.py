@@ -89,6 +89,7 @@ def read(filepath):
     HandwrittenData :
         The parsed InkML file as a HandwrittenData object
     """
+    # Core Library modules
     import xml.etree.ElementTree
 
     root = xml.etree.ElementTree.parse(filepath).getroot()
@@ -186,6 +187,7 @@ def read_folder(folder):
     list :
         Objects of the type HandwrittenData
     """
+    # Core Library modules
     import glob
 
     recordings = []

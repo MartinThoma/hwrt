@@ -54,6 +54,7 @@ class Bitmap:
             folder=foldername,
         )
         os.system(command)
+        # Third party modules
         from PIL import Image
 
         im = Image.open("%s%i.png" % (foldername, raw_data_id))

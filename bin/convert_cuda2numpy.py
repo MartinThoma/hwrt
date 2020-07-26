@@ -42,6 +42,7 @@ def get_matrices():
     list
         List of all matrices.
     """
+    # Third party modules
     from theano.sandbox import cuda
 
     with open("hwrt/misc/is_one_symbol_classifier.pickle", "rb") as f:

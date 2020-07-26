@@ -1,7 +1,9 @@
+[![PyPI version](https://badge.fury.io/py/hwrt.svg)](https://badge.fury.io/py/hwrt)
+[![Python Support](https://img.shields.io/pypi/pyversions/hwrt.svg)](https://pypi.org/project/hwrt/)
+[![Documentation Status](http://img.shields.io/badge/docs-latest-brightgreen.svg)](http://pythonhosted.org/hwrt)
 [![Build Status](https://travis-ci.org/MartinThoma/hwrt.svg?branch=master)](https://travis-ci.org/MartinThoma/hwrt)
 [![Coverage Status](https://img.shields.io/coveralls/MartinThoma/hwrt.svg)](https://coveralls.io/r/MartinThoma/hwrt?branch=master)
-[![Documentation Status](http://img.shields.io/badge/docs-latest-brightgreen.svg)](http://pythonhosted.org/hwrt)
-[![Code Health](https://landscape.io/github/MartinThoma/hwrt/master/landscape.svg)](https://landscape.io/github/MartinThoma/hwrt/master)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 
 ## Handwriting Recognition Toolkit

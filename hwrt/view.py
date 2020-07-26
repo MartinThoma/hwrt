@@ -9,6 +9,7 @@ import logging
 import os
 import pickle
 import sys
+from typing import Any, Optional
 
 # Third party modules
 import yaml
@@ -32,9 +33,14 @@ logger = logging.getLogger(__name__)
 sys.modules["HandwrittenData"] = handwritten_data
 
 
-def _fetch_data_from_server(raw_data_id, mysql_cfg):
-    """Get the data from raw_data_id from the server.
-    :returns: The ``data`` if fetching worked, ``None`` if it failed."""
+def _fetch_data_from_server(raw_data_id, mysql_cfg) -> Optional[Any]:
+    """
+    Get the data from raw_data_id from the server.
+
+    Returns
+    -------
+    The ``data`` if fetching worked, ``None`` if it failed."""
+    # Third party modules
     import pymysql
     import pymysql.cursors
 

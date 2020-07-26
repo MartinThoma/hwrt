@@ -71,6 +71,7 @@ def test_input_int_default():
 
 def test_query_yes_no_exception():
     with pytest.raises(Exception):
+        # Core Library modules
         import builtins  # noqa
 
         builtins_str = "builtins"
@@ -97,6 +98,7 @@ def test_get_latest_model():
 
 def test_choose_raw_dataset():
     """Check the interactive function choose_raw_dataset."""
+    # Core Library modules
     import builtins  # noqa
 
     with mock.patch("builtins.input", return_value=0):

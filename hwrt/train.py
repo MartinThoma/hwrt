@@ -94,11 +94,11 @@ def generate_training_command(model_folder):
             f"There is no model with basename '{basename}' " f"in {model_folder}"
         )
         return None
-    else:
-        logger.info(f"Model '{latest_model}' found.")
-        i = int(latest_model.split("-")[-1].split(".")[0])
-        model_src = os.path.join(model_folder, f"{basename}-{i}.json")
-        model_target = os.path.join(model_folder, f"{basename}-{i + 1}.json")
+
+    logger.info(f"Model '{latest_model}' found.")
+    i = int(latest_model.split("-")[-1].split(".")[0])
+    model_src = os.path.join(model_folder, f"{basename}-{i}.json")
+    model_target = os.path.join(model_folder, f"{basename}-{i + 1}.json")
 
     # generate the training command
     training = model_description["training"]

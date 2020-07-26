@@ -46,6 +46,7 @@ model_option = click.option(
 @entry_point.command()
 def selfcheck():
     """Self-check of the HWRT toolkit."""
+    # First party modules
     import hwrt.selfcheck
 
     hwrt.selfcheck.main()
@@ -89,6 +90,7 @@ def selfcheck():
 )
 def view(raw_data_id, mysql_cfg, model, list_ids, contact_server, show_raw):
     """Display raw preprocessed recordings."""
+    # First party modules
     import hwrt.view
 
     hwrt.view.main(
@@ -104,6 +106,7 @@ def view(raw_data_id, mysql_cfg, model, list_ids, contact_server, show_raw):
 @entry_point.command()
 def download():
     """Download the raw data to start analyzation / traning."""
+    # First party modules
     import hwrt.download
 
     hwrt.download.main()
@@ -130,6 +133,7 @@ def download():
 )
 def test(model, aset, n, merge):
     """Test a given model against a dataset."""
+    # First party modules
     import hwrt.test
 
     hwrt.test.main(model, aset, n, merge)
@@ -158,6 +162,7 @@ latest_dataset = hwrt.utils.get_latest_in_folder(dataset_folder, "raw.pickle")
 )
 def analyze_data(handwriting_datasets, analyze_features):
     """Analyze data according to many metrics."""
+    # First party modules
     import hwrt.analyze_data
 
     hwrt.analyze_data.main(handwriting_datasets, analyze_features)
@@ -167,6 +172,7 @@ def analyze_data(handwriting_datasets, analyze_features):
 @model_option
 def train(model):
     """Train a model."""
+    # First party modules
     import hwrt.train
 
     hwrt.train.main(model)
@@ -195,6 +201,7 @@ latest_featurefolder = hwrt.utils.get_latest_folder(feature_folder)
 )
 def create_ffiles(folder, create_learning_curve):
     """A tool to create compressed feature files from preprocessed files."""
+    # First party modules
     import hwrt.create_ffiles
 
     hwrt.create_ffiles.main(folder, create_learning_curve)
@@ -222,6 +229,7 @@ latest_model = hwrt.utils.get_latest_folder(models_folder)
 )
 def create_model(model, override):
     """Create a model file."""
+    # First party modules
     import hwrt.create_model
 
     hwrt.create_model.main(model, override)
@@ -238,6 +246,7 @@ def create_model(model, override):
 )
 def serve(port, n, use_segmenter):
     """Start a web-server which can classify recordings."""
+    # First party modules
     import hwrt.serve
 
     hwrt.serve.main(port=port, n_output=n, use_segmenter=use_segmenter)
@@ -267,6 +276,7 @@ def serve(port, n, use_segmenter):
 )
 def filter_dataset(symbol_filename, raw_filename, pickle_dest_path):
     """Filter a raw dataset."""
+    # First party modules
     import hwrt.filter_dataset
 
     hwrt.filter_dataset.main(symbol_filename, raw_filename, pickle_dest_path)
@@ -285,6 +295,7 @@ latest_preprocessed = hwrt.utils.get_latest_folder(preprocessed_folder)
     help="where is the feature file folder (that contains a info.yml)?",
 )
 def preprocess_dataset(folder):
+    # First party modules
     import hwrt.preprocess_dataset
 
     hwrt.preprocess_dataset.main(folder)

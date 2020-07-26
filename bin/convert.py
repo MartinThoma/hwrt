@@ -70,7 +70,10 @@ def create_output_semantics(model_folder: str, outputs: int):
         logging.info("Start fetching translation dict...")
         translation_dict = utils.get_index2data(model_description)
         spamwriter = csv.writer(
-            csvfile, delimiter=";", quotechar="|", quoting=csv.QUOTE_MINIMAL
+            csvfile,  # type: ignore
+            delimiter=";",
+            quotechar="|",
+            quoting=csv.QUOTE_MINIMAL,
         )
         for output_index in range(outputs):
             if output_index in translation_dict:

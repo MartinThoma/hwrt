@@ -71,6 +71,7 @@ def show_results(results: List[Dict[str, float]], n: int = 10) -> str:
     ##################################################
 
     """
+    # Third party modules
     import nntoolkit.evaluate
 
     classification = nntoolkit.evaluate.show_results(results, n)

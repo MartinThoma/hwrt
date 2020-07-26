@@ -9,6 +9,7 @@ import logging
 import os
 import tarfile
 import tempfile
+from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 from decimal import Decimal, getcontext
 
 # Third party modules
@@ -190,8 +191,6 @@ def get_probability(sentence):
 
 def get_parser():
     """Return the parser object for this script."""
-    from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-
     parser = ArgumentParser(
         description=__doc__, formatter_class=ArgumentDefaultsHelpFormatter
     )

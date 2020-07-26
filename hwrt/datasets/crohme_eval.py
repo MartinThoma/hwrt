@@ -7,6 +7,7 @@ import glob
 import json
 import logging
 import sys
+from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 
 # Local modules
 from ..classify import classify_segmented_recording as evaluate
@@ -100,8 +101,6 @@ def generate_output_csv(evaluation_results, filename="results.csv"):
 
 
 def get_parser():
-    from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-
     parser = ArgumentParser(
         description=__doc__, formatter_class=ArgumentDefaultsHelpFormatter
     )

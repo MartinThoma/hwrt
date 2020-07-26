@@ -103,6 +103,7 @@ def remove_accents(input_str):
 def get_recordings(directory):
     recordings = []
     for filepath in glob.glob("%s/*.xml" % directory):
+        # Core Library modules
         import xml.etree.ElementTree
 
         root = xml.etree.ElementTree.parse(filepath).getroot()
@@ -173,15 +174,18 @@ def get_recordings(directory):
                 "(http://mfr.felk.cvut.cz/Database.html)"
             )
             info["userid"] = datasets.getuserid(info["username"], copyright_str)
+            # Core Library modules
             import uuid
 
             info["secret"] = str(uuid.uuid4())
             info["ip"] = example["FormulaInputInfo"]["Address"]["text"]
+            # Third party modules
             import IPy
 
             info["ip"] = IPy.IP(info["ip"]).int()
             info["accepted_formula_id"] = datasets.formula_to_dbid(name)
             info["client"] = example["FormulaInputInfo"]["Client"]["text"]
+            # Third party modules
             from dateutil.parser import parse
 
             info["creation_date"] = parse(example["FormulaInputInfo"]["Time"]["text"])

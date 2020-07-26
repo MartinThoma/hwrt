@@ -57,6 +57,7 @@ class DefaultOrderedDict(OrderedDict):
         return type(self)(self.default_factory, self)
 
     def __deepcopy__(self, memo):
+        # Core Library modules
         import copy
 
         return type(self)(self.default_factory, copy.deepcopy(list(self.items())))
@@ -252,6 +253,7 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
         project_root, ("reports/" "%s-classification-error-report.html") % time_prefix
     )
     # Fill the template
+    # Third party modules
     from jinja2 import FileSystemLoader
     from jinja2.environment import Environment
 

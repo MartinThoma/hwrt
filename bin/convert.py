@@ -13,7 +13,6 @@ from io import StringIO
 # Third party modules
 import click
 import h5py
-import numpy as np
 import yaml
 
 # First party modules

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """Features in development."""
 
 # Core Library modules
@@ -47,22 +45,15 @@ class Bitmap:
             "convert -size 28x28 {folder}{id}.svg  -resize {n}x{n} "
             "-gravity center -extent {n}x{n} "
             "-monochrome {folder}{id}.png"
-        ).format(
-            id=raw_data_id,
-            n=self.n,
-            # url=url,
-            folder=foldername,
-        )
+        ).format(id=raw_data_id, n=self.n, folder=foldername,)
         os.system(command)
         # Third party modules
         from PIL import Image
 
         im = Image.open("%s%i.png" % (foldername, raw_data_id))
         pix = im.load()
-        # pixel_image = [[0 for i in range(28)] for j in range(28)]
         for i in range(28):
             for j in range(28):
-                # pixel_image[i][j] = pix[i, j]
                 x.append(pix[i, j])
         assert self.get_dimension() == len(x), (
             "Dimension of %s should be %i, but was %i"

@@ -1,7 +1,8 @@
-#!/usr/bin/env python
+"""
+Representation of a recording of on-line handwritten data.
 
-"""Representation of a recording of on-line handwritten data. On-line means
-   that the pen trajectory is given (and not online as in 'Internet').
+On-line means that the pen trajectory is given (and not online as in
+'Internet').
 """
 
 # Core Library modules
@@ -50,11 +51,9 @@ class HandwrittenData:
         if segmentation is None:
             # If no segmentation is given, assume all strokes belong to the
             # same symbol.
-            self.segmentation = [
-                [i for i in range(len(json.loads(self.raw_data_json)))]
-            ]
-        assert wild_point_count >= 0
-        assert missing_stroke >= 0
+            self.segmentation = [list(range(len(json.loads(self.raw_data_json))))]
+        assert wild_point_count >= 0, f"wild_point_count = {wild_point_count}"
+        assert missing_stroke >= 0, f"missing_stroke = {missing_stroke}"
         self.fix_times()
 
     @classmethod
@@ -95,11 +94,11 @@ class HandwrittenData:
         """
         try:
             pointlist = json.loads(self.raw_data_json)
-        except Exception as inst:
+        except Exception:
             logger.debug("pointStrokeList: strokelistP")
             logger.debug(self.raw_data_json)
             logger.debug("didn't work")
-            raise inst
+            raise
 
         if len(pointlist) == 0:
             logger.warning(
@@ -203,8 +202,6 @@ class HandwrittenData:
         numpy array :
             Greyscale png image
         """
-        # bitmap_width = int(self.get_width()*size) + 2
-        # bitmap_height = int(self.get_height()*size) + 2
         img = Image.new("L", (size, size), "black")
         draw = ImageDraw.Draw(img, "L")
         bb = self.get_bounding_box()
@@ -241,7 +238,10 @@ class HandwrittenData:
         ...                         kind='cubic')]
         >>> a.preprocessing(preprocessing_queue)
         """
-        assert type(algorithms) is list
+        assert type(algorithms) is list, (
+            "Expected algorithms to be of type "
+            f"list, type(algorithms)={type(algorithms)}"
+        )
         for algorithm in algorithms:
             algorithm(self)
 
@@ -249,7 +249,7 @@ class HandwrittenData:
         """Get a list of features.
 
         Every algorithm has to return the features as a list."""
-        assert type(algorithms) is list
+        assert type(algorithms) is list, f"type(algorithms) = {type(algorithms)}"
         features = []
         for algorithm in algorithms:
             new_features = algorithm(self)

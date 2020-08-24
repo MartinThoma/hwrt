@@ -139,13 +139,12 @@ def getuserid(username, copyright_str):
 
         # Get the id
         try:
-            sql = "SELECT  `id` FROM  `wm_users` " "WHERE  `display_name` =  %s LIMIT 1"
+            sql = "SELECT  `id` FROM  `wm_users` WHERE  `display_name` =  %s LIMIT 1"
             cursor.execute(sql, username)
             uid = cursor.fetchone()["id"]
         except Exception as inst:
             logging.debug("username not found: %s", username)
             print(inst)
-        # logging.info("%s: %s", username, uid)
         username2id[username] = uid
     return username2id[username]
 

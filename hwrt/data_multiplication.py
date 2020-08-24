@@ -1,6 +1,5 @@
-#!/usr/bin/env python
-
-"""Data multiplication algorithms.
+"""
+Data augmentation algorithms.
 
 Each algorithm works on the HandwrittenData class. They have to be applied like
 this:
@@ -104,7 +103,7 @@ class Rotate:
                 new_line = []
                 for point in line:
                     # Calculate rotation
-                    # xnew, ynew = xc, yc
+                    # xnew, ynew = xc, yc  # noqa
                     # (xnew, ynew) += (x-xc, y-yc)* (cos(rot.)  -sin(rot.))
                     #                               (sin(rot.)   cos(rot.))
                     x, y = point["x"], point["y"]

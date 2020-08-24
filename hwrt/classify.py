@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """Classify recordings."""
 
 # Core Library modules

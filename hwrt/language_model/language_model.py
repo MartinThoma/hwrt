@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Utility functions and classes to deal with language models.
 """
@@ -83,9 +81,7 @@ class NgramLanguageModel:
                                     append_to[first] = {}
                                 append_to = append_to[first]
                             if rest[0] in append_to:
-                                raise Exception(
-                                    ("Duplicate entry for " "ngram %s") % ngram
-                                )
+                                raise Exception(f"Duplicate entry for ngram {ngram}")
                             append_to[rest[0]] = probability
             else:
                 if line.startswith("info: "):
@@ -119,12 +115,6 @@ class NgramLanguageModel:
             The log likelihood of P(w3 | (w1, w2))
         """
         w1, w2, w3 = trigram
-        # if w1 not in self.ngrams[1]['data']:
-        #     w1 = "<unk>"
-        # if w2 not in self.ngrams[1]['data']:
-        #     w2 = "<unk>"
-        # if w3 not in self.ngrams[1]['data']:
-        #     w3 = "<unk>"
         if w1 in self.ngrams[3]["data"]:
             if w2 in self.ngrams[3]["data"][w1]:
                 if w3 in self.ngrams[3]["data"][w1][w2]:
@@ -154,7 +144,7 @@ class NgramLanguageModel:
             return Decimal(10) ** log_prob
 
     def print_all(self):
-        for n, data in sorted(list(self.ngrams.items()), key=lambda n: n[0]):
+        for n, data in sorted(self.ngrams.items(), key=lambda n: n[0]):
             print("n=%i" % n)
             for key, value in data["data"].items():
                 print(f"{key}\t{value}")

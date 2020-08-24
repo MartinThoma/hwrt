@@ -1,15 +1,25 @@
 docs:
 	python setup.py upload_docs --upload-dir docs/_build/html
 
-install:
-	pip install -e . --user
+maint:
+	pre-commit autoupdate && pre-commit run --all-files
+	pip-compile -U requirements-lint.in
+	pip-compile -U requirements-dev.in
+	pip-compile -U setup.py
 
 upload:
 	make clean
 	python setup.py sdist bdist_wheel && twine upload dist/*
 
-test:
-	pytest
+clean:
+	python setup.py clean --all
+	pyclean .
+	rm -rf *.pyc build dist tests/reports docs/build .pytest_cache .tox .coverage html/
+	rm -rf hwrt.egg-info
+	rm -rf __pycache__ mpu/datastructures/trie/__pycache__ mpu/__pycache__ mpu/units/__pycache__ tests/__pycache__
+	find . -name "*.pyc" -exec rm -rf {} \;
+	find . -type d -name "__pycache__" -delete
+	rm -f *.hdf5 *.yml *.csv
 
 testall:
 	make test
@@ -23,15 +33,3 @@ countc:
 
 countt:
 	cloc tests
-
-clean:
-	rm -rf .tox
-	python setup.py clean --all
-	rm -f *.hdf5 *.yml *.csv
-	find . -name "*.pyc" -exec rm -rf {} \;
-	find . -type d -name "__pycache__" -delete
-	rm -rf build
-	rm -rf cover
-	rm -rf dist
-	rm -rf hwrt.egg-info
-	rm -rf tests/reports

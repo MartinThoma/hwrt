@@ -36,14 +36,6 @@ def main(directory):
             )
             for i, result in enumerate(results):
                 if result["semantics"] == recording.formula_in_latex:
-                    # if i > 5:
-                    #     logging.info("  Found '%s' place %i with probability %0.4f.",
-                    #                  recording.formula_in_latex,
-                    #                  i,
-                    #                  result['probability'])
-                    #     if recording.formula_in_latex not in symbols_showed:
-                    #         #recording.show()
-                    #         symbols_showed.append(recording.formula_in_latex)
                     score_place.append(i)
                     score_place_symbol.append(i)
                     break
@@ -54,8 +46,8 @@ def main(directory):
                     symbols_showed.append(recording.formula_in_latex)
         logging.info(
             (
-                "{:>10}: TOP-1: {:0.2f} | TOP-3: {:0.2f} | "
-                "TOP-10: {:0.2f} | TOP-50: {:0.2f} | {}"
+                "{:>10}: TOP-1: {:0.2f} | TOP-3: {:0.2f} | "  # noqa
+                "TOP-10: {:0.2f} | TOP-50: {:0.2f} | {}"  # noqa
             ).format(
                 latex,
                 less_than(score_place_symbol, 1) / len(symbol_recording),
@@ -75,7 +67,6 @@ def main(directory):
         logging.info(
             "TOP-%i: %0.2f correct", i, less_than(score_place, i) / total_recordings
         )
-    # logging.info("Out of order: %i", out_of_order_count)
     logging.info("Total: %i", total_recordings)
 
 

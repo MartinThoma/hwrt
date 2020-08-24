@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """Data analyzation metrics
 
 Each algorithm works on a set of handwritings. They have to be applied like
@@ -146,12 +144,12 @@ class Creator:
         print("100%")
 
         # Sort the data by highest value, descending
-        print_data = sorted(list(print_data.items()), key=lambda n: n[1], reverse=True)
+        print_data = sorted(print_data.items(), key=lambda n: n[1], reverse=True)
 
         # Write data to file
-        write_file.write("total,%i\n" % sum([value for _, value in print_data]))
+        write_file.write(f"total,{sum(value for _, value in print_data)}\n")
         for userid, value in print_data:
-            write_file.write("%s,%i\n" % (str(userid), value))
+            write_file.write(f"{userid},{value}\n")
         write_file.close()
 
 
@@ -255,14 +253,11 @@ class TimeBetweenPointsAndStrokes:
         self.filename_strokes = prepare_file(filename_strokes)
 
     def __repr__(self):
-        return "TimeBetweenPointsAndStrokes({}, {})".format(
-            self.filename_points, self.filename_strokes,
+        return "TimeBetweenPointsAndStrokes({points}, {strokes})".format(
+            points=self.filename_points, strokes=self.filename_strokes,
         )
 
-    def __str__(self):
-        return "TimeBetweenPointsAndStrokes({}, {})".format(
-            self.filename_points, self.filename_strokes,
-        )
+    __str__ = __repr__
 
     def __call__(self, raw_datasets):
         average_between_points = open(self.filename_points, "a")

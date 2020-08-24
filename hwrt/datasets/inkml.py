@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # Core Library modules
 import json
 import logging
@@ -61,9 +59,9 @@ def normalize_symbol_name(symbol_name):
     str
     """
     if symbol_name == "\\frac":
-        return "\\frac{}{}"
+        return "\\frac{}{}"  # noqa
     elif symbol_name == "\\sqrt":
-        return "\\sqrt{}"
+        return "\\sqrt{}"  # noqa
     elif symbol_name in ["&lt;", r"\lt"]:
         return "<"
     elif symbol_name in ["&gt;", r"\gt"]:
@@ -169,7 +167,10 @@ def read(filepath):
         "Segmentation had length %i, but recording has %i strokes (%s)"
         % (len(_flat_seg), len(recording), filepath)
     )
-    assert set(_flat_seg) == set(range(len(_flat_seg)))
+    assert set(_flat_seg) == set(range(len(_flat_seg))), (
+        f"set(_flat_seg) = {set(_flat_seg)} !="
+        f"{set(range(len(_flat_seg)))} = set(range(len(_flat_seg)))"
+    )
     hw.inkml = beautify_xml(filepath)
     hw.filepath = filepath
     return hw

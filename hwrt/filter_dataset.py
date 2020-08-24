@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Given a dataset and a vocabulary file, filter the recordings which are desired.
 """
@@ -147,9 +145,6 @@ def get_symbol_ids(
                 logger.error("Symbol id %s is already used: %s", id_tmp, symbol_tmp)
                 sys.exit(-1)
 
-    # print(metadata.keys())
-    # for el in metadata:
-    #    print(metadata[el][0].keys())
     # TODO: assert no double mappings
     # TODO: Support for
     # - ::ALL_FREE:: - meaning the rest of all ids which are not assigned to

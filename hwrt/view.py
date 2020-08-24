@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Display a recorded handwritten symbol as well as the preprocessing methods
 and the data multiplication steps that get applied.
@@ -61,7 +60,7 @@ def _fetch_data_from_server(raw_data_id, mysql_cfg) -> Optional[Any]:
     cursor = connection.cursor()
 
     # Download dataset
-    sql = ("SELECT `id`, `data` " "FROM `wm_raw_draw_data` WHERE `id`=%i") % raw_data_id
+    sql = "SELECT `id`, `data` FROM `wm_raw_draw_data` WHERE `id`={raw_data_id}"
     cursor.execute(sql)
     return cursor.fetchone()
 

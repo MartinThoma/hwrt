@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Segmentation is the task of splitting a data sequence into chuncks which can
 then be classified chunk by chunk.
@@ -23,6 +21,7 @@ import os
 import pickle
 import sys
 import time
+from typing import Dict, List, Tuple
 
 # Third party modules
 import numpy as np
@@ -44,7 +43,7 @@ def main():
     logging.info("Get single classifier")
 
     logging.info(
-        "Get stroke_segmented_classifier " "(decided if two strokes are in one symbol)"
+        "Get stroke_segmented_classifier (decided if two strokes are in one symbol)"
     )
     logging.info("Start creation of training set")
     X, y, recordings = get_dataset()
@@ -56,7 +55,7 @@ def main():
 
     y_predicted = np.argmax(model.predict(X), axis=1)
     classification = [yi == yip for yi, yip in zip(y, y_predicted)]
-    err = float(sum([not i for i in classification])) / len(classification)
+    err = float(sum(not i for i in classification)) / len(classification)
     logging.info("Error: %0.2f (for %i training examples)", err, len(y))
 
     logging.info("Get single stroke classifier")
@@ -66,7 +65,6 @@ def main():
     score_place = []
     out_of_order_count = 0
     # Filter recordings
-    # recordings = filter_recordings(recordings)
     over_segmented_symbols = 0
     under_segmented_symbols = 0
     overunder_segmented_symbols = 0
@@ -84,12 +82,12 @@ def main():
         )
         t1 = time.time()
         real_seg = recording["segmentation"]
-        if all([has_wrong_break(real_seg, seg) for seg, score in seg_predict]):
+        if all(has_wrong_break(real_seg, seg) for seg, score in seg_predict):
             over_segmented_symbols += 1
-        if all([has_missing_break(real_seg, seg) for seg, _ in seg_predict]):
+        if all(has_missing_break(real_seg, seg) for seg, _ in seg_predict):
             under_segmented_symbols += 1
-        if all([has_wrong_break(real_seg, seg) for seg, _ in seg_predict]) and all(
-            [has_missing_break(real_seg, seg) for seg, _ in seg_predict]
+        if all(has_wrong_break(real_seg, seg) for seg, _ in seg_predict) and all(
+            has_missing_break(real_seg, seg) for seg, _ in seg_predict
         ):
             overunder_segmented_symbols += 1
         pred_str = ""
@@ -97,7 +95,6 @@ def main():
             seg, score = pred
             if i == 0:
                 pred_str = f"  Predict segmentation:\t{seg} ({score:0.8f})"
-            # print("#{0:>3} {1:.8f}: {2}".format(i, score, seg))
             if seg == real_seg:
                 score_place.append(i)
                 break
@@ -105,7 +102,7 @@ def main():
             i = -1
             score_place.append(10 ** 6)
         if all(
-            [has_wrong_break(real_seg, segmentation) for segmentation, _ in seg_predict]
+            has_wrong_break(real_seg, segmentation) for segmentation, _ in seg_predict
         ):
             print(f"## {recording['id']}")
             print(f"  Real segmentation:\t{real_seg} (got at place {i})")
@@ -184,7 +181,6 @@ def get_dataset():
     """
     seg_data = "segmentation-X.npy"
     seg_labels = "segmentation-y.npy"
-    # seg_ids = "segmentation-ids.npy"
     if os.path.isfile(seg_data) and os.path.isfile(seg_labels):
         X = np.load(seg_data)
         y = np.load(seg_labels)
@@ -287,7 +283,7 @@ def get_segmented_raw_data(top_n=10000):
             stroke_count = len(json.loads(datasets[i]["data"]))
             if stroke_count > 10:
                 print(f"Massive stroke count! {stroke_count}")
-            datasets[i]["segmentation"] = str([[s for s in range(stroke_count)]])
+            datasets[i]["segmentation"] = str([list(range(stroke_count))])
     return datasets
 
 
@@ -343,11 +339,11 @@ def get_nn_classifier(X, y):
     # Third party modules
     from keras.models import load_model
 
-    assert type(X) is np.ndarray
-    assert type(y) is np.ndarray
-    assert len(X) == len(y)
-    assert X.dtype == "float32"
-    assert y.dtype == "int32"
+    assert type(X) is np.ndarray, f"type(X) = {type(X)}"
+    assert type(y) is np.ndarray, f"type(y) = {type(y)}"
+    assert len(X) == len(y), f"len(X) = {len(X)} != {len(y)} = len(y)"
+    assert X.dtype == "float32", f"X.dtype = {X.dtype}"
+    assert y.dtype == "int32", f"y.dtype = {y.dtype}"
 
     model_filename = "is_one_symbol_classifier.pickle"  # TODO: h5?
     if os.path.isfile(model_filename):
@@ -446,7 +442,6 @@ def get_stroke_features(recording, strokeid1, strokeid2):
     X_i += [get_strokes_distance(stroke1, stroke2)]  # Distance of strokes
     X_i += [get_time_distance(stroke1, stroke2)]  # Time in between
     X_i += [abs(strokeid2 - strokeid1)]  # Strokes in between
-    # X_i += [get_black_percentage()]
     return X_i
 
 
@@ -506,7 +501,7 @@ def merge_segmentations(segs1, segs2, strokes=None):
         return t
 
     if strokes is None:
-        strokes = [i for i in range(len(segs2[0][0]))]
+        strokes = list(range(len(segs2[0][0])))
     topf = partitions.TopFinder(500)
     for s1, s2 in itertools.product(segs1, segs2):
         topf.push(s1[0] + translate(s2[0], strokes), s1[1] * s2[1])
@@ -556,28 +551,12 @@ def get_segmentation(
     mst_wood = get_mst_wood(recording, single_clf)
     return [(normalize_segmentation([mst["strokes"] for mst in mst_wood]), 1.0)]
 
-    # HandwrittenData(json.dumps(recording)).show()
-    # return [([[i for i in range(len(recording))]], 1.0)]
-    # #mst_wood = break_mst(mst, recording)  # TODO
-
-    # for i in range(0, 2**len(points)):
-    #     segmentation = get_segmentation_from_mst(mst, i)
-    # TODO
-
     X_symbol = [get_median_stroke_distance(recording)]
 
     # Pre-segment to 8 strokes
-    # TODO: Take first 4 strokes and add strokes within their bounding box
-    # TODO: What if that is more then 8 strokes?
-    # -> Geometry
-    #    Build tree structure. A stroke `c` is the child of another stroke `p`,
-    #    if the bounding box of `c` is within the bounding box of `p`.
-    #       Problem: B <-> 13
     g_top_segmentations = [([], 1.0)]  # g_top_segmentations
 
-    # range(int(math.ceil(float(len(recording))/8))):
     for chunk_part in mst_wood:
-        # chunk = recording[8*chunk_part:8*(chunk_part+1)]
         chunk = [recording[stroke] for stroke in chunk_part["strokes"]]
 
         # Segment after pre-segmentation
@@ -604,8 +583,6 @@ def get_segmentation(
                     predictions[0]["probability"] + predictions[1]["probability"],
                 )
             ts[i][1] *= list(min_top2)[0][1]
-        # for i, segmentation in enumerate(ts):
-        #     ts[i][0] = update_segmentation_data(ts[i][0], 8*chunk_part)
         g_top_segmentations = merge_segmentations(
             g_top_segmentations, ts, chunk_part["strokes"]
         )
@@ -641,11 +618,11 @@ def get_mst_wood(recording, single_clf):
     for i, stroke in enumerate(recording):  # TODO
         predictions = single_clf.predict({"id": 0, "data": [stroke]})
         # TODO predictions[:20]
-        prob_sum = sum([p["probability"] for p in predictions[:1]])
+        prob_sum = sum(p["probability"] for p in predictions[:1])
         # dots cannot be segmented into single symbols at this point
         if (
             prob_sum > 0.95
-            and not any([el for el in bbintersections[i]])
+            and not any(el for el in bbintersections[i])
             and len(stroke) > 2
             and predictions[0]["semantics"].split(";")[1] != "-"
         ):
@@ -659,24 +636,21 @@ def get_mst_wood(recording, single_clf):
                 if i in mst["strokes"]:
                     mst["pred"] = predictions[0]["semantics"].split(";")[1]
 
-    # if any([True for mst in mst_wood if len(mst['strokes']) >= 8]):
-    #     logging.debug([mst['pred'] for mst in mst_wood if 'pred' in mst])
-    #     HandwrittenData(json.dumps(recording)).show()
     return mst_wood
 
 
-def has_missing_break(real_seg, pred_seg):
+def has_missing_break(real_seg: List[List[int]], pred_seg: List[List[int]]) -> bool:
     """
     Parameters
     ----------
-    real_seg : list of integers
+    real_seg : List[List[int]]
         The segmentation as it should be.
-    pred_seg : list of integers
+    pred_seg : List[List[int]]
         The predicted segmentation.
 
     Returns
     -------
-    bool :
+    has_missing_break : bool
         True, if strokes of two different symbols are put in the same symbol.
     """
     for symbol_pred in pred_seg:
@@ -688,13 +662,13 @@ def has_missing_break(real_seg, pred_seg):
     return False
 
 
-def has_wrong_break(real_seg, pred_seg):
+def has_wrong_break(real_seg: List[List[int]], pred_seg: List[List[int]]) -> bool:
     """
     Parameters
     ----------
-    real_seg : list of integers
+    real_seg : List[List[int]]
         The segmentation as it should be.
-    pred_seg : list of integers
+    pred_seg : List[List[int]]
         The predicted segmentation.
 
     Returns
@@ -712,11 +686,11 @@ def has_wrong_break(real_seg, pred_seg):
     return False
 
 
-def find_split_node(mst_wood, i):
+def find_split_node(mst_wood: List[Dict], i: int) -> Tuple[int, int]:
     """
     Parameters
     ----------
-    mst_wood : list of dictionarys
+    mst_wood : List[Dict]
     i : int
         Number of the stroke where one mst gets split
 
@@ -1030,7 +1004,7 @@ def normalize_segmentation(seg):
     >>> normalize_segmentation([[5, 2], [1, 4, 3]])
     [[1, 3, 4], [2, 5]]
     """
-    return sorted([sorted(el) for el in seg])
+    return sorted(sorted(el) for el in seg)
 
 
 single_clf = SingleClassifier()

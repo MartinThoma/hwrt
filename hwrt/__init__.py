@@ -1,8 +1,11 @@
-"""HWRT (handwriting recognition toolkit) is a collection of tools which
-   can be used for handwriting recognition. It offers much documentation.
+"""
+HWRT is a collection of tools for handwriting recognition.
 
-   If any questions are not covered by the documentation or if difficulties
-   with using HWRT occur, please contact info@martin-thoma.de"""
+HWRT is short for handwriting recognition toolkit.
+
+If any questions are not covered by the documentation or if difficulties with
+using HWRT occur, please contact info@martin-thoma.de
+"""
 
 # Core Library modules
 import os.path

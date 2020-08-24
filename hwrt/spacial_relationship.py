@@ -1,9 +1,4 @@
-#!/usr/bin/env python
-
-"""
-Functions to estimate the spacial relationship of
-two symbols.
-"""
+"""Functions to estimate the spacial relationship of two symbols."""
 
 
 def estimate(s1, s2):

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # Core Library modules
 import glob
 import json
@@ -20,7 +18,7 @@ logging.basicConfig(
 replacements = [
     ("int", r"\int"),
     ("cross", r"\times"),
-    ("frac", r"\frac{}{}"),
+    ("frac", r"\frac{}{}"),  # noqa
     ("sin", r"\sin"),
     ("dx", r"\mathrm{d}x"),
     ("dt", r"\mathrm{d}t"),
@@ -33,7 +31,7 @@ replacements = [
     ("beta", r"\beta"),
     ("kappa", r"\kappa"),
     ("inf", r"\infty"),
-    ("root", r"\sqrt{}"),
+    ("root", r"\sqrt{}"),  # noqa
     ("pi", r"\pi"),
     ("{", r"\{"),
     ("}", r"\}"),
@@ -62,13 +60,11 @@ replacements = [
 ]
 
 skip = ["cotg"]
-# skip = ['frac', 'dt', 'dx', 'arcsin',  'tg', 'cross', "'", ',']
-# '\sin', '\cos', '\lim', '\log', '\ln'
 
 
 def elementtree_to_dict(element):
     """Convert an xml ElementTree to a dictionary."""
-    d = dict()
+    d = {}
     if hasattr(element, "text") and element.text is not None:
         d["text"] = element.text
 
@@ -127,8 +123,6 @@ def get_recordings(directory):
 
         symbol_recordings = []
 
-        # import pprint
-        # pprint.pprint(root)
         if isinstance(examples, dict):
             examples = [examples]
         for example in examples:
@@ -140,7 +134,6 @@ def get_recordings(directory):
                 ]
             for stroke_xml in example["strokesXml"]["Strokes"]["Stroke"]:
                 stroke = []
-                # print(stroke_xml.keys())
                 if isinstance(stroke_xml["Point"], dict):
                     stroke_xml["Point"] = [stroke_xml["Point"]]
                 for point in stroke_xml["Point"]:
@@ -177,21 +170,21 @@ def get_recordings(directory):
             # Core Library modules
             import uuid
 
-            info["secret"] = str(uuid.uuid4())
-            info["ip"] = example["FormulaInputInfo"]["Address"]["text"]
             # Third party modules
             import IPy
+            from dateutil.parser import parse
+
+            info["secret"] = str(uuid.uuid4())
+            info["ip"] = example["FormulaInputInfo"]["Address"]["text"]
 
             info["ip"] = IPy.IP(info["ip"]).int()
             info["accepted_formula_id"] = datasets.formula_to_dbid(name)
             info["client"] = example["FormulaInputInfo"]["Client"]["text"]
-            # Third party modules
-            from dateutil.parser import parse
 
             info["creation_date"] = parse(example["FormulaInputInfo"]["Time"]["text"])
             info["device_type"] = example["FormulaInputInfo"]["Device"]["text"].lower()
             info["sample_id"] = example["FormulaInputInfo"]["SampleId"]["text"]
-            info["rec_desc"] = "{}::{}::{}::{}::{}".format(
+            info["rec_desc"] = "{}::{}::{}::{}::{}".format(  # noqa
                 filepath,
                 example["Id"],
                 info["sample_id"],

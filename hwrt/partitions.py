@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """Tools for partitioning sets."""
 
 # http://codereview.stackexchange.com/questions/1526/finding-all-k-subset-partitions
@@ -16,13 +14,15 @@ logger = logging.getLogger(__name__)
 
 
 def prepare_table(table):
-    """Make the table 'symmetric' where the lower left part of the matrix is
-       the reverse probability
+    """
+    Make the table 'symmetric'.
+
+    The lower left part of the matrix is the reverse probability.
     """
     n = len(table)
     for i, row in enumerate(table):
-        assert len(row) == n
-        for j, el in enumerate(row):
+        assert len(row) == n, f"len(row) = {len(row)} != {n} = n"
+        for j, _ in enumerate(row):
             if i == j:
                 table[i][i] = 0.0
             elif i > j:
@@ -31,7 +31,11 @@ def prepare_table(table):
 
 
 def clusters(l, K):  # noqa
-    """Partition list ``l`` in ``K`` partitions.
+    """
+    Partition list ``l`` in ``K`` partitions.
+
+    Examples
+    --------
     >>> l = [0, 1, 2]
     >>> list(clusters(l, K=3))
     [[[0], [1], [2]], [[], [0, 1], [2]], [[], [1], [0, 2]], [[0], [], [1, 2]], [[], [0], [1, 2]], [[], [], [0, 1, 2]]]
@@ -176,8 +180,7 @@ def get_top_segmentations(table, n):
 
 
 def main():
-    # [0,1,2], [3,4,5] [6,7]
-    #            0     1     2     3     4     5     6     7
+    # Column0     1     2     3     4     5     6     7
     table = [
         [0.00, 0.55, 0.43, 0.30, 0.28, 0.74, 0.28, 0.26],  # 0
         [0.45, 0.00, 0.67, 0.40, 0.35, 0.77, 0.30, 0.31],  # 1
@@ -190,10 +193,10 @@ def main():
     ]  # 7
     #            0     1     2
     # table = [[0.00, 0.01, 0.99],
-    #          [0.99, 0.00, 0.01],
+    #          [0.99, 0.00, 0.01],  # noqa
     #          [0.01, 0.99, 0.00]]
     topfs = get_top_segmentations(table, 5)
     for el, score in topfs:
         print(f"{score:0.10f}: {el}")
     for i in range(20):
-        logger.info("{i:>5}: {len(list(all_segmentations(list(range(i))))):>10}")
+        logger.info(f"{i:>5}: {len(list(all_segmentations(list(range(i))))):>10}")

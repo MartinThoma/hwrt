@@ -1,6 +1,7 @@
-#!/usr/bin/env python
+"""
+Support for the SCG INK format.
 
-"""Support for the SCG INK format defined in
+The format is defined in
 https://www.scg.uwaterloo.ca/mathbrush/publications/corpus.pdf
 """
 

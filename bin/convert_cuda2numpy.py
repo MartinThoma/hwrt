@@ -39,7 +39,7 @@ def get_matrices():
 
     Returns
     -------
-    list
+    arrays : List
         List of all matrices.
     """
     # Third party modules
@@ -65,7 +65,7 @@ def create_model_tar(matrices, tarname="model-cuda-converted.tar"):
 
     Parameters
     ----------
-    matrices : list
+    matrices : List
     tarname : str
         Target file which will be created.
     """
@@ -85,14 +85,6 @@ def create_model_tar(matrices, tarname="model-cuda-converted.tar"):
             bfile.close()
             filenames.append("b%i.hdf5" % (layer / 2))
 
-        # activation = a['layers'][layer]['_props']['activation']
-        # activation = activation.replace('sigmoid', 'Sigmoid')
-        # activation = activation.replace('softmax', 'Softmax')
-        # layers.append({'W': {'size': list(W.shape),
-        #                      'filename': 'W%i.hdf5' % layer},
-        #                'b': {'size': list(b.shape),
-        #                      'filename': 'b%i.hdf5' % layer},
-        #                'activation': activation})
     with tarfile.open(tarname, "w:") as tar:
         for name in filenames:
             tar.add(name)

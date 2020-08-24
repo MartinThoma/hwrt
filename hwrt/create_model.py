@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """Create a model."""
 
 # Core Library modules
@@ -37,7 +35,7 @@ def create_model(model_folder: str, model_type: str, topology: str, override: bo
         logger.info("Create a base model...")
         model_src = os.path.join(model_folder, "model-0.json")
         command = (
-            f"{utils.get_nntoolkit()} create {model_type} {topology} " f"> {model_src}"
+            f"{utils.get_nntoolkit()} create {model_type} {topology} > {model_src}"
         )
         logger.info(command)
         os.system(command)
@@ -60,7 +58,7 @@ def main(model_folder, override=False):
     # Get a list of all used features
     feature_list = features.get_features(feature_description["features"])
     # Get the dimension of the feature vector
-    input_features = sum([n.get_dimension() for n in feature_list])
+    input_features = sum(n.get_dimension() for n in feature_list)
     logger.info("Number of features: %i", input_features)
 
     # Analyze model

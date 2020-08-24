@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Create feature files.
 
@@ -46,7 +44,7 @@ def _create_index_formula_lookup(formula_id2index, feature_folder, index2latex):
     index2latex : dict
         Maps an integer index to a LaTeX command
     """
-    index2formula_id = sorted(list(formula_id2index.items()), key=lambda n: n[1])
+    index2formula_id = sorted(formula_id2index.items(), key=lambda n: n[1])
     index2formula_file = os.path.join(feature_folder, "index2formula_id.csv")
     with open(index2formula_file, "w") as f:
         f.write("index,formula_id,latex\n")
@@ -127,7 +125,7 @@ def main(feature_folder, create_learning_curve=False):
     logger.info("Start creating hdf5 files")
 
     # Get the dimension of the feature vector
-    input_features = sum([n.get_dimension() for n in feature_list])
+    input_features = sum(n.get_dimension() for n in feature_list)
 
     # Traindata has to come first because of feature normalization
     for dataset_name, dataset, is_traindata in [

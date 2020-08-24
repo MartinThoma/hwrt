@@ -1,11 +1,10 @@
-#!/usr/bin/env python
+"""Utility functions for language models."""
 
-"""
-Utility functions for language models.
-"""
+# Core Library modules
+from typing import Dict
 
 
-def load_cfg(path):
+def load_cfg(path: str) -> Dict:
     """
     Load a language model configuration file.
 

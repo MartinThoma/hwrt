@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 hwrt, the handwriting recognition toolkit, is a set of executable scripts
 and Python modules that are useful for handwriting recognition.
@@ -8,6 +6,7 @@ For train.py, test.py you will need an internal toolkit for training of
 neural networks. The backup.py script is only useful if you have a
 website like write-math.com to collect recordings.
 """
+
 # Core Library modules
 import logging
 import os

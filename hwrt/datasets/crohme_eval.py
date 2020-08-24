@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """Evaluate a folder of InkML files for a CROHME competition."""
 
 # Core Library modules
@@ -87,13 +85,13 @@ def generate_output_csv(evaluation_results, filename="results.csv"):
     """
     with open(filename, "w") as f:
         for result in evaluation_results:
-            for i, entry in enumerate(result["results"]):
+            for _i, entry in enumerate(result["results"]):
                 if entry["semantics"] == ",":
                     result["results"]["semantics"] = "COMMA"
-            f.write("%s, " % result["filename"])
+            f.write(f"{result['filename']}, ")
             f.write(", ".join([entry["semantics"] for entry in result["results"]]))
             f.write("\n")
-            f.write("%s, " % "scores")
+            f.write("scores, ")
             f.write(
                 ", ".join([str(entry["probability"]) for entry in result["results"]])
             )

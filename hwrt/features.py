@@ -1,6 +1,5 @@
-#!/usr/bin/env python
-
-"""Feature extraction algorithms.
+"""
+Feature extraction algorithms.
 
 Each algorithm works on the HandwrittenData class. They have to be applied like
 this:
@@ -73,7 +72,7 @@ def print_featurelist(feature_list: List):
     feature_list : List
         feature objects
     """
-    input_features = sum([n.get_dimension() for n in feature_list])
+    input_features = sum(n.get_dimension() for n in feature_list)
     print("## Features (%i)" % input_features)
     print("```")
     for algorithm in feature_list:
@@ -269,14 +268,14 @@ class ConstantPointCoordinates(Feature):
                         x.append(self.fill_empty_with)
                         x.append(self.fill_empty_with)
                         if self.pixel_env > 0:
-                            for i in range((1 + 2 * self.pixel_env) ** 2):
+                            for _ in range((1 + 2 * self.pixel_env) ** 2):
                                 x.append(self.fill_empty_with)
             else:
                 for _ in range(self.points_per_stroke):
                     x.append(self.fill_empty_with)
                     x.append(self.fill_empty_with)
                     if self.pixel_env > 0:
-                        for i in range((1 + 2 * self.pixel_env) ** 2):
+                        for _ in range((1 + 2 * self.pixel_env) ** 2):
                             x.append(self.fill_empty_with)
         del draw
         return x
@@ -336,10 +335,10 @@ class FirstNPoints(Feature):
         self.n = n
 
     def __repr__(self):
-        return ("FirstNPoints\n" " - n: %i\n") % (self.n)
+        return f"FirstNPoints\n - n: {self.n}\n"
 
     def __str__(self):
-        return ("first n points\n" " - n: %i\n") % (self.n)
+        return f"first n points\n - n: {self.n}\n"
 
     def get_dimension(self):
         """Get the dimension of the returned feature. This equals the number

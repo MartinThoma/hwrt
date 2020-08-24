@@ -1,8 +1,6 @@
-#!/usr/bin/env python
-
 """
-Analyze data in a pickle file by maximum time / width / height and
-similar features.
+Analyze data in a pickle file by maximum time / width / height and similar
+features.
 """
 
 

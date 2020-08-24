@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """Calculate the distance between line segments."""
 
 # Core Library modules
@@ -50,8 +48,8 @@ class LineSegment:
 
     def get_slope(self):
         """Return the slope m of this line segment."""
-        # y1 = m*x1 + t
-        # y2 = m*x2 + t => y1-y2 = m*(x1-x2) <=> m = (y1-y2)/(x1-x2)
+        # y1 = m*x1 + t  # noqa
+        # y2 = m*x2 + t => y1-y2 = m*(x1-x2) <=> m = (y1-y2)/(x1-x2)  # noqa
         return (self.p1.y - self.p2.y) / (self.p1.x - self.p2.x)
 
     def get_offset(self):

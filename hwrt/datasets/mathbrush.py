@@ -38,7 +38,7 @@ def mathbrush_formula_fix(latex):
         ("lt", "<"),
         ("plus", "+"),
         ("Integral", "\\int"),
-        ("sqrt", "\\sqrt{}"),
+        ("sqrt", "\\sqrt{}"),  # noqa
         ("infin", "\\infty"),
     ]
     for search, replace in fixit:
@@ -102,11 +102,6 @@ def get_latex(ink_filename):
     formula_in_latex = matches[0].strip()
     formula_in_latex = remove_matching_braces(formula_in_latex)
 
-    # repl = []
-    # for letter in string.letters:
-    #     repl.append(('\mbox{%s}' % letter, letter))
-    # for search, replace in repl:
-    #     formula_in_latex = formula_in_latex.replace(search, replace)
     return formula_in_latex
 
 
@@ -149,8 +144,6 @@ def get_segmentation(recording, annotations, internal_id=None):
         )
 
     if len(needed) > 0:
-        # hw = handwritten_data.HandwrittenData(json.dumps(recording))
-        # hw.show()
         missing_stroke_segmentation.append(internal_id)
         segmentation.append(needed)
     return segmentation, symbol_stream
@@ -195,35 +188,29 @@ def parse_scg_ink_file(filename):
         elif i == 1:
             try:
                 stroke_count = int(line)
-            except ValueError:
+            except ValueError as err:
                 raise ValueError(
-                    (
-                        "%s: Second line has to be the number of "
-                        "strokeswhich has to be an integer, but "
-                        "was '%s'"
-                    )
-                    % (filename, line)
-                )
+                    f"{filename}: Second line has to be the number of "
+                    f"strokeswhich has to be an integer, but was '{line}'"
+                ) from err
             if stroke_count <= 0:
-                # os.remove(filename)
-                # return []
                 raise ValueError(
-                    ("%s: Stroke count was %i, but should be " "> 0.")
-                    % (filename, stroke_count)
+                    f"{filename}: Stroke count was {stroke_count}, "
+                    "but should be > 0."
                 )
         elif i == 2:
             try:
                 stroke_point_count = int(line)
-            except ValueError:
+            except ValueError as err:
                 raise ValueError(
                     "%s: Third line has to be the number of "
                     "points which has to be an integer, but was "
                     "'%s'" % (filename, line)
-                )
+                ) from err
             if stroke_point_count <= 0:
                 raise ValueError(
-                    ("%s: Stroke point count was %i, but should " "be > 0.")
-                    % (filename, stroke_count)
+                    f"{filename}: Stroke point count was {stroke_count}, "
+                    f"but should be > 0."
                 )
         elif i > 2:
             if stroke_point_count > 0:
@@ -237,7 +224,7 @@ def parse_scg_ink_file(filename):
             elif stroke_count > 0:
                 try:
                     stroke_point_count = int(line)
-                except ValueError:
+                except ValueError as err:
                     raise ValueError(
                         (
                             "%s: Line %i has to be the number of "
@@ -245,11 +232,11 @@ def parse_scg_ink_file(filename):
                             " but was '%s'"
                         )
                         % (filename, i + 1, line)
-                    )
+                    ) from err
                 if stroke_point_count <= 0:
                     raise ValueError(
-                        ("%s: Stroke point count was %i, but " "should be > 0.")
-                        % (filename, stroke_count)
+                        f"{filename}: Stroke point count was {stroke_count}, "
+                        "but should be > 0."
                     )
             if stroke_point_count == 0 and len(current_stroke) > 0:
                 time += 200

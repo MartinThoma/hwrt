@@ -40,7 +40,6 @@ def main(directory):
         insert_recording(hw)
         print(hw.symbol_stream)
         print(hw.segmentation)
-        # hw.show()
 
 
 def get_writemath_username(filepath):

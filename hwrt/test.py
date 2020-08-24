@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """Get the error of a model. This tool supports multiple error measures."""
 
 # Core Library modules
@@ -45,7 +43,7 @@ class DefaultOrderedDict(OrderedDict):
 
     def __reduce__(self):
         if self.default_factory is None:
-            args = tuple()
+            args = ()
         else:
             args = (self.default_factory,)
         return type(self), args, None, None, list(self.items())
@@ -63,8 +61,9 @@ class DefaultOrderedDict(OrderedDict):
         return type(self)(self.default_factory, copy.deepcopy(list(self.items())))
 
     def __repr__(self):
-        return "OrderedDefaultDict({}, {})".format(
-            self.default_factory, OrderedDict.__repr__(self),
+        return (
+            f"OrderedDefaultDict({self.default_factory}, "
+            f"{OrderedDict.__repr__(self)})"
         )
 
 
@@ -250,7 +249,7 @@ def create_report(true_data, eval_data, index2latex, n, merge=True):
     if not os.path.exists(directory):
         os.makedirs(directory)
     target = os.path.join(
-        project_root, ("reports/" "%s-classification-error-report.html") % time_prefix
+        project_root, f"reports/{time_prefix}-classification-error-report.html"
     )
     # Fill the template
     # Third party modules

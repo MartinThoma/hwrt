@@ -1,8 +1,4 @@
-#!/usr/bin/env python
-
-"""Check if all necessary modules / programs / files for HWRT are there and
-   if the version is ok.
-"""
+"""Check if all necessary modules / programs / files for HWRT are there."""
 
 # Core Library modules
 import importlib
@@ -102,8 +98,9 @@ def check_python_modules():
             toolbox = importlib.util.module_from_spec(toolbox_specs)
             toolbox_specs.loader.exec_module(toolbox)
 
-            check = "module '{}' ... {}found{}".format(
-                required_module, Bcolors.OKGREEN, Bcolors.ENDC,
+            check = (
+                f"module '{required_module}' ... "
+                f"{Bcolors.OKGREEN}found{Bcolors.ENDC}"
             )
             print(check)
             found.append(required_module)

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """Create and train a given model."""
 
 # Core Library modules
@@ -90,9 +88,7 @@ def generate_training_command(model_folder):
     latest_model = utils.get_latest_working_model(model_folder)
 
     if latest_model == "":
-        logger.error(
-            f"There is no model with basename '{basename}' " f"in {model_folder}"
-        )
+        logger.error(f"There is no model with basename '{basename}' in {model_folder}")
         return None
 
     logger.info(f"Model '{latest_model}' found.")

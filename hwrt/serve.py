@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """Start a webserver which can record the data and work as a classifier."""
 
 # Core Library modules
@@ -288,8 +286,9 @@ def work():
         try:
             json.loads(raw_data_json)
         except ValueError:
-            return "Raw Data ID {}; Invalid JSON string: {}".format(
-                parsed_json["id"], raw_data_json,
+            return (
+                f"Raw Data ID {parsed_json['id']}; "
+                f"Invalid JSON string: {raw_data_json}"
             )
 
         # Classify

@@ -265,7 +265,7 @@ def query_yes_no(question, default="yes"):
         elif choice in valid:
             return valid[choice]
         else:
-            sys.stdout.write("Please respond with 'yes' or 'no' " "(or 'y' or 'n').\n")
+            sys.stdout.write("Please respond with 'yes' or 'no' (or 'y' or 'n').\n")
 
 
 def get_latest_model(model_folder, basename):
@@ -551,7 +551,10 @@ def segment_by_split(split, recording):
         if split[i] == "1":
             segmented.append([])
         segmented[-1].append(recording[i + 1])
-    assert split.count("1") + 1 == len(segmented)
+    assert split.count("1") + 1 == len(segmented), (
+        f'split.count("1") + 1 = {split.count("1") + 1} != '
+        f"{len(segmented)} = len(segmented)"
+    )
     return segmented
 
 
@@ -596,7 +599,6 @@ def evaluate_model_single_recording_preloaded_multisymbol(
             cur_split_results.append(
                 [el for el in results if el["probability"] >= 0.01]
             )
-            # serve.show_results(results, n=10)
 
         # Now that I have all symbols of this split, I have to get all
         # combinations of the hypothesis
@@ -610,13 +612,13 @@ def evaluate_model_single_recording_preloaded_multisymbol(
                     * len(hyp)
                     / len(recording),
                     "symbols": [s["semantics"] for s in hyp],
-                    "min_part": min([s["probability"] for s in hyp]),
+                    "min_part": min(s["probability"] for s in hyp),
                     "segmentation": split,
                 }
             )
 
     hypotheses = sorted(hypotheses, key=lambda n: n["min_part"], reverse=True)[:10]
-    for i, hyp in enumerate(hypotheses):
+    for _i, hyp in enumerate(hypotheses):
         if hyp["score"] > 0.001:
             logger.info(
                 "%0.4f: %s (seg: %s)", hyp["score"], hyp["symbols"], hyp["segmentation"]
@@ -735,7 +737,7 @@ def evaluate_model(recording, model_folder, verbose=False):
                 feature_description = yaml.safe_load(ymlfile)
             feature_str_list = feature_description["features"]
             feature_list = features.get_features(feature_str_list)
-            feature_count = sum([n.get_dimension() for n in feature_list])
+            feature_count = sum(n.get_dimension() for n in feature_list)
             x = handwriting.feature_extraction(feature_list)
 
             # Create hdf5
@@ -986,7 +988,7 @@ def softmax(w: List[float], t: float = 1.0) -> List[float]:
     ['0.99998154', '0.00001846']
     >>> ["{:.8f}".format(el) for el in softmax([0, 10])]
     ['0.00004540', '0.99995460']
-    """
+    """  # noqa
     w_tmp = [Decimal(el) for el in w]
     exp = numpy.exp(numpy.array(w_tmp) / Decimal(t))
     dist = exp / numpy.sum(exp)
@@ -1070,9 +1072,9 @@ def is_valid_uuid(uuid_to_test: str, version: int = 4) -> bool:
 
 def get_symbols_filepath(testing: bool = False) -> str:
     """Get the filepath of the symbols YAML file."""
-    misc_path = pkg_resources.resource_filename(__name__, "misc/")
+    pkg_root = os.path.dirname(sys.modules[__package__].__file__)
     if testing:
-        symbol_yml_file = os.path.join(misc_path, "symbols_tiny.yml")
+        symbol_yml_file = os.path.join(pkg_root, "./misc/symbols_tiny.yml")
     else:
-        symbol_yml_file = os.path.join(misc_path, "symbols.yml")
+        symbol_yml_file = os.path.join(pkg_root, "./misc/symbols.yml")
     return symbol_yml_file

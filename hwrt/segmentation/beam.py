@@ -1,19 +1,16 @@
-#!/usr/bin/env python
-
 # Core Library modules
 import logging
 import os
 import sys
 from copy import deepcopy
 from decimal import Decimal, getcontext
+from typing import Dict
 
 # Third party modules
 import pkg_resources
 import yaml
 
 # Local modules
-# from ..handwritten_data import HandwrittenData
-# from .. import spacial_relationship
 from .. import language_model
 from ..utils import softmax
 from .segmentation import single_clf
@@ -49,7 +46,7 @@ def p_strokes(symbol: str, count: int) -> float:
         In [0.0, 1.0]
     """
     global stroke_prob
-    assert count >= 1
+    assert count >= 1, f"count = {count} < 1"
     epsilon = 0.00000001
     if stroke_prob is None:
         misc_path = pkg_resources.resource_filename("hwrt", "misc/")
@@ -64,13 +61,13 @@ def p_strokes(symbol: str, count: int) -> float:
     return epsilon
 
 
-def _calc_hypothesis_probability(hypothesis):
+def _calc_hypothesis_probability(hypothesis: Dict) -> float:
     """
     Get the probability (or rather a score) of a hypothesis.
 
     Parameters
     ----------
-    hypothesis : dict
+    hypothesis : Dict
         with keys 'segmentation', 'symbols', ...
 
     Returns
@@ -79,8 +76,7 @@ def _calc_hypothesis_probability(hypothesis):
         in [0.0, 1.0]
     """
     prob = 0.0
-    for symbol, seg in zip(hypothesis["symbols"], hypothesis["segmentation"]):
-        # symbol_latex = symbol['symbol'].split(";")[1]
+    for symbol, _seg in zip(hypothesis["symbols"], hypothesis["segmentation"]):
         # TODO: Does p_strokes really improve the system?
         prob += symbol["probability"]  # * p_strokes(symbol_latex, len(seg))
 
@@ -181,16 +177,6 @@ class Beam:
                     "probability": None,
                 }
 
-                # spacial_rels = []  # TODO
-                # for s1_indices, s2_indices in zip(b['segmentation'],
-                #                                   b['segmentation'][1:]):
-                #     tmp = [new_beam.history['data'][el] for el in s1_indices]
-                #     s1 = HandwrittenData(json.dumps(tmp))
-                #     tmp = [new_beam.history['data'][el] for el in s2_indices]
-                #     s2 = HandwrittenData(json.dumps(tmp))
-                #     rel = spacial_relationship.estimate(s1, s2)
-                #     spacial_rels.append(rel)
-                # b['geometry'] = spacial_rels
                 new_beam.hypotheses.append(b)
 
     def add_stroke(self, new_stroke):

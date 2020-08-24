@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """Normalize mathematical formulae written with LaTeX."""
 
 # Core Library modules

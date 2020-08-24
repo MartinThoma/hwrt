@@ -1,7 +1,4 @@
-#!/usr/bin/env python
-
 """Create preprocessed dataset."""
-
 
 # Core Library modules
 import logging

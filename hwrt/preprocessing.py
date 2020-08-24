@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Preprocessing algorithms.
 
@@ -257,14 +255,10 @@ class ScaleAndShift:
         hwr_obj.set_pointlist(pointlist)
         assert (
             self.max_width - hwr_obj.get_width() >= -0.00001
-        ), "max_width: {:0.5f}; width: {:0.5f}".format(
-            self.max_width, hwr_obj.get_width()
-        )
+        ), f"max_width: {self.max_width:0.5f}; width: {hwr_obj.get_width():0.5f}"
         assert (
             self.max_height - hwr_obj.get_height() >= -0.00001
-        ), "max_height: {:0.5f}; height: {:0.5f}".format(
-            self.max_height, hwr_obj.get_height()
-        )
+        ), f"max_height: {self.max_height:0.5f}; height: {hwr_obj.get_height():0.5f}"
 
 
 class SpaceEvenly:
@@ -276,13 +270,10 @@ class SpaceEvenly:
         self.kind = kind
 
     def __repr__(self):
-        return ("SpaceEvenly\n" " - number: %i\n" " - kind: %s\n") % (
-            self.number,
-            self.kind,
-        )
+        return ("SpaceEvenly\n - number: %i\n - kind: %s\n") % (self.number, self.kind,)
 
     def __str__(self):
-        return ("Space evenly\n" " - number: %i\n" " - kind: %s\n") % (
+        return ("Space evenly\n - number: %i\n - kind: %s\n") % (
             self.number,
             self.kind,
         )
@@ -405,13 +396,13 @@ class SpaceEvenlyPerStroke:
         self.kind = kind
 
     def __repr__(self):
-        return ("SpaceEvenlyPerStroke\n" " - number: %i\n" " - kind: %s\n") % (
+        return ("SpaceEvenlyPerStroke\n - number: %i\n - kind: %s\n") % (
             self.number,
             self.kind,
         )
 
     def __str__(self):
-        return ("Space evenly per stroke\n" " - number: %i\n" " - kind: %s\n") % (
+        return ("Space evenly per stroke\n - number: %i\n - kind: %s\n") % (
             self.number,
             self.kind,
         )
@@ -450,12 +441,12 @@ class SpaceEvenlyPerStroke:
                 fx = interp1d(t, x, kind="linear")
                 fy = interp1d(t, y, kind="linear")
                 failed = False
-            except Exception as e:
+            except Exception:
                 logger.debug("len(stroke) = %i", len(stroke))
                 logger.debug("len(x) = %i", len(x))
                 logger.debug("len(y) = %i", len(y))
                 logger.debug("stroke=%s", stroke)
-                raise e
+                raise
 
         for x, y, t in zip(fx(tnew), fy(tnew), tnew):
             new_stroke.append({"x": x, "y": y, "time": t})

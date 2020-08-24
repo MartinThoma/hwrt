@@ -1,7 +1,8 @@
-#!/usr/bin/env python
+"""
+Get all data in a CROHME folder.
 
-"""Get all data in a CROHME folder as a feature vector list and a label
-   list (Xs, ys) of single symbols. If it is a test folder, ys is None.
+Get the data as a feature vector list and a label list (Xs, ys) of single
+symbols. If it is a test folder, ys is None.
 """
 
 # Core Library modules
@@ -48,9 +49,7 @@ def main(folder):
     print("#" * 80)
     print_report(score_place)
     print("#" * 80)
-    for key, value in sorted(
-        list(wrong_counter.items()), reverse=True, key=lambda n: n[1]
-    ):
+    for key, value in sorted(wrong_counter.items(), reverse=True, key=lambda n: n[1]):
         print(
             "http://www.martin-thoma.de/write-math/symbol/?id=%i :%i count"
             % (key, value)

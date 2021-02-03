@@ -387,7 +387,10 @@ def train_nn_segmentation_classifier(X: np.ndarray, y: np.ndarray):
         layers = [l_in]
 
         for n_units in hiddens:
-            l_hidden_1 = Dense(n_units, activation="tanh",)(layers[-1])
+            l_hidden_1 = Dense(
+                n_units,
+                activation="tanh",
+            )(layers[-1])
             layers.append(l_hidden_1)
         # For our output layer, we'll use a dense layer with a softmax
         # nonlinearity.

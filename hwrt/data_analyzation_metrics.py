@@ -241,7 +241,7 @@ class InterStrokeDistance:
 
 class TimeBetweenPointsAndStrokes:
     """For each recording: Store the average time between controll points of
-       one stroke / controll points of two different strokes.
+    one stroke / controll points of two different strokes.
     """
 
     def __init__(
@@ -254,7 +254,8 @@ class TimeBetweenPointsAndStrokes:
 
     def __repr__(self):
         return "TimeBetweenPointsAndStrokes({points}, {strokes})".format(
-            points=self.filename_points, strokes=self.filename_strokes,
+            points=self.filename_points,
+            strokes=self.filename_strokes,
         )
 
     __str__ = __repr__

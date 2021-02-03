@@ -51,7 +51,9 @@ def clusters(l, K):  # noqa
             if tup != prev:
                 prev = tup
                 for i in range(K):
-                    yield tup[:i] + [[l[0]] + tup[i],] + tup[i + 1 :]
+                    yield tup[:i] + [
+                        [l[0]] + tup[i],
+                    ] + tup[i + 1 :]
     else:
         yield [[] for _ in range(K)]
 
@@ -122,9 +124,9 @@ class TopFinder:
 
     def push(self, element, value):
         """Push an ``element`` into the datastrucutre together with its value
-           and only save it if it currently is one of the top n elements.
+        and only save it if it currently is one of the top n elements.
 
-           Drop elements if necessary.
+        Drop elements if necessary.
         """
         insert_pos = 0
         for index, el in enumerate(self.tops):

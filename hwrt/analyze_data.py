@@ -22,7 +22,7 @@ sys.modules["hwrt.HandwrittenData"] = handwritten_data
 
 def filter_label(label, replace_by_similar=True):
     """Some labels currently don't work together because of LaTeX naming
-       clashes. Those will be replaced by simple strings. """
+    clashes. Those will be replaced by simple strings."""
     bad_names = [
         "celsius",
         "degree",

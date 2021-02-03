@@ -38,7 +38,7 @@ def test_execution():
 
 def test_get_class():
     """The get_class function returns a class for feature and preprocessing
-       algorithms.
+    algorithms.
     """
     utils.get_class("ScaleAndShift", "preprocessing", hwrt.preprocessing)
 

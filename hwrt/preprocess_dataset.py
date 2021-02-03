@@ -51,7 +51,7 @@ def get_parameters(folder):
 
 def create_preprocessed_dataset(path_to_data, outputpath, preprocessing_queue):
     """Create a preprocessed dataset file by applying `preprocessing_queue`
-       to `path_to_data`. The result will be stored in `outputpath`."""
+    to `path_to_data`. The result will be stored in `outputpath`."""
     # Log everything
     logger.info("Data soure %s", path_to_data)
     logger.info("Output will be stored in %s", outputpath)

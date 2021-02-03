@@ -253,9 +253,12 @@ class HandwrittenData:
         features = []
         for algorithm in algorithms:
             new_features = algorithm(self)
-            assert len(new_features) == algorithm.get_dimension(), (
-                "Expected %i features from algorithm %s, got %i features"
-                % (algorithm.get_dimension(), str(algorithm), len(new_features))
+            assert (
+                len(new_features) == algorithm.get_dimension()
+            ), "Expected %i features from algorithm %s, got %i features" % (
+                algorithm.get_dimension(),
+                str(algorithm),
+                len(new_features),
             )
             features += new_features
         return features
@@ -311,8 +314,7 @@ class HandwrittenData:
         plt.show()
 
     def count_single_dots(self):
-        """Count all strokes of this recording that have only a single dot.
-        """
+        """Count all strokes of this recording that have only a single dot."""
         pointlist = self.get_pointlist()
         single_dots = 0
         for stroke in pointlist:

@@ -132,7 +132,7 @@ def test_stroke_intersection1():
 
 def test_stroke_intersection2():
     """A 't' has two strokes. They don't intersect themselves, but they
-       intersect once."""
+    intersect once."""
     recording = testhelper.get_symbol_as_handwriting(293035)
     feature = features.StrokeIntersections(2)
     assert feature(recording) == [0, 1, 0]

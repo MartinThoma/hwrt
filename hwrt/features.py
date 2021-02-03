@@ -86,8 +86,7 @@ class Feature(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def __call__(self, hwr_obj):
-        """Get the features value for a given recording ``hwr_obj``.
-        """
+        """Get the features value for a given recording ``hwr_obj``."""
         assert isinstance(
             hwr_obj, handwritten_data.HandwrittenData
         ), "handwritten data is not of type HandwrittenData, but of %r" % type(hwr_obj)
@@ -188,7 +187,7 @@ class ConstantPointCoordinates(Feature):
 
     def get_dimension(self):
         """Get the dimension of the returned feature. This equals the number
-           of elements in the returned list of numbers."""
+        of elements in the returned list of numbers."""
         if self.strokes > 0:
             if self.pixel_env > 0:
                 return (
@@ -206,7 +205,7 @@ class ConstantPointCoordinates(Feature):
 
     def _features_with_strokes(self, hwr_obj):
         """Calculate the ConstantPointCoordinates features for the case of
-           a fixed number of strokes."""
+        a fixed number of strokes."""
         x = []
         img = Image.new(
             "L",
@@ -282,7 +281,7 @@ class ConstantPointCoordinates(Feature):
 
     def _features_without_strokes(self, hwr_obj):
         """Calculate the ConstantPointCoordinates features for the case of
-           a single (callapesed) stroke with pen_down features."""
+        a single (callapesed) stroke with pen_down features."""
         x = []
         for point in hwr_obj.get_pointlist()[0]:
             if len(x) >= 3 * self.points_per_stroke or (
@@ -315,9 +314,12 @@ class ConstantPointCoordinates(Feature):
             x = self._features_with_strokes(hwr_obj)
         else:
             x = self._features_without_strokes(hwr_obj)
-        assert self.get_dimension() == len(x), (
-            "Dimension of %s should be %i, but was %i"
-            % (str(self), self.get_dimension(), len(x))
+        assert self.get_dimension() == len(
+            x
+        ), "Dimension of %s should be %i, but was %i" % (
+            str(self),
+            self.get_dimension(),
+            len(x),
         )
         return x
 
@@ -325,9 +327,9 @@ class ConstantPointCoordinates(Feature):
 class FirstNPoints(Feature):
 
     """Similar to the ``ConstantPointCoordinates`` feature, this feature takes
-       the first ``n=81`` point coordinates. It also has the
-       ``fill_empty_with=0`` to make sure that the dimension of this feature is
-       always the same."""
+    the first ``n=81`` point coordinates. It also has the
+    ``fill_empty_with=0`` to make sure that the dimension of this feature is
+    always the same."""
 
     normalize = False
 
@@ -342,7 +344,7 @@ class FirstNPoints(Feature):
 
     def get_dimension(self):
         """Get the dimension of the returned feature. This equals the number
-           of elements in the returned list of numbers."""
+        of elements in the returned list of numbers."""
         return 2 * self.n
 
     def __call__(self, hwr_obj):
@@ -358,9 +360,12 @@ class FirstNPoints(Feature):
                     left -= 1
                     x.append(point["x"])
                     x.append(point["y"])
-        assert self.get_dimension() == len(x), (
-            "Dimension of %s should be %i, but was %i"
-            % (str(self), self.get_dimension(), len(x))
+        assert self.get_dimension() == len(
+            x
+        ), "Dimension of %s should be %i, but was %i" % (
+            str(self),
+            self.get_dimension(),
+            len(x),
         )
         return x
 
@@ -385,7 +390,7 @@ class Bitmap(Feature):
 
     def get_dimension(self):
         """Get the dimension of the returned feature. This equals the number
-           of elements in the returned list of numbers."""
+        of elements in the returned list of numbers."""
         return self.size ** 2
 
     def __call__(self, hwr_obj):
@@ -408,7 +413,7 @@ class StrokeCount(Feature):
 
     def get_dimension(self):  # pylint: disable=R0201
         """Get the dimension of the returned feature. This equals the number
-           of elements in the returned list of numbers."""
+        of elements in the returned list of numbers."""
         return 1
 
     def __call__(self, hwr_obj):
@@ -419,7 +424,7 @@ class StrokeCount(Feature):
 class Ink(Feature):
 
     """Ink as a 1 dimensional feature. It gives a numeric value for the amount
-       of ink this would eventually have consumed.
+    of ink this would eventually have consumed.
     """
 
     normalize = True
@@ -432,7 +437,7 @@ class Ink(Feature):
 
     def get_dimension(self):  # pylint: disable=R0201
         """Get the dimension of the returned feature. This equals the number
-           of elements in the returned list of numbers."""
+        of elements in the returned list of numbers."""
         return 1
 
     def __call__(self, hwr_obj):
@@ -463,7 +468,7 @@ class AspectRatio(Feature):
 
     def get_dimension(self):  # pylint: disable=R0201
         """Get the dimension of the returned feature. This equals the number
-           of elements in the returned list of numbers."""
+        of elements in the returned list of numbers."""
         return 1
 
     def __call__(self, hwr_obj):
@@ -493,7 +498,7 @@ class Width(Feature):
 
     def get_dimension(self):  # pylint: disable=R0201
         """Get the dimension of the returned feature. This equals the number
-           of elements in the returned list of numbers."""
+        of elements in the returned list of numbers."""
         return 1
 
     def __call__(self, hwr_obj):
@@ -521,7 +526,7 @@ class Height(Feature):
 
     def get_dimension(self):  # pylint: disable=R0201
         """Get the dimension of the returned feature. This equals the number
-           of elements in the returned list of numbers."""
+        of elements in the returned list of numbers."""
         return 1
 
     def __call__(self, hwr_obj):
@@ -532,7 +537,7 @@ class Height(Feature):
 class Time(Feature):
 
     """The time in milliseconds it took to create the recording. This is a 1
-       dimensional feature."""
+    dimensional feature."""
 
     normalize = True
 
@@ -544,7 +549,7 @@ class Time(Feature):
 
     def get_dimension(self):  # pylint: disable=R0201
         """Get the dimension of the returned feature. This equals the number
-           of elements in the returned list of numbers."""
+        of elements in the returned list of numbers."""
         return 1
 
     def __call__(self, hwr_obj):
@@ -566,7 +571,7 @@ class CenterOfMass(Feature):
 
     def get_dimension(self):  # pylint: disable=R0201
         """Get the dimension of the returned feature. This equals the number
-           of elements in the returned list of numbers."""
+        of elements in the returned list of numbers."""
         return 2
 
     def __call__(self, hwr_obj):
@@ -597,7 +602,7 @@ class StrokeCenter(Feature):
 
     def get_dimension(self):
         """Get the dimension of the returned feature. This equals the number
-           of elements in the returned list of numbers."""
+        of elements in the returned list of numbers."""
         return self.strokes * 2
 
     def __call__(self, hwr_obj):
@@ -621,7 +626,7 @@ class StrokeCenter(Feature):
 class DouglasPeuckerPoints(Feature):
 
     """Get the number of points which are left after applying the Douglas
-       Peucker line simplification algorithm.
+    Peucker line simplification algorithm.
     """
 
     normalize = True
@@ -637,17 +642,17 @@ class DouglasPeuckerPoints(Feature):
 
     def get_dimension(self):
         """Get the dimension of the returned feature. This equals the number
-           of elements in the returned list of numbers."""
+        of elements in the returned list of numbers."""
         return 1
 
     def _stroke_simplification(self, pointlist):
         """The Douglas-Peucker line simplification takes a list of points as an
-           argument. It tries to simplifiy this list by removing as many points
-           as possible while still maintaining the overall shape of the stroke.
-           It does so by taking the first and the last point, connecting them
-           by a straight line and searchin for the point with the highest
-           distance. If that distance is bigger than 'epsilon', the point is
-           important and the algorithm continues recursively."""
+        argument. It tries to simplifiy this list by removing as many points
+        as possible while still maintaining the overall shape of the stroke.
+        It does so by taking the first and the last point, connecting them
+        by a straight line and searchin for the point with the highest
+        distance. If that distance is bigger than 'epsilon', the point is
+        important and the algorithm continues recursively."""
 
         # Find the point with the biggest distance
         dmax = 0
@@ -718,7 +723,7 @@ class StrokeIntersections(Feature):
 
     def get_dimension(self):
         """Get the dimension of the returned feature. This equals the number
-           of elements in the returned list of numbers."""
+        of elements in the returned list of numbers."""
         return int(round(float(self.strokes ** 2) / 2 + float(self.strokes) / 2))
 
     def __call__(self, hwr_obj):
@@ -741,9 +746,12 @@ class StrokeIntersections(Feature):
             else:
                 x.append(chainA.count_intersections(chainB))
 
-        assert self.get_dimension() == len(x), (
-            "Dimension of %s should be %i, but was %i"
-            % (str(self), self.get_dimension(), len(x))
+        assert self.get_dimension() == len(
+            x
+        ), "Dimension of %s should be %i, but was %i" % (
+            str(self),
+            self.get_dimension(),
+            len(x),
         )
         return x
 
@@ -751,9 +759,9 @@ class StrokeIntersections(Feature):
 class ReCurvature(Feature):
 
     """Re-curvature is a 1 dimensional, stroke-global feature for a recording.
-       It is the ratio
-       :math:`\\frac{\\text{height}(s)}{\\text{length}(s)}`.
-       If ``length(s) == 0``, then the re-curvature is defined to be 1.
+    It is the ratio
+    :math:`\\frac{\\text{height}(s)}{\\text{length}(s)}`.
+    If ``length(s) == 0``, then the re-curvature is defined to be 1.
     """
 
     normalize = True
@@ -772,7 +780,7 @@ class ReCurvature(Feature):
 
     def get_dimension(self):
         """Get the dimension of the returned feature. This equals the number
-           of elements in the returned list of numbers."""
+        of elements in the returned list of numbers."""
         return self.strokes
 
     def __call__(self, hwr_obj):
@@ -793,8 +801,11 @@ class ReCurvature(Feature):
                 break
         while len(x) < self.strokes:
             x.append(0)
-        assert self.get_dimension() == len(x), (
-            "Dimension of %s should be %i, but was %i"
-            % (str(self), self.get_dimension(), len(x))
+        assert self.get_dimension() == len(
+            x
+        ), "Dimension of %s should be %i, but was %i" % (
+            str(self),
+            self.get_dimension(),
+            len(x),
         )
         return x

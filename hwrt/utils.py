@@ -69,7 +69,7 @@ def get_project_configuration():
 
 def create_project_configuration(filename):
     """Create a project configuration file which contains a configuration
-       that might make sense."""
+    that might make sense."""
     home = os.path.expanduser("~")
     project_root_folder = os.path.join(home, "hwr-experiments")
     config = {
@@ -155,7 +155,7 @@ def get_nntoolkit() -> str:
 
 def get_latest_in_folder(folder, ending="", default=""):
     """Get the file that comes last with natural sorting in folder and has
-       file ending 'ending'.
+    file ending 'ending'.
     """
     latest = default
     for my_file in natsort.natsorted(os.listdir(folder), reverse=True):
@@ -167,7 +167,7 @@ def get_latest_in_folder(folder, ending="", default=""):
 
 def get_latest_folder(folder):
     """Get the absolute path of a subfolder that comes last with natural
-       sorting in the given folder.
+    sorting in the given folder.
     """
     folders = [
         os.path.join(folder, name)
@@ -228,7 +228,7 @@ def sizeof_fmt(num):
 
 def input_int_default(question="", default=0):
     """A function that works for both, Python 2.x and Python 3.x.
-       It asks the user for input and returns it as a string.
+    It asks the user for input and returns it as a string.
     """
     answer = input(question)
     if answer == "" or answer == "yes":
@@ -270,7 +270,7 @@ def query_yes_no(question, default="yes"):
 
 def get_latest_model(model_folder, basename):
     """Get the latest model (determined by the name of the model in
-       natural sorted order) which begins with `basename`."""
+    natural sorted order) which begins with `basename`."""
     models = [n for n in os.listdir(model_folder) if n.endswith(".json")]
     models = [n for n in models if n.startswith(basename)]
     models = natsort.natsorted(models, reverse=True)
@@ -306,7 +306,7 @@ def get_latest_successful_run(folder: str) -> Optional[datetime.datetime]:
 
 def create_run_logfile(folder: str) -> None:
     """Create a 'run.log' within folder. This file contains the time of the
-       latest successful run.
+    latest successful run.
     """
     with open(os.path.join(folder, "run.log"), "w") as fp:
         datestring = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
@@ -444,7 +444,7 @@ def get_recognizer_folders(model_folder):
 
 def load_model(model_file):
     """Load a model by its file. This includes the model itself, but also
-       the preprocessing queue, the feature list and the output semantics.
+    the preprocessing queue, the feature list and the output semantics.
     """
     # Extract tar
     with tarfile.open(model_file) as tar:

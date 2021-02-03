@@ -26,7 +26,7 @@ def test_execution():
 @pytest.mark.skip
 def test_fix_fix_writemath_answer():
     """Test if the function which brings the data into the format wanted by
-       write-math.com works.
+    write-math.com works.
     """
     results = [
         {"symbolnr": 32, "semantics": "\\alpha", "probability": 0.67},

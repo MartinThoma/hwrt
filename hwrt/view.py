@@ -67,9 +67,9 @@ def _fetch_data_from_server(raw_data_id, mysql_cfg) -> Optional[Any]:
 
 def _get_data_from_rawfile(path_to_data, raw_data_id):
     """Get a HandwrittenData object that has ``raw_data_id`` from a pickle file
-       ``path_to_data``.
-       :returns: The HandwrittenData object if ``raw_data_id`` is in
-                 path_to_data, otherwise ``None``."""
+    ``path_to_data``.
+    :returns: The HandwrittenData object if ``raw_data_id`` is in
+              path_to_data, otherwise ``None``."""
     loaded = pickle.load(open(path_to_data, "rb"))
     raw_datasets = loaded["handwriting_datasets"]
     for raw_dataset in raw_datasets:
@@ -80,7 +80,7 @@ def _get_data_from_rawfile(path_to_data, raw_data_id):
 
 def _list_ids(path_to_data):
     """List raw data IDs grouped by symbol ID from a pickle file
-       ``path_to_data``."""
+    ``path_to_data``."""
     loaded = pickle.load(open(path_to_data, "rb"))
     raw_datasets = loaded["handwriting_datasets"]
     raw_ids = {}
@@ -96,7 +96,7 @@ def _list_ids(path_to_data):
 
 def _get_description(prev_description):
     """Get the parsed description file (a dictionary) from another
-       parsed description file."""
+    parsed description file."""
     current_desc_file = os.path.join(
         utils.get_project_root(), prev_description["data-source"], "info.yml"
     )
@@ -113,7 +113,7 @@ def _get_description(prev_description):
 
 def _get_system(model_folder):
     """Return the preprocessing description, the feature description and the
-       model description."""
+    model description."""
 
     # Get model description
     model_description_file = os.path.join(model_folder, "info.yml")
@@ -135,7 +135,7 @@ def _get_system(model_folder):
 
 def display_data(raw_data_string, raw_data_id, model_folder, show_raw):
     """Print ``raw_data_id`` with the content ``raw_data_string`` after
-       applying the preprocessing of ``model_folder`` to it."""
+    applying the preprocessing of ``model_folder`` to it."""
     print("## Raw Data (ID: %i)" % raw_data_id)
     print("```")
     print(raw_data_string)

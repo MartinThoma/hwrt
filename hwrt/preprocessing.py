@@ -83,8 +83,8 @@ def print_preprocessing_list(preprocessing_queue):
 
 class RemoveDuplicateTime:
     """If a recording has two points with the same timestamp, than the second
-       point will be discarded. This is useful for a couple of algorithms that
-       don't expect two points at the same time."""
+    point will be discarded. This is useful for a couple of algorithms that
+    don't expect two points at the same time."""
 
     def __repr__(self):
         return "RemoveDuplicateTime"
@@ -118,7 +118,7 @@ class RemoveDuplicateTime:
 
 class RemoveDots:
     """Remove all strokes that have only a single point (a dot) from the
-       recording, except if the whole recording consists of dots only.
+    recording, except if the whole recording consists of dots only.
     """
 
     def __repr__(self):
@@ -146,11 +146,11 @@ class RemoveDots:
 
 
 class ScaleAndShift:
-    """ Scale a recording so that it fits into a unit square. This keeps the
-        aspect ratio. Then the recording is shifted. The default way is to
-        shift it so that the recording is in [0, 1] × [0,1]. However, it
-        can also be used to be centered within [-1, 1] × [-1, 1] around the
-        origin (0, 0) by setting center=True and center_other=True.
+    """Scale a recording so that it fits into a unit square. This keeps the
+    aspect ratio. Then the recording is shifted. The default way is to
+    shift it so that the recording is in [0, 1] × [0,1]. However, it
+    can also be used to be centered within [-1, 1] × [-1, 1] around the
+    origin (0, 0) by setting center=True and center_other=True.
     """
 
     def __init__(
@@ -186,10 +186,10 @@ class ScaleAndShift:
         ) % (self.center, self.max_width, self.max_height)
 
     def _get_parameters(self, hwr_obj):
-        """ Take a list of points and calculate the factors for scaling and
-            moving it so that it's in the unit square. Keept the aspect
-            ratio.
-            Optionally center the points inside of the unit square.
+        """Take a list of points and calculate the factors for scaling and
+        moving it so that it's in the unit square. Keept the aspect
+        ratio.
+        Optionally center the points inside of the unit square.
         """
         a = hwr_obj.get_bounding_box()
 
@@ -263,14 +263,17 @@ class ScaleAndShift:
 
 class SpaceEvenly:
     """Space the points evenly in time over the complete recording. The
-       parameter 'number' defines how many."""
+    parameter 'number' defines how many."""
 
     def __init__(self, number=100, kind="cubic"):
         self.number = number
         self.kind = kind
 
     def __repr__(self):
-        return ("SpaceEvenly\n - number: %i\n - kind: %s\n") % (self.number, self.kind,)
+        return ("SpaceEvenly\n - number: %i\n - kind: %s\n") % (
+            self.number,
+            self.kind,
+        )
 
     def __str__(self):
         return ("Space evenly\n - number: %i\n - kind: %s\n") % (
@@ -280,8 +283,8 @@ class SpaceEvenly:
 
     def _calculate_pen_down_strokes(self, pointlist, times=None):
         """Calculate the intervall borders 'times' that contain the information
-           when a stroke started, when it ended and how it should be
-           interpolated."""
+        when a stroke started, when it ended and how it should be
+        interpolated."""
         if times is None:
             times = []
         for stroke in pointlist:
@@ -316,8 +319,8 @@ class SpaceEvenly:
         return times
 
     def _calculate_pen_up_strokes(self, pointlist, times=None):
-        """ 'Pen-up' strokes are virtual strokes that were not drawn. It
-            models the time when the user moved from one stroke to the next.
+        """'Pen-up' strokes are virtual strokes that were not drawn. It
+        models the time when the user moved from one stroke to the next.
         """
         if times is None:
             times = []
@@ -384,11 +387,11 @@ class SpaceEvenly:
 
 class SpaceEvenlyPerStroke:
     """Space the points evenly for every single stroke separately. The
-       parameter `number` defines how many points are used per stroke and the
-       parameter `kind` defines which kind of interpolation is used. Possible
-       values include `cubic`, `quadratic`, `linear`, `nearest`. This part of
-       the implementation relies on
-       :mod:`scipy.interpolate.interp1d <scipy:scipy.interpolate.interp1d>`.
+    parameter `number` defines how many points are used per stroke and the
+    parameter `kind` defines which kind of interpolation is used. Possible
+    values include `cubic`, `quadratic`, `linear`, `nearest`. This part of
+    the implementation relies on
+    :mod:`scipy.interpolate.interp1d <scipy:scipy.interpolate.interp1d>`.
     """
 
     def __init__(self, number=100, kind="cubic"):
@@ -474,9 +477,9 @@ class SpaceEvenlyPerStroke:
 
 class DouglasPeucker:
     """Apply the Douglas-Peucker stroke simplification algorithm separately to
-       each stroke of the recording. The algorithm has a threshold parameter
-       `epsilon` that indicates how much the stroke is simplified. The smaller
-       the parameter, the closer will the resulting strokes be to the original.
+    each stroke of the recording. The algorithm has a threshold parameter
+    `epsilon` that indicates how much the stroke is simplified. The smaller
+    the parameter, the closer will the resulting strokes be to the original.
     """
 
     def __init__(self, epsilon=0.2):
@@ -490,12 +493,12 @@ class DouglasPeucker:
 
     def _stroke_simplification(self, pointlist):
         """The Douglas-Peucker line simplification takes a list of points as an
-           argument. It tries to simplifiy this list by removing as many points
-           as possible while still maintaining the overall shape of the stroke.
-           It does so by taking the first and the last point, connecting them
-           by a straight line and searchin for the point with the highest
-           distance. If that distance is bigger than 'epsilon', the point is
-           important and the algorithm continues recursively."""
+        argument. It tries to simplifiy this list by removing as many points
+        as possible while still maintaining the overall shape of the stroke.
+        It does so by taking the first and the last point, connecting them
+        by a straight line and searchin for the point with the highest
+        distance. If that distance is bigger than 'epsilon', the point is
+        important and the algorithm continues recursively."""
 
         # Find the point with the biggest distance
         dmax = 0
@@ -535,10 +538,10 @@ class DouglasPeucker:
 
 class StrokeConnect:
     """`StrokeConnect`: Detect if strokes were probably accidentally
-       disconnected. If that is the case, connect them. This is detected by the
-       threshold parameter `minimum_distance`. If the distance between the end
-       point of a stroke and the first point of the next stroke is below the
-       minimum distance, the strokes will be connected.
+    disconnected. If that is the case, connect them. This is detected by the
+    threshold parameter `minimum_distance`. If the distance between the end
+    point of a stroke and the first point of the next stroke is below the
+    minimum distance, the strokes will be connected.
     """
 
     def __init__(self, minimum_distance=0.05):
@@ -658,7 +661,7 @@ class DotReduction:
 
 class WildPointFilter:
     """Find wild points and remove them. The threshold means
-       speed in pixels / ms.
+    speed in pixels / ms.
     """
 
     def __init__(self, threshold=3.0):
@@ -698,7 +701,7 @@ class WildPointFilter:
 
 class WeightedAverageSmoothing:
     """Smooth every stroke by a weighted average. This algorithm takes a list
-       `theta` of 3 numbers that are the weights used for smoothing."""
+    `theta` of 3 numbers that are the weights used for smoothing."""
 
     def __init__(self, theta=None):
         """Theta is a list of 3 non-negative numbers"""
@@ -720,11 +723,13 @@ class WeightedAverageSmoothing:
 
     def _calculate_average(self, points):
         """Calculate the arithmetic mean of the points x and y coordinates
-           seperately.
+        seperately.
         """
-        assert len(self.theta) == len(points), (
-            "points has length %i, but should have length %i"
-            % (len(points), len(self.theta))
+        assert len(self.theta) == len(
+            points
+        ), "points has length %i, but should have length %i" % (
+            len(points),
+            len(self.theta),
         )
         new_point = {"x": 0, "y": 0, "time": 0}
         for key in new_point:

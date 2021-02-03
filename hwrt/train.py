@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 def update_if_outdated(folder):
     """Check if the currently watched instance (model, feature or
-        preprocessing) is outdated and update it eventually.
+    preprocessing) is outdated and update it eventually.
     """
 
     folders = []
@@ -63,7 +63,7 @@ def update_if_outdated(folder):
 
 def generate_training_command(model_folder):
     """Generate a string that contains a command with all necessary
-       parameters to train the model."""
+    parameters to train the model."""
     update_if_outdated(model_folder)
     model_description_file = os.path.join(model_folder, "info.yml")
     # Read the model description file

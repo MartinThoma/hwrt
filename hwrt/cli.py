@@ -53,7 +53,11 @@ def selfcheck():
 
 @entry_point.command()
 @click.option(
-    "-i", "--id", "raw_data_id", default=292293, type=int,
+    "-i",
+    "--id",
+    "raw_data_id",
+    default=292293,
+    type=int,
 )
 @click.option(
     "--mysql",
@@ -122,7 +126,10 @@ def download():
     help="which set should get analyzed?",
 )
 @click.option(
-    "-n", type=int, default=1, help="Top-N error",
+    "-n",
+    type=int,
+    default=1,
+    help="Top-N error",
 )
 @click.option(
     "--merge",

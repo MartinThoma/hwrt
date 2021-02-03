@@ -25,7 +25,7 @@ class Bitmap:
 
     def get_dimension(self):
         """Get the dimension of the returned feature. This equals the number
-           of elements in the returned list of numbers."""
+        of elements in the returned list of numbers."""
         return self.n ** 2
 
     def __call__(self, hwr_obj):
@@ -45,7 +45,11 @@ class Bitmap:
             "convert -size 28x28 {folder}{id}.svg  -resize {n}x{n} "
             "-gravity center -extent {n}x{n} "
             "-monochrome {folder}{id}.png"
-        ).format(id=raw_data_id, n=self.n, folder=foldername,)
+        ).format(
+            id=raw_data_id,
+            n=self.n,
+            folder=foldername,
+        )
         os.system(command)
         # Third party modules
         from PIL import Image
@@ -55,8 +59,11 @@ class Bitmap:
         for i in range(28):
             for j in range(28):
                 x.append(pix[i, j])
-        assert self.get_dimension() == len(x), (
-            "Dimension of %s should be %i, but was %i"
-            % (str(self), self.get_dimension(), len(x))
+        assert self.get_dimension() == len(
+            x
+        ), "Dimension of %s should be %i, but was %i" % (
+            str(self),
+            self.get_dimension(),
+            len(x),
         )
         return x

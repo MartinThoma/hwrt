@@ -163,9 +163,12 @@ def read(filepath):
     hw.symbol_stream = symbol_stream
     hw.segmentation = segmentation
     _flat_seg = [stroke2 for symbol2 in segmentation for stroke2 in symbol2]
-    assert len(_flat_seg) == len(recording), (
-        "Segmentation had length %i, but recording has %i strokes (%s)"
-        % (len(_flat_seg), len(recording), filepath)
+    assert len(_flat_seg) == len(
+        recording
+    ), "Segmentation had length %i, but recording has %i strokes (%s)" % (
+        len(_flat_seg),
+        len(recording),
+        filepath,
     )
     assert set(_flat_seg) == set(range(len(_flat_seg))), (
         f"set(_flat_seg) = {set(_flat_seg)} !="

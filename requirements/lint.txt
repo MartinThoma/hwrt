@@ -59,7 +59,7 @@ mccabe==0.6.1
     # via
     #   -r lint.in
     #   flake8
-more-itertools==8.6.0
+more-itertools==8.7.0
     # via flake8-implicit-str-concat
 mypy-extensions==0.4.3
     # via

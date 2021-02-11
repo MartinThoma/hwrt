@@ -231,7 +231,7 @@ def input_int_default(question="", default=0):
     It asks the user for input and returns it as a string.
     """
     answer = input(question)
-    if answer == "" or answer == "yes":
+    if answer in ["", "yes"]:
         return default
     else:
         return int(answer)

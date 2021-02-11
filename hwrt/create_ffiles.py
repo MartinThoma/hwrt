@@ -222,7 +222,8 @@ def get_sets(path_to_data):
             The index2latex maps the index of the neural network to the latex
             command.
     """
-    loaded = pickle.load(open(path_to_data, "rb"))
+    with open(path_to_data, "rb") as fp:
+        loaded = pickle.load(fp)
     datasets = loaded["handwriting_datasets"]
 
     training_set, validation_set, test_set = [], [], []

@@ -246,4 +246,5 @@ def filter_and_save(
 
     # pickle
     logger.info("Start dumping %i recordings...", len(new_hw_ds))
-    pickle.dump(raw, open(destination_path, "wb"), 2)
+    with open(destination_path, "wb") as fp:
+        pickle.dump(raw, fp, 2)

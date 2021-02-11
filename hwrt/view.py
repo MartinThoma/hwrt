@@ -70,7 +70,8 @@ def _get_data_from_rawfile(path_to_data, raw_data_id):
     ``path_to_data``.
     :returns: The HandwrittenData object if ``raw_data_id`` is in
               path_to_data, otherwise ``None``."""
-    loaded = pickle.load(open(path_to_data, "rb"))
+    with open(path_to_data, "rb") as fp:
+        loaded = pickle.load(fp)
     raw_datasets = loaded["handwriting_datasets"]
     for raw_dataset in raw_datasets:
         if raw_dataset["handwriting"].raw_data_id == raw_data_id:
@@ -81,7 +82,8 @@ def _get_data_from_rawfile(path_to_data, raw_data_id):
 def _list_ids(path_to_data):
     """List raw data IDs grouped by symbol ID from a pickle file
     ``path_to_data``."""
-    loaded = pickle.load(open(path_to_data, "rb"))
+    with open(path_to_data, "rb") as fp:
+        loaded = pickle.load(fp)
     raw_datasets = loaded["handwriting_datasets"]
     raw_ids = {}
     for raw_dataset in raw_datasets:

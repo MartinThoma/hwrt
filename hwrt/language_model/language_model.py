@@ -95,9 +95,8 @@ class NgramLanguageModel:
 
     def get_bigram_log_prob(self, bigram):
         w1, w2 = bigram
-        if w1 in self.ngrams[2]["data"]:
-            if w2 in self.ngrams[2]["data"][w1]:
-                return self.ngrams[2]["data"][w1][w2]
+        if w1 in self.ngrams[2]["data"] and w2 in self.ngrams[2]["data"][w1]:
+            return self.ngrams[2]["data"][w1][w2]
         return Decimal(1.0).log10() - Decimal(int(self.ngrams[1]["count"])).log10()
 
     def get_trigram_log_prob(self, trigram):
@@ -115,10 +114,12 @@ class NgramLanguageModel:
             The log likelihood of P(w3 | (w1, w2))
         """
         w1, w2, w3 = trigram
-        if w1 in self.ngrams[3]["data"]:
-            if w2 in self.ngrams[3]["data"][w1]:
-                if w3 in self.ngrams[3]["data"][w1][w2]:
-                    return self.ngrams[3]["data"][w1][w2][w3]
+        if (
+            w1 in self.ngrams[3]["data"]
+            and w2 in self.ngrams[3]["data"][w1]
+            and w3 in self.ngrams[3]["data"][w1][w2]
+        ):
+            return self.ngrams[3]["data"][w1][w2][w3]
         return Decimal(1.0).log10() - Decimal(int(self.ngrams[1]["count"]) ** 2).log10()
 
     def get_probability(self, sentence):

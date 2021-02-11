@@ -67,7 +67,8 @@ def prepare_file(filename):
     if not os.path.exists(directory):
         os.makedirs(directory)
     workfilename = os.path.join(directory, filename)
-    open(workfilename, "w").close()  # Truncate the file
+    with open(workfilename, "w") as fp:
+        pass  # Truncate the file
     return workfilename
 
 
@@ -132,25 +133,24 @@ class Creator:
         return "AnalyzeCreator(%s)" % self.filename
 
     def __call__(self, raw_datasets):
-        write_file = open(self.filename, "a")
-        write_file.write("creatorid,nr of recordings\n")  # heading
+        with open(self.filename, "a") as write_file:
+            write_file.write("creatorid,nr of recordings\n")  # heading
 
-        print_data = defaultdict(int)
-        start_time = time.time()
-        for i, raw_dataset in enumerate(raw_datasets):
-            if i % 100 == 0 and i > 0:
-                utils.print_status(len(raw_datasets), i, start_time)
-            print_data[raw_dataset["handwriting"].user_id] += 1
-        print("100%")
+            print_data = defaultdict(int)
+            start_time = time.time()
+            for i, raw_dataset in enumerate(raw_datasets):
+                if i % 100 == 0 and i > 0:
+                    utils.print_status(len(raw_datasets), i, start_time)
+                print_data[raw_dataset["handwriting"].user_id] += 1
+            print("100%")
 
-        # Sort the data by highest value, descending
-        print_data = sorted(print_data.items(), key=lambda n: n[1], reverse=True)
+            # Sort the data by highest value, descending
+            print_data = sorted(print_data.items(), key=lambda n: n[1], reverse=True)
 
-        # Write data to file
-        write_file.write(f"total,{sum(value for _, value in print_data)}\n")
-        for userid, value in print_data:
-            write_file.write(f"{userid},{value}\n")
-        write_file.close()
+            # Write data to file
+            write_file.write(f"total,{sum(value for _, value in print_data)}\n")
+            for userid, value in print_data:
+                write_file.write(f"{userid},{value}\n")
 
 
 class InstrokeSpeed:
@@ -166,35 +166,34 @@ class InstrokeSpeed:
         return "InstrokeSpeed(%s)" % self.filename
 
     def __call__(self, raw_datasets):
-        write_file = open(self.filename, "a")
-        write_file.write("speed\n")  # heading
+        with open(self.filename, "a") as write_file:
+            write_file.write("speed\n")  # heading
 
-        print_data = []
-        start_time = time.time()
-        for i, raw_dataset in enumerate(raw_datasets):
-            if i % 100 == 0 and i > 0:
-                utils.print_status(len(raw_datasets), i, start_time)
-            pointlist = raw_dataset["handwriting"].get_sorted_pointlist()
+            print_data = []
+            start_time = time.time()
+            for i, raw_dataset in enumerate(raw_datasets):
+                if i % 100 == 0 and i > 0:
+                    utils.print_status(len(raw_datasets), i, start_time)
+                pointlist = raw_dataset["handwriting"].get_sorted_pointlist()
 
-            for stroke in pointlist:
-                for last_point, point in zip(stroke, stroke[1:]):
-                    space_dist = math.hypot(
-                        last_point["x"] - point["x"], last_point["y"] - point["y"]
-                    )
-                    time_delta = point["time"] - last_point["time"]
-                    if time_delta == 0:
-                        continue
-                    print_data.append(space_dist / time_delta)
-        print("100%")
-        # Sort the data by highest value, descending
-        print_data = sorted(print_data, reverse=True)
-        # Write data to file
-        for value in print_data:
-            write_file.write("%0.8f\n" % (value))
+                for stroke in pointlist:
+                    for last_point, point in zip(stroke, stroke[1:]):
+                        space_dist = math.hypot(
+                            last_point["x"] - point["x"], last_point["y"] - point["y"]
+                        )
+                        time_delta = point["time"] - last_point["time"]
+                        if time_delta == 0:
+                            continue
+                        print_data.append(space_dist / time_delta)
+            print("100%")
+            # Sort the data by highest value, descending
+            print_data = sorted(print_data, reverse=True)
+            # Write data to file
+            for value in print_data:
+                write_file.write("%0.8f\n" % (value))
 
-        logger.info("instroke speed mean: %0.8f", numpy.mean(print_data))
-        logger.info("instroke speed std: %0.8f", numpy.std(print_data))
-        write_file.close()
+            logger.info("instroke speed mean: %0.8f", numpy.mean(print_data))
+            logger.info("instroke speed std: %0.8f", numpy.std(print_data))
 
 
 class InterStrokeDistance:
@@ -210,33 +209,32 @@ class InterStrokeDistance:
         return "InterStrokeDistance(%s)" % self.filename
 
     def __call__(self, raw_datasets):
-        write_file = open(self.filename, "a")
-        write_file.write("speed\n")  # heading
+        with open(self.filename, "a") as write_file:
+            write_file.write("speed\n")  # heading
 
-        print_data = []
-        start_time = time.time()
-        for i, raw_dataset in enumerate(raw_datasets):
-            if i % 100 == 0 and i > 0:
-                utils.print_status(len(raw_datasets), i, start_time)
-            pointlist = raw_dataset["handwriting"].get_sorted_pointlist()
+            print_data = []
+            start_time = time.time()
+            for i, raw_dataset in enumerate(raw_datasets):
+                if i % 100 == 0 and i > 0:
+                    utils.print_status(len(raw_datasets), i, start_time)
+                pointlist = raw_dataset["handwriting"].get_sorted_pointlist()
 
-            for last_stroke, stroke in zip(pointlist, pointlist[1:]):
-                point1 = last_stroke[-1]
-                point2 = stroke[0]
-                space_dist = math.hypot(
-                    point1["x"] - point2["x"], point1["y"] - point2["y"]
-                )
-                print_data.append(space_dist)
-        print("100%")
-        # Sort the data by highest value, descending
-        print_data = sorted(print_data, reverse=True)
-        # Write data to file
-        for value in print_data:
-            write_file.write("%0.8f\n" % (value))
+                for last_stroke, stroke in zip(pointlist, pointlist[1:]):
+                    point1 = last_stroke[-1]
+                    point2 = stroke[0]
+                    space_dist = math.hypot(
+                        point1["x"] - point2["x"], point1["y"] - point2["y"]
+                    )
+                    print_data.append(space_dist)
+            print("100%")
+            # Sort the data by highest value, descending
+            print_data = sorted(print_data, reverse=True)
+            # Write data to file
+            for value in print_data:
+                write_file.write("%0.8f\n" % (value))
 
-        logger.info("dist_between_strokes mean:\t%0.8fpx", numpy.mean(print_data))
-        logger.info("dist_between_strokes std: \t%0.8fpx", numpy.std(print_data))
-        write_file.close()
+            logger.info("dist_between_strokes mean:\t%0.8fpx", numpy.mean(print_data))
+            logger.info("dist_between_strokes std: \t%0.8fpx", numpy.std(print_data))
 
 
 class TimeBetweenPointsAndStrokes:
@@ -261,8 +259,8 @@ class TimeBetweenPointsAndStrokes:
     __str__ = __repr__
 
     def __call__(self, raw_datasets):
-        average_between_points = open(self.filename_points, "a")
-        average_between_strokes = open(self.filename_strokes, "a")
+        average_between_points = open(self.filename_points, "a")  # noqa
+        average_between_strokes = open(self.filename_strokes, "a")  # noqa
         start_time = time.time()
         for i, raw_dataset in enumerate(raw_datasets):
             if i % 100 == 0 and i > 0:
@@ -340,7 +338,7 @@ class AnalyzeErrors:
             List of all recordings where the recording time is above a
             threshold.
         """
-        write_file = open(self.filename, "a")
+        write_file = open(self.filename, "a")  # noqa
         s = ""
         for symbol, count in sorted(symbols.items(), key=lambda n: n[0]):
             if symbol in ["a", "0", "A"]:

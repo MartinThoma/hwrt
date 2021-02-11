@@ -74,7 +74,8 @@ def create_preprocessed_dataset(path_to_data, outputpath, preprocessing_queue):
         print(raw_dataset_path)
         sys.exit()  # TODO: Update model!
     logger.info("Start loading data...")
-    loaded = pickle.load(open(path_to_data, "rb"))
+    with open(path_to_data, "rb") as fp:
+        loaded = pickle.load(fp)
     raw_datasets = loaded["handwriting_datasets"]
     logger.info("Start applying preprocessing methods")
     start_time = time.time()
@@ -85,15 +86,16 @@ def create_preprocessed_dataset(path_to_data, outputpath, preprocessing_queue):
         raw_dataset["handwriting"].preprocessing(preprocessing_queue)
     sys.stdout.write("\r%0.2f%% (done)\033[K\n" % (100))
     print("")
-    pickle.dump(
-        {
-            "handwriting_datasets": raw_datasets,
-            "formula_id2latex": loaded["formula_id2latex"],
-            "preprocessing_queue": preprocessing_queue,
-        },
-        open(outputpath, "wb"),
-        2,
-    )
+    with open(outputpath, "wb") as fp:
+        pickle.dump(
+            {
+                "handwriting_datasets": raw_datasets,
+                "formula_id2latex": loaded["formula_id2latex"],
+                "preprocessing_queue": preprocessing_queue,
+            },
+            fp,
+            2,
+        )
 
 
 def main(folder):

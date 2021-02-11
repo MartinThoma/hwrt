@@ -79,8 +79,8 @@ def analyze_feature(raw_datasets, feature, basename="aspect_ratios"):
     csv_file = dam.prepare_file(basename + ".csv")
     raw_file = dam.prepare_file(basename + ".raw")
 
-    csv_file = open(csv_file, "a")
-    raw_file = open(raw_file, "a")
+    csv_file = open(csv_file, "a")  # noqa
+    raw_file = open(raw_file, "a")  # noqa
 
     csv_file.write("label,mean,std\n")  # Write header
     raw_file.write("latex,raw_data_id,value\n")  # Write header

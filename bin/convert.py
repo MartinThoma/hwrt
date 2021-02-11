@@ -96,7 +96,8 @@ def main(model_folder):
     model_folder : str
         Path to a folder in which a model (json file) is.
     """
-    a = yaml.safe_load(open(utils.get_latest_in_folder(model_folder, ".json")))
+    with open(utils.get_latest_in_folder(model_folder, ".json")) as fp:
+        a = yaml.safe_load(fp)
 
     layers = []
     filenames = [

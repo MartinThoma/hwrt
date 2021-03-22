@@ -68,9 +68,9 @@ def get_symbol_ids(
     >>> len(out)
     2
     >>> out[0]
-    {'id': 42, 'formula_in_latex': '\\alpha', 'mappings': [42]}
+    {'id': 42, 'latex': '\\alpha', 'mappings': [42]}
     >>> out[1]
-    {'id': 1337, 'formula_in_latex': '\\beta', 'mappings': [1337]}
+    {'id': 1337, 'latex': '\\beta', 'mappings': [1337]}
 
     The YAML file has to be of the structure
 

@@ -1,7 +1,4 @@
-hypothesis
+-r ci.txt
 pip-tools
-pytest
-pytest-cov
-pytest-timeout
 twine
 wheel

@@ -59,7 +59,7 @@ natsort==7.1.1
     #   nntoolkit
 nntoolkit==0.2.2
     # via hwrt (setup.py)
-numpy==1.21.0
+numpy==1.22.0
     # via
     #   h5py
     #   keras

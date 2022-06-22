@@ -101,7 +101,7 @@ stone==3.2.1
     # via dropbox
 toml==0.10.2
     # via pytest
-urllib3==1.26.4
+urllib3==1.26.5
     # via requests
 visitor==0.1.3
     # via flask-bootstrap

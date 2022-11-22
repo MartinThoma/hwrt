@@ -67,7 +67,7 @@ numpy==1.22.0
     #   scipy
 packaging==20.9
     # via pytest
-pillow==9.0.1
+pillow==9.3.0
     # via hwrt (setup.py)
 pluggy==0.13.1
     # via pytest

@@ -24,6 +24,8 @@ black==20.8b1
     # via -r requirements/ci.txt
 bleach==3.3.0
     # via readme-renderer
+cached-property==1.5.2
+    # via h5py
 certifi==2020.12.5
     # via
     #   -r requirements/ci.txt
@@ -46,7 +48,7 @@ coverage==5.5
     # via
     #   -r requirements/ci.txt
     #   pytest-cov
-cryptography==3.4.6
+cryptography==39.0.1
     # via secretstorage
 cython==0.29.22
     # via
@@ -64,6 +66,18 @@ eradicate==2.0.0
     # via
     #   -r requirements/ci.txt
     #   flake8-eradicate
+flake8==3.9.0
+    # via
+    #   -r requirements/ci.txt
+    #   flake8-assert-msg
+    #   flake8-bugbear
+    #   flake8-builtins
+    #   flake8-comprehensions
+    #   flake8-eradicate
+    #   flake8-executable
+    #   flake8-isort
+    #   flake8-raise
+    #   flake8-string-format
 flake8-assert-msg==1.1.1
     # via -r requirements/ci.txt
 flake8-bugbear==21.3.2
@@ -90,24 +104,12 @@ flake8-raise==0.0.5
     # via -r requirements/ci.txt
 flake8-string-format==0.3.0
     # via -r requirements/ci.txt
-flake8==3.9.0
-    # via
-    #   -r requirements/ci.txt
-    #   flake8-assert-msg
-    #   flake8-bugbear
-    #   flake8-builtins
-    #   flake8-comprehensions
-    #   flake8-eradicate
-    #   flake8-executable
-    #   flake8-isort
-    #   flake8-raise
-    #   flake8-string-format
-flask-bootstrap==3.3.7.1
-    # via -r requirements/ci.txt
 flask==1.1.2
     # via
     #   -r requirements/ci.txt
     #   flask-bootstrap
+flask-bootstrap==3.3.7.1
+    # via -r requirements/ci.txt
 gevent==21.1.2
     # via -r requirements/ci.txt
 greenlet==1.0.0
@@ -129,7 +131,13 @@ idna==2.10
     #   requests
 importlib-metadata==3.7.3
     # via
+    #   flake8
+    #   flake8-comprehensions
+    #   flake8-raise
     #   keyring
+    #   pep517
+    #   pluggy
+    #   pytest
     #   twine
 iniconfig==1.1.1
     # via
@@ -169,13 +177,13 @@ more-itertools==8.7.0
     # via
     #   -r requirements/ci.txt
     #   flake8-implicit-str-concat
+mypy==0.812
+    # via -r requirements/ci.txt
 mypy-extensions==0.4.3
     # via
     #   -r requirements/ci.txt
     #   black
     #   mypy
-mypy==0.812
-    # via -r requirements/ci.txt
 natsort==7.1.1
     # via
     #   -r requirements/ci.txt
@@ -238,16 +246,16 @@ pyparsing==2.4.7
     # via
     #   -r requirements/ci.txt
     #   packaging
-pytest-cov==2.11.1
-    # via -r requirements/ci.txt
-pytest-timeout==1.4.2
-    # via -r requirements/ci.txt
 pytest==6.2.2
     # via
     #   -r requirements/ci.txt
     #   nntoolkit
     #   pytest-cov
     #   pytest-timeout
+pytest-cov==2.11.1
+    # via -r requirements/ci.txt
+pytest-timeout==1.4.2
+    # via -r requirements/ci.txt
 pyyaml==5.4.1
     # via
     #   -r requirements/ci.txt
@@ -259,14 +267,14 @@ regex==2021.3.17
     # via
     #   -r requirements/ci.txt
     #   black
-requests-toolbelt==0.9.1
-    # via twine
 requests==2.25.1
     # via
     #   -r requirements/ci.txt
     #   dropbox
     #   requests-toolbelt
     #   twine
+requests-toolbelt==0.9.1
+    # via twine
 rfc3986==1.4.0
     # via twine
 scipy==1.6.1
@@ -317,6 +325,7 @@ typing-extensions==3.7.4.3
     # via
     #   -r requirements/ci.txt
     #   black
+    #   importlib-metadata
     #   mypy
 urllib3==1.26.4
     # via
@@ -335,12 +344,14 @@ werkzeug==1.0.1
 wheel==0.36.2
     # via -r requirements/dev.in
 zipp==3.4.1
-    # via importlib-metadata
-zope.event==4.5.0
+    # via
+    #   importlib-metadata
+    #   pep517
+zope-event==4.5.0
     # via
     #   -r requirements/ci.txt
     #   gevent
-zope.interface==5.3.0
+zope-interface==5.3.0
     # via
     #   -r requirements/ci.txt
     #   gevent
